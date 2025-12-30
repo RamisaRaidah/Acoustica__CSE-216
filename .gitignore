@@ -1,2 +1,9 @@
 *.tmp.drivedownload
 *.tmp.driveupload
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+~$*.doc*
+~$*.ppt*
+~$*.xls*
+.vscode/
