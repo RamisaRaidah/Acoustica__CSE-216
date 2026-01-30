@@ -10,6 +10,9 @@ CREATE TYPE approval_request_enum AS ENUM ('artist', 'song');
 CREATE TYPE review_topic_enum AS ENUM ('system', 'song', 'album', 'playlist');
 CREATE TYPE report_topic_enum AS ENUM ('song', 'album', 'playlist', 'listener', 'artist', 'product');
 CREATE TYPE app_mode_enum AS ENUM ('light', 'dark');
+CREATE TYPE IF NOT EXISTS product_category_enum AS ENUM ('ticket','merch','cd');
+
+
 
 CREATE TABLE IF NOT EXISTS country (
   country_id SERIAL PRIMARY KEY,
@@ -250,6 +253,64 @@ CREATE TABLE IF NOT EXISTS family_plan_member (
   member_id INT REFERENCES listener(listener_id),
   PRIMARY KEY (family_plan_id, member_id)
 );
+
+CREATE TABLE IF NOT EXISTS friend_shared_content (
+  friend_shared_id SERIAL PRIMARY KEY,
+  sender_id INT REFERENCES listener(listener_id),
+  receiver_id INT REFERENCES listener(listener_id),
+  content_id INT REFERENCES asset(asset_id),
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS family_shared_content (
+  family_shared_id SERIAL PRIMARY KEY,
+  family_plan_id INT REFERENCES family_plan(family_plan_id),
+  sender_id INT REFERENCES listener(listener_id),
+  content_id INT REFERENCES asset(asset_id),
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS product (
+  product_id SERIAL PRIMARY KEY,
+  asset_id INT UNIQUE REFERENCES asset(asset_id),
+  category product_category_enum,
+  product_name TEXT,
+  owner_id INT REFERENCES artist(artist_id),
+  description TEXT,
+  product_image TEXT,
+  price NUMERIC(10,2) CHECK (price >= 0),
+  stock_quantity INT CHECK (stock_quantity >= 0),
+  expiration_date DATE
+);
+
+CREATE TABLE IF NOT EXISTS cart (
+  cart_id SERIAL PRIMARY KEY,
+  owner_id INT REFERENCES listener(listener_id),
+  transaction_id INT UNIQUE REFERENCES transaction_history(transaction_id)
+);
+
+CREATE TABLE IF NOT EXISTS cart_items (
+  cart_id INT REFERENCES cart(cart_id),
+  product_id INT REFERENCES product(product_id),
+  quantity INT CHECK (quantity > 0),
+  PRIMARY KEY (cart_id, product_id)
+);
+
+CREATE TABLE IF NOT EXISTS badge (
+  badge_id SERIAL PRIMARY KEY,
+  badge_name TEXT,
+  description TEXT,
+  image TEXT,
+  artist_id INT REFERENCES artist(artist_id)
+);
+
+CREATE TABLE IF NOT EXISTS badge_user (
+  user_id INT REFERENCES "user"(user_id),
+  badge_id INT REFERENCES badge(badge_id),
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, badge_id)
+);
+
 
 CREATE TABLE IF NOT EXISTS approval_request (
   request_id SERIAL PRIMARY KEY,
