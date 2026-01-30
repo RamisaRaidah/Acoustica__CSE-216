@@ -7,3 +7,7 @@ Desktop.ini
 ~$*.ppt*
 ~$*.xls*
 .vscode/
+__pycache__/
+*.pyc
+tempCodeRunnerFile.py
+app.log
