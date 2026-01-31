@@ -2,16 +2,12 @@ CREATE TYPE user_type_enum AS ENUM ('admin', 'listener', 'artist');
 CREATE TYPE listener_type_enum AS ENUM ('free', 'premium');
 CREATE TYPE admin_role_enum AS ENUM ('super_admin', 'administrator', 'moderator', 'analyst', 'audit');
 CREATE TYPE visibility_enum AS ENUM ('public', 'private');
-CREATE TYPE song_artist_role_enum AS ENUM ('singer', 'lyricist', 'composer');
+CREATE TYPE song_artist_role_enum AS ENUM ('vocalist', 'lyricist', 'composer');
 CREATE TYPE transaction_type_enum AS ENUM ('subscription', 'buy', 'payment', 'refund');
 CREATE TYPE payment_method_enum AS ENUM ('bank', 'bkash', 'card');
 CREATE TYPE auto_renew_enum AS ENUM ('on', 'off');
-CREATE TYPE approval_request_enum AS ENUM ('artist', 'song');
-CREATE TYPE review_topic_enum AS ENUM ('system', 'song', 'album', 'playlist');
-CREATE TYPE report_topic_enum AS ENUM ('song', 'album', 'playlist', 'listener', 'artist', 'product');
 CREATE TYPE app_mode_enum AS ENUM ('light', 'dark');
-CREATE TYPE IF NOT EXISTS product_category_enum AS ENUM ('ticket','merch','cd');
-
+CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
 
 
 CREATE TABLE IF NOT EXISTS country (
@@ -44,7 +40,7 @@ CREATE TABLE IF NOT EXISTS asset (
   asset_type TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "user" (
+CREATE TABLE IF NOT EXISTS "users" (
   user_id SERIAL PRIMARY KEY,
   asset_id INT REFERENCES asset(asset_id),
   user_type user_type_enum NOT NULL,
@@ -63,19 +59,19 @@ CREATE TABLE IF NOT EXISTS "user" (
 );
 
 CREATE TABLE IF NOT EXISTS listener (
-  listener_id INT PRIMARY KEY REFERENCES "user"(user_id),
+  listener_id INT PRIMARY KEY REFERENCES "users"(user_id),
   listener_type listener_type_enum NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS artist (
-  artist_id INT PRIMARY KEY REFERENCES "user"(user_id),
+  artist_id INT PRIMARY KEY REFERENCES "users"(user_id),
   stage_name TEXT,
   bank_account TEXT,
   points INT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS admin (
-  admin_id INT PRIMARY KEY REFERENCES "user"(user_id),
+  admin_id INT PRIMARY KEY REFERENCES "users"(user_id),
   role admin_role_enum NOT NULL
 );
 
@@ -216,7 +212,7 @@ CREATE TABLE IF NOT EXISTS liked_playlist (
 
 CREATE TABLE IF NOT EXISTS transaction_history (
   transaction_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES "user"(user_id),
+  user_id INT REFERENCES "users"(user_id),
   transaction_type transaction_type_enum,
   amount NUMERIC(10,2),
   payment_method payment_method_enum,
@@ -270,7 +266,7 @@ CREATE TABLE IF NOT EXISTS family_shared_content (
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS product (
+CREATE TABLE IF NOT EXISTS "product" (
   product_id SERIAL PRIMARY KEY,
   asset_id INT UNIQUE REFERENCES asset(asset_id),
   category product_category_enum,
@@ -305,7 +301,7 @@ CREATE TABLE IF NOT EXISTS badge (
 );
 
 CREATE TABLE IF NOT EXISTS badge_user (
-  user_id INT REFERENCES "user"(user_id),
+  user_id INT REFERENCES "users"(user_id),
   badge_id INT REFERENCES badge(badge_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, badge_id)
@@ -314,13 +310,12 @@ CREATE TABLE IF NOT EXISTS badge_user (
 
 CREATE TABLE IF NOT EXISTS approval_request (
   request_id SERIAL PRIMARY KEY,
-  request_type approval_request_enum,
   content_id INT REFERENCES asset(asset_id)
 );
 
 CREATE TABLE IF NOT EXISTS announcement (
   announcement_id SERIAL PRIMARY KEY,
-  announcer_id INT REFERENCES "user"(user_id),
+  announcer_id INT REFERENCES "users"(user_id),
   text TEXT,
   image TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -329,7 +324,6 @@ CREATE TABLE IF NOT EXISTS announcement (
 CREATE TABLE IF NOT EXISTS content_review (
   review_id SERIAL PRIMARY KEY,
   reviewer_id INT REFERENCES listener(listener_id),
-  topic review_topic_enum,
   topic_id INT REFERENCES asset(asset_id),
   text TEXT,
   rating INT CHECK (rating BETWEEN 0 AND 5),
@@ -346,8 +340,7 @@ CREATE TABLE IF NOT EXISTS artist_review (
 
 CREATE TABLE IF NOT EXISTS "report" (
   report_id SERIAL PRIMARY KEY,
-  author_id INT REFERENCES "user"(user_id),
-  topic report_topic_enum,
+  author_id INT REFERENCES "users"(user_id),
   topic_id INT REFERENCES asset(asset_id),
   text TEXT,
   image TEXT,

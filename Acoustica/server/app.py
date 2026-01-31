@@ -7,7 +7,7 @@ load_dotenv()
 
 @app.route("/")
 def home():
-    res = execute_query("SELECT * FROM country;", fetch_all = True)
+    res = execute_query("SELECT * FROM users;", fetch_all = True)
     return jsonify(res)
 
 if __name__ == "__main__":

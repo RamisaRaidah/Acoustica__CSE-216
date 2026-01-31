@@ -35,15 +35,19 @@ def init_db():
         logging.error("Database connection failed")
         return None
     with connection:
-        with connection.cursor(cursor_factory = RealDictCursor) as cursor:
+        with connection.cursor() as cursor:
             try:
-                with open("C:\\Users\\Shadman Sami Shanon\\OneDrive\\Desktop\\Acoustica---CSE_2-1_Term_Project\\Acoustica\\database\\db.sql", 'r') as f:
+                with open('C:\\Users\\Shadman Sami Shanon\\OneDrive\\Desktop\\Acoustica---CSE_2-1_Term_Project\\Acoustica\\database\\db.sql', 'r', encoding='utf-8') as f:
                     schema = f.read()
-                cursor.execute(schema)
+                commands = schema.split(';')
+                for command in commands:
+                    command = command.strip()
+                    if command:
+                        cursor.execute(command)
                 connection.commit()
             except Exception as e:
                 connection.rollback()
-                logging.error("Database creation failed")
+                logging.error(f"Database creation failed: {e}")
 
 def execute_query(query, params = None, fetch_one = False, fetch_all = False):
     connection = get_db_connection()
