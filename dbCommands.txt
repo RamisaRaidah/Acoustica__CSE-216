@@ -1,0 +1,7 @@
+psql -U postgres
+password
+CREATE DATABASE acoustica_db;
+CREATE USER acoustica WITH PASSWORD '4349';
+GRANT ALL PRIVILEGES ON DATABASE acoustica_db TO acoustica;
+\c acoustica_db
+GRANT CREATE, USAGE ON SCHEMA public TO acoustica;

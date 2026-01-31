@@ -38,7 +38,7 @@ def init_db():
     try:
         with connection:
             with connection.cursor() as cursor:
-                with open("C:\\Users\\Shadman Sami Shanon\\OneDrive\\Desktop\\Acoustica---CSE_2-1_Term_Project\\Acoustica\\database\\db.sql", 'r', encoding='utf-8') as f:
+                with open(r"C:\Users\ramis\Documents\Acoustica__CSE-216\Acoustica\database\db.sql", 'r') as f:
                     schema = f.read()
                 commands = sqlparse.split(schema)
                 for command in commands:
