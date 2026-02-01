@@ -352,11 +352,3 @@ CREATE TABLE IF NOT EXISTS "admin_activity_log" (
   activity_details TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
-
-
-
--- INSERTS
-
-INSERT INTO asset (asset_type) VALUES ('user');

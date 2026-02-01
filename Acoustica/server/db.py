@@ -30,9 +30,6 @@ def get_db_connection():
         logging.error(f"Database connection failed: {e}")
         return None
 
-arana="C:\\Users\\ramis\\Documents\\Acoustica__CSE-216\\Acoustica\\database\\db.sql"
-shanon="C:\\Users\\Shadman Sami Shanon\\OneDrive\\Desktop\\Acoustica---CSE_2-1_Term_Project\\Acoustica\\database\\db.sql"
-
 def init_db():
     connection = get_db_connection()
     if connection is None:
@@ -41,7 +38,7 @@ def init_db():
     try:
         with connection:
             with connection.cursor() as cursor:
-                with open(shanon, 'r', encoding = 'utf-8') as f:
+                with open(os.environ["SHANON_SCHEMA_LOCATION"], 'r', encoding = 'utf-8') as f:
                     schema = f.read()
                 commands = sqlparse.split(schema)
                 for command in commands:
@@ -58,7 +55,7 @@ def init_db():
     finally:
         connection.close()
 
-def execute_query(query, params = None, fetch_one = False, fetch_all = False):
+def execute_sql(sql_command, param = None, fetch_one = False, fetch_all = False):
     connection = get_db_connection()
     if connection is None:
         logging.error("Database connection failed")
@@ -66,7 +63,7 @@ def execute_query(query, params = None, fetch_one = False, fetch_all = False):
     try:
         with connection:
             with connection.cursor(cursor_factory = RealDictCursor) as cursor:
-                cursor.execute(query, params)
+                cursor.execute(sql_command, param)
                 if fetch_one:
                     result = cursor.fetchone()
                 elif fetch_all:
@@ -75,7 +72,7 @@ def execute_query(query, params = None, fetch_one = False, fetch_all = False):
                     result = None
                 return result
     except Exception as e:
-        logging.error(f"Query failed: {e}")
+        logging.error(f"Execution failed: {e}")
         return None
     finally:
         connection.close()
