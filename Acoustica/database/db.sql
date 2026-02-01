@@ -307,7 +307,6 @@ CREATE TABLE IF NOT EXISTS "badge_user" (
   PRIMARY KEY (user_id, badge_id)
 );
 
-
 CREATE TABLE IF NOT EXISTS "approval_request" (
   request_id SERIAL PRIMARY KEY,
   content_id INT REFERENCES asset(asset_id)
@@ -353,3 +352,11 @@ CREATE TABLE IF NOT EXISTS "admin_activity_log" (
   activity_details TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+
+
+-- INSERTS
+
+INSERT INTO asset (asset_type) VALUES ('user');
