@@ -29,7 +29,10 @@ def get_db_connection():
     except Exception as e:
         logging.error(f"Database connection failed: {e}")
         return None
-    
+
+arana="C:\\Users\\ramis\\Documents\\Acoustica__CSE-216\\Acoustica\\database\\db.sql"
+shanon="C:\\Users\\Shadman Sami Shanon\\OneDrive\\Desktop\\Acoustica---CSE_2-1_Term_Project\\Acoustica\\database\\db.sql"
+
 def init_db():
     connection = get_db_connection()
     if connection is None:
@@ -38,7 +41,7 @@ def init_db():
     try:
         with connection:
             with connection.cursor() as cursor:
-                with open("C:\\Users\\Shadman Sami Shanon\\OneDrive\\Desktop\\Acoustica---CSE_2-1_Term_Project\\Acoustica\\database\\db.sql", 'r', encoding = 'utf-8') as f:
+                with open(arana, 'r', encoding = 'utf-8') as f:
                     schema = f.read()
                 commands = sqlparse.split(schema)
                 for command in commands:
