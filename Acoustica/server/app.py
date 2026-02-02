@@ -3,8 +3,21 @@ from dotenv import load_dotenv
 from db import init_db, execute_sql
 import logging
 
-app = Flask(__name__)
+# import the blueprints
+from routes import demo
+
 load_dotenv()
+
+logging.basicConfig(
+    filename = "app.log",
+    level = logging.INFO,
+    format = "%(asctime)s [%(levelname)s] %(message)s"
+)
+
+app = Flask(__name__)
+
+# register the blueprints
+app.register_blueprint(demo.demo)
 
 @app.route("/")
 def home():
