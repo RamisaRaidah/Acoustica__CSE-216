@@ -38,7 +38,7 @@ def init_db():
     try:
         with connection:
             with connection.cursor() as cursor:
-                with open(os.environ["SHANON_SCHEMA_LOCATION"], 'r', encoding = 'utf-8') as f:
+                with open(os.environ["ARANA_SCHEMA_LOCATION"], 'r', encoding = 'utf-8') as f:
                     schema = f.read()
                 commands = sqlparse.split(schema)
                 for command in commands:

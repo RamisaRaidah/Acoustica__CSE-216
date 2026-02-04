@@ -11,47 +11,47 @@ CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
 
 
 CREATE TABLE IF NOT EXISTS "country" (
-  country_id SERIAL PRIMARY KEY,
-  country_name TEXT UNIQUE NOT NULL
+  country_id SERIAL CONSTRAINT pk_country PRIMARY KEY,
+  country_name TEXT CONSTRAINT uq_country_name UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "language" (
-  language_id SERIAL PRIMARY KEY,
-  language_name TEXT UNIQUE NOT NULL
+  language_id SERIAL CONSTRAINT pk_language PRIMARY KEY,
+  language_name TEXT CONSTRAINT uq_language_name UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "genre" (
-  genre_id SERIAL PRIMARY KEY,
-  genre_name TEXT UNIQUE NOT NULL
+  genre_id SERIAL CONSTRAINT pk_genre PRIMARY KEY,
+  genre_name TEXT CONSTRAINT uq_genre_name UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "mood" (
-  mood_id SERIAL PRIMARY KEY,
-  mood_name TEXT UNIQUE NOT NULL
+  mood_id SERIAL CONSTRAINT pk_mood PRIMARY KEY,
+  mood_name TEXT CONSTRAINT uq_mood_name UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "instrument" (
-  instrument_id SERIAL PRIMARY KEY,
-  instrument_name TEXT UNIQUE NOT NULL
+  instrument_id SERIAL CONSTRAINT pk_instrument PRIMARY KEY,
+  instrument_name TEXT CONSTRAINT uq_instrument_name UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "asset" (
-  asset_id SERIAL PRIMARY KEY,
-  asset_type TEXT NOT NULL
+  asset_id SERIAL CONSTRAINT pk_asset PRIMARY KEY,
+  asset_type TEXT CONSTRAINT uq_asset_type UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "users" (
-  user_id SERIAL PRIMARY KEY,
-  asset_id INT REFERENCES asset(asset_id),
+  user_id SERIAL CONSTRAINT pk_users PRIMARY KEY,
+  asset_id INT CONSTRAINT fk_users_asset_id REFERENCES asset(asset_id),
   user_type user_type_enum NOT NULL,
   first_name TEXT,
   last_name TEXT,
-  email TEXT UNIQUE NOT NULL,
+  email TEXT CONSTRAINT uq_users_email UNIQUE NOT NULL,
   "password" TEXT NOT NULL,
   profile_picture TEXT,
   bio TEXT,
-  country_id INT REFERENCES country(country_id),
-  language_id INT REFERENCES language(language_id),
+  country_id INT CONSTRAINT fk_users_country_id REFERENCES country(country_id),
+  language_id INT CONSTRAINT fk_users_language_id REFERENCES "language"(language_id),
   phone_number TEXT,
   gender TEXT,
   date_of_birth DATE,
@@ -59,52 +59,52 @@ CREATE TABLE IF NOT EXISTS "users" (
 );
 
 CREATE TABLE IF NOT EXISTS "listener" (
-  listener_id INT PRIMARY KEY REFERENCES "users"(user_id),
+  listener_id INT CONSTRAINT pk_listener PRIMARY KEY REFERENCES "users"(user_id),
   listener_type listener_type_enum NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "artist" (
-  artist_id INT PRIMARY KEY REFERENCES "users"(user_id),
+  artist_id INT CONSTRAINT pk_artist PRIMARY KEY REFERENCES "users"(user_id),
   stage_name TEXT,
   bank_account TEXT,
   points INT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS "admin" (
-  admin_id INT PRIMARY KEY REFERENCES "users"(user_id),
+  admin_id INT CONSTRAINT pk_admin PRIMARY KEY REFERENCES "users"(user_id),
   role admin_role_enum NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "language_preference" (
-  listener_id INT REFERENCES listener(listener_id),
-  language_id INT REFERENCES language(language_id),
-  PRIMARY KEY (listener_id, language_id)
+  listener_id INT CONSTRAINT fk_language_preference_listener_id REFERENCES listener(listener_id),
+  language_id INT CONSTRAINT fk_language_preference_language_id REFERENCES "language"(language_id),
+  CONSTRAINT pk_language_preference PRIMARY KEY (listener_id, language_id)
 );
 
 CREATE TABLE IF NOT EXISTS "followed_artist" (
-  listener_id INT REFERENCES listener(listener_id),
-  artist_id INT REFERENCES artist(artist_id),
-  PRIMARY KEY (listener_id, artist_id)
+  listener_id INT CONSTRAINT fk_followed_artist_listener_id REFERENCES listener(listener_id),
+  artist_id INT CONSTRAINT fk_followed_artist_artist_id REFERENCES artist(artist_id),
+  CONSTRAINT pk_followed_artist PRIMARY KEY (listener_id, artist_id)
 );
 
 CREATE TABLE IF NOT EXISTS "friend" (
-  user1_id INT REFERENCES listener(listener_id),
-  user2_id INT REFERENCES listener(listener_id),
-  PRIMARY KEY (user1_id, user2_id),
-  CHECK (user1_id<user2_id)
+  user1_id INT CONSTRAINT fk_friend_listener_user1 REFERENCES listener(listener_id),
+  user2_id INT CONSTRAINT fk_friend_listener_user2 REFERENCES listener(listener_id),
+  CONSTRAINT pk_friend PRIMARY KEY (user1_id, user2_id),
+  CONSTRAINT ck_friend_user1_lt_user2 CHECK (user1_id<user2_id)
 );
 
 CREATE TABLE IF NOT EXISTS "friend_request" (
-  sender_id INT REFERENCES listener(listener_id),
-  receiver_id INT REFERENCES listener(listener_id),
-  "status" TEXT CHECK (status IN ('accepted', 'pending', 'rejected')),
+  sender_id INT CONSTRAINT fk_friend_request_listener_sender_id REFERENCES listener(listener_id),
+  receiver_id INT CONSTRAINT fk_friend_request_listener_receiver_id REFERENCES listener(listener_id),
+  "status" TEXT CHECK ("status" IN ('accepted', 'pending', 'rejected')),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (sender_id, receiver_id)
+  CONSTRAINT pk_friend_request PRIMARY KEY (sender_id, receiver_id)
 );
 
 CREATE TABLE IF NOT EXISTS "album" (
-  album_id SERIAL PRIMARY KEY,
-  asset_id INT REFERENCES asset(asset_id),
+  album_id SERIAL CONSTRAINT pk_album PRIMARY KEY,
+  asset_id INT CONSTRAINT fk_album_asset_id  REFERENCES asset(asset_id),
   "title" TEXT NOT NULL,
   "description" TEXT,
   release_date DATE,
@@ -113,12 +113,12 @@ CREATE TABLE IF NOT EXISTS "album" (
 );
 
 CREATE TABLE IF NOT EXISTS "song" (
-  song_id SERIAL PRIMARY KEY,
-  asset_id INT REFERENCES asset(asset_id),
+  song_id SERIAL CONSTRAINT pk_song PRIMARY KEY,
+  asset_id INT CONSTRAINT fk_song_asset_id REFERENCES asset(asset_id),
   "title" TEXT NOT NULL,
-  album_id INT REFERENCES album(album_id),
-  owner_id INT REFERENCES artist(artist_id),
-  language_id INT REFERENCES language(language_id),
+  album_id INT CONSTRAINT fk_song_album_id REFERENCES album(album_id),
+  owner_id INT CONSTRAINT fk_song_artist_owner_id REFERENCES artist(artist_id),
+  language_id INT CONSTRAINT fk_song_language_id REFERENCES "language"(language_id),
   "length" INT,
   release_date DATE,
   song_audio TEXT,
@@ -127,10 +127,10 @@ CREATE TABLE IF NOT EXISTS "song" (
 );
 
 CREATE TABLE IF NOT EXISTS "playlist" (
-  playlist_id SERIAL PRIMARY KEY,
-  asset_id INT REFERENCES asset(asset_id),
+  playlist_id SERIAL CONSTRAINT pk_playlist PRIMARY KEY,
+  asset_id INT CONSTRAINT fk_playlist_asset_id REFERENCES asset(asset_id),
   "title" TEXT NOT NULL,
-  creator_id INT REFERENCES listener(listener_id),
+  creator_id INT CONSTRAINT fk_playlist_listener_creator_id REFERENCES listener(listener_id),
   "description" TEXT,
   creation_date DATE DEFAULT CURRENT_DATE,
   "visibility" visibility_enum,
@@ -138,81 +138,81 @@ CREATE TABLE IF NOT EXISTS "playlist" (
 );
 
 CREATE TABLE IF NOT EXISTS "playlist_song" (
-  playlist_id INT REFERENCES playlist(playlist_id),
-  song_id INT REFERENCES song(song_id),
-  PRIMARY KEY (playlist_id, song_id)
+  playlist_id INT CONSTRAINT fk_playlist_song_playlist_id REFERENCES playlist(playlist_id),
+  song_id INT CONSTRAINT fk_playlist_song_song_id REFERENCES song(song_id),
+  CONSTRAINT pk_playlist_song PRIMARY KEY (playlist_id, song_id)
 );
 
 CREATE TABLE IF NOT EXISTS "song_artist" (
-  song_id INT REFERENCES song(song_id),
-  artist_id INT REFERENCES artist(artist_id),
+  song_id INT CONSTRAINT fk_song_artist_song_id REFERENCES song(song_id),
+  artist_id INT CONSTRAINT fk_song_artist_artist_id REFERENCES artist(artist_id),
   "role" song_artist_role_enum,
-  PRIMARY KEY (song_id, artist_id)
+  CONSTRAINT pk_song_artist PRIMARY KEY (song_id, artist_id)
 );
 
 CREATE TABLE IF NOT EXISTS "song_genre" (
-  song_id INT REFERENCES song(song_id),
-  genre_id INT REFERENCES genre(genre_id),
-  PRIMARY KEY (song_id, genre_id)
+  song_id INT CONSTRAINT fk_song_genre_song_id REFERENCES song(song_id),
+  genre_id INT CONSTRAINT fk_song_genre_genre_id REFERENCES genre(genre_id),
+  CONSTRAINT pk_song_genre PRIMARY KEY (song_id, genre_id)
 );
 
 CREATE TABLE IF NOT EXISTS "song_mood" (
-  song_id INT REFERENCES song(song_id),
-  mood_id INT REFERENCES mood(mood_id),
-  PRIMARY KEY (song_id, mood_id)
+  song_id INT CONSTRAINT fk_song_mood_song_id REFERENCES song(song_id),
+  mood_id INT CONSTRAINT fk_song_mood_mood_id REFERENCES mood(mood_id),
+  CONSTRAINT pk_song_mood PRIMARY KEY (song_id, mood_id)
 );
 
 CREATE TABLE IF NOT EXISTS "song_instrument" (
-  song_id INT REFERENCES song(song_id),
-  instrument_id INT REFERENCES instrument(instrument_id),
-  PRIMARY KEY (song_id, instrument_id)
+  song_id INT CONSTRAINT fk_song_instrument_song_id REFERENCES song(song_id),
+  instrument_id INT CONSTRAINT fk_song_instrument_instrument_id REFERENCES instrument(instrument_id),
+  CONSTRAINT pk_song_instrument PRIMARY KEY (song_id, instrument_id)
 );
 
 CREATE TABLE IF NOT EXISTS "song_stream_history" (
-  song_stream_id SERIAL PRIMARY KEY,
-  listener_id INT REFERENCES listener(listener_id),
-  song_id INT REFERENCES song(song_id),
+  song_stream_id SERIAL CONSTRAINT pk_song_stream_history PRIMARY KEY,
+  listener_id INT CONSTRAINT fk_song_stream_history_listener_id REFERENCES listener(listener_id),
+  song_id INT CONSTRAINT fk_song_stream_history_song_id REFERENCES song(song_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "duration" INT
 );
 
 CREATE TABLE IF NOT EXISTS "album_stream_history" (
-  album_stream_id SERIAL PRIMARY KEY,
-  listener_id INT REFERENCES listener(listener_id),
-  album_id INT REFERENCES album(album_id),
+  album_stream_id SERIAL CONSTRAINT pk_album_stream_history PRIMARY KEY,
+  listener_id INT CONSTRAINT fk_album_stream_history_listener_id REFERENCES listener(listener_id),
+  album_id INT CONSTRAINT fk_album_stream_history_album_id REFERENCES album(album_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "duration" INT
 );
 
 CREATE TABLE IF NOT EXISTS "playlist_stream_history" (
-  playlist_stream_id SERIAL PRIMARY KEY,
-  listener_id INT REFERENCES listener(listener_id),
-  playlist_id INT REFERENCES playlist(playlist_id),
+  playlist_stream_id SERIAL CONSTRAINT pk_playlist_stream_history PRIMARY KEY,
+  listener_id INT CONSTRAINT fk_playlist_stream_history_listener_id REFERENCES listener(listener_id),
+  playlist_id INT CONSTRAINT fk_playlist_stream_history_playlist_id REFERENCES playlist(playlist_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "duration" INT
 );
 
 CREATE TABLE IF NOT EXISTS "liked_song" (
-  listener_id INT REFERENCES listener(listener_id),
-  song_id INT REFERENCES song(song_id),
-  PRIMARY KEY (listener_id, song_id)
+  listener_id INT CONSTRAINT fk_liked_song_listener_id REFERENCES listener(listener_id),
+  song_id INT CONSTRAINT fk_liked_song_song_id REFERENCES song(song_id),
+  CONSTRAINT pk_liked_song PRIMARY KEY (listener_id, song_id)
 );
 
 CREATE TABLE IF NOT EXISTS "liked_album" (
-  listener_id INT REFERENCES listener(listener_id),
-  album_id INT REFERENCES album(album_id),
-  PRIMARY KEY (listener_id, album_id)
+  listener_id INT CONSTRAINT fk_liked_album_listener_id REFERENCES listener(listener_id),
+  album_id INT CONSTRAINT fk_liked_album_album_id REFERENCES album(album_id),
+  CONSTRAINT pk_liked_album PRIMARY KEY (listener_id, album_id)
 );
 
 CREATE TABLE IF NOT EXISTS "liked_playlist" (
-  listener_id INT REFERENCES listener(listener_id),
-  playlist_id INT REFERENCES playlist(playlist_id),
-  PRIMARY KEY (listener_id, playlist_id)
+  listener_id INT CONSTRAINT fk_liked_playlist_listener_id REFERENCES listener(listener_id),
+  playlist_id INT CONSTRAINT fk_liked_playlist_playlist_id REFERENCES playlist(playlist_id),
+  CONSTRAINT pk_liked_playlist PRIMARY KEY (listener_id, playlist_id)
 );
 
 CREATE TABLE IF NOT EXISTS "transaction_history" (
-  transaction_id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES "users"(user_id),
+  transaction_id SERIAL CONSTRAINT pk_transaction_history PRIMARY KEY,
+  user_id INT CONSTRAINT fk_transaction_history_user_id REFERENCES "users"(user_id),
   transaction_type transaction_type_enum,
   amount NUMERIC(10,2),
   payment_method payment_method_enum,
@@ -221,134 +221,136 @@ CREATE TABLE IF NOT EXISTS "transaction_history" (
 );
 
 CREATE TABLE IF NOT EXISTS "plan" (
-  plan_id SERIAL PRIMARY KEY,
+  plan_id SERIAL CONSTRAINT pk_plan PRIMARY KEY,
   plan_type TEXT,
   plan_cost NUMERIC(10,2),
   max_members INT
 );
 
 CREATE TABLE IF NOT EXISTS "plan_subscription" (
-  subscription_id SERIAL PRIMARY KEY,
-  plan_id INT REFERENCES plan(plan_id),
-  owner_id INT REFERENCES listener(listener_id),
+  subscription_id SERIAL CONSTRAINT pk_plan_subscription PRIMARY KEY,
+  plan_id INT CONSTRAINT fk_plan_subscription_plan_id REFERENCES plan(plan_id),
+  owner_id INT CONSTRAINT fk_plan_subscription_listener_owner_id REFERENCES listener(listener_id),
   start_date DATE,
   end_date DATE,
-  transaction_id INT REFERENCES transaction_history(transaction_id),
+  transaction_id INT CONSTRAINT fk_plan_subscription_transaction_id REFERENCES transaction_history(transaction_id),
   auto_renewal_mode auto_renew_enum
 );
 
 CREATE TABLE IF NOT EXISTS "family_plan" (
-  family_plan_id SERIAL PRIMARY KEY,
+  family_plan_id SERIAL CONSTRAINT pk_family_plan PRIMARY KEY,
   family_name TEXT,
-  parent_account_id INT REFERENCES listener(listener_id),
-  subscription_id INT REFERENCES plan_subscription(subscription_id)
+  parent_account_id INT CONSTRAINT fk_family_plan_listener_parent_account_id REFERENCES listener(listener_id),
+  subscription_id INT CONSTRAINT fk_family_plan_plan_subscription_id REFERENCES plan_subscription(subscription_id)
 );
 
 CREATE TABLE IF NOT EXISTS "family_plan_member" (
-  family_plan_id INT REFERENCES family_plan(family_plan_id),
-  member_id INT REFERENCES listener(listener_id),
-  PRIMARY KEY (family_plan_id, member_id)
+  family_plan_id INT CONSTRAINT fk_family_plan_member_family_plan_id REFERENCES family_plan(family_plan_id),
+  member_id INT CONSTRAINT fk_family_plan_member_listener_member_id REFERENCES listener(listener_id),
+  CONSTRAINT pk_family_plan_member PRIMARY KEY (family_plan_id, member_id)
 );
 
 CREATE TABLE IF NOT EXISTS "friend_shared_content" (
-  friend_shared_id SERIAL PRIMARY KEY,
-  sender_id INT REFERENCES listener(listener_id),
-  receiver_id INT REFERENCES listener(listener_id),
-  content_id INT REFERENCES asset(asset_id),
+  friend_shared_id SERIAL CONSTRAINT pk_friend_shared_content PRIMARY KEY,
+  sender_id INT CONSTRAINT fk_friend_shared_content_listener_sender_id REFERENCES listener(listener_id),
+  receiver_id INT CONSTRAINT fk_friend_shared_content_listener_receiver_id REFERENCES listener(listener_id),
+  content_id INT CONSTRAINT fk_friend_shared_content_asset_content_id REFERENCES asset(asset_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "family_shared_content" (
-  family_shared_id SERIAL PRIMARY KEY,
-  family_plan_id INT REFERENCES family_plan(family_plan_id),
-  sender_id INT REFERENCES listener(listener_id),
-  content_id INT REFERENCES asset(asset_id),
+  family_shared_id SERIAL CONSTRAINT pk_family_shared_content PRIMARY KEY,
+  family_plan_id INT CONSTRAINT fk_family_shared_content_family_plan_family_plan_id REFERENCES family_plan(family_plan_id),
+  sender_id INT CONSTRAINT fk_family_shared_content_listener_sender_id REFERENCES listener(listener_id),
+  content_id INT CONSTRAINT fk_family_shared_content_asset_content_id REFERENCES asset(asset_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "product" (
-  product_id SERIAL PRIMARY KEY,
-  asset_id INT UNIQUE REFERENCES asset(asset_id),
+  product_id SERIAL CONSTRAINT pk_product PRIMARY KEY,
+  asset_id INT CONSTRAINT uq_product_asset_id UNIQUE,
   category product_category_enum,
   product_name TEXT,
-  owner_id INT REFERENCES artist(artist_id),
+  owner_id INT CONSTRAINT fk_product_artist_owner_id REFERENCES artist(artist_id),
   "description" TEXT,
   product_image TEXT,
-  price NUMERIC(10,2) CHECK (price >= 0),
-  stock_quantity INT CHECK (stock_quantity >= 0),
-  expiration_date DATE
+  price NUMERIC(10,2) CONSTRAINT ck_product_price_nonnegative CHECK (price >= 0),
+  stock_quantity INT CONSTRAINT ck_product_stock_nonnegative CHECK (stock_quantity >= 0),
+  expiration_date DATE,
+  CONSTRAINT fk_product_asset_id FOREIGN KEY (asset_id) REFERENCES asset(asset_id)
 );
 
 CREATE TABLE IF NOT EXISTS "cart" (
-  cart_id SERIAL PRIMARY KEY,
-  owner_id INT REFERENCES listener(listener_id),
-  transaction_id INT UNIQUE REFERENCES transaction_history(transaction_id)
+  cart_id SERIAL CONSTRAINT pk_cart PRIMARY KEY,
+  owner_id INT CONSTRAINT fk_cart_listener_owner_id REFERENCES listener(listener_id),
+  transaction_id INT CONSTRAINT uq_cart_transaction_id UNIQUE,
+  CONSTRAINT fk_cart_transaction_id FOREIGN KEY (transaction_id) REFERENCES transaction_history(transaction_id)
 );
 
 CREATE TABLE IF NOT EXISTS "cart_items" (
-  cart_id INT REFERENCES cart(cart_id),
-  product_id INT REFERENCES product(product_id),
-  quantity INT CHECK (quantity > 0),
-  PRIMARY KEY (cart_id, product_id)
+  cart_id INT CONSTRAINT fk_cart_items_cart_id REFERENCES cart(cart_id),
+  product_id INT CONSTRAINT fk_cart_items_product_id REFERENCES product(product_id),
+  quantity INT CONSTRAINT ck_cart_items_quantity_positive CHECK (quantity > 0),
+  CONSTRAINT pk_cart_items PRIMARY KEY (cart_id, product_id)
 );
 
 CREATE TABLE IF NOT EXISTS "badge" (
-  badge_id SERIAL PRIMARY KEY,
+  badge_id SERIAL CONSTRAINT pk_badge PRIMARY KEY,
   badge_name TEXT,
   "description" TEXT,
   image TEXT,
-  artist_id INT REFERENCES artist(artist_id)
+  artist_id INT CONSTRAINT fk_badge_artist_id REFERENCES artist(artist_id)
 );
 
 CREATE TABLE IF NOT EXISTS "badge_user" (
-  user_id INT REFERENCES "users"(user_id),
-  badge_id INT REFERENCES badge(badge_id),
+  user_id INT CONSTRAINT fk_badge_user_user_id REFERENCES "users"(user_id),
+  badge_id INT CONSTRAINT fk_badge_user_badge_id REFERENCES badge(badge_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (user_id, badge_id)
+  CONSTRAINT pk_badge_user PRIMARY KEY (user_id, badge_id)
 );
 
 CREATE TABLE IF NOT EXISTS "approval_request" (
-  request_id SERIAL PRIMARY KEY,
-  content_id INT REFERENCES asset(asset_id)
+  request_id SERIAL CONSTRAINT pk_approval_request PRIMARY KEY,
+  content_id INT CONSTRAINT fk_approval_request_asset_content_id REFERENCES asset(asset_id)
 );
 
 CREATE TABLE IF NOT EXISTS "announcement" (
-  announcement_id SERIAL PRIMARY KEY,
-  announcer_id INT REFERENCES "users"(user_id),
+  announcement_id SERIAL CONSTRAINT pk_announcement PRIMARY KEY,
+  announcer_id INT CONSTRAINT fk_announcement_users_announcer_id REFERENCES "users"(user_id),
   text TEXT,
   image TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "content_review" (
-  review_id SERIAL PRIMARY KEY,
-  reviewer_id INT REFERENCES listener(listener_id),
-  topic_id INT REFERENCES asset(asset_id),
+  review_id SERIAL CONSTRAINT pk_content_review PRIMARY KEY,
+  reviewer_id INT CONSTRAINT fk_content_review_listener_reviewer_id REFERENCES listener(listener_id),
+  topic_id INT CONSTRAINT fk_content_review_asset_topic_id REFERENCES asset(asset_id),
   text TEXT,
-  rating INT CHECK (rating BETWEEN 0 AND 5),
+  rating INT CONSTRAINT ck_content_review_rating_range CHECK (rating BETWEEN 0 AND 5),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "artist_review" (
-  review_id SERIAL PRIMARY KEY,
-  reviewer_id INT REFERENCES listener(listener_id),
-  artist_id INT REFERENCES artist(artist_id),
+  review_id SERIAL CONSTRAINT pk_artist_review PRIMARY KEY,
+  reviewer_id INT CONSTRAINT fk_artist_review_listener_reviewer_id REFERENCES listener(listener_id),
+  artist_id INT CONSTRAINT fk_artist_review_artist_artist_id REFERENCES artist(artist_id),
   text TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "report" (
-  report_id SERIAL PRIMARY KEY,
-  author_id INT REFERENCES "users"(user_id),
-  topic_id INT REFERENCES asset(asset_id),
+  report_id SERIAL CONSTRAINT pk_report PRIMARY KEY,
+  author_id INT CONSTRAINT fk_report_users_author_id REFERENCES "users"(user_id),
+  topic_id INT CONSTRAINT fk_report_asset_topic_id REFERENCES asset(asset_id),
   text TEXT,
   image TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "admin_activity_log" (
-  activity_id SERIAL PRIMARY KEY,
-  admin_id INT REFERENCES admin(admin_id),
+  activity_id SERIAL CONSTRAINT pk_admin_activity_log PRIMARY KEY,
+  admin_id INT CONSTRAINT fk_admin_activity_log_admin_admin_id REFERENCES admin(admin_id),
   activity_details TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
