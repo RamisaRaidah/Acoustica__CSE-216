@@ -351,6 +351,6 @@ CREATE TABLE IF NOT EXISTS "report" (
 CREATE TABLE IF NOT EXISTS "admin_activity_log" (
   activity_id SERIAL CONSTRAINT pk_admin_activity_log PRIMARY KEY,
   admin_id INT CONSTRAINT fk_admin_activity_log_admin_admin_id REFERENCES admin(admin_id),
-  activity_details TEXT,
+  activity_details JSONB,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
