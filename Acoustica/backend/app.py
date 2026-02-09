@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 from db import init_db, execute_sql
+from flask_cors import CORS
 import logging
 
 # import the blueprints
@@ -15,13 +16,14 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
+CORS(app)
 
 # register the blueprints
 app.register_blueprint(demo.demo)
 
 @app.route("/")
 def home():
-    return "Home"
+    return jsonify({"message": "This is backend"})
 
 @app.route("/add_asset", methods = ["POST"])
 def add_asset():
