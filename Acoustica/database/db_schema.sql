@@ -360,4 +360,4 @@ CREATE TABLE IF NOT EXISTS "notification" (
   user_id INT CONSTRAINT fk_notification_user_id REFERENCES "users"(user_id),
   text TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
