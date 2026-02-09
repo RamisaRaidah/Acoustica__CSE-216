@@ -354,3 +354,10 @@ CREATE TABLE IF NOT EXISTS "admin_activity_log" (
   activity_details JSONB,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS "notification" (
+  notification_id INT CONSTRAINT pk_notification PRIMARY KEY,
+  user_id INT CONSTRAINT fk_notification_user_id REFERENCES "users"(user_id),
+  text TEXT,
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
