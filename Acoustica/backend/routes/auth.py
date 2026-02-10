@@ -13,6 +13,22 @@ logging.basicConfig(
 
 auth = Blueprint("auth", __name__) 
 
-@auth.route("/auth")
-def auth_home():
+@auth.get("/auth")
+def health():
     return jsonify("auth")
+
+@auth.post("/api/auth/sign-up")
+def sign_up():
+    return jsonify("sign_up")
+
+@auth.post("/api/auth/sign-in")
+def sign_in():
+    return jsonify("sign_in")
+
+@auth.post("/api/auth/sign-out")
+def sign_out():
+    return jsonify("sign_out")
+
+@auth.post("/api/auth/refresh")
+def refresh():
+    return jsonify("refresh")

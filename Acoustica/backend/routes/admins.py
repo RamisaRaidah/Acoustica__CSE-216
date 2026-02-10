@@ -13,6 +13,14 @@ logging.basicConfig(
 
 admins = Blueprint("admins", __name__) 
 
-@admins.route("/admins")
-def admins_home():
+@admins.get("/admins")
+def health():
     return jsonify("admins")
+
+@admins.get("/api/admins/me/dashboard")
+def get_dashboard():
+    return jsonify("get_dashboard")
+
+@admins.get("/api/admins/me")
+def get_profile():
+    return jsonify("get_profile")

@@ -13,6 +13,18 @@ logging.basicConfig(
 
 activities = Blueprint("activities", __name__) 
 
-@activities.route("/activities")
-def activities_home():
+@activities.get("/activities")
+def health():
     return jsonify("activities")
+
+@activities.post("/api/activities/email")
+def send_email():
+    return jsonify("send_email")
+
+@activities.get("/api/activities/cheer")
+def cheer():
+    return jsonify("cheer")
+
+@activities.delete("/api/assets/<asset_id>")
+def ban_asset(asset_id):
+    return jsonify(f"ban_asset {asset_id}")

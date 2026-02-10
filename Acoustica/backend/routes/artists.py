@@ -13,6 +13,14 @@ logging.basicConfig(
 
 artists = Blueprint("artists", __name__)
 
-@artists.route("/artists")
-def artists_home():
+@artists.get("/artists")
+def health():
     return jsonify("artists")
+
+@artists.get("/api/artists/me/dashboard")
+def get_dashboard():
+    return jsonify("get_dashboard")
+
+@artists.get("/api/artists/me")
+def get_profile():
+    return jsonify("get_profile")
