@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acoustica | Home</title>
+  <title>Acoustica</title>
+  <link rel="stylesheet" href="/src/styles/reset.css">
+  <link rel="stylesheet" href="/src/styles/variables.css">
+  <link rel="stylesheet" href="/src/styles/global.css">
 </head>
 <body>
-
-  <nav>
-    <a href="index.html" class="nav-btn active">Home</a>
-    <a href="asset.html" class="nav-btn">View Assets</a>
-  </nav>
-
-  <div id="homePage">
-    <p>Loading Acoustica Engine...</p>
+  <!-- App container - everything renders here -->
+  <div id="app">
+    <nav id="navbar"></nav>
+    <main id="content"></main>
   </div>
-
-  <script type="module" src="./main.js"></script>
+  
+  <!-- Entry point - starts the whole app -->
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>

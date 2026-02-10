@@ -1,0 +1,27 @@
+@import url('../components/navbar/navbar.css');
+@import url('../components/assetCard/assetCard.css');
+
+
+@import url('../pages/home/home.css');
+@import url('../pages/assets/assets.css');
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0f172a;
+  color: white;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+#content {
+  padding: 1rem;
+}
+
+.loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem;
+}
