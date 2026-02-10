@@ -1,11 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from dotenv import load_dotenv
-from db import init_db, execute_sql
+from db import init_db
 from flask_cors import CORS
 import logging
 
 # import the blueprints
-from routes import demo
+from routes import activities, admins, albums, analytics, artists, listeners, playlists, posts, shop, social, songs, subscriptions, transactions, users
 
 load_dotenv()
 
@@ -19,24 +19,24 @@ app = Flask(__name__)
 CORS(app)
 
 # register the blueprints
-app.register_blueprint(demo.demo)
+app.register_blueprint(activities.activities)
+app.register_blueprint(admins.admins)
+app.register_blueprint(albums.albums)
+app.register_blueprint(analytics.analytics)
+app.register_blueprint(artists.artists)
+app.register_blueprint(listeners.listeners)
+app.register_blueprint(playlists.playlists)
+app.register_blueprint(posts.posts)
+app.register_blueprint(shop.shop)
+app.register_blueprint(social.social)
+app.register_blueprint(songs.songs)
+app.register_blueprint(subscriptions.subscriptions)
+app.register_blueprint(transactions.transactions)
+app.register_blueprint(users.users)
 
 @app.route("/")
 def home():
     return jsonify({"message": "This is backend"})
-
-@app.route("/add_asset", methods = ["POST"])
-def add_asset():
-    data = request.get_json()
-    asset_type = data.get("type")
-    execute_sql("INSERT INTO asset (asset_type) VALUES (%s)", (asset_type,))
-    return jsonify({"status": "insersion successful"})
-
-
-@app.route("/assets")
-def get_songs():
-    res = execute_sql("SELECT * FROM asset", fetch_all = True)
-    return jsonify(res)
 
 if __name__ == "__main__":
     # init_db()

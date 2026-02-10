@@ -15,4 +15,4 @@ demo = Blueprint("demo", __name__) # set the blueprint name and add the blueprin
 
 @demo.route("/demo")
 def demo_home():
-    return render_template("demo.html")
+    return jsonify("demo")

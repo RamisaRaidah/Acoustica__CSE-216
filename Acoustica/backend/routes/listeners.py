@@ -11,8 +11,8 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-shop = Blueprint("shop", __name__) 
+listeners = Blueprint("listeners", __name__) 
 
-@shop.route("/shop")
-def shop_home():
-    return jsonify("shop")
+@listeners.route("/listeners")
+def listeners_home():
+    return jsonify("listeners")
