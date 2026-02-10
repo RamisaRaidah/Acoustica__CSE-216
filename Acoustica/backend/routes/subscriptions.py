@@ -16,3 +16,23 @@ subscriptions = Blueprint("subscriptions", __name__)
 @subscriptions.route("/subscriptions")
 def subscriptions_home():
     return jsonify("subscriptions")
+
+@subscriptions.post("/api/subscriptions/plans")
+def subscribe():
+    return jsonify("subscribe")
+
+@subscriptions.get("/api/subscriptions/plans")
+def get_plans():
+    return jsonify("get_plans")
+
+@subscriptions.get("/api/subscriptions/<subscription_id>")
+def get_subscription_details(subscription_id):
+    return jsonify(f"get_subscription_details {subscription_id}")
+
+@subscriptions.patch("/api/subscriptions/<subscription_id>/auto-renewal")
+def set_auto_renewal(subscription_id):
+    return jsonify(f"set_auto_renewal {subscription_id}")
+
+@subscriptions.delete("/api/subscriptions/<subscription_id>")
+def delete_subscription(subscription_id):
+    return jsonify(f"delete_subscription {subscription_id}")
