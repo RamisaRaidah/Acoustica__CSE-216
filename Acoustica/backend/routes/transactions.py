@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, jsonify
 from dotenv import load_dotenv
 from db import execute_sql
 import logging
@@ -13,8 +13,8 @@ logging.basicConfig(
 
 transactions = Blueprint("transactions", __name__) 
 
-@transactions.route("/transactions")
-def transactions_home():
+@transactions.get("/transactions")
+def health():
     return jsonify("transactions")
 
 @transactions.post("/api/transactions/payment")

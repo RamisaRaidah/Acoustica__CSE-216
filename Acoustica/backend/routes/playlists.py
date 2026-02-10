@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, jsonify
 from dotenv import load_dotenv
 from db import execute_sql
 import logging
@@ -13,8 +13,8 @@ logging.basicConfig(
 
 playlists = Blueprint("playlists", __name__) 
 
-@playlists.route("/playlists")
-def playlists_home():
+@playlists.get("/playlists")
+def health():
     return jsonify("playlists")
 
 @playlists.post("/api/music/playlists")
