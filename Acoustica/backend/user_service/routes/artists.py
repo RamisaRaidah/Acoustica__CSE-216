@@ -16,9 +16,9 @@ def health():
     return jsonify("artists")
 
 @artists_bp.get("/api/artists/me/dashboard")
-def get_dashboard():
+def get_dashboard_route():
     return jsonify("get_dashboard")
 
 @artists_bp.get("/api/artists/me")
-def get_profile():
+def get_profile_route():
     return jsonify("get_profile")
