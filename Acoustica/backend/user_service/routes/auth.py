@@ -16,17 +16,17 @@ def health():
     return jsonify("auth")
 
 @auth_bp.post("/api/auth/sign-up")
-def sign_up():
+def sign_up_route():
     return jsonify("sign_up")
 
 @auth_bp.post("/api/auth/sign-in")
-def sign_in():
+def sign_in_route():
     return jsonify("sign_in")
 
 @auth_bp.post("/api/auth/sign-out")
-def sign_out():
+def sign_out_route():
     return jsonify("sign_out")
 
 @auth_bp.post("/api/auth/refresh")
-def refresh():
+def refresh_route():
     return jsonify("refresh")
