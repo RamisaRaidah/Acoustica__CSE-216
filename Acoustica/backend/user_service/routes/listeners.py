@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
-from dotenv import load_dotenv
-from db import execute_sql
 import logging
 
-load_dotenv()
+from user_service.services import listeners
 
 logging.basicConfig(
     filename = "app.log",
@@ -11,36 +9,36 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-listeners = Blueprint("listeners", __name__) 
+listeners_bp = Blueprint("listeners", __name__) 
 
-@listeners.get("/api/listeners/health")
+@listeners_bp.get("/api/listeners/health")
 def health():
     return jsonify("listeners")
 
-@listeners.get("/api/listeners/me/dashboard")
+@listeners_bp.get("/api/listeners/me/dashboard")
 def get_dashboard():
     return jsonify("get_dashboard")
 
-@listeners.get("/api/listeners/me")
+@listeners_bp.get("/api/listeners/me")
 def get_profile():
     return jsonify("get_profile")
 
-@listeners.get("/api/listeners/me/stream-history")
+@listeners_bp.get("/api/listeners/me/stream-history")
 def get_stream_history():
     return jsonify("get_stream_history")
 
-@listeners.post("/api/listeners/me/liked-songs/<song_id>")
+@listeners_bp.post("/api/listeners/me/liked-songs/<song_id>")
 def add_liked_song(song_id):
     return jsonify(f"add_liked_song {song_id}")
 
-@listeners.get("/api/listeners/me/liked-songs")
+@listeners_bp.get("/api/listeners/me/liked-songs")
 def get_liked_songs():
     return jsonify("get_liked_songs")
 
-@listeners.post("/api/listeners/me/followed-artists/<artist_id>")
+@listeners_bp.post("/api/listeners/me/followed-artists/<artist_id>")
 def add_followed_artist(artist_id):
     return jsonify(f"add_followed_artist {artist_id}")
 
-@listeners.get("/api/listeners/me/followed-artists")
+@listeners_bp.get("/api/listeners/me/followed-artists")
 def get_followed_artists():
     return jsonify("get_followed_artists")

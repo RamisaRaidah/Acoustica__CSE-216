@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
-from dotenv import load_dotenv
-from db import execute_sql
 import logging
 
-load_dotenv()
+from music_service.services import songs
 
 logging.basicConfig(
     filename = "app.log",
@@ -11,28 +9,28 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-songs = Blueprint("songs", __name__) 
+songs_bp = Blueprint("songs", __name__) 
 
-@songs.get("/api/songs/health")
+@songs_bp.get("/api/songs/health")
 def health():
     return jsonify("songs")
 
-@songs.post("/api/music/songs")
+@songs_bp.post("/api/music/songs")
 def upload_song():
     return jsonify("upload_song")
 
-@songs.get("/api/music/songs/<song_id>")
+@songs_bp.get("/api/music/songs/<song_id>")
 def get_song_details(song_id):
     return jsonify(f"get_song_details {song_id}")
 
-@songs.put("/api/music/songs/<song_id>")
+@songs_bp.put("/api/music/songs/<song_id>")
 def edit_song(song_id):
     return jsonify(f"edit_song {song_id}")
 
-@songs.delete("/api/music/songs/<song_id>")
+@songs_bp.delete("/api/music/songs/<song_id>")
 def delete_song(song_id):
     return jsonify(f"delete_song {song_id}")
 
-@songs.get("/api/music/songs/<song_id>/audio")
+@songs_bp.get("/api/music/songs/<song_id>/audio")
 def play_song(song_id):
     return jsonify(f"play_song {song_id}")

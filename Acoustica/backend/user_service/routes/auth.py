@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
-from dotenv import load_dotenv
-from db import execute_sql
 import logging
 
-load_dotenv()
+from user_service.services import auth
 
 logging.basicConfig(
     filename = "app.log",
@@ -11,24 +9,24 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-auth = Blueprint("auth", __name__) 
+auth_bp = Blueprint("auth", __name__) 
 
-@auth.get("/api/auth/health")
+@auth_bp.get("/api/auth/health")
 def health():
     return jsonify("auth")
 
-@auth.post("/api/auth/sign-up")
+@auth_bp.post("/api/auth/sign-up")
 def sign_up():
     return jsonify("sign_up")
 
-@auth.post("/api/auth/sign-in")
+@auth_bp.post("/api/auth/sign-in")
 def sign_in():
     return jsonify("sign_in")
 
-@auth.post("/api/auth/sign-out")
+@auth_bp.post("/api/auth/sign-out")
 def sign_out():
     return jsonify("sign_out")
 
-@auth.post("/api/auth/refresh")
+@auth_bp.post("/api/auth/refresh")
 def refresh():
     return jsonify("refresh")

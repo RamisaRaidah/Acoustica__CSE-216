@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
-from dotenv import load_dotenv
-from db import execute_sql
 import logging
 
-load_dotenv()
+from commerce_service.services import shop
 
 logging.basicConfig(
     filename = "app.log",
@@ -11,60 +9,60 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-shop = Blueprint("shop", __name__) 
+shop_bp = Blueprint("shop", __name__) 
 
-@shop.get("/api/shop/health")
+@shop_bp.get("/api/shop/health")
 def health():
     return jsonify("shop")
 
-@shop.post("/api/shop")
+@shop_bp.post("/api/shop")
 def add_product():
     return jsonify("add_product")
 
-@shop.get("/api/shop")
+@shop_bp.get("/api/shop")
 def get_products():
     return jsonify("get_products")
 
-@shop.get("/api/shop/<product_id>")
+@shop_bp.get("/api/shop/<product_id>")
 def get_product_details(product_id):
     return jsonify(f"get_product_details {product_id}")
 
-@shop.put("/api/shop/<product_id>")
+@shop_bp.put("/api/shop/<product_id>")
 def edit_product(product_id):
     return jsonify(f"edit_product {product_id}")
 
-@shop.delete("/api/shop/<product_id>")
+@shop_bp.delete("/api/shop/<product_id>")
 def remove_product(product_id):
     return jsonify(f"remove_product {product_id}")
 
-@shop.get("/api/shop/search")
+@shop_bp.get("/api/shop/search")
 def search_product():
     return jsonify("search_product")
 
-@shop.get("/api/shop/carts/<cart_id>")
+@shop_bp.get("/api/shop/carts/<cart_id>")
 def get_cart_details(cart_id):
     return jsonify(f"get_cart_details {cart_id}")
 
-@shop.post("/api/shop/carts/<cart_id>/items/<product_id>")
+@shop_bp.post("/api/shop/carts/<cart_id>/items/<product_id>")
 def add_product_to_cart(cart_id,product_id):
     return jsonify(f"add_product_to_cart {cart_id} {product_id}")
 
-@shop.delete("/api/shop/carts/<cart_id>/items/<product_id>")
+@shop_bp.delete("/api/shop/carts/<cart_id>/items/<product_id>")
 def remove_product_from_cart(cart_id,product_id):
     return jsonify(f"remove_product_from_cart {cart_id} {product_id}")
 
-@shop.post("/api/shop/carts/<cart_id>/checkout")
+@shop_bp.post("/api/shop/carts/<cart_id>/checkout")
 def checkout(cart_id):
     return jsonify(f"checkout {cart_id}")
 
-@shop.get("/api/shop/orders/<cart_id>")
+@shop_bp.get("/api/shop/orders/<cart_id>")
 def get_order_details(cart_id):
     return jsonify(f"get_order_details {cart_id}")
 
-@shop.get("/api/shop/orders/me")
+@shop_bp.get("/api/shop/orders/me")
 def get_order_history():
     return jsonify("get_order_history")
 
-@shop.get("/api/shop/orders")
+@shop_bp.get("/api/shop/orders")
 def get_orders():
     return jsonify("get_orders")

@@ -1,9 +1,7 @@
 from flask import Blueprint, jsonify
-from dotenv import load_dotenv
-from db import execute_sql
 import logging
 
-load_dotenv()
+from user_service.services import artists
 
 logging.basicConfig(
     filename = "app.log",
@@ -11,16 +9,16 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-admins = Blueprint("admins", __name__) 
+artists_bp = Blueprint("artists", __name__)
 
-@admins.get("/api/admins/health")
+@artists_bp.get("/api/artists/health")
 def health():
-    return jsonify("admins")
+    return jsonify("artists")
 
-@admins.get("/api/admins/me/dashboard")
+@artists_bp.get("/api/artists/me/dashboard")
 def get_dashboard():
     return jsonify("get_dashboard")
 
-@admins.get("/api/admins/me")
+@artists_bp.get("/api/artists/me")
 def get_profile():
     return jsonify("get_profile")

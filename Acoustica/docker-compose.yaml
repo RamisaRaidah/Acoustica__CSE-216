@@ -27,6 +27,8 @@ services:
       - .env
     depends_on:
       - acoustica_db
+    volumes:
+      - ./app.log:/backend/app.log
 
   frontend:
     build: ./frontend

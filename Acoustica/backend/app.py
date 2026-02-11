@@ -4,13 +4,11 @@ from db import init_db
 from flask_cors import CORS
 import logging
 
-# import the blueprints
-from user_service import auth, users, listeners, artists, admins
-from music_service import songs, albums, playlists
-from commerce_service import subscriptions, transactions, shop
-from social_service import activities,posts,social
-from analytics_service import analytics
-
+from user_service.routes import auth, users, listeners, artists, admins
+from music_service.routes import songs, albums, playlists
+from commerce_service.routes import subscriptions, transactions, shop
+from social_service.routes import activities, posts, social
+from analytics_service.routes import analytics
 
 load_dotenv()
 
@@ -23,22 +21,21 @@ logging.basicConfig(
 app = Flask(__name__)
 CORS(app)
 
-# register the blueprints
-app.register_blueprint(activities.activities)
-app.register_blueprint(admins.admins)
-app.register_blueprint(albums.albums)
-app.register_blueprint(analytics.analytics)
-app.register_blueprint(artists.artists)
-app.register_blueprint(auth.auth)
-app.register_blueprint(listeners.listeners)
-app.register_blueprint(playlists.playlists)
-app.register_blueprint(posts.posts)
-app.register_blueprint(shop.shop)
-app.register_blueprint(social.social)
-app.register_blueprint(songs.songs)
-app.register_blueprint(subscriptions.subscriptions)
-app.register_blueprint(transactions.transactions)
-app.register_blueprint(users.users)
+app.register_blueprint(activities.activities_bp)
+app.register_blueprint(admins.admins_bp)
+app.register_blueprint(albums.albums_bp)
+app.register_blueprint(analytics.analytics_bp)
+app.register_blueprint(artists.artists_bp)
+app.register_blueprint(auth.auth_bp)
+app.register_blueprint(listeners.listeners_bp)
+app.register_blueprint(playlists.playlists_bp)
+app.register_blueprint(posts.posts_bp)
+app.register_blueprint(shop.shop_bp)
+app.register_blueprint(social.social_bp)
+app.register_blueprint(songs.songs_bp)
+app.register_blueprint(subscriptions.subscriptions_bp)
+app.register_blueprint(transactions.transactions_bp)
+app.register_blueprint(users.users_bp)
 
 @app.route("/")
 def home():
