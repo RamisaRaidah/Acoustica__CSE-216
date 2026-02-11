@@ -5,7 +5,12 @@ from flask_cors import CORS
 import logging
 
 # import the blueprints
-from routes import activities, admins, albums, analytics, artists, auth, listeners, playlists, posts, shop, social, songs, subscriptions, transactions, users
+from routes.user_service import auth, users, listeners, artists, admins
+from routes.music_service import songs, albums, playlists
+from routes.commerce_service import subscriptions, transactions, shop
+from routes.social_service import activities,posts,social
+from routes.analytics_service import analytics
+
 
 load_dotenv()
 
