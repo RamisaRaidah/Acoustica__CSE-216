@@ -13,7 +13,7 @@ logging.basicConfig(
 
 users = Blueprint("users", __name__) 
 
-@users.get("/users")
+@users.get("/api/users/health")
 def health():
     return jsonify("users")
 
@@ -24,6 +24,18 @@ def update_account():
 @users.delete("/api/users/me")
 def delete_account():
     return jsonify("delete_account")
+
+@users.get("/api/users")
+def get_user_list():
+    return jsonify("get_user_list")
+
+@users.get("/api/users/<user_id>")
+def get_user_account(user_id):
+    return jsonify(f"get_user_account {user_id}")
+
+@users.get("/api/users/<user_id>/profile")
+def get_user_profile(user_id):
+    return jsonify(f"get_user_profile {user_id}")
 
 @users.patch("/api/users/me/settings/app-mode")
 def set_app_mode():
@@ -56,15 +68,3 @@ def add_user_badge(user_id):
 @users.get("/api/users/<user_id>/badges")
 def get_user_badges(user_id):
     return jsonify(f"get_user_badges {user_id}")
-
-@users.get("/api/users")
-def get_user_list():
-    return jsonify("get_user_list")
-
-@users.get("/api/users/<user_id>")
-def get_user_account(user_id):
-    return jsonify(f"get_user_account {user_id}")
-
-@users.get("/api/users/<user_id>/profile")
-def get_user_profile(user_id):
-    return jsonify(f"get_user_profile {user_id}")

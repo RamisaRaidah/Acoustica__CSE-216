@@ -13,7 +13,7 @@ logging.basicConfig(
 
 admins = Blueprint("admins", __name__) 
 
-@admins.get("/admins")
+@admins.get("/api/admins/health")
 def health():
     return jsonify("admins")
 

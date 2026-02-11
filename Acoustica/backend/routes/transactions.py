@@ -13,17 +13,13 @@ logging.basicConfig(
 
 transactions = Blueprint("transactions", __name__) 
 
-@transactions.get("/transactions")
+@transactions.get("/api/transactions/health")
 def health():
     return jsonify("transactions")
 
 @transactions.post("/api/transactions/payment")
 def payment_transaction():
     return jsonify("payment_transaction")
-
-@transactions.get("/api/transactions/me/history")
-def get_transaction_history():
-    return jsonify("get_transaction_history")
 
 @transactions.get("/api/transactions/<transaction_id>")
 def get_transaction_details(transaction_id):

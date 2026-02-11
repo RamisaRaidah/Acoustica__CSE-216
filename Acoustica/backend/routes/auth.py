@@ -13,7 +13,7 @@ logging.basicConfig(
 
 auth = Blueprint("auth", __name__) 
 
-@auth.get("/auth")
+@auth.get("/api/auth/health")
 def health():
     return jsonify("auth")
 

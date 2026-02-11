@@ -13,6 +13,6 @@ logging.basicConfig(
 
 demo = Blueprint("demo", __name__) # set the blueprint name and add the blueprint to app.py
 
-@demo.route("/demo")
+@demo.route("/api/demo/health")
 def demo_home():
     return jsonify("demo")

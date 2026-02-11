@@ -13,7 +13,7 @@ logging.basicConfig(
 
 shop = Blueprint("shop", __name__) 
 
-@shop.get("/shop")
+@shop.get("/api/shop/health")
 def health():
     return jsonify("shop")
 
@@ -37,9 +37,13 @@ def edit_product(product_id):
 def remove_product(product_id):
     return jsonify(f"remove_product {product_id}")
 
+@shop.get("/api/shop/search")
+def search_product():
+    return jsonify("search_product")
+
 @shop.get("/api/shop/carts/<cart_id>")
-def view_cart(cart_id):
-    return jsonify(f"view_cart {cart_id}")
+def get_cart_details(cart_id):
+    return jsonify(f"get_cart_details {cart_id}")
 
 @shop.post("/api/shop/carts/<cart_id>/items/<product_id>")
 def add_product_to_cart(cart_id,product_id):
@@ -53,17 +57,13 @@ def remove_product_from_cart(cart_id,product_id):
 def checkout(cart_id):
     return jsonify(f"checkout {cart_id}")
 
-@shop.get("/api/shop/search")
-def search_product():
-    return jsonify("search_product")
+@shop.get("/api/shop/orders/<cart_id>")
+def get_order_details(cart_id):
+    return jsonify(f"get_order_details {cart_id}")
 
 @shop.get("/api/shop/orders/me")
 def get_order_history():
     return jsonify("get_order_history")
-
-@shop.get("/api/shop/orders/<cart_id>")
-def get_order_details(cart_id):
-    return jsonify(f"get_order_details {cart_id}")
 
 @shop.get("/api/shop/orders")
 def get_orders():

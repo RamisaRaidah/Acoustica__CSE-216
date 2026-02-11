@@ -13,7 +13,7 @@ logging.basicConfig(
 
 activities = Blueprint("activities", __name__) 
 
-@activities.get("/activities")
+@activities.get("/api/activities/health")
 def health():
     return jsonify("activities")
 

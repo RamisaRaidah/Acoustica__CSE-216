@@ -13,7 +13,7 @@ logging.basicConfig(
 
 songs = Blueprint("songs", __name__) 
 
-@songs.get("/songs")
+@songs.get("/api/songs/health")
 def health():
     return jsonify("songs")
 
