@@ -16,9 +16,9 @@ def health():
     return jsonify("admins")
 
 @admins_bp.get("/api/admins/me/dashboard")
-def get_dashboard():
+def get_dashboard_route():
     return jsonify("get_dashboard")
 
 @admins_bp.get("/api/admins/me")
-def get_profile():
+def get_profile_route():
     return jsonify("get_profile")

@@ -16,21 +16,21 @@ def health():
     return jsonify("songs")
 
 @songs_bp.post("/api/music/songs")
-def upload_song():
+def upload_song_route():
     return jsonify("upload_song")
 
 @songs_bp.get("/api/music/songs/<song_id>")
-def get_song_details(song_id):
+def get_song_details_route(song_id):
     return jsonify(f"get_song_details {song_id}")
 
 @songs_bp.put("/api/music/songs/<song_id>")
-def edit_song(song_id):
+def edit_song_route(song_id):
     return jsonify(f"edit_song {song_id}")
 
 @songs_bp.delete("/api/music/songs/<song_id>")
-def delete_song(song_id):
+def delete_song_route(song_id):
     return jsonify(f"delete_song {song_id}")
 
 @songs_bp.get("/api/music/songs/<song_id>/audio")
-def play_song(song_id):
+def play_song_route(song_id):
     return jsonify(f"play_song {song_id}")

@@ -16,13 +16,13 @@ def health():
     return jsonify("activities")
 
 @activities_bp.post("/api/activities/email")
-def send_email():
+def send_email_route():
     return jsonify("send_email")
 
 @activities_bp.get("/api/activities/cheer")
-def cheer():
+def cheer_route():
     return jsonify("cheer")
 
 @activities_bp.delete("/api/assets/<asset_id>")
-def ban_asset(asset_id):
+def ban_asset_route(asset_id):
     return jsonify(f"ban_asset {asset_id}")
