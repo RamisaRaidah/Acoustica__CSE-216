@@ -11,16 +11,6 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
-
-def hash_password(password: str) -> str:
-    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-    return hashed.decode("utf-8")
-
-def check_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
-
-
-
 def sign_up(data):
     email = data.get("email")
     password = data.get("password")
@@ -70,7 +60,10 @@ def sign_in(email, password):
     if not check_password(password, user["password"]):
         return {"error": "Invalid credentials"}, 401
 
-    access_token = create_access_token(identity={"user_id": user["user_id"], "user_type": user["user_type"]})
+    access_token = create_access_token(
+        identity=str(user["user_id"]), 
+        additional_claims={"user_type": user["user_type"]}
+    )
     return {"message": "Login successful", "token": access_token, "user_id": user["user_id"], "user_type": user["user_type"]}, 200
 
 
@@ -82,4 +75,11 @@ def refresh(user_identity):
     return {"message": "Token refreshed", "token": access_token}, 200
 
 ### Helper functions ###
+
+def hash_password(password: str) -> str:
+    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    return hashed.decode("utf-8")
+
+def check_password(password: str, hashed: str) -> bool:
+    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
 

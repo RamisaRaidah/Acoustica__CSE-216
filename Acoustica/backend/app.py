@@ -13,6 +13,9 @@ from commerce_service.routes import subscriptions, transactions, shop
 from social_service.routes import activities, posts, social
 from analytics_service.routes import analytics
 
+from Test_Shanon.routes import test_shanon
+from Test_Arana.routes import test_arana
+
 load_dotenv()
 
 logging.basicConfig(
@@ -24,12 +27,10 @@ logging.basicConfig(
 app = Flask(__name__)
 CORS(app)
 
-
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET", "replace_with_secure_secret")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 86400
 
 jwt = JWTManager(app)
-
 
 app.register_blueprint(activities.activities_bp)
 app.register_blueprint(admins.admins_bp)
@@ -47,7 +48,8 @@ app.register_blueprint(subscriptions.subscriptions_bp)
 app.register_blueprint(transactions.transactions_bp)
 app.register_blueprint(users.users_bp)
 
-
+app.register_blueprint(test_shanon.test_shanon_bp)
+app.register_blueprint(test_arana.test_arana_bp)
 
 @app.route("/")
 def home():

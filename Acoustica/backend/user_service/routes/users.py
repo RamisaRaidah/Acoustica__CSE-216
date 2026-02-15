@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import logging
 
 from user_service.services import users
@@ -20,7 +20,9 @@ def health():
 @jwt_required()
 def get_me():
     identity=get_jwt_identity()
-    return jsonify(identity)
+    claims=get_jwt()
+    user_type=claims["user_type"]
+    return jsonify({"user_id":identity, "user_type":user_type})
 
 @users_bp.put("/api/users/me")
 def update_account_route():

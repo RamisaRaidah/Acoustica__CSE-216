@@ -5,5 +5,5 @@ python-dotenv==1.0.1
 sqlparse==0.5.3
 pytest==7.4.0
 flask-cors
-Flask-JWT-Extended
-bcrypt
+Flask-JWT-Extended==4.7.1
+bcrypt==5.0.0
