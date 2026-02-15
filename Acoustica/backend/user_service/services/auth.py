@@ -18,3 +18,5 @@ def sign_out():
 
 def refresh():
     return ("refresh")
+
+### Helper functions ###

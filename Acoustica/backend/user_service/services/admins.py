@@ -12,3 +12,5 @@ def get_dashboard():
 
 def get_profile():
     return ("get_profile")
+
+### Helper functions ###

@@ -21,3 +21,5 @@ def delete_song(song_id):
 
 def play_song(song_id):
     return (f"play_song {song_id}")
+
+### Helper functions ###

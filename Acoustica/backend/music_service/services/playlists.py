@@ -27,3 +27,5 @@ def remove_song_from_playlist(playlist_id,song_id):
 
 def set_playlist_visibility(playlist_id):
     return (f"set_playlist_visibility {playlist_id}")
+
+### Helper functions ###

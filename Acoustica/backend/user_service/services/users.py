@@ -45,3 +45,5 @@ def add_user_badge(user_id):
 
 def get_user_badges(user_id):
     return (f"get_user_badges {user_id}")
+
+### Helper functions ###

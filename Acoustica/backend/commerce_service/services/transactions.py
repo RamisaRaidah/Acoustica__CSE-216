@@ -16,3 +16,4 @@ def get_transaction_details(transaction_id):
 def refund(transaction_id):
     return (f"refund {transaction_id}")
 
+### Helper functions ###

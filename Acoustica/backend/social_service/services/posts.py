@@ -48,3 +48,5 @@ def get_approval_requests(approval_request_id):
 
 def handle_approval_request(approval_request_id):
     return (f"handle_approval_request {approval_request_id}")
+
+### Helper functions ###

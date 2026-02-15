@@ -24,3 +24,5 @@ def add_song_to_album(album_id,song_id):
 
 def remove_song_from_album(album_id,song_id):
     return (f"remove_song_from_album {album_id} {song_id}")
+
+### Helper functions ###

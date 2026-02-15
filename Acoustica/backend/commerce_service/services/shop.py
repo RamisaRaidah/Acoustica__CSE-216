@@ -45,3 +45,5 @@ def get_order_history():
 
 def get_orders():
     return ("get_orders")
+
+### Helper functions ###

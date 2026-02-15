@@ -27,3 +27,5 @@ def add_followed_artist(artist_id):
 
 def get_followed_artists():
     return ("get_followed_artists")
+
+### Helper functions ###
