@@ -37,5 +37,5 @@ def sign_out_route():
 @jwt_required()
 def refresh_route():
     identity=get_jwt_identity()
-    result,status=auth.refresh(identity);
+    result,status=auth.refresh(identity)
     return jsonify(result),status
