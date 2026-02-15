@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
 from dotenv import load_dotenv
 from db import init_db
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import logging
+import os
+
 
 from user_service.routes import auth, users, listeners, artists, admins
 from music_service.routes import songs, albums, playlists
@@ -21,6 +24,13 @@ logging.basicConfig(
 app = Flask(__name__)
 CORS(app)
 
+
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET", "replace_with_secure_secret")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 86400
+
+jwt = JWTManager(app)
+
+
 app.register_blueprint(activities.activities_bp)
 app.register_blueprint(admins.admins_bp)
 app.register_blueprint(albums.albums_bp)
@@ -36,6 +46,8 @@ app.register_blueprint(songs.songs_bp)
 app.register_blueprint(subscriptions.subscriptions_bp)
 app.register_blueprint(transactions.transactions_bp)
 app.register_blueprint(users.users_bp)
+
+
 
 @app.route("/")
 def home():
