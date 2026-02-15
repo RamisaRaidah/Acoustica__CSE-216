@@ -21,3 +21,5 @@ def delete_subscription(subscription_id):
 
 def set_auto_renewal(subscription_id):
     return (f"set_auto_renewal {subscription_id}")
+
+### Helper functions ###

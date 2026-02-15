@@ -36,3 +36,5 @@ def get_artist_sales_stats(artist_id):
 
 def get_family_analytics(family_id):
     return (f"get_family_analytics {family_id}")
+
+### Helper functions ###

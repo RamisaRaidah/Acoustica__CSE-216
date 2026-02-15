@@ -54,3 +54,5 @@ def get_family_shared_contents(family_id):
 
 def remove_family_shared_content(family_id, family_share_id):
     return (f"remove_family_shared_content {family_id} {family_share_id}")
+
+### Helper functions ###

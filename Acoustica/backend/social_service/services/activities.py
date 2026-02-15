@@ -15,3 +15,5 @@ def cheer():
 
 def ban_asset(asset_id):
     return (f"ban_asset {asset_id}")
+
+### Helper functions ###
