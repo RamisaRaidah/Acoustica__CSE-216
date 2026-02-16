@@ -1,9 +1,8 @@
 import { API_BASE_URL } from './config.js';
 
 class ApiService {
-
-    async request(endpoint, options = {}){
-    try{
+    async request(endpoint, options = {}) {
+    try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -39,6 +38,5 @@ class ApiService {
     });
   }
 }
-
 
 export default new ApiService();

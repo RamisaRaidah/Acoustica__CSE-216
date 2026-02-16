@@ -21,7 +21,8 @@ def upload_song_route():
 
 @songs_bp.get("/api/music/songs/<song_id>")
 def get_song_details_route(song_id):
-    return jsonify(f"get_song_details {song_id}")
+    result, status = songs.get_song_details(song_id)
+    return jsonify(result),status
 
 @songs_bp.put("/api/music/songs/<song_id>")
 def edit_song_route(song_id):
@@ -32,5 +33,6 @@ def delete_song_route(song_id):
     return jsonify(f"delete_song {song_id}")
 
 @songs_bp.get("/api/music/songs/<song_id>/audio")
-def play_song_route(song_id):
+def get_song_audio_route(song_id):
+    result, status = songs.get_song_audio(song_id)
     return jsonify(f"play_song {song_id}")
