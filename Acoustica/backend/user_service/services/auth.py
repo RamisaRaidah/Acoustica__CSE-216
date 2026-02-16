@@ -11,6 +11,7 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(message)s"
 )
 
+# sign_up
 def sign_up(data):
     email = data.get("email")
     password = data.get("password")
@@ -34,7 +35,6 @@ def sign_up(data):
         VALUES (%s, %s, %s, %s, %s)
         RETURNING user_id, user_type
     """
-
     try:
         result = execute_sql(sql, (email, hashed_password, first_name, last_name, user_type), fetch_all=True)
         if not result:
@@ -47,6 +47,7 @@ def sign_up(data):
         logging.error(f"Exception during sign-up for email {email}: {e}", exc_info=True)
         return {"error": "An unexpected error occurred"}, 500
 
+# sign_in
 def sign_in(email, password):
     if not email or not password:
         return {"error": "Email and password required"}, 400
@@ -66,13 +67,16 @@ def sign_in(email, password):
     )
     return {"message": "Login successful", "token": access_token, "user_id": user["user_id"], "user_type": user["user_type"]}, 200
 
-
+# sign_out
 def sign_out():
     return {"message": "Sign-out: delete token client-side"}, 200
 
+# refresh
 def refresh(user_identity):
     access_token = create_access_token(identity=user_identity)
     return {"message": "Token refreshed", "token": access_token}, 200
+
+
 
 ### Helper functions ###
 

@@ -27,7 +27,7 @@ logging.basicConfig(
 app = Flask(__name__)
 CORS(app)
 
-app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET", "replace_with_secure_secret")
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET", "1e8596e9d73012511980a415f59d0a3c7fcdb9a30d5d74e8cfc965d916cb2bae")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 86400
 
 jwt = JWTManager(app)
