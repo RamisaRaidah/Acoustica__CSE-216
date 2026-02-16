@@ -1,12 +1,13 @@
 from flask import Blueprint, jsonify
 import logging
+import sys
 
 from user_service.services import listeners
 
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 listeners_bp = Blueprint("listeners", __name__) 

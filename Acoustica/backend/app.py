@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import logging
 import os
+import sys
 
 
 from user_service.routes import auth, users, listeners, artists, admins
@@ -18,17 +19,20 @@ from Test_Arana.routes import test_arana
 
 load_dotenv()
 
+
 logging.basicConfig(
-    filename = "app.log",
-    level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
+
+logging.info("This is a test log")
 
 app = Flask(__name__)
 CORS(app)
 
-app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET", "1e8596e9d73012511980a415f59d0a3c7fcdb9a30d5d74e8cfc965d916cb2bae")
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 86400
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = int(os.environ["JWT_ACCESS_TOKEN_EXPIRES"])
 
 jwt = JWTManager(app)
 

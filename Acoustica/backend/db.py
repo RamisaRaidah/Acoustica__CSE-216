@@ -4,19 +4,35 @@ import os
 from dotenv import load_dotenv
 import logging
 import sqlparse
+import urllib.parse as up
+import sys
 
 load_dotenv()
 
 logging.basicConfig(
-    filename = "app.log",
-    level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
+
 
 def get_db_connection():
     try:
-        if os.environ.get("DATABASE_URL"):
-            connection = psycopg2.connect(os.environ["DATABASE_URL"])
+        database_url = os.environ.get("DATABASE_URL")
+        if database_url:
+            # For docker database
+            # connection = psycopg2.connect(database_url)
+
+            #For supabase database
+            result=up.urlparse(database_url)
+            connection=psycopg2.connect(
+                dbname=result.path[1:],
+                user=result.username,
+                password=result.password,
+                host=result.hostname,
+                port=result.port,
+                sslmode="require"
+            )
         else:
             connection = psycopg2.connect(
                 host=os.environ["DB_HOST"],

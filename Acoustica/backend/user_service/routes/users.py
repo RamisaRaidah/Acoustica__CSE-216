@@ -1,13 +1,15 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import logging
+import sys
 
 from user_service.services import users
 
 logging.basicConfig(
     filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 users_bp = Blueprint("users", __name__) 

@@ -1,10 +1,11 @@
 from db import execute_sql
 import logging
+import sys
 
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 def add_product():

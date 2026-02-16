@@ -1,13 +1,14 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
+import sys
 
 from user_service.services import auth
 
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 auth_bp = Blueprint("auth", __name__) 

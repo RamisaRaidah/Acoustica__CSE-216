@@ -3,12 +3,12 @@ import logging
 from db import execute_sql
 import bcrypt
 from flask_jwt_extended import create_access_token
-
+import sys
 
 logging.basicConfig(
-    filename = "app.log",
-    level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 # sign_up
@@ -22,8 +22,8 @@ def sign_up(data):
     if not email or not password:
         return {"error": "Email and password required"}, 400
     
-    check_sql = "SELECT user_id FROM users WHERE email=%s"
-    existing = execute_sql(check_sql, (email,), fetch_all=True)
+    check_sql = """SELECT user_id FROM public.users WHERE email=%s"""
+    existing = execute_sql(check_sql, (email,), fetch_one=True)
 
     if existing:
         return {"error": "Email already exists"}, 409
@@ -31,21 +31,23 @@ def sign_up(data):
     hashed_password = hash_password(password)
 
     sql="""
-        INSERT INTO users (email, "password", first_name, last_name, user_type)
+        INSERT INTO users (email, password, first_name, last_name, user_type)
         VALUES (%s, %s, %s, %s, %s)
         RETURNING user_id, user_type
     """
     try:
-        result = execute_sql(sql, (email, hashed_password, first_name, last_name, user_type), fetch_all=True)
+        result = execute_sql(sql, (email, hashed_password, first_name, last_name, user_type), fetch_one=True)
+        print(f"Insert result: {result}")
         if not result:
             logging.error(f"Sign-up failed for email: {email}")
-            return {"error": "Signup failed"}, 400
+            return {"error": "Signup failed {result}"}, 400
 
-        return {"message": "Signup successful", "user_id": result[0]["user_id"], "user_type": result[0]["user_type"]}, 201
+
+        return {"message": "Signup successful", "user_id": result["user_id"], "user_type": result["user_type"]}, 201
 
     except Exception as e:
-        logging.error(f"Exception during sign-up for email {email}: {e}", exc_info=True)
-        return {"error": "An unexpected error occurred"}, 500
+        print(f"Exception during sign-up for email {email}")
+        return {"error": str(e)}, 500
 
 # sign_in
 def sign_in(email, password):

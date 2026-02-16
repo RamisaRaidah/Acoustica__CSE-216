@@ -1,12 +1,13 @@
 from flask import Blueprint, jsonify
 import logging
+import sys
 
 from Test_Shanon.services import test_shanon
 
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 test_shanon_bp = Blueprint("test_shanon", __name__)

@@ -1,12 +1,13 @@
 from flask import Blueprint, jsonify
 import logging
+import sys
 
 from social_service.services import activities
 
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 activities_bp = Blueprint("activities", __name__) 

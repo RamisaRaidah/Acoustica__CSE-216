@@ -27,6 +27,8 @@ services:
       - .env
     volumes:
       - ./app.log:/backend/app.log
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1 
 
   frontend:
     build: ./frontend

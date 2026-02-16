@@ -1,12 +1,13 @@
 from flask import Blueprint, jsonify
 import logging
+import sys
 
 from Test_Arana.services import test_arana
 
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 test_arana_bp = Blueprint("test_arana", __name__)
