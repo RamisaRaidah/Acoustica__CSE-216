@@ -1,23 +1,23 @@
 version: "3.9"
 
 services:
-  # acoustica_db:
-  #     image: postgres:15
-  #     container_name: acoustica_db
-  #     environment:
-  #       POSTGRES_USER: ${DB_USER}
-  #       POSTGRES_PASSWORD: ${DB_PASSWORD}
-  #       POSTGRES_DB: ${DB_NAME}
-  #     volumes:
-  #       - ./database/db_schema.sql:/docker-entrypoint-initdb.d/db_schema.sql
-  #     ports:
-  #       - "5432:5432"
+  acoustica_db:
+      image: postgres:15
+      container_name: acoustica_db
+      environment:
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_NAME}
+      volumes:
+        - ./database/db_schema.sql:/docker-entrypoint-initdb.d/db_schema.sql
+      ports:
+        - "5432:5432"
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
   backend:
     build: ./backend

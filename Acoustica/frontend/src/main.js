@@ -7,7 +7,7 @@ import { renderMusic } from './pages/music_player/music_player.js';
 router.register('/', renderHome);
 router.register('/home', renderHome);
 router.register('/assets', renderAssets);
-router.register('/music', renderMusic);
+router.register('/music/songs/{id}', renderMusic);
 
 
 document.addEventListener('click', (e) => {

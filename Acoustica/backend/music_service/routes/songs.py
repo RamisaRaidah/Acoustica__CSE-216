@@ -36,4 +36,4 @@ def delete_song_route(song_id):
 @songs_bp.get("/api/music/songs/<song_id>/audio")
 def get_song_audio_route(song_id):
     result, status = songs.get_song_audio(song_id)
-    return jsonify(f"play_song {song_id}")
+    return jsonify(result), status

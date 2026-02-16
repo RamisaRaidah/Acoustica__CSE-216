@@ -13,12 +13,12 @@ from music_service.routes import songs, albums, playlists
 from commerce_service.routes import subscriptions, transactions, shop
 from social_service.routes import activities, posts, social
 from analytics_service.routes import analytics
+from storage_service.routes import storage
 
 from Test_Shanon.routes import test_shanon
 from Test_Arana.routes import test_arana
 
 load_dotenv()
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -51,6 +51,7 @@ app.register_blueprint(songs.songs_bp)
 app.register_blueprint(subscriptions.subscriptions_bp)
 app.register_blueprint(transactions.transactions_bp)
 app.register_blueprint(users.users_bp)
+app.register_blueprint(storage.storage_bp)
 
 app.register_blueprint(test_shanon.test_shanon_bp)
 app.register_blueprint(test_arana.test_arana_bp)

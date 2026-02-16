@@ -404,7 +404,7 @@ INSERT INTO friend_request (sender_id, receiver_id, "status") VALUES (1, 1, 'pen
 -- 5. Albums and songs
 INSERT INTO album (asset_id, title, release_date) VALUES (2, 'My Album', CURRENT_DATE);
 INSERT INTO song (asset_id, title, album_id, owner_id, language_id, "length") VALUES 
-(1, 'My Song', 1, 2, 1, 180);
+(1, 'Aadat', 1, 2, 1, 180);
 
 -- 6. Playlists
 INSERT INTO playlist (asset_id, title, creator_id, "visibility") VALUES (3, 'My Playlist', 1, 'public');
