@@ -1,12 +1,14 @@
 from flask import Blueprint, jsonify
 import logging
+import sys
 
 from music_service.services import albums
 
+
 logging.basicConfig(
-    filename = "app.log",
     level = logging.INFO,
-    format = "%(asctime)s [%(levelname)s] %(message)s"
+    format = "%(asctime)s [%(levelname)s] %(message)s",
+    stream=sys.stdout
 )
 
 albums_bp = Blueprint("albums", __name__) 
