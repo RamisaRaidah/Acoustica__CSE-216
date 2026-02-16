@@ -5,9 +5,7 @@ export async function renderHome() {
   const navbarContainer = document.getElementById('navbar');
   const contentContainer = document.getElementById('content');
   
-
   navbarContainer.innerHTML = createNavbar('home');
-  
   contentContainer.innerHTML = '<p class="loading">Loading Acoustica Engine...</p>';
 
   try {
