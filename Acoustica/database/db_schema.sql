@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS "instrument" (
 
 CREATE TABLE IF NOT EXISTS "asset" (
   asset_id SERIAL CONSTRAINT pk_asset PRIMARY KEY,
-  asset_type TEXT CONSTRAINT uq_asset_type UNIQUE NOT NULL
+  asset_type TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "users" (
