@@ -20,5 +20,5 @@ document.addEventListener('click', (e) => {
 });
 
 router.init();
-// loadSidebar();
-loadTopbar();
+loadSidebar();
+// loadTopbar();
