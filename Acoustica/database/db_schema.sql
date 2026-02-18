@@ -8,6 +8,7 @@ CREATE TYPE payment_method_enum AS ENUM ('bank', 'COD', 'card', 'online');
 CREATE TYPE auto_renew_enum AS ENUM ('on', 'off');
 CREATE TYPE app_mode_enum AS ENUM ('light', 'dark');
 CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
+CREATE TYPE asset_type_enum AS ENUM ('user','song','playlist','album','product','report');
 
 
 CREATE TABLE IF NOT EXISTS "country" (
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS "instrument" (
 
 CREATE TABLE IF NOT EXISTS "asset" (
   asset_id SERIAL CONSTRAINT pk_asset PRIMARY KEY,
-  asset_type TEXT NOT NULL
+  asset_type asset_type_enum NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "users" (
@@ -356,7 +357,7 @@ CREATE TABLE IF NOT EXISTS "admin_activity_log" (
 );
 
 CREATE TABLE IF NOT EXISTS "notification" (
-  notification_id INT CONSTRAINT pk_notification PRIMARY KEY,
+  notification_id SERIAL CONSTRAINT pk_notification PRIMARY KEY,
   user_id INT CONSTRAINT fk_notification_user_id REFERENCES "users"(user_id),
   text TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP

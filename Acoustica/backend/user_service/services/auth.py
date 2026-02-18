@@ -1,9 +1,11 @@
-from db import execute_sql
+from psycopg2.extras import RealDictCursor
+from db import execute_sql, get_db_connection
 import logging
 from db import execute_sql
 import bcrypt
 from flask_jwt_extended import create_access_token
 import sys
+import sqlparse
 
 logging.basicConfig(
     level=logging.INFO,
@@ -11,7 +13,7 @@ logging.basicConfig(
     stream=sys.stdout
 )
 
-# sign_up
+###################################################### sign_up #################################################################
 def sign_up(data):
     email = data.get("email")
     password = data.get("password")
@@ -22,6 +24,9 @@ def sign_up(data):
     if not email or not password:
         return {"error": "Email and password required"}, 400
     
+    if user_type not in ["listener","artist"]:
+        return {"error": "Invalid user type"},400
+    
     check_sql = """SELECT user_id FROM public.users WHERE email=%s"""
     existing = execute_sql(check_sql, (email,), fetch_one=True)
 
@@ -30,26 +35,62 @@ def sign_up(data):
 
     hashed_password = hash_password(password)
 
-    sql="""
-        INSERT INTO users (email, password, first_name, last_name, user_type)
-        VALUES (%s, %s, %s, %s, %s)
-        RETURNING user_id, user_type
-    """
+    connection=get_db_connection()
+    if connection is None:
+        return {"error":"Database connection failed"},500
+
     try:
-        result = execute_sql(sql, (email, hashed_password, first_name, last_name, user_type), fetch_one=True)
-        print(f"Insert result: {result}")
-        if not result:
-            logging.error(f"Sign-up failed for email: {email}")
-            return {"error": "Signup failed {result}"}, 400
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO asset (asset_type) VALUES (%s) RETURNING asset_id
+                    """,("user",)
+                )
+                asset=cursor.fetchone()
+                asset_id=asset["asset_id"]
 
+                cursor.execute(
+                    """
+                    INSERT INTO users  (asset_id,email,password,first_name,last_name,user_type)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    RETURNING user_id, user_type
+                    """, (asset_id,email,hashed_password,first_name,last_name, user_type)
+                )
 
-        return {"message": "Signup successful", "user_id": result["user_id"], "user_type": result["user_type"]}, 201
+                user=cursor.fetchone()
+                user_id=user["user_id"]
+
+                if user_type=="listener":
+                    cursor.execute(
+                        """
+                        INSERT INTO listener (listener_id,listener_type)
+                        VALUES (%s, %s)
+                        """,(user_id,"free")
+                    )
+                elif user_type=="artist":
+                    cursor.execute(
+                        """
+                        INSERT INTO artist (artist_id, stage_name, bank_account)
+                        VALUES (%s, %s, %s)
+                        """,(user_id,None, None)
+                    )
+            return {
+                "message": "Sign up successful",
+                "user_id":user_id,
+                "user_type":user_type
+            },201
 
     except Exception as e:
         print(f"Exception during sign-up for email {email}")
-        return {"error": str(e)}, 500
+        connection.rollback()
+        return {"error": "Sign-up failed"}, 500
+    finally:
+        connection.close()
 
-# sign_in
+
+
+########################################################## sign_in #########################################################
 def sign_in(email, password):
     if not email or not password:
         return {"error": "Email and password required"}, 400
@@ -69,7 +110,7 @@ def sign_in(email, password):
     )
     return {"message": "Login successful", "token": access_token, "user_id": user["user_id"], "user_type": user["user_type"]}, 200
 
-# sign_out
+###################################################### sign_out #############################################################
 def sign_out():
     return {"message": "Sign-out: delete token client-side"}, 200
 
@@ -80,7 +121,7 @@ def refresh(user_identity):
 
 
 
-### Helper functions ###
+############################################## Helper functions ###############################################################
 
 def hash_password(password: str) -> str:
     hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
