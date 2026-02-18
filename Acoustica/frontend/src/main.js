@@ -1,5 +1,6 @@
 import router from './utils/routers.js';
 import { loadSidebar } from './components/sidebar/sidebar.js';
+import { loadTopbar } from './components/topbar/topbar.js';
 import { renderHome } from './pages/home/home.js';
 import { renderAssets } from './pages/assets/assets.js';
 import { renderMusic } from './pages/music_player/music_player.js';
@@ -19,4 +20,5 @@ document.addEventListener('click', (e) => {
 });
 
 router.init();
-loadSidebar();
+// loadSidebar();
+loadTopbar();

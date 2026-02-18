@@ -5,6 +5,9 @@
 @import url('../pages/home/home.css');
 @import url('../pages/assets/assets.css');
 
+@import url('../components/sidebar/sidebar.css');
+@import url('../components/topbar/topbar.css');
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,6 +22,8 @@ body {
 
 #content {
   padding: 1rem;
+  margin-top: 70px;
   margin-left: 230px;
   width: 100%;
 }
+
