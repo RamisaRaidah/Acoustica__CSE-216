@@ -1,3 +1,19 @@
+-- Clearing tables
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = 'public'
+    LOOP
+        EXECUTE
+            'TRUNCATE TABLE public.' || quote_ident(r.tablename)
+            || ' RESTART IDENTITY CASCADE';
+    END LOOP;
+END $$;
+
 -- 1. Base tables
 INSERT INTO country (country_name) VALUES ('Bangladesh');
 INSERT INTO "language" (language_name) VALUES ('English');

@@ -363,10 +363,8 @@ CREATE TABLE IF NOT EXISTS "notification" (
 );
 
 -- ===================================
--- Minimal seed data for foreign keys
+-- Initializer
 -- ===================================
-
--- ENUM types are already created
 
 -- 1. Base tables
 INSERT INTO country (country_name) VALUES ('Bangladesh');

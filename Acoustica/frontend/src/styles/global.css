@@ -14,14 +14,11 @@ body {
 
 #app {
   min-height: 100vh;
+  display: flex;
 }
 
 #content {
   padding: 1rem;
-}
-
-.loading {
-  text-align: center;
-  color: #94a3b8;
-  padding: 2rem;
+  margin-left: 230px;
+  width: 100%;
 }
