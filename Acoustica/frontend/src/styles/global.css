@@ -1,6 +1,8 @@
 @import url('../components/sidebar/sidebar.css');
 @import url('../components/topbar/topbar.css');
 
+@import url('../pages/auth/auth.css');
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,4 +22,7 @@ body {
   width: 100%;
 }
 
+.hidden {
+  display: none;
+}
 

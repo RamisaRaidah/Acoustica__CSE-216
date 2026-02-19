@@ -13,7 +13,7 @@ class Router {
   }
 
   // Register a route using /assets/{id}
-  register(path, handler) {
+  register(path, handler,options = {}) {
     const keys = [];
 
     const pattern = this.normalize(path).replace(/\{([^}]+)\}/g, (_, key) => {
@@ -23,7 +23,11 @@ class Router {
 
     const regex = new RegExp("^" + pattern + "$");
 
-    this.routes.push({ regex, keys, handler });
+    this.routes.push({ regex, keys, handler, options });
+  }
+
+  isAuthenticated(){
+    return !!localStorage.getItem("token");
   }
 
   resolve(path, push = false) {
@@ -32,6 +36,18 @@ class Router {
     for (const route of this.routes) {
       const match = normalizedPath.match(route.regex);
       if (!match) continue;
+
+      if(route.options.protected && !this.isAuthenticated()){
+        history.pushState({}, "", "/sign-in");  
+        this.resolve("/sign-in");
+        return;
+      }
+
+      if (route.options.publicOnly && this.isAuthenticated()) {
+        history.pushState({}, "", "/dashboard");
+        this.resolve("/dashboard");
+        return;
+      }
 
       const params = {};
       route.keys.forEach((k, i) => {
