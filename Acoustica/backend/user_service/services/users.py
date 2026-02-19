@@ -35,33 +35,63 @@ def onboarding(user_id, user_type, data):
     try:
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                bio=data.get("bio")
+                country_id=data.get("country_id")
+                language_id=data.get("language_id")
+                phone_number=data.get("phone_number")
+                gender=data.get("gender")
+                date_of_birth=data.get("date_of_birth")  ##iso format: 2025-02-19
+                app_mode=data.get("app_mode","light")
 
-                if user_type == "listener":
-                    listener_type = data.get("listener_type", "free")
+                cursor.execute(
+                    """
+                        UPDATE users
+                        SET bio=%s,
+                            country_id=%s,
+                            language_id=%s,
+                            phone_number=%s,
+                            gender=%s,
+                            date_of_birth=%s,
+                            app_mode=%s
+                        WHERE user_id=%s
+                        RETURNING user_id
+                    """,(bio,country_id,language_id,phone_number,gender,date_of_birth,app_mode,user_id)
+                )
 
-                    cursor.execute("""
-                        UPDATE listener
-                        SET listener_type = %s
-                        WHERE listener_id = %s
-                        RETURNING listener_id
-                    """, (listener_type, user_id))
+                user_updated=cursor.fetchone()
+                
+                if not user_updated:
+                    return {"error": "user update failed"},400
 
-                elif user_type == "artist":
-                    stage_name = data.get("stage_name")
-                    bank_account = data.get("bank_account")
+                if user_type=="listener":
+                    listener_type=data.get("listener_type","free")
 
-                    cursor.execute("""
-                        UPDATE artist
-                        SET stage_name = %s,
-                            bank_account = %s
-                        WHERE artist_id = %s
-                        RETURNING artist_id
-                    """, (stage_name, bank_account, user_id))
+                    cursor.execute(
+                        """
+                            UPDATE listener
+                            SET listener_type=%s
+                            WHERE listener_id=%s
+                            RETURNING listener_id
+                        """,(listener_type,user_id)
+                    )
+                elif user_type=="artist":
+                    stage_name=data.get("stage_name")
+                    bank_account=data.get("bank_account")
 
-                updated = cursor.fetchone()
+                    cursor.execute(
+                        """
+                            UPDATE artist
+                            SET stage_name=%s,
+                                bank_account=%s
+                            WHERE artist_id=%s
+                            RETURNING artist_id
+                        """,(stage_name, bank_account, user_id)
+                    )
+                
+                role_updated = cursor.fetchone()
 
-                if not updated:
-                    return {"error": "Onboarding failed"}, 400
+                if not role_updated:
+                    return {"error": "Role update failed"}, 400
 
         return {"message": "Onboarding completed"}, 200
 

@@ -114,7 +114,7 @@ def sign_in(email, password):
 def sign_out():
     return {"message": "Sign-out: delete token client-side"}, 200
 
-# refresh
+###################################################### refresh ##############################################################
 def refresh(user_identity):
     access_token = create_access_token(identity=user_identity)
     return {"message": "Token refreshed", "token": access_token}, 200
