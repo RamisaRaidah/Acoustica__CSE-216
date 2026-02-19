@@ -9,3 +9,7 @@ export async function loadSidebar() {
 
   document.getElementById('sidebar').innerHTML = html;
 }
+
+export async function removeSidebar() {
+  document.getElementById('sidebar').innerHTML = "";
+}

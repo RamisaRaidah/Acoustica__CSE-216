@@ -1,0 +1,71 @@
+.music_player {
+  position: fixed;
+  bottom: 0;
+  left: 20vw;
+  height: 10vh;
+  width: 80vw;
+  background: #98c7ce;
+  color: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;
+  padding: 0.5vw 2vw 0;
+  box-sizing: border-box;
+}
+
+#song_cover_pic {
+    width: 2vw;
+    height: 2vw;
+    border-radius: 20%;
+}
+
+.song_info {
+    display: flex;
+    flex-direction: column;
+}
+
+#song_name {
+    font-size: 1vw;
+}
+
+#song_name:hover {
+    color: rgb(25, 25, 25);
+}
+
+#artist_name {
+    font-size: 0.8vw;
+    text-decoration: none;
+}
+
+#artist_name a:hover {
+    color: rgb(25, 25, 25);
+}
+
+.music_control {
+    display: flex;
+    flex-direction: column;
+}
+
+.music_control_top {
+    display: flex;
+}
+
+.music_control_top img,
+#lyrics_button,
+#like_button,
+#full_screen_button {
+    height: .5vw;
+    width: auto;
+}
+
+.music_control_bottom {
+    display: flex;
+    width: 20vw;
+}
+
+#progress_bar {
+  width: 0%;                     
+  height: 6px;                   
+  background-color: #ffffff;     
+  border-radius: 3px;            
+  transition: width 0.1s linear; 
+}

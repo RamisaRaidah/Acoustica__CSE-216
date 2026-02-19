@@ -2,57 +2,64 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 18%;
+  width: 20vw;
   height: 100vh;
   background: #111;
   color: white;
   display: flex;
   flex-direction: column;
-  padding: 1% 1% 0;
+  padding: 1vw 1vw 0;
   box-sizing: border-box;
 }
 
 .app_info {
+  display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.1vw;
   align-self: center;
-  margin-bottom: 40px;
+  margin-bottom: 8vh;
 }
 
-.logo,
-.app_name {
-  height: 45px;
+#logo,
+#app_name {
+  height: 3.2vw;
 }
 
-.sidebar_navigation_above,
+.sidebar_navigation_top,
 .sidebar_navigation_bottom {
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
-  gap: 20px;
-  margin-left: 20px;
+  gap: 1vw;
+  margin-left: 1.5vw;
 }
 
-.sidebar_navigation_above a,
+.sidebar_navigation_top {
+  margin-bottom: 30vh;
+}
+
+.sidebar_navigation_top a,
 .sidebar_navigation_bottom a {
   display: flex;
   align-items: center;
-  gap: 12px;
-
+  gap: 0.6vw;
   color: #bbb;
   text-decoration: none;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 1vw;
   transition: 0.2s;
 }
 
-.sidebar_navigation_above a:hover,
+.sidebar_navigation_top a:hover,
 .sidebar_navigation_bottom a:hover {
   color: #fff;
 }
 
-.sidebar_navigation_above img,
+.sidebar_navigation_top img,
 .sidebar_navigation_bottom img {
-  width: 20px;
-  height: 20px;
+  width: 1.1vw;
+  height: 1.vw;
+}
+
+#about_us_button {
+  font-size: 1.3vw;
 }

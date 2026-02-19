@@ -1,16 +1,9 @@
 import router from './utils/routers.js';
-import { loadSidebar } from './components/sidebar/sidebar.js';
-import { loadTopbar } from './components/topbar/topbar.js';
-import { renderHome } from './pages/home/home.js';
-import { renderAssets } from './pages/assets/assets.js';
+import { renderDashboard } from './pages/dashboard/dashboard.js';
 import { renderMusic } from './pages/music_player/music_player.js';
 
-
-router.register('/', renderHome);
-router.register('/home', renderHome);
-router.register('/assets', renderAssets);
+router.register('/dashboard', renderDashboard);
 router.register('/music/songs/{id}', renderMusic);
-
 
 document.addEventListener('click', (e) => {
   if (e.target.matches('[data-link]')) {
@@ -19,8 +12,4 @@ document.addEventListener('click', (e) => {
   }
 });
 
-await Promise.all([
-  loadSidebar(),
-  loadTopbar()
-]);
 router.init();

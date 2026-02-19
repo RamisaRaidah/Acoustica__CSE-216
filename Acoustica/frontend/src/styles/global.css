@@ -1,10 +1,3 @@
-@import url('../components/navbar/navbar.css');
-@import url('../components/assetCard/assetCard.css');
-
-
-@import url('../pages/home/home.css');
-@import url('../pages/assets/assets.css');
-
 @import url('../components/sidebar/sidebar.css');
 @import url('../components/topbar/topbar.css');
 
@@ -26,4 +19,5 @@ body {
   margin-left: 230px;
   width: 100%;
 }
+
 

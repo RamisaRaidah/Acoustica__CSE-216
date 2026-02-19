@@ -26,17 +26,6 @@ class ApiService {
         return this.request('/');
     }
 
-    async getAssets() {
-        return this.request('/assets');
-    }
-
-    async addAsset(assetData) {
-        return this.request('/add_asset', {
-            method: 'POST',
-            body: JSON.stringify(assetData),
-        });
-    }
-
     async get_song_audio(songId) {
         return this.request(`/api/music/songs/${songId}/audio`);  
     }

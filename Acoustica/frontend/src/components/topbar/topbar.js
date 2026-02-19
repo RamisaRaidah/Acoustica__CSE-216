@@ -9,3 +9,7 @@ export async function loadTopbar() {
 
   document.getElementById('topbar').innerHTML = html;
 }
+
+export async function removeTopbar() {
+  document.getElementById('topbar').innerHTML = "";
+}
