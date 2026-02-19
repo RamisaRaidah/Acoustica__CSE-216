@@ -1,59 +1,54 @@
 .topbar {
   position: fixed;
-  left: 230px;           
   top: 0;
-  width: calc(100% - 230px);
-  height: 70px;
-  background: #000;
+  left: 20%;
+  height: 8%;
+  width: 78%;
+  background: #ba9b9b;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 30px;
-
+  padding: 1% 1% 0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  z-index: 100;
+  box-sizing: border-box;
+  margin-bottom: 4%;
 }
 
-.topbar-left .shop {
+.topbar-left a {
+  color: white;
+  text-decoration: none;
   font-size: 18px;
   font-weight: 500;
-  cursor: pointer;
 }
 
-.topbar-center input {
-  width: 350px;
-  padding: 10px 18px;
-  border-radius: 25px;
-  border: none;
-  outline: none;
-
-  background: #eee;
-  font-size: 14px;
-}
-
-.topbar-center input:focus {
+.topbar input:focus {
   box-shadow: 0 0 6px #1db954;
 }
 
-
-.topbar-right {
+.topbar a {
   display: flex;
   align-items: center;
-  gap: 20px;
-  font-size: 16px;
-  cursor: pointer;
+  gap: 0.6%;
+  color: #bbb;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1%;
+  transition: 0.2s;
 }
 
-.topbar-right span:hover {
-  color: #1db954;
+.topbar a:hover {
+  color: #fff;
 }
 
+.topbar img {
+  width: 1.5%;
+  height: 1.5%;
+}
 
 .profile_picture {
-  width: 36px;
-  height: 36px;
+  width: 2%;
+  height: 2%;
   border-radius: 50%;
   object-fit: cover;
 }

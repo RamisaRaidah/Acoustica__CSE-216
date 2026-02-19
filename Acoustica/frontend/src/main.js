@@ -19,6 +19,8 @@ document.addEventListener('click', (e) => {
   }
 });
 
+await Promise.all([
+  loadSidebar(),
+  loadTopbar()
+]);
 router.init();
-loadSidebar();
-// loadTopbar();
