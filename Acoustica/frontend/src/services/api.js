@@ -9,10 +9,11 @@ class ApiService {
         try {
             const token=this.getToken();
 
-            const headers={
-                'Content-Type':'application/json',
-                ...options.headers,
-            };
+            const headers={ ...options.headers };
+
+            if (!(options.body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
 
             if(token){
                 headers['Authorization']=`Bearer ${token}`;
@@ -37,7 +38,8 @@ class ApiService {
             }
             
             return await response.json();
-        } catch (error) {
+        } 
+        catch (error) {
             console.error(`API request failed for ${endpoint}:`, error);
             throw error;
         }

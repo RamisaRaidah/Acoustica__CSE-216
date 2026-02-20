@@ -1,7 +1,9 @@
-@import url('../components/sidebar/sidebar.css');
-@import url('../components/topbar/topbar.css');
+@import url('/src/components/sidebar/sidebar.css');
+@import url('/src/components/topbar/topbar.css');
+@import url('/src/components/music_player/music_player.css');
 
-@import url('../pages/auth/auth.css');
+@import url('/src/pages/auth/auth.css');
+@import url('/src/pages/music/upload_song.css');
 
 html, body {
   -webkit-user-select: none; 
@@ -37,10 +39,11 @@ body {
 }
 
 #content {
-  padding: 1rem;
-  margin-top: 70px;
-  margin-left: 230px;
-  width: 100%;
+  position: fixed;
+  top: 10vh;
+  left: 20vw;
+  width: 80vw;
+  height: 78vh;
 }
 
 .hidden {

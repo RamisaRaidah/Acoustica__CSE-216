@@ -10,8 +10,24 @@ logging.basicConfig(
     stream=sys.stdout
 )
 
-def upload_song():
-    return ("upload_song")
+### upload_song ###
+
+def upload_song(file, title):
+    if not file or not title:
+        return {"error": "Missing file or title"}, 400
+    
+    s3_key = f"Songs/{title}.mp3"
+
+    success = storage.upload_file_to_storage(
+        file.stream,
+        s3_key,
+        file.mimetype
+    )
+
+    if success:
+        return {"message": "song uploaded successfully"}, 200
+    else:
+        return {"error": "song upload failed"}, 500
 
 def get_song_details(song_id):
     command = "SELECT * FROM song WHERE song_id=%s"

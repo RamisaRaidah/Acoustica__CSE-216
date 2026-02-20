@@ -1,0 +1,28 @@
+<div id="upload_song_container">
+  <form id="upload_song_form">
+    <div class="form_group">
+      <label for="song_title">Song Title</label>
+      <input 
+        type="text" 
+        id="song_title" 
+        name="songTitle" 
+        placeholder="Enter song title"
+        required
+      >
+    </div>
+
+    <div class="form_group">
+      <label for="song_file">Song Audio File</label>
+      <input 
+        type="file" 
+        id="song_file" 
+        name="songFile" 
+        accept="audio/*"
+        required
+      >
+    </div>
+
+    <button type="submit">Upload Song</button>
+
+  </form>
+</div>

@@ -1,4 +1,3 @@
-from db import execute_sql
 import logging
 import sys
 import os
@@ -25,8 +24,6 @@ if not all([STORAGE_ENDPOINT, STORAGE_ACCESS_KEY, STORAGE_SECRET_KEY, STORAGE_BU
     logging.error("Missing storage configuration in environment variables!")
     raise ValueError("Storage configuration incomplete. Check your .env file.")
 
-# ===== INITIALIZE S3 CLIENT =====
-# Backblaze B2 is S3-compatible
 s3_client = boto3.client(
     's3',
     endpoint_url=STORAGE_ENDPOINT,
@@ -38,14 +35,12 @@ s3_client = boto3.client(
 
 logging.info(f"Storage client initialized for bucket: {STORAGE_BUCKET}")
 
-
-# ===== UPLOAD FILE =====
-def upload_file_to_storage(file_path, s3_key, content_type, metadata=None):
+def upload_file_to_storage(file, s3_key, content_type, metadata=None):
     """
     Upload file to Backblaze B2 storage
     
     Args:
-        file_path (str): Local path to file to upload
+        file (str): File object
         s3_key (str): S3 key (path in bucket), e.g., "music/song.mp3"
         content_type (str): MIME type, e.g., "audio/mpeg"
         metadata (dict): Optional metadata dict
@@ -67,25 +62,24 @@ def upload_file_to_storage(file_path, s3_key, content_type, metadata=None):
         if metadata:
             extra_args['Metadata'] = metadata
         
-        with open(file_path, 'rb') as f:
-            s3_client.upload_fileobj(
-                f,
-                STORAGE_BUCKET,
-                s3_key,
-                ExtraArgs=extra_args
-            )
+        s3_client.upload_fileobj(
+            Fileobj=file,
+            Bucket=STORAGE_BUCKET,
+            Key=s3_key,
+            ExtraArgs=extra_args
+        )
         
-        logging.info(f"✅ Uploaded: {s3_key} to {STORAGE_BUCKET}")
+        logging.info(f"Uploaded: {s3_key} to {STORAGE_BUCKET}")
         return True
     
     except ClientError as e:
-        logging.error(f"❌ Storage upload error: {e}")
+        logging.error(f"Storage upload error: {e}")
         return False
     except FileNotFoundError as e:
-        logging.error(f"❌ File not found: {file_path}")
+        logging.error(f"File not found: {file}")
         return False
     except Exception as e:
-        logging.error(f"❌ Unexpected upload error: {e}")
+        logging.error(f"Unexpected upload error: {e}")
         return False
 
 
@@ -115,14 +109,14 @@ def generate_signed_url(s3_key, expires_in=3600):
             ExpiresIn=expires_in
         )
         
-        logging.info(f"✅ Generated signed URL for: {s3_key} (expires in {expires_in}s)")
+        logging.info(f"Generated signed URL for: {s3_key} (expires in {expires_in}s)")
         return signed_url
     
     except ClientError as e:
-        logging.error(f"❌ Error generating signed URL for {s3_key}: {e}")
+        logging.error(f"Error generating signed URL for {s3_key}: {e}")
         return None
     except Exception as e:
-        logging.error(f"❌ Unexpected error generating signed URL: {e}")
+        logging.error(f"Unexpected error generating signed URL: {e}")
         return None
 
 
@@ -146,14 +140,14 @@ def delete_file_from_storage(s3_key):
             Key=s3_key
         )
         
-        logging.info(f"✅ Deleted: {s3_key} from {STORAGE_BUCKET}")
+        logging.info(f"Deleted: {s3_key} from {STORAGE_BUCKET}")
         return True
     
     except ClientError as e:
-        logging.error(f"❌ Storage delete error for {s3_key}: {e}")
+        logging.error(f"Storage delete error for {s3_key}: {e}")
         return False
     except Exception as e:
-        logging.error(f"❌ Unexpected delete error: {e}")
+        logging.error(f"Unexpected delete error: {e}")
         return False
 
 
@@ -174,7 +168,7 @@ def file_exists_in_storage(s3_key):
     except ClientError as e:
         if e.response['Error']['Code'] == '404':
             return False
-        logging.error(f"❌ Error checking file existence: {e}")
+        logging.error(f"Error checking file existence: {e}")
         return False
 
 
@@ -205,11 +199,11 @@ def list_files_in_storage(prefix='', max_keys=1000):
             return []
         
         files = [obj['Key'] for obj in response['Contents']]
-        logging.info(f"✅ Listed {len(files)} files with prefix '{prefix}'")
+        logging.info(f"Listed {len(files)} files with prefix '{prefix}'")
         return files
     
     except ClientError as e:
-        logging.error(f"❌ Error listing files: {e}")
+        logging.error(f"Error listing files: {e}")
         return []
 
 
@@ -237,7 +231,7 @@ def get_file_metadata(s3_key):
         return metadata
     
     except ClientError as e:
-        logging.error(f"❌ Error getting file metadata for {s3_key}: {e}")
+        logging.error(f"Error getting file metadata for {s3_key}: {e}")
         return None
 
 
@@ -251,10 +245,10 @@ def check_storage_connection():
     """
     try:
         s3_client.head_bucket(Bucket=STORAGE_BUCKET)
-        logging.info(f"✅ Storage connection OK: {STORAGE_BUCKET}")
+        logging.info(f"Storage connection OK: {STORAGE_BUCKET}")
         return True
     except ClientError as e:
-        logging.error(f"❌ Storage connection failed: {e}")
+        logging.error(f"Storage connection failed: {e}")
         return False
 
 
@@ -272,10 +266,10 @@ def download_file_from_storage(s3_key, local_path):
     """
     try:
         s3_client.download_file(STORAGE_BUCKET, s3_key, local_path)
-        logging.info(f"✅ Downloaded: {s3_key} to {local_path}")
+        logging.info(f"Downloaded: {s3_key} to {local_path}")
         return True
     except ClientError as e:
-        logging.error(f"❌ Download error: {e}")
+        logging.error(f"Download error: {e}")
         return False
 
 
@@ -301,14 +295,14 @@ def generate_upload_presigned_url(s3_key, content_type, expires_in=900):
             Fields={'Content-Type': content_type},
             Conditions=[
                 {'Content-Type': content_type},
-                ['content-length-range', 0, 104857600]  # Max 100MB
+                ['content-length-range', 0, 104857600]  
             ],
             ExpiresIn=expires_in
         )
         
-        logging.info(f"✅ Generated upload presigned URL for: {s3_key}")
+        logging.info(f"Generated upload presigned URL for: {s3_key}")
         return presigned_post
     
     except ClientError as e:
-        logging.error(f"❌ Error generating upload URL: {e}")
+        logging.error(f"Error generating upload URL: {e}")
         return None

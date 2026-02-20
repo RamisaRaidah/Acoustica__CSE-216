@@ -1,10 +1,5 @@
 import api from '../../services/api.js';
 
-const link = document.createElement("link");
-link.rel = "stylesheet";
-link.href = "/src/components/music_player/music_player.css";
-document.head.appendChild(link);
-
 let isPlaying = false;
 
 export async function loadMusicPlayer(song_id, progress) {

@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS "notification" (
 
 -- 1. Base tables
 INSERT INTO country (country_name) VALUES ('Bangladesh');
-INSERT INTO "language" (language_name) VALUES ('English');
+INSERT INTO language (language_name) VALUES ('English');
 INSERT INTO genre (genre_name) VALUES ('Pop');
 INSERT INTO mood (mood_name) VALUES ('Happy');
 INSERT INTO instrument (instrument_name) VALUES ('Guitar');

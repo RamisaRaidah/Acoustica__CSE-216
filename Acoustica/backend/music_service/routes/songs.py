@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 import logging
 import sys
 
@@ -14,11 +14,14 @@ songs_bp = Blueprint("songs", __name__)
 
 @songs_bp.get("/api/songs/health")
 def health():
-    return jsonify("songs")
+    return jsonify("Song is alive!!!")
 
 @songs_bp.post("/api/music/songs")
 def upload_song_route():
-    return jsonify("upload_song")
+    title = request.form.get('title')
+    file = request.files.get('file')
+    result, status = songs.upload_song(file, title)
+    return jsonify(result), status
 
 @songs_bp.get("/api/music/songs/<song_id>")
 def get_song_details_route(song_id):
