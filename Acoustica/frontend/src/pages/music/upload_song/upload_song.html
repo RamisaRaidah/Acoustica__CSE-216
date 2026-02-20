@@ -1,5 +1,7 @@
 <div id="upload_song_container">
-  <form id="upload_song_form">
+  <form id="upload_song_form" enctype="multipart/form-data">
+    
+    <!-- Song Title -->
     <div class="form_group">
       <label for="song_title">Song Title</label>
       <input 
@@ -11,13 +13,77 @@
       >
     </div>
 
+    <!-- Album -->
     <div class="form_group">
-      <label for="song_file">Song Audio File</label>
+      <label for="album_select">Album</label>
+      <select id="album_select" name="albumId">
+        <option value="" disabled selected>Select an existing album</option>
+        <!-- dynamically populate existing albums here -->
+      </select>
+      <input 
+        type="text" 
+        id="new_album_name" 
+        name="newAlbum" 
+        placeholder="Or enter new album name"
+      >
+    </div>
+
+    <!-- Language -->
+    <div class="form_group">
+      <label for="language_select">Language</label>
+      <select id="language_select" name="language" required>
+        <option value="" disabled selected>Select language</option>
+        <option value="English">English</option>
+        <option value="Bengali">Bengali</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Spanish">Spanish</option>
+        <option value="French">French</option>
+        <!-- add all other languages here -->
+      </select>
+    </div>
+
+    <!-- Release Date -->
+    <div class="form_group">
+      <label for="release_date">Release Date</label>
+      <input 
+        type="date" 
+        id="release_date" 
+        name="releaseDate" 
+        required
+      >
+    </div>
+
+    <!-- Audio File -->
+    <div class="form_group">
+      <label for="song_file">Audio File (MP3)</label>
       <input 
         type="file" 
         id="song_file" 
         name="songFile" 
-        accept="audio/*"
+        accept=".mp3,audio/*"
+        required
+      >
+    </div>
+
+    <!-- Lyrics (optional) -->
+    <div class="form_group">
+      <label for="lyrics_file">Lyrics (optional)</label>
+      <input 
+        type="file" 
+        id="lyrics_file" 
+        name="lyricsFile" 
+        accept=".txt"
+      >
+    </div>
+
+    <!-- Copyright Certificate -->
+    <div class="form_group">
+      <label for="copyright_certificate">Copyright Certificate (PDF)</label>
+      <input 
+        type="file" 
+        id="copyright_certificate" 
+        name="copyrightCertificate" 
+        accept=".pdf"
         required
       >
     </div>
