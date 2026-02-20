@@ -36,6 +36,9 @@ export async function loadMusicPlayer(song_id, progress) {
   audio.addEventListener('loadedmetadata', () => {
     if (!Number.isFinite(audio.duration)) return;
 
+    playPauseButton.style.opacity = '1';
+    playPauseButton.style.pointerEvents = 'auto';
+
     audio.currentTime = audio.duration * (progress / 100);
     progressBar.style.width = ((audio.currentTime / audio.duration) * 100) + "%";
     playTime.innerText = formatTime(audio.currentTime);

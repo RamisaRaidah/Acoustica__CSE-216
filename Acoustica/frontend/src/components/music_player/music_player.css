@@ -15,6 +15,7 @@
   color: black;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 2.2vw;
   box-sizing: border-box;
   z-index: 100;
@@ -49,6 +50,7 @@
   line-height: 1.1;
   margin-top: 1vh;
   margin-bottom: 1vh;
+  margin-right: auto;
 }
 
 .song_info a {
@@ -73,14 +75,11 @@
 }
 
 .music_control1 {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
   display: flex;
   flex-direction: column;
   align-items: center; 
   justify-content: center;
-  margin-top: 1.5vh;
 }
 
 .music_control1_top {
@@ -95,6 +94,7 @@
 .music_control1_top img,
 .music_control2 img {
   height: 2vh;
+  width: 2vh;
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
@@ -107,6 +107,9 @@
 
 #play_pause_button {
   height: 2.6vh;
+  width: 2.6vh;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .music_control1_bottom {
@@ -206,4 +209,8 @@
 #full_screen_button {
   height: 2.2vh;
   cursor: pointer;
+}
+
+img {
+  display: block;
 }
