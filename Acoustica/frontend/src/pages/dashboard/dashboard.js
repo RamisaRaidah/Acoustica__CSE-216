@@ -10,6 +10,6 @@ export async function renderDashboard() {
     await Promise.all([
     loadSidebar(),
     loadTopbar(),
-    loadMusicPlayer()
+    loadMusicPlayer(1, 0)
   ]);
 }
