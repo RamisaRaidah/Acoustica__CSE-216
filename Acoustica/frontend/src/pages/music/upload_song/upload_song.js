@@ -1,8 +1,10 @@
 import { loadSidebar } from '/src/components/sidebar/sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
 import api from '/src/services/api.js'
+import { exitAuthMode } from '/src/utils/helper.js';
 
 export async function renderUploadSong() {
+    exitAuthMode();
     const result = await fetch('/src/pages/music/upload_song/upload_song.html');
     const html = await result.text();
 

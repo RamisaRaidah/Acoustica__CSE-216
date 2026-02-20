@@ -29,6 +29,7 @@ img {
 
 body {
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #000000;
   color: white;
@@ -36,17 +37,21 @@ body {
 
 #app {
   min-height: 100vh;
-  display: flex;
+  position: relative; 
 }
 
 #content {
-  position: fixed;
-  top: 10vh;
-  left: 20vw;
-  width: 80vw;
-  height: 78vh;
+  padding: 1rem;
+  margin-top: 70px;
+  margin-left: 230px;
+  width: 100%;
 }
 
 .hidden {
   display: none;
+}
+
+#sidebar:empty,
+#topbar:empty {
+    display: none !important;
 }

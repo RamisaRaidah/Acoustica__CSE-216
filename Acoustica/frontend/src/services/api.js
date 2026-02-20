@@ -75,6 +75,13 @@ class ApiService {
         return this.request('/api/auth/sign-out', { method: 'POST' });
     }
 
+    async getCountries() {
+        return this.request('/api/analytics/countries');
+    }
+    async getLanguages() {
+        return this.request('/api/analytics/languages');
+    }
+
 }
 
 export default new ApiService();

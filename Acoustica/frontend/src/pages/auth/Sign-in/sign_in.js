@@ -1,10 +1,12 @@
-import api from '../../services/api.js';
-import router from '../../utils/routers.js';
-import { removeSidebar } from '../../components/sidebar/sidebar.js';
-import { removeTopbar } from '../../components/topbar/topbar.js';
-import { removeMusicPlayer } from '../../components/music_player/music_player.js';
+import api from '/src/services/api.js';
+import router from '/src/utils/routers.js';
+import { removeSidebar } from '/src/components/sidebar/sidebar.js';
+import { removeTopbar } from '/src/components/topbar/topbar.js';
+import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
+import { enterAuthMode } from '/src/utils/helper.js';
 
 export function renderSignIn() {
+    enterAuthMode();
     const app = document.getElementById('app');
     
     removeSidebar();
@@ -14,12 +16,22 @@ export function renderSignIn() {
     const content = document.getElementById('content');
     content.style.marginLeft = '0';
     content.style.marginTop = '0';
+    content.style.padding = '0';
     content.innerHTML = `
         <div class="auth-container">
+            <div class="auth-logo">
+                <img src="/src/assets/images/Logo.png" id="logo" alt="Aaaa logoooo" >
+                <img src="/src/assets/images/auth/name_2.png" id="acoustica" alt="Acoustica">
+            </div>
+
+            <div class="auth-left">
+                <p class="typewriter" id="typewriter"></p>
+                <div class="auth-underline"></div>
+            </div>
+
             <div class="auth-card">
                 <div class="auth-header">
-                    <h1>Welcome Back</h1>
-                    <p>Sign in to Acoustica</p>
+                    <h1>Welcome Back!</h1>
                 </div>
 
                 <form id="signin-form" class="auth-form">
@@ -44,6 +56,8 @@ export function renderSignIn() {
                             placeholder="Enter your password"
                         />
                     </div>
+
+                    <div class="auth-forgot-pass"><a href="/forgot-pass" data-link>Forgot your password?</a> </div>
 
                     <div id="error-message" class="error-message"></div>
 
@@ -94,11 +108,62 @@ export function renderSignIn() {
             }
         } catch (error) {
             console.error('Sign-in error:', error);
-            errorDiv.textContent = error.message || 'Sign in failed. Please check your credentials.';
+            errorDiv.textContent = error.message || 'Invalid credentials.';
             errorDiv.style.display = 'block';
             
             submitBtn.disabled = false;
             submitBtn.textContent = 'Sign In';
         }
     });
+
+
+    const lines = ["Let the", "rhythm of", "your life soar"];
+    const el = document.getElementById('typewriter');
+    const underline = document.querySelector('.auth-underline');
+    let lineIndex = 0;
+    let charIndex = 0;
+    let typing = true;
+
+    function type() {
+        const currentText = lines.slice(0, lineIndex).join('\n') + 
+                            (lineIndex < lines.length ? '\n' + lines[lineIndex].slice(0, charIndex) : '');
+        
+        el.innerText = currentText.trimStart();
+
+        if (typing) {
+            if (charIndex < lines[lineIndex].length) {
+                charIndex++;
+                setTimeout(type, 80);
+            } else if (lineIndex < lines.length - 1) {
+                lineIndex++;
+                charIndex = 0;
+                setTimeout(type, 200); // pause between lines
+            } else {
+                underline.style.width = '300px';
+                setTimeout(() => { typing = false; setTimeout(erase, 2000); }, 500);
+            }
+        }
+    }
+
+    function erase() {
+        if (charIndex > 0) {
+            charIndex--;
+            const currentText = lines.slice(0, lineIndex).join('\n') + '\n' + lines[lineIndex].slice(0, charIndex);
+            el.innerText = currentText.trimStart();
+            underline.style.width = (charIndex / lines[lineIndex].length * 300) + 'px';
+            setTimeout(erase, 40);
+        } else if (lineIndex > 0) {
+            lineIndex--;
+            charIndex = lines[lineIndex].length;
+            setTimeout(erase, 200);
+        } else {
+            underline.style.width = '0';
+            typing = true;
+            lineIndex = 0;
+            charIndex = 0;
+            setTimeout(type, 500);
+        }
+    }
+
+    type();
 }

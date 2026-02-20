@@ -1,10 +1,12 @@
 export async function loadSidebar() {
-  const result = await fetch('/src/components/sidebar/sidebar.html');
-  const html = await result.text();
-
-  document.getElementById('sidebar').innerHTML = html;
+    const sidebar = document.getElementById('sidebar');
+    const result = await fetch('/src/components/sidebar/sidebar.html');
+    sidebar.innerHTML = await result.text();
+    sidebar.style.setProperty('display', 'block', 'important');
 }
 
 export async function removeSidebar() {
-  document.getElementById('sidebar').innerHTML = "";
+    const sidebar = document.getElementById('sidebar');
+    sidebar.innerHTML = '';
+    sidebar.style.setProperty('display', 'none', 'important');
 }

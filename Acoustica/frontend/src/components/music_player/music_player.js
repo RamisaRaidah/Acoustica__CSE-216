@@ -3,6 +3,8 @@ import api from '../../services/api.js';
 let isPlaying = false;
 
 export async function loadMusicPlayer(song_id, progress) {
+  const musicPlayer = document.getElementById('music_player');
+  musicPlayer.style.setProperty('display', 'block', 'important');
   const result = await fetch('/src/components/music_player/music_player.html');
   const html = await result.text();
 
@@ -107,5 +109,8 @@ export async function loadMusicPlayer(song_id, progress) {
 }
 
 export async function removeMusicPlayer() {
+  const musicPlayer = document.getElementById('music_player');
+  musicPlayer.innerHTML = '';
+  musicPlayer.style.setProperty('display', 'none', 'important');
   document.getElementById('music_player').innerHTML = "";
 }
