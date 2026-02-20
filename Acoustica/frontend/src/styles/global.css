@@ -3,6 +3,27 @@
 
 @import url('../pages/auth/auth.css');
 
+html, body {
+  -webkit-user-select: none; 
+  -ms-user-select: none;     
+  user-select: none;         
+}
+
+input, 
+textarea, 
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+img {
+  -webkit-user-drag: none;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,4 +46,3 @@ body {
 .hidden {
   display: none;
 }
-
