@@ -6,7 +6,7 @@ import { removeMusicPlayer } from '/src/components/music_player/music_player.js'
 import { enterAuthMode } from '/src/utils/helper.js';
 
 export function renderSignIn() {
-    enterAuthMode();
+    //enterAuthMode();
     const app = document.getElementById('app');
     
     removeSidebar();

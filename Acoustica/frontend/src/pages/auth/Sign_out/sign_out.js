@@ -1,7 +1,7 @@
-import api from '../services/api.js';
-import router from './routers.js';
+import api from '/src/services/api.js';
+import router from '/src/utils/routers.js';
 
-export async function signOut() {
+export async function renderSignOut() {
     try {
         await api.signOut();
     } catch (e) {
@@ -12,3 +12,4 @@ export async function signOut() {
         router.navigate('/sign-in');
     }
 }
+

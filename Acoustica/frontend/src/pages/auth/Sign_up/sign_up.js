@@ -4,9 +4,10 @@ import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
 import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
 import { enterAuthMode } from '/src/utils/helper.js';
+import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
 
 export function renderSignUp() {
-    enterAuthMode();
+    //enterAuthMode();
     const content = document.getElementById('content');
 
     removeSidebar();
@@ -106,7 +107,8 @@ export function renderSignUp() {
                     email,
                     user_type: signInResponse.user_type
                 }));
-                router.navigate('/onboarding');
+               await renderOnboarding();
+               //router.navigate('/onboarding');
             } else {
                 throw new Error('Sign-up failed');
             }

@@ -4,6 +4,7 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-y: auto; 
+  overflow-x: hidden;
 }
 
 body:has(.auth-container) {
@@ -15,11 +16,6 @@ body:has(.auth-container) #app {
   display: block;
 }
 
-body:has(.auth-container) #content {
-  padding: 0 !important;
-  margin: 0 !important;
-  width: 100% !important;
-}
 .auth-container {
   width: 100%;
   min-height: 100vh; 
@@ -39,7 +35,7 @@ body:has(.auth-container) #content {
   padding: 40px 0; 
 }
 .auth-logo {
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 30px;
   display: flex;
@@ -53,6 +49,9 @@ body:has(.auth-container) #content {
 
 .auth-left {
     flex: 1;
+    flex-shrink: 0;
+    width: 400px;
+    max-width: calc(50vw - 80px);
     display: flex;
     flex-direction: column;
     align-items: flex-start;

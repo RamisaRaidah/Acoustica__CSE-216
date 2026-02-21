@@ -51,7 +51,3 @@ body {
   display: none;
 }
 
-#sidebar:empty,
-#topbar:empty {
-    display: none !important;
-}

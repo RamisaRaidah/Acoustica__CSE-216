@@ -28,6 +28,8 @@ export function enterAuthMode() {
         min-height: 100vh;
         background: transparent !important;
     `;
+
+    content.className = '';
 }
 export function exitAuthMode() {
     const app = document.getElementById('app');
