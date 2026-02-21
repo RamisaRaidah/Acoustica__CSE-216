@@ -112,5 +112,4 @@ export async function removeMusicPlayer() {
   const musicPlayer = document.getElementById('music_player');
   musicPlayer.innerHTML = '';
   musicPlayer.style.setProperty('display', 'none', 'important');
-  document.getElementById('music_player').innerHTML = "";
 }

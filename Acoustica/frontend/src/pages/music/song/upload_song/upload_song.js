@@ -1,19 +1,24 @@
 import { loadSidebar } from '/src/components/sidebar/sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
-import api from '/src/services/api.js'
-import { exitAuthMode } from '/src/utils/helper.js';
+import api from '/src/services/api.js';
+import router from '/src/utils/routers.js';
 
 export async function renderUploadSong() {
-    exitAuthMode();
     const result = await fetch('/src/pages/music/song/upload_song/upload_song.html');
     const html = await result.text();
 
     document.getElementById('content').innerHTML = html;
 
     await Promise.all([
-      loadTopbar(),
-      loadSidebar()
+        loadTopbar(),
+        loadSidebar()
     ]);
+
+    const create_album_button = document.getElementById('create_album_button');
+
+    create_album_button.addEventListener('click', () => {
+        router.navigate('/music/create-album');
+    });
 
     const form = document.getElementById('upload_song_form');
     
@@ -46,7 +51,7 @@ export async function renderUploadSong() {
                 alert("Song uploaded successfully");
             }
             else {
-                throw new Error("Song upload failed");
+                throw new Error("Failed to upload song");
             }
             
             form.reset();

@@ -8,8 +8,12 @@ logging.basicConfig(
     stream=sys.stdout
 )
 
-def create_album():
-    return ("create_album")
+def create_album(title, description, release_date, cover_picture, copyright_certificate):
+    if not title or not release_date or not copyright_certificate:
+        return {"error": "missing required fields"}, 400
+    # insert to db and cloud
+    logging.info(title, description, release_date, cover_picture, copyright_certificate)
+    return {"message": "album created successfully"}, 201
 
 def get_album_details(album_id):
     return (f"get_album_details {album_id}")

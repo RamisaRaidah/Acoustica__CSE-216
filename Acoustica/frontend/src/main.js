@@ -5,6 +5,7 @@ import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
 import { renderSignOut } from '/src/pages/auth/Sign_out/sign_out.js';
 import { renderDashboard } from '/src/pages/user/listener/dashboard/dashboard.js';
 import { renderUploadSong } from '/src/pages/music/song/upload_song/upload_song.js';
+import { renderCreateAlbum } from '/src/pages/music/song/create_album/create_album.js';
 
 
 
@@ -13,6 +14,7 @@ router.register('/dashboard', renderDashboard, { protected: true });
 
 //---------------------------------Music-----------------------------------------//
 router.register('/music/upload-song', renderUploadSong, { protected: true });
+router.register('/music/create-album', renderCreateAlbum, { protected: true });
 
 
 //--------------------------Auth Routes---------------------------------------------------------------//

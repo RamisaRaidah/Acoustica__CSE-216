@@ -4,7 +4,7 @@
 
 @import url('/src/pages/user/dashboard/dashboard.css');
 @import url('/src/pages/auth/auth.css');
-@import url('/src/pages/music/upload_song.css');
+@import url('/src/pages/music/music.css');
 
 html, body {
   -webkit-user-select: none; 
