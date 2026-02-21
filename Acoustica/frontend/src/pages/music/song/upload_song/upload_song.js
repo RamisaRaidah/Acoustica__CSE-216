@@ -4,14 +4,15 @@ import api from '/src/services/api.js'
 import { exitAuthMode } from '/src/utils/helper.js';
 
 export async function renderUploadSong() {
-    const result = await fetch('/src/pages/music/upload_song/upload_song.html');
+    exitAuthMode();
+    const result = await fetch('/src/pages/music/song/upload_song/upload_song.html');
     const html = await result.text();
 
     document.getElementById('content').innerHTML = html;
 
     await Promise.all([
-      loadSidebar(),
-      loadTopbar()
+      loadTopbar(),
+      loadSidebar()
     ]);
 
     const form = document.getElementById('upload_song_form');
