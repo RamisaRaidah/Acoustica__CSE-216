@@ -24,6 +24,8 @@ BEGIN
     END LOOP;
 END $$;
 
+-- Creating enums 
+
 CREATE TYPE user_type_enum AS ENUM ('admin', 'listener', 'artist');
 CREATE TYPE listener_type_enum AS ENUM ('free', 'premium');
 CREATE TYPE admin_role_enum AS ENUM ('super_admin', 'administrator', 'moderator', 'analyst', 'audit');
@@ -36,6 +38,7 @@ CREATE TYPE app_mode_enum AS ENUM ('light', 'dark');
 CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
 CREATE TYPE asset_type_enum AS ENUM ('user','song','playlist','album','product','report');
 
+-- Creating tables
 
 CREATE TABLE IF NOT EXISTS "country" (
   country_id SERIAL CONSTRAINT pk_country PRIMARY KEY,
@@ -352,7 +355,7 @@ CREATE TABLE IF NOT EXISTS "announcement" (
 CREATE TABLE IF NOT EXISTS "content_review" (
   review_id SERIAL CONSTRAINT pk_content_review PRIMARY KEY,
   reviewer_id INT CONSTRAINT fk_content_review_listener_reviewer_id REFERENCES listener(listener_id),
-  topic_id INT CONSTRAINT fk_content_review_asset_topic_id REFERENCES asset(asset_id),
+  asset_id INT CONSTRAINT fk_content_review_asset_topic_id REFERENCES asset(asset_id),
   text TEXT,
   rating INT CONSTRAINT ck_content_review_rating_range CHECK (rating BETWEEN 0 AND 5),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -369,7 +372,7 @@ CREATE TABLE IF NOT EXISTS "artist_review" (
 CREATE TABLE IF NOT EXISTS "report" (
   report_id SERIAL CONSTRAINT pk_report PRIMARY KEY,
   author_id INT CONSTRAINT fk_report_users_author_id REFERENCES "users"(user_id),
-  topic_id INT CONSTRAINT fk_report_asset_topic_id REFERENCES asset(asset_id),
+  asset_id INT CONSTRAINT fk_report_asset_topic_id REFERENCES asset(asset_id),
   text TEXT,
   image TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP

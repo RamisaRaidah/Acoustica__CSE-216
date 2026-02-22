@@ -52,10 +52,10 @@ def sign_up(data):
 
                 cursor.execute(
                     """
-                    INSERT INTO users  (asset_id,email,password,first_name,last_name,user_type)
+                    INSERT INTO users (asset_id,email,password,first_name,last_name,user_type)
                     VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING user_id, user_type
-                    """, (asset_id,email,hashed_password,first_name,last_name, user_type)
+                    """, (asset_id,email,hashed_password,first_name,last_name,user_type)
                 )
 
                 user=cursor.fetchone()
