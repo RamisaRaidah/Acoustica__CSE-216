@@ -48,6 +48,9 @@ body:has(.auth-container) #app {
 }
 
 .auth-left {
+    position: fixed;
+    left: 20px;
+    top:200px;
     flex: 1;
     flex-shrink: 0;
     width: 400px;
@@ -149,8 +152,8 @@ body:has(.auth-container) #app {
     border-radius: 8px;
     color: #000000;
     transition: all 0.2s;
-    resize: vertical;
-    min-height: 100px;
+    resize: none;
+    min-height: 60px;
     line-height: 1.5;
 }
 

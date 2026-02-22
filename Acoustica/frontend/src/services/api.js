@@ -25,13 +25,6 @@ class ApiService {
                     headers,
                 }
             );
-
-            if(response.status===401){
-                localStorage.removeItem("token");
-                history.pushState({}, "", "/sign-in");
-                window.dispatchEvent(new PopStateEvent("popstate"));
-                return;
-            }
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

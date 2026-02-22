@@ -103,6 +103,8 @@ export function renderSignIn() {
 
                 console.log('Signed in successfully');
                 router.navigate('/dashboard');
+            } else if (response && response.error) {
+                throw new Error(response.error);
             } else {
                 throw new Error('Invalid response from server');
             }

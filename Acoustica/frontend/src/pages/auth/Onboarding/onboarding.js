@@ -19,23 +19,6 @@ export async function renderOnboarding() {
     const user = JSON.parse(localStorage.getItem('user'));
     const user_type = user?.user_type;
 
-
-    const [countries, languages] = await Promise.all([
-        api.getCountries(),
-        api.getLanguages()
-    ]);
-
-    console.log('countries:', countries);
-    console.log('languages:', languages);
-
-    const countryOptions = countries.map(c => 
-        `<option value="${c.country_id}">${c.country_name}</option>`
-    ).join('');
-
-    const languageOptions = languages.map(l => 
-        `<option value="${l.language_id}">${l.language_name}</option>`
-    ).join('');
-
     content.innerHTML = `
         <div class="auth-container">
             <div class="auth-logo">
@@ -57,22 +40,21 @@ export async function renderOnboarding() {
 
                     <div class="form-group">
                         <label for="bio">Bio</label>
-                        <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+                        <textarea id="bio" placeholder="Tell us about yourself..."maxlength="200"></textarea>
+                        <small id="bio-counter" style="color: #5c6465; text-align: right;">0/200</small>
                     </div>
 
                     <div class="form-group">
                         <label for="country_id">Country</label>
                         <select id="country_id">
-                            <option value="">Select your country</option>
-                            ${countryOptions}
+                            <option value="">Loading countries...</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label for="language_id">Language</label>
                         <select id="language_id">
-                            <option value="">Select your language</option>
-                            ${languageOptions}
+                            <option value="">Loading languages...</option>
                         </select>
                     </div>
 
@@ -124,6 +106,25 @@ export async function renderOnboarding() {
             </div>
         </div>
     `;
+    const bioTextarea = document.getElementById('bio');
+    const bioCounter = document.getElementById('bio-counter');
+    bioTextarea.addEventListener('input', () => {
+        bioCounter.textContent = `${bioTextarea.value.length}/200`;
+    });
+
+     const [countries, languages] = await Promise.all([
+        api.getCountries(),
+        api.getLanguages()
+    ]);
+
+
+    document.getElementById('country_id').innerHTML = 
+        `<option value="">Select your country</option>` +
+        countries.map(c => `<option value="${c.country_id}">${c.country_name}</option>`).join('');
+
+    document.getElementById('language_id').innerHTML = 
+        `<option value="">Select your language</option>` +
+        languages.map(l => `<option value="${l.language_id}">${l.language_name}</option>`).join('');
 
     const form = document.getElementById('onboarding-form');
     const errorDiv = document.getElementById('error-message');
@@ -215,5 +216,5 @@ export async function renderOnboarding() {
         }
     }
 
-    type();
+    type();    
 }

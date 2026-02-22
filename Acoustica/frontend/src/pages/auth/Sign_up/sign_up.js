@@ -56,6 +56,11 @@ export function renderSignUp() {
                     </div>
 
                     <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" placeholder="Re-enter your password" required />
+                    </div>
+
+                    <div class="form-group">
                         <label for="user_type">I am a...</label>
                         <select id="user_type">
                             <option value="listener">Listener</option>
@@ -90,6 +95,15 @@ export function renderSignUp() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const user_type = document.getElementById('user_type').value;
+        const confirm_password = document.getElementById('confirm_password').value;
+
+        if (password !== confirm_password) {
+            errorDiv.textContent = 'Passwords do not match.';
+            errorDiv.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Sign Up';
+            return;
+        }
 
         errorDiv.textContent = '';
         errorDiv.style.display = 'none';
