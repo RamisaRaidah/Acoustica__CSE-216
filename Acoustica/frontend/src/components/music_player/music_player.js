@@ -1,8 +1,8 @@
-import api from '../../services/api.js';
+import { getSongAudio } from "/src/services/song.js";
 
 let isPlaying = false;
 
-export async function loadMusicPlayer(song_id, progress) {
+export async function loadMusicPlayer(songId, progress) {
   const musicPlayer = document.getElementById('music_player');
   musicPlayer.style.setProperty('display', 'block', 'important');
   const result = await fetch('/src/components/music_player/music_player.html');
@@ -23,7 +23,7 @@ export async function loadMusicPlayer(song_id, progress) {
   }
 
   try {
-    const response = await api.get_song_audio(song_id);
+    const response = await getSongAudio(songId);
     audio.src = response.stream_url;
   }
   catch (error) {

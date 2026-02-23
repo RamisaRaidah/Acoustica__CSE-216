@@ -43,34 +43,49 @@ def get_countries():
         "SELECT country_id, country_name FROM country ORDER BY country_name",
         fetch_all=True
     )
-    return result
-
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
 
 def get_languages():
     result = execute_sql(
         "SELECT language_id, language_name FROM language ORDER BY language_name",
         fetch_all=True
     )
-    return result
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
 
 def get_genres():
     result = execute_sql(
         "SELECT genre_id, genre_name FROM genre ORDER BY genre_name",
         fetch_all=True
     )
-    return result
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
 
 def get_moods():
     result = execute_sql(
         "SELECT mood_id, mood_name FROM mood ORDER BY mood_name",
         fetch_all=True
     )
-    return result
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
 
 def get_instruments():
     result = execute_sql(
         "SELECT instrument_id, instrument_name FROM instrument ORDER BY instrument_name",
         fetch_all=True
     )
-    return result
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
+    
 ### Helper functions ###

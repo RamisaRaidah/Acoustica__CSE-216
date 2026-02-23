@@ -11,6 +11,7 @@ logging.basicConfig(
     stream=sys.stdout
 )
 
+### create_album ###
 def create_album(title, description, release_date, cover_picture, copyright_certificate):
     if not title or not release_date or not copyright_certificate:
         return {"error": "missing required fields"}, 400
@@ -90,8 +91,25 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
     
     return {"message": "album created successfully"}, 201
 
+### get_album_details
 def get_album_details(album_id):
-    return (f"get_album_details {album_id}")
+    result = None
+
+    if album_id == 0:
+        result = execute_sql(
+            "SELECT album_id, title FROM album",
+            fetch_all = True
+        )
+    else:
+        result = execute_sql(
+            "INSERT * FROM album WHERE album_id = %s", (album_id),
+            fetch_all = True
+        )
+    
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
 
 def edit_album(album_id):
     return (f"edit_album {album_id}")

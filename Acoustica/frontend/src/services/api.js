@@ -38,11 +38,6 @@ class ApiService {
         }
     }
 
-
-    async get_song_audio(songId) {
-        return this.request(`/api/music/songs/${songId}/audio`);  
-    }
-
     async signIn(email, password) {
         return this.request('/api/auth/sign-in',{
             method: 'POST',
@@ -71,10 +66,10 @@ class ApiService {
     async getCountries() {
         return this.request('/api/analytics/countries');
     }
+
     async getLanguages() {
         return this.request('/api/analytics/languages');
     }
-
 }
 
 export default new ApiService();

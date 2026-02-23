@@ -112,7 +112,7 @@ export async function renderOnboarding() {
         bioCounter.textContent = `${bioTextarea.value.length}/200`;
     });
 
-     const [countries, languages] = await Promise.all([
+    const [countries, languages] = await Promise.all([
         api.getCountries(),
         api.getLanguages()
     ]);
