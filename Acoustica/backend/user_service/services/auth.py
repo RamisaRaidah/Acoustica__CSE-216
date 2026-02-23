@@ -1,5 +1,5 @@
 from psycopg2.extras import RealDictCursor
-from db import execute_sql, get_db_connection
+from db import execute_sql, get_db_connection, connection_pool,release_connection
 import logging
 from db import execute_sql
 import bcrypt
@@ -75,6 +75,7 @@ def sign_up(data):
                         VALUES (%s, %s, %s)
                         """,(user_id,None, None)
                     )
+                connection.commit()
             return {
                 "message": "Sign up successful",
                 "user_id":user_id,
@@ -86,7 +87,7 @@ def sign_up(data):
         connection.rollback()
         return {"error": "Sign-up failed"}, 500
     finally:
-        connection.close()
+        release_connection(connection)
 
 
 

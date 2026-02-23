@@ -1,5 +1,5 @@
 from psycopg2.extras import RealDictCursor
-from db import execute_sql, get_db_connection
+from db import execute_sql, get_db_connection, connection_pool, release_connection
 import logging
 import sys
 
@@ -61,7 +61,7 @@ def onboarding(user_id, user_type, data):
                 user_updated=cursor.fetchone()
                 
                 if not user_updated:
-                    return {"error": "user update failed"},400
+                    raise Exception("User update failed")
 
                 if user_type=="listener":
                     listener_type=data.get("listener_type","free")
@@ -91,16 +91,20 @@ def onboarding(user_id, user_type, data):
                 role_updated = cursor.fetchone()
 
                 if not role_updated:
-                    return {"error": "Role update failed"}, 400
-
+                    raise Exception("Role update failed")
+                connection.commit()
         return {"message": "Onboarding completed"}, 200
+    except ValueError as e:
+        connection.rollback()
+        return {"error": str(e)}, 400
 
     except Exception as e:
         connection.rollback()
+        logging.error(f"Onboarding failed: {e}")
         return {"error": "Onboarding failed"}, 500
 
     finally:
-        connection.close()
+        release_connection(connection)
 
 
 
