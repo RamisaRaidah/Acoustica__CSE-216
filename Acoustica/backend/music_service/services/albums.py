@@ -91,20 +91,24 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
     
     return {"message": "album created successfully"}, 201
 
+### get_albums
+def get_albums():
+    result = execute_sql(
+        "SELECT album_id, title FROM album",
+        fetch_all = True
+    )
+
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
+    
 ### get_album_details
 def get_album_details(album_id):
-    result = None
-
-    if album_id == 0:
-        result = execute_sql(
-            "SELECT album_id, title FROM album",
-            fetch_all = True
-        )
-    else:
-        result = execute_sql(
-            "INSERT * FROM album WHERE album_id = %s", (album_id),
-            fetch_all = True
-        )
+    result = execute_sql(
+        "INSERT * FROM album WHERE album_id = %s", (album_id),
+        fetch_all = True
+    )    
     
     if result:
         return result, 200
