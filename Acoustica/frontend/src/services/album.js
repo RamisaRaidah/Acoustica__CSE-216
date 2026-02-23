@@ -4,6 +4,6 @@ export async function getAlbums() {
     return api.request('/api/music/albums/all', { method: 'GET' });
 }
 
-export async function getAlbum(albumId) {
+export async function getAlbumDetails(albumId) {
     return api.request(`/api/music/albums/${albumId}`, { method: 'GET' });
 }
