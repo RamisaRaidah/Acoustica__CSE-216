@@ -37,7 +37,7 @@ export async function renderCreateAlbum() {
         }
         catch (error) {
             console.error(error);
-            alert(response.error)
+            alert(error)
         }
     });
 }

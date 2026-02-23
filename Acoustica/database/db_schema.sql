@@ -137,9 +137,9 @@ CREATE TABLE IF NOT EXISTS "album" (
   asset_id INT CONSTRAINT fk_album_asset_id  REFERENCES asset(asset_id),
   "title" TEXT NOT NULL,
   "description" TEXT,
-  release_date DATE,
+  release_date DATE NOT NULL,
   cover_picture TEXT,
-  copyright_certificate TEXT
+  copyright_certificate TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "song" (
