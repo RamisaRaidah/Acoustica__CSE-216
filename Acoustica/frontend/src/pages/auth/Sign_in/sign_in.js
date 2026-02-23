@@ -3,10 +3,8 @@ import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
 import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
-import { enterAuthMode } from '/src/utils/helper.js';
 
-export function renderSignIn() {
-    //enterAuthMode();
+export async function renderSignIn() {
     const app = document.getElementById('app');
     
     removeSidebar();
@@ -17,61 +15,17 @@ export function renderSignIn() {
     content.style.marginLeft = '0';
     content.style.marginTop = '0';
     content.style.padding = '0';
-    content.innerHTML = `
-        <div class="auth-container">
-            <div class="auth-logo">
-                <img src="/src/assets/images/Logo.png" id="logo" alt="Aaaa logoooo" >
-                <img src="/src/assets/images/auth/name_2.png" id="acoustica" alt="Acoustica">
-            </div>
 
-            <div class="auth-left">
-                <p class="typewriter" id="typewriter"></p>
-                <div class="auth-underline"></div>
-            </div>
+    try {
+        const response = await fetch('/src/pages/auth/Sign_in/sign_in.html');
+        const html = await response.text();
+        content.innerHTML = html;
+    } catch (error) {
+        console.error('Failed to load sign-in template:', error);
+        content.innerHTML = '<div class="error">Failed to load sign-in page</div>';
+        return;
+    }
 
-            <div class="auth-card">
-                <div class="auth-header">
-                    <h1>Welcome Back!</h1>
-                </div>
-
-                <form id="signin-form" class="auth-form">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            required 
-                            placeholder="Enter your email"
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            required 
-                            placeholder="Enter your password"
-                        />
-                    </div>
-
-                    <div class="auth-forgot-pass"><a href="/forgot-pass" data-link>Forgot your password?</a> </div>
-
-                    <div id="error-message" class="error-message"></div>
-
-                    <button type="submit" class="btn-primary" id="signin-btn">
-                        Sign In
-                    </button>
-                </form>
-
-                <div class="auth-footer">
-                    <p>Don't have an account? <a href="/sign-up" data-link>Sign Up</a></p>
-                </div>
-            </div>
-        </div>
-    `;
 
     const form = document.getElementById('signin-form');
     const errorDiv = document.getElementById('error-message');
