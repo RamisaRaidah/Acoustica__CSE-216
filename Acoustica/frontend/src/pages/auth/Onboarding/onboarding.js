@@ -20,7 +20,15 @@ export async function renderOnboarding() {
     const user_type = user?.user_type;
 
    try {
-        const response = await fetch('/src/pages/auth/Onboarding/onboarding.html');
+        let templatePath;
+
+        if (user_type === 'artist') {
+            templatePath = '/src/pages/auth/Onboarding/onboarding_artist.html';
+        } else {
+            templatePath = '/src/pages/auth/Onboarding/onboarding_listener.html';
+        }
+
+        const response = await fetch(templatePath);
         const html = await response.text();
         content.innerHTML = html;
     } catch (error) {
