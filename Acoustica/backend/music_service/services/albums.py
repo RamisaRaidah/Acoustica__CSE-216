@@ -21,6 +21,8 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
         return {"error": "database connection failed"}, 500
     
     album_id = None
+    copyright_certificate_ext = None
+    cover_picture_ext = None
     
     try:
         with connection:
@@ -36,10 +38,11 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                 album_id = cursor.fetchone()["album_id"]
                 
                 # Uploading to cloud
-                s3_key = f"Docs/album{album_id}.{storage.get_file_extension(copyright_certificate)}"
+                copyright_certificate_ext = storage.get_file_extension(copyright_certificate_ext)
+                copyright_certificate_path = f"Docs/album{album_id}.{copyright_certificate_ext}"
                 success = storage.upload_file_to_storage(
                     copyright_certificate.stream,
-                    s3_key,
+                    copyright_certificate_path,
                     copyright_certificate.mimetype
                 )
 
@@ -47,10 +50,11 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                     raise Exception()
 
                 if cover_picture:
-                    s3_key = f"Images/album{album_id}.{storage.get_file_extension(cover_picture)}"
+                    cover_picture_ext = storage.get_file_extension(cover_picture)
+                    cover_picture_path = f"Images/album{album_id}.{cover_picture_ext}"
                     success = storage.upload_file_to_storage(
                         cover_picture.stream,
-                        s3_key,
+                        cover_picture_path,
                         cover_picture.mimetype
                     )
 
@@ -63,7 +67,7 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                     UPDATE album
                     SET copyright_certificate = %s
                     WHERE album_id = %s
-                    """, (f"Docs/album{album_id}.{storage.get_file_extension(copyright_certificate)}", album_id)
+                    """, (f"Docs/album{album_id}.{copyright_certificate_ext}", album_id)
                 )
                 if cover_picture:
                     cursor.execute(
@@ -71,19 +75,19 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                         UPDATE album
                         SET cover_picture = %s
                         WHERE album_id = %s
-                        """, (f"Images/album{album_id}.{storage.get_file_extension(cover_picture)}", album_id)
+                        """, (f"Images/album{album_id}.{cover_picture_ext}", album_id)
                     )
                 
     except Exception as e:
         connection.rollback()
-        storage.delete_file_from_storage(f"Docs/album{album_id}.{storage.get_file_extension(copyright_certificate)}")
+        storage.delete_file_from_storage(f"Docs/album{album_id}.{copyright_certificate_ext}")
         if cover_picture:
-            storage.delete_file_from_storage(f"Images/album{album_id}.{storage.get_file_extension(cover_picture)}")
+            storage.delete_file_from_storage(f"Images/album{album_id}.{cover_picture_ext}")
         return {"error": "album creation failed"}, 500
+    
     finally:
         connection.close()
     
-    logging.info(title, description, release_date, cover_picture, copyright_certificate)
     return {"message": "album created successfully"}, 201
 
 def get_album_details(album_id):
