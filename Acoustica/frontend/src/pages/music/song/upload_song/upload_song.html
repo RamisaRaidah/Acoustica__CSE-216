@@ -7,7 +7,7 @@
       <input 
         type="text" 
         id="song_title" 
-        name="songTitle" 
+        name="song_title" 
         placeholder="Enter song title"
         required
       >
@@ -15,29 +15,23 @@
 
     <!-- Album -->
     <div class="form_group">
-    <label for="album_select">Album</label>
-    <div class="input-group">
-      <select id="album_select" name="albumId">
-        <option value="" disabled selected>Select an existing album</option>
+      <label for="album_select">Album</label>
+      <div class="input-group">
+        <select id="album_select" name="album_id">
+          <option value="" disabled selected>Select an existing album</option>
         </select>
-      
-      <button type="button" id="create_album_button" class="btn-side" title="Create New Album">
-        + New
-      </button>
+        
+        <button type="button" id="create_album_button" class="btn-side" title="Create New Album">
+          + New
+        </button>
+      </div>
     </div>
-  </div>
 
     <!-- Language -->
     <div class="form_group">
       <label for="language_select">Language</label>
       <select id="language_select" name="language" required>
         <option value="" disabled selected>Select language</option>
-        <option value="English">English</option>
-        <option value="Bengali">Bengali</option>
-        <option value="Hindi">Hindi</option>
-        <option value="Spanish">Spanish</option>
-        <option value="French">French</option>
-        <!-- add all other languages here -->
       </select>
     </div>
 
@@ -47,19 +41,19 @@
       <input 
         type="date" 
         id="release_date" 
-        name="releaseDate" 
+        name="release_date" 
         required
       >
     </div>
 
     <!-- Audio File -->
     <div class="form_group">
-      <label for="song_file">Audio File (MP3)</label>
+      <label for="song_file">Audio File</label>
       <input 
         type="file" 
         id="song_file" 
-        name="songFile" 
-        accept=".mp3,audio/*"
+        name="song_file" 
+        accept=".mp3,.wav"
         required
       >
     </div>
@@ -70,18 +64,18 @@
       <input 
         type="file" 
         id="lyrics_file" 
-        name="lyricsFile" 
+        name="lyrics_file" 
         accept=".txt"
       >
     </div>
 
     <!-- Copyright Certificate -->
     <div class="form_group">
-      <label for="copyright_certificate">Copyright Certificate (PDF)</label>
+      <label for="copyright_certificate">Copyright Certificate</label>
       <input 
         type="file" 
         id="copyright_certificate" 
-        name="copyrightCertificate" 
+        name="copyright_certificate" 
         accept=".pdf"
         required
       >

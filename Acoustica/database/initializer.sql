@@ -9,8 +9,7 @@ BEGIN
         WHERE schemaname = 'public'
     LOOP
         EXECUTE
-            'TRUNCATE TABLE public.' || quote_ident(r.tablename)
-            || ' RESTART IDENTITY CASCADE';
+            'TRUNCATE TABLE public.' || quote_ident(r.tablename) || ' RESTART IDENTITY CASCADE';
     END LOOP;
 END $$;
 
@@ -26,7 +25,6 @@ INSERT INTO country (country_name) VALUES ('Armenia');
 INSERT INTO country (country_name) VALUES ('Australia');
 INSERT INTO country (country_name) VALUES ('Austria');
 INSERT INTO country (country_name) VALUES ('Azerbaijan');
-
 INSERT INTO country (country_name) VALUES ('Bahamas');
 INSERT INTO country (country_name) VALUES ('Bahrain');
 INSERT INTO country (country_name) VALUES ('Bangladesh');
@@ -44,7 +42,6 @@ INSERT INTO country (country_name) VALUES ('Brunei');
 INSERT INTO country (country_name) VALUES ('Bulgaria');
 INSERT INTO country (country_name) VALUES ('Burkina Faso');
 INSERT INTO country (country_name) VALUES ('Burundi');
-
 INSERT INTO country (country_name) VALUES ('Cabo Verde');
 INSERT INTO country (country_name) VALUES ('Cambodia');
 INSERT INTO country (country_name) VALUES ('Cameroon');
@@ -61,12 +58,10 @@ INSERT INTO country (country_name) VALUES ('Croatia');
 INSERT INTO country (country_name) VALUES ('Cuba');
 INSERT INTO country (country_name) VALUES ('Cyprus');
 INSERT INTO country (country_name) VALUES ('Czechia');
-
 INSERT INTO country (country_name) VALUES ('Denmark');
 INSERT INTO country (country_name) VALUES ('Djibouti');
 INSERT INTO country (country_name) VALUES ('Dominica');
 INSERT INTO country (country_name) VALUES ('Dominican Republic');
-
 INSERT INTO country (country_name) VALUES ('Ecuador');
 INSERT INTO country (country_name) VALUES ('Egypt');
 INSERT INTO country (country_name) VALUES ('El Salvador');
@@ -75,11 +70,9 @@ INSERT INTO country (country_name) VALUES ('Eritrea');
 INSERT INTO country (country_name) VALUES ('Estonia');
 INSERT INTO country (country_name) VALUES ('Eswatini');
 INSERT INTO country (country_name) VALUES ('Ethiopia');
-
 INSERT INTO country (country_name) VALUES ('Fiji');
 INSERT INTO country (country_name) VALUES ('Finland');
 INSERT INTO country (country_name) VALUES ('France');
-
 INSERT INTO country (country_name) VALUES ('Gabon');
 INSERT INTO country (country_name) VALUES ('Gambia');
 INSERT INTO country (country_name) VALUES ('Georgia');
@@ -91,11 +84,9 @@ INSERT INTO country (country_name) VALUES ('Guatemala');
 INSERT INTO country (country_name) VALUES ('Guinea');
 INSERT INTO country (country_name) VALUES ('Guinea-Bissau');
 INSERT INTO country (country_name) VALUES ('Guyana');
-
 INSERT INTO country (country_name) VALUES ('Haiti');
 INSERT INTO country (country_name) VALUES ('Honduras');
 INSERT INTO country (country_name) VALUES ('Hungary');
-
 INSERT INTO country (country_name) VALUES ('Iceland');
 INSERT INTO country (country_name) VALUES ('India');
 INSERT INTO country (country_name) VALUES ('Indonesia');
@@ -104,17 +95,14 @@ INSERT INTO country (country_name) VALUES ('Iraq');
 INSERT INTO country (country_name) VALUES ('Ireland');
 INSERT INTO country (country_name) VALUES ('Israel');
 INSERT INTO country (country_name) VALUES ('Italy');
-
 INSERT INTO country (country_name) VALUES ('Jamaica');
 INSERT INTO country (country_name) VALUES ('Japan');
 INSERT INTO country (country_name) VALUES ('Jordan');
-
 INSERT INTO country (country_name) VALUES ('Kazakhstan');
 INSERT INTO country (country_name) VALUES ('Kenya');
 INSERT INTO country (country_name) VALUES ('Kiribati');
 INSERT INTO country (country_name) VALUES ('Kuwait');
 INSERT INTO country (country_name) VALUES ('Kyrgyzstan');
-
 INSERT INTO country (country_name) VALUES ('Laos');
 INSERT INTO country (country_name) VALUES ('Latvia');
 INSERT INTO country (country_name) VALUES ('Lebanon');
@@ -124,7 +112,6 @@ INSERT INTO country (country_name) VALUES ('Libya');
 INSERT INTO country (country_name) VALUES ('Liechtenstein');
 INSERT INTO country (country_name) VALUES ('Lithuania');
 INSERT INTO country (country_name) VALUES ('Luxembourg');
-
 INSERT INTO country (country_name) VALUES ('Madagascar');
 INSERT INTO country (country_name) VALUES ('Malawi');
 INSERT INTO country (country_name) VALUES ('Malaysia');
@@ -143,7 +130,6 @@ INSERT INTO country (country_name) VALUES ('Montenegro');
 INSERT INTO country (country_name) VALUES ('Morocco');
 INSERT INTO country (country_name) VALUES ('Mozambique');
 INSERT INTO country (country_name) VALUES ('Myanmar');
-
 INSERT INTO country (country_name) VALUES ('Namibia');
 INSERT INTO country (country_name) VALUES ('Nauru');
 INSERT INTO country (country_name) VALUES ('Nepal');
@@ -155,9 +141,7 @@ INSERT INTO country (country_name) VALUES ('Nigeria');
 INSERT INTO country (country_name) VALUES ('North Korea');
 INSERT INTO country (country_name) VALUES ('North Macedonia');
 INSERT INTO country (country_name) VALUES ('Norway');
-
 INSERT INTO country (country_name) VALUES ('Oman');
-
 INSERT INTO country (country_name) VALUES ('Pakistan');
 INSERT INTO country (country_name) VALUES ('Palau');
 INSERT INTO country (country_name) VALUES ('Palestine');
@@ -168,13 +152,10 @@ INSERT INTO country (country_name) VALUES ('Peru');
 INSERT INTO country (country_name) VALUES ('Philippines');
 INSERT INTO country (country_name) VALUES ('Poland');
 INSERT INTO country (country_name) VALUES ('Portugal');
-
 INSERT INTO country (country_name) VALUES ('Qatar');
-
 INSERT INTO country (country_name) VALUES ('Romania');
 INSERT INTO country (country_name) VALUES ('Russia');
 INSERT INTO country (country_name) VALUES ('Rwanda');
-
 INSERT INTO country (country_name) VALUES ('Saint Kitts and Nevis');
 INSERT INTO country (country_name) VALUES ('Saint Lucia');
 INSERT INTO country (country_name) VALUES ('Saint Vincent and the Grenadines');
@@ -201,7 +182,6 @@ INSERT INTO country (country_name) VALUES ('Suriname');
 INSERT INTO country (country_name) VALUES ('Sweden');
 INSERT INTO country (country_name) VALUES ('Switzerland');
 INSERT INTO country (country_name) VALUES ('Syria');
-
 INSERT INTO country (country_name) VALUES ('Taiwan');
 INSERT INTO country (country_name) VALUES ('Tajikistan');
 INSERT INTO country (country_name) VALUES ('Tanzania');
@@ -214,7 +194,6 @@ INSERT INTO country (country_name) VALUES ('Tunisia');
 INSERT INTO country (country_name) VALUES ('Turkey');
 INSERT INTO country (country_name) VALUES ('Turkmenistan');
 INSERT INTO country (country_name) VALUES ('Tuvalu');
-
 INSERT INTO country (country_name) VALUES ('Uganda');
 INSERT INTO country (country_name) VALUES ('Ukraine');
 INSERT INTO country (country_name) VALUES ('United Arab Emirates');
@@ -222,14 +201,11 @@ INSERT INTO country (country_name) VALUES ('United Kingdom');
 INSERT INTO country (country_name) VALUES ('United States');
 INSERT INTO country (country_name) VALUES ('Uruguay');
 INSERT INTO country (country_name) VALUES ('Uzbekistan');
-
 INSERT INTO country (country_name) VALUES ('Vanuatu');
 INSERT INTO country (country_name) VALUES ('Vatican City');
 INSERT INTO country (country_name) VALUES ('Venezuela');
 INSERT INTO country (country_name) VALUES ('Vietnam');
-
 INSERT INTO country (country_name) VALUES ('Yemen');
-
 INSERT INTO country (country_name) VALUES ('Zambia');
 INSERT INTO country (country_name) VALUES ('Zimbabwe');
 
@@ -241,7 +217,6 @@ INSERT INTO language (language_name) VALUES ('Arabic');
 INSERT INTO language (language_name) VALUES ('Armenian');
 INSERT INTO language (language_name) VALUES ('Assamese');
 INSERT INTO language (language_name) VALUES ('Azerbaijani');
-
 INSERT INTO language (language_name) VALUES ('Basque');
 INSERT INTO language (language_name) VALUES ('Belarusian');
 INSERT INTO language (language_name) VALUES ('Bengali');
@@ -249,7 +224,6 @@ INSERT INTO language (language_name) VALUES ('Bhojpuri');
 INSERT INTO language (language_name) VALUES ('Bosnian');
 INSERT INTO language (language_name) VALUES ('Bulgarian');
 INSERT INTO language (language_name) VALUES ('Burmese');
-
 INSERT INTO language (language_name) VALUES ('Catalan');
 INSERT INTO language (language_name) VALUES ('Cebuano');
 INSERT INTO language (language_name) VALUES ('Chichewa');
@@ -258,29 +232,24 @@ INSERT INTO language (language_name) VALUES ('Chinese (Cantonese)');
 INSERT INTO language (language_name) VALUES ('Corsican');
 INSERT INTO language (language_name) VALUES ('Croatian');
 INSERT INTO language (language_name) VALUES ('Czech');
-
 INSERT INTO language (language_name) VALUES ('Danish');
 INSERT INTO language (language_name) VALUES ('Dari');
 INSERT INTO language (language_name) VALUES ('Divehi');
 INSERT INTO language (language_name) VALUES ('Dutch');
-
 INSERT INTO language (language_name) VALUES ('English');
 INSERT INTO language (language_name) VALUES ('Esperanto');
 INSERT INTO language (language_name) VALUES ('Estonian');
 INSERT INTO language (language_name) VALUES ('Ewe');
-
 INSERT INTO language (language_name) VALUES ('Faroese');
 INSERT INTO language (language_name) VALUES ('Fijian');
 INSERT INTO language (language_name) VALUES ('Finnish');
 INSERT INTO language (language_name) VALUES ('French');
 INSERT INTO language (language_name) VALUES ('Frisian');
-
 INSERT INTO language (language_name) VALUES ('Galician');
 INSERT INTO language (language_name) VALUES ('Georgian');
 INSERT INTO language (language_name) VALUES ('German');
 INSERT INTO language (language_name) VALUES ('Greek');
 INSERT INTO language (language_name) VALUES ('Gujarati');
-
 INSERT INTO language (language_name) VALUES ('Haitian Creole');
 INSERT INTO language (language_name) VALUES ('Hausa');
 INSERT INTO language (language_name) VALUES ('Hawaiian');
@@ -288,17 +257,14 @@ INSERT INTO language (language_name) VALUES ('Hebrew');
 INSERT INTO language (language_name) VALUES ('Hindi');
 INSERT INTO language (language_name) VALUES ('Hmong');
 INSERT INTO language (language_name) VALUES ('Hungarian');
-
 INSERT INTO language (language_name) VALUES ('Icelandic');
 INSERT INTO language (language_name) VALUES ('Igbo');
 INSERT INTO language (language_name) VALUES ('Ilocano');
 INSERT INTO language (language_name) VALUES ('Indonesian');
 INSERT INTO language (language_name) VALUES ('Irish');
 INSERT INTO language (language_name) VALUES ('Italian');
-
 INSERT INTO language (language_name) VALUES ('Japanese');
 INSERT INTO language (language_name) VALUES ('Javanese');
-
 INSERT INTO language (language_name) VALUES ('Kannada');
 INSERT INTO language (language_name) VALUES ('Kazakh');
 INSERT INTO language (language_name) VALUES ('Khmer');
@@ -306,13 +272,11 @@ INSERT INTO language (language_name) VALUES ('Kinyarwanda');
 INSERT INTO language (language_name) VALUES ('Korean');
 INSERT INTO language (language_name) VALUES ('Kurdish');
 INSERT INTO language (language_name) VALUES ('Kyrgyz');
-
 INSERT INTO language (language_name) VALUES ('Lao');
 INSERT INTO language (language_name) VALUES ('Latin');
 INSERT INTO language (language_name) VALUES ('Latvian');
 INSERT INTO language (language_name) VALUES ('Lithuanian');
 INSERT INTO language (language_name) VALUES ('Luxembourgish');
-
 INSERT INTO language (language_name) VALUES ('Macedonian');
 INSERT INTO language (language_name) VALUES ('Malagasy');
 INSERT INTO language (language_name) VALUES ('Malay');
@@ -321,24 +285,18 @@ INSERT INTO language (language_name) VALUES ('Maltese');
 INSERT INTO language (language_name) VALUES ('Maori');
 INSERT INTO language (language_name) VALUES ('Marathi');
 INSERT INTO language (language_name) VALUES ('Mongolian');
-
 INSERT INTO language (language_name) VALUES ('Nepali');
 INSERT INTO language (language_name) VALUES ('Norwegian');
-
 INSERT INTO language (language_name) VALUES ('Odia');
 INSERT INTO language (language_name) VALUES ('Oromo');
-
 INSERT INTO language (language_name) VALUES ('Pashto');
 INSERT INTO language (language_name) VALUES ('Persian');
 INSERT INTO language (language_name) VALUES ('Polish');
 INSERT INTO language (language_name) VALUES ('Portuguese');
 INSERT INTO language (language_name) VALUES ('Punjabi');
-
 INSERT INTO language (language_name) VALUES ('Quechua');
-
 INSERT INTO language (language_name) VALUES ('Romanian');
 INSERT INTO language (language_name) VALUES ('Russian');
-
 INSERT INTO language (language_name) VALUES ('Samoan');
 INSERT INTO language (language_name) VALUES ('Scottish Gaelic');
 INSERT INTO language (language_name) VALUES ('Serbian');
@@ -353,7 +311,6 @@ INSERT INTO language (language_name) VALUES ('Spanish');
 INSERT INTO language (language_name) VALUES ('Sundanese');
 INSERT INTO language (language_name) VALUES ('Swahili');
 INSERT INTO language (language_name) VALUES ('Swedish');
-
 INSERT INTO language (language_name) VALUES ('Tagalog');
 INSERT INTO language (language_name) VALUES ('Tajik');
 INSERT INTO language (language_name) VALUES ('Tamil');
@@ -363,22 +320,16 @@ INSERT INTO language (language_name) VALUES ('Thai');
 INSERT INTO language (language_name) VALUES ('Tigrinya');
 INSERT INTO language (language_name) VALUES ('Turkish');
 INSERT INTO language (language_name) VALUES ('Turkmen');
-
 INSERT INTO language (language_name) VALUES ('Ukrainian');
 INSERT INTO language (language_name) VALUES ('Urdu');
 INSERT INTO language (language_name) VALUES ('Uyghur');
 INSERT INTO language (language_name) VALUES ('Uzbek');
-
 INSERT INTO language (language_name) VALUES ('Vietnamese');
-
 INSERT INTO language (language_name) VALUES ('Welsh');
 INSERT INTO language (language_name) VALUES ('Wolof');
-
 INSERT INTO language (language_name) VALUES ('Xhosa');
-
 INSERT INTO language (language_name) VALUES ('Yiddish');
 INSERT INTO language (language_name) VALUES ('Yoruba');
-
 INSERT INTO language (language_name) VALUES ('Zulu');
 
 -- Genre table
@@ -468,7 +419,6 @@ INSERT INTO mood (mood_name) VALUES ('Whimsical');
 -- Instrument table
 INSERT INTO instrument (instrument_name) VALUES ('Lead Vocals');
 INSERT INTO instrument (instrument_name) VALUES ('Backing Vocals');
-
 INSERT INTO instrument (instrument_name) VALUES ('Guitar');
 INSERT INTO instrument (instrument_name) VALUES ('Acoustic Guitar');
 INSERT INTO instrument (instrument_name) VALUES ('Electric Guitar');
@@ -477,139 +427,33 @@ INSERT INTO instrument (instrument_name) VALUES ('Ukulele');
 INSERT INTO instrument (instrument_name) VALUES ('Banjo');
 INSERT INTO instrument (instrument_name) VALUES ('Mandolin');
 INSERT INTO instrument (instrument_name) VALUES ('Harp');
-
 INSERT INTO instrument (instrument_name) VALUES ('Piano');
 INSERT INTO instrument (instrument_name) VALUES ('Keyboard');
 INSERT INTO instrument (instrument_name) VALUES ('Synthesizer');
 INSERT INTO instrument (instrument_name) VALUES ('Organ');
-
 INSERT INTO instrument (instrument_name) VALUES ('Drums');
 INSERT INTO instrument (instrument_name) VALUES ('Drum Kit');
 INSERT INTO instrument (instrument_name) VALUES ('Snare Drum');
 INSERT INTO instrument (instrument_name) VALUES ('Bass Drum');
 INSERT INTO instrument (instrument_name) VALUES ('Cymbals');
 INSERT INTO instrument (instrument_name) VALUES ('Xylophone');
-
 INSERT INTO instrument (instrument_name) VALUES ('Violin');
 INSERT INTO instrument (instrument_name) VALUES ('Viola');
 INSERT INTO instrument (instrument_name) VALUES ('Cello');
 INSERT INTO instrument (instrument_name) VALUES ('Double Bass');
-
 INSERT INTO instrument (instrument_name) VALUES ('Flute');
 INSERT INTO instrument (instrument_name) VALUES ('Clarinet');
 INSERT INTO instrument (instrument_name) VALUES ('Saxophone');
 INSERT INTO instrument (instrument_name) VALUES ('Bassoon');
-
 INSERT INTO instrument (instrument_name) VALUES ('Trumpet');
 INSERT INTO instrument (instrument_name) VALUES ('Trombone');
 INSERT INTO instrument (instrument_name) VALUES ('French Horn');
 INSERT INTO instrument (instrument_name) VALUES ('Tuba');
-
 INSERT INTO instrument (instrument_name) VALUES ('Harmonica');
 INSERT INTO instrument (instrument_name) VALUES ('Accordion');
-
 INSERT INTO instrument (instrument_name) VALUES ('Turntable');
 INSERT INTO instrument (instrument_name) VALUES ('Drum Machine');
 INSERT INTO instrument (instrument_name) VALUES ('Sampler');
 INSERT INTO instrument (instrument_name) VALUES ('MIDI Controller');
-
 INSERT INTO instrument (instrument_name) VALUES ('Tabla');
 INSERT INTO instrument (instrument_name) VALUES ('Sitar');
-
--- 1. Base tables
-INSERT INTO asset (asset_type) VALUES ('user');
-INSERT INTO asset (asset_type) VALUES ('user');
-INSERT INTO asset (asset_type) VALUES ('user');
-INSERT INTO asset (asset_type) VALUES ('song');
-INSERT INTO asset (asset_type) VALUES ('album');
-INSERT INTO asset (asset_type) VALUES ('playlist');
-INSERT INTO asset (asset_type) VALUES ('product');
-INSERT INTO asset (asset_type) VALUES ('user');
-INSERT INTO asset (asset_type) VALUES ('user');
-INSERT INTO asset (asset_type) VALUES ('user');
-INSERT INTO asset (asset_type) VALUES ('user');
-
--- 2. Users
-INSERT INTO users (asset_id, user_type, first_name, last_name, email, "password", country_id, language_id)
-VALUES 
-(1, 'listener', 'Shadman', 'Shanon', 'shanon@example.com', 'pass123', 1, 1),
-(8, 'listener', 'Ramisa', 'Arana', 'arana@example.com', 'pass123', 1, 1),
-(9, 'listener', 'Harry', 'Potter', 'harry@example.com', 'pass123', 1, 1),
-(2, 'artist', 'Alice', 'Smith', 'alice@example.com', 'pass123', 1, 1),
-(10, 'artist', 'Bob', 'Smith', 'bob@example.com', 'pass123', 1, 1),
-(11, 'artist', 'John', 'Smith', 'john@example.com', 'pass123', 1, 1),
-(3, 'admin', 'Admin', 'User', 'admin@example.com', 'pass123', 1, 1);
-
--- 3. Specialized roles
-INSERT INTO listener (listener_id, listener_type) VALUES (1, 'free');
-INSERT INTO listener (listener_id, listener_type) VALUES (2, 'free');
-INSERT INTO listener (listener_id, listener_type) VALUES (3, 'free');
-INSERT INTO artist (artist_id, stage_name, bank_account) VALUES (4, 'AliceStage', '123456789');
-INSERT INTO artist (artist_id, stage_name, bank_account) VALUES (5, 'AliceStage', '123456789');
-INSERT INTO artist (artist_id, stage_name, bank_account) VALUES (6, 'AliceStage', '123456789');
-INSERT INTO admin (admin_id, role) VALUES (7, 'super_admin');
-
--- 4. Preferences, follows, friends
-INSERT INTO language_preference (listener_id, language_id) VALUES (1, 1);
-INSERT INTO followed_artist (listener_id, artist_id) VALUES (1, 4);
--- friends table requires user1_id < user2_id
-INSERT INTO friend (user1_id, user2_id) VALUES (1, 2); -- minimal, same user (could skip)
-INSERT INTO friend_request (sender_id, receiver_id, "status") VALUES (1, 2, 'pending');
-
--- 5. Albums and songs
-INSERT INTO album (asset_id, title, release_date) VALUES (5, 'My Album', CURRENT_DATE);
-INSERT INTO song (asset_id, title, album_id, owner_id, language_id, "length") VALUES 
-(4, 'Aadat', 1, 4, 1, 180);
-
--- 6. Playlists
-INSERT INTO playlist (asset_id, title, creator_id, "visibility") VALUES (6, 'My Playlist', 1, 'public');
-INSERT INTO playlist_song (playlist_id, song_id) VALUES (1, 1);
-
--- 7. Song relations
-INSERT INTO song_artist (song_id, artist_id, "role") VALUES (1, 4, 'vocalist');
-INSERT INTO song_genre (song_id, genre_id) VALUES (1, 1);
-INSERT INTO song_mood (song_id, mood_id) VALUES (1, 1);
-INSERT INTO song_instrument (song_id, instrument_id) VALUES (1, 1);
-
--- 8. Stream history
-INSERT INTO song_stream_history (listener_id, song_id, "duration") VALUES (1, 1, 120);
-INSERT INTO album_stream_history (listener_id, album_id, "duration") VALUES (1, 1, 300);
-INSERT INTO playlist_stream_history (listener_id, playlist_id, "duration") VALUES (1, 1, 200);
-
--- 9. Likes
-INSERT INTO liked_song (listener_id, song_id) VALUES (1, 1);
-INSERT INTO liked_album (listener_id, album_id) VALUES (1, 1);
-INSERT INTO liked_playlist (listener_id, playlist_id) VALUES (1, 1);
-
--- 10. Transactions & plans
-INSERT INTO transaction_history (user_id, transaction_type, amount, payment_method, "status") VALUES (1, 'subscription', 10.00, 'card', 'completed');
-INSERT INTO plan (plan_type, plan_cost, max_members) VALUES ('individual', 10.00, 5);
-INSERT INTO plan_subscription (plan_id, owner_id, start_date, end_date, transaction_id, auto_renewal_mode) VALUES (1, 1, CURRENT_DATE, CURRENT_DATE, 1, 'on');
-
--- 11. Family plan
-INSERT INTO family_plan (family_name, parent_account_id, subscription_id) VALUES ('Doe Family', 1, 1);
-INSERT INTO family_plan_member (family_plan_id, member_id) VALUES (1, 1);
-
--- 12. Shared content
-INSERT INTO friend_shared_content (sender_id, receiver_id, content_id) VALUES (1, 2, 4);
-INSERT INTO family_shared_content (family_plan_id, sender_id, content_id) VALUES (1, 1, 4);
-
--- 13. Product & cart
-INSERT INTO product (asset_id, category, product_name, owner_id, price, stock_quantity) VALUES (7, 'ticket', 'Concert Ticket', 4, 50.00, 10);
-INSERT INTO cart (owner_id, transaction_id) VALUES (1, 1);
-INSERT INTO cart_items (cart_id, product_id, quantity) VALUES (1, 1, 1);
-
--- 14. Badges
-INSERT INTO badge (badge_name, artist_id) VALUES ('Top Artist', 4);
-INSERT INTO badge_user (user_id, badge_id) VALUES (1, 1);
-
--- 15. Approval requests, announcements, reviews, reports, logs
-INSERT INTO approval_request (content_id) VALUES (4);
-INSERT INTO announcement (announcer_id, text) VALUES (3, 'Welcome!');
-INSERT INTO content_review (reviewer_id, topic_id, rating) VALUES (1, 4, 5);
-INSERT INTO artist_review (reviewer_id, artist_id, text) VALUES (1, 4, 'Great artist');
-INSERT INTO report (author_id, topic_id, text) VALUES (1, 4, 'No issues');
-INSERT INTO admin_activity_log (admin_id, activity_details) VALUES (7, '{"action":"seed data"}');
-
--- 16. Notifications
-INSERT INTO notification (notification_id, user_id, text) VALUES (1, 1, 'Welcome notification');

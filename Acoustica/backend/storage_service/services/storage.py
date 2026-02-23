@@ -306,3 +306,18 @@ def generate_upload_presigned_url(s3_key, content_type, expires_in=900):
     except ClientError as e:
         logging.error(f"Error generating upload URL: {e}")
         return None
+
+
+# Extracting file extension
+def get_file_extension(file):
+    if not file or not file.filename:
+        return None
+    
+    _, ext = os.path.splitext(file.filename)
+
+    if not ext:
+        return None
+    
+    ext = ext[1:].lower()
+
+    return ext

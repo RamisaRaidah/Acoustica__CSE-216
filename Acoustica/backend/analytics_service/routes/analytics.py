@@ -58,40 +58,25 @@ def get_family_analytics_route(family_id):
 
 @analytics_bp.get("/api/analytics/countries")
 def get_countries_route():
-    try:
-        result = analytics.get_countries()
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    result, status = analytics.get_countries()
+    return jsonify(result), status
     
 @analytics_bp.get("/api/analytics/languages")
 def get_languages_route():
-    try:
-        result = analytics.get_languages()
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    result, status = analytics.get_languages()
+    return jsonify(result), status
     
 @analytics_bp.get("/api/analytics/genres")
 def get_genres_route():
-    try:
-        result = analytics.get_genres()
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    result, status = analytics.get_genres()
+    return jsonify(result), status
 
 @analytics_bp.get("/api/analytics/moods")
 def get_moods_route():
-    try:
-        result = analytics.get_moods()
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    result, status = analytics.get_moods()
+    return jsonify(result), status
 
 @analytics_bp.get("/api/analytics/instruments")
 def get_instruments_route():
-    try:
-        result = analytics.get_instruments()
-        return jsonify(result), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    result, status = analytics.get_instruments()
+    return jsonify(result), status

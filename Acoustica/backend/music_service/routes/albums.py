@@ -28,13 +28,20 @@ def create_album_route():
     result, status = albums.create_album(title, description, release_date, cover_picture, copyright_certificate)
     return jsonify(result), status
 
+@albums_bp.get("/api/music/albums/all")
+def get_albums_route():
+    result, status = albums.get_albums()
+    return jsonify(result), status
+
 @albums_bp.get("/api/music/albums/<album_id>")
 def get_album_details_route(album_id):
-    return jsonify(f"get_album_details {album_id}")
+    result, status = albums.get_album_details(album_id)
+    return jsonify(result), status
 
 @albums_bp.put("/api/music/albums/<album_id>")
 def edit_album_route(album_id):
-    return jsonify(f"edit_album {album_id}")
+    result, status = albums.get_album_details(album_id)
+    return jsonify(result), status
 
 @albums_bp.delete("/api/music/albums/<album_id>")
 def delete_album_route(album_id):
