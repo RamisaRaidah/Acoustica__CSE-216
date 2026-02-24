@@ -11,3 +11,4 @@ boto3
 mutagen
 Pillow
 PyJWT
+mutagen==1.47.0

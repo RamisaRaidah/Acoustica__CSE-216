@@ -39,22 +39,8 @@ export async function renderUploadSong() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const title = document.getElementById('song_title').value.trim();
-        const file = document.getElementById('song_file').files[0];
+        const formData = new FormData(form);
 
-        if(!title) {
-            alert("Please enter a song title");
-            return;
-        }
-
-        if(!file) {
-            alert("Please select a file");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('file', file);
         try {
             const response = await api.request('/api/music/songs', {
                 method: 'POST',
@@ -62,17 +48,17 @@ export async function renderUploadSong() {
             });
 
             if(response && response.message) {
-                alert("Song uploaded successfully");
+                alert(response.message);
             }
             else {
-                throw new Error("Failed to upload song");
+                throw new Error(response.error);
             }
             
             form.reset();
         }
         catch (error) {
-            console.error(error);
-            alert("Failed to upload song")
+            console.error(error.message);
+            alert(error.message);
         }
     });
 }

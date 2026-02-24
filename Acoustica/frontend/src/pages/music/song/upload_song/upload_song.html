@@ -3,7 +3,7 @@
     
     <!-- Song Title -->
     <div class="form_group">
-      <label for="song_title">Song Title</label>
+      <label>Song Title</label>
       <input 
         type="text" 
         id="song_title" 
@@ -15,9 +15,9 @@
 
     <!-- Album -->
     <div class="form_group">
-      <label for="album_select">Album</label>
+      <label>Album</label>
       <div class="input-group">
-        <select id="album_select" name="album_id">
+        <select id="album_select" name="album_id" required>
           <option value="" disabled selected>Select an existing album</option>
         </select>
         
@@ -29,7 +29,7 @@
 
     <!-- Language -->
     <div class="form_group">
-      <label for="language_select">Language</label>
+      <label>Language</label>
       <select id="language_select" name="language" required>
         <option value="" disabled selected>Select language</option>
       </select>
@@ -37,7 +37,7 @@
 
     <!-- Release Date -->
     <div class="form_group">
-      <label for="release_date">Release Date</label>
+      <label>Release Date</label>
       <input 
         type="date" 
         id="release_date" 
@@ -48,7 +48,7 @@
 
     <!-- Audio File -->
     <div class="form_group">
-      <label for="song_file">Audio File</label>
+      <label>Audio File</label>
       <input 
         type="file" 
         id="song_file" 
@@ -60,7 +60,7 @@
 
     <!-- Lyrics (optional) -->
     <div class="form_group">
-      <label for="lyrics_file">Lyrics (optional)</label>
+      <label>Lyrics (optional)</label>
       <input 
         type="file" 
         id="lyrics_file" 
@@ -71,7 +71,7 @@
 
     <!-- Copyright Certificate -->
     <div class="form_group">
-      <label for="copyright_certificate">Copyright Certificate</label>
+      <label>Copyright Certificate</label>
       <input 
         type="file" 
         id="copyright_certificate" 
@@ -81,7 +81,7 @@
       >
     </div>
 
-    <button type="submit">Upload Song</button>
+    <button type="submit">Upload</button>
 
   </form>
 </div>

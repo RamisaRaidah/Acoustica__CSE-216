@@ -20,7 +20,7 @@ INSERT INTO language_preference (listener_id, language_id) VALUES (1, 1);
 INSERT INTO followed_artist (listener_id, artist_id) VALUES (1, 4);
 INSERT INTO friend (user1_id, user2_id) VALUES (1, 2); 
 INSERT INTO friend_request (sender_id, receiver_id, "status") VALUES (1, 2, 'pending');
-INSERT INTO album (asset_id, title, release_date) VALUES (5, 'My Album', CURRENT_DATE);
+INSERT INTO album (asset_id, title, release_date, copyright_certificate) VALUES (5, 'My Album', CURRENT_DATE, 'null');
 INSERT INTO song (asset_id, title, album_id, owner_id, language_id, "length") VALUES 
 (4, 'Aadat', 1, 4, 1, 180);
 INSERT INTO playlist (asset_id, title, creator_id, "visibility") VALUES (6, 'My Playlist', 1, 'public');

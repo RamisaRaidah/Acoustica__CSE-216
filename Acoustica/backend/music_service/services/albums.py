@@ -1,4 +1,4 @@
-from db import get_db_connection, execute_sql
+from db import get_db_connection, execute_sql, release_connection
 from psycopg2.extras import RealDictCursor
 import logging
 import sys
@@ -22,7 +22,6 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
         return {"error": "database connection failed"}, 500
     
     album_id = None
-    copyright_certificate_ext = None
     cover_picture_ext = None
     
     try:
@@ -31,16 +30,18 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                 # Uploading to db
                 cursor.execute(
                     """
-                    INSERT INTO album (title, description, release_date, cover_picture, copyright_certificate)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO album (title, description, release_date, cover_picture, visibility, copyright_certificate)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING album_id
-                    """, (title, description, release_date, "null", "null")
+                    """, (title, description, release_date, None, 'private', 'null')
                 )
                 album_id = cursor.fetchone()["album_id"]
+
+                if not album_id:
+                    raise Exception()
                 
                 # Uploading to cloud
-                copyright_certificate_ext = storage.get_file_extension(copyright_certificate_ext)
-                copyright_certificate_path = f"Docs/album{album_id}.{copyright_certificate_ext}"
+                copyright_certificate_path = f"Docs/album{album_id}.pdf"
                 success = storage.upload_file_to_storage(
                     copyright_certificate.stream,
                     copyright_certificate_path,
@@ -68,7 +69,7 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                     UPDATE album
                     SET copyright_certificate = %s
                     WHERE album_id = %s
-                    """, (f"Docs/album{album_id}.{copyright_certificate_ext}", album_id)
+                    """, (f"Docs/album{album_id}.pdf", album_id)
                 )
                 if cover_picture:
                     cursor.execute(
@@ -78,16 +79,19 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                         WHERE album_id = %s
                         """, (f"Images/album{album_id}.{cover_picture_ext}", album_id)
                     )
+
+                connection.commit()
                 
     except Exception as e:
         connection.rollback()
-        storage.delete_file_from_storage(f"Docs/album{album_id}.{copyright_certificate_ext}")
+        if album_id:
+            storage.delete_file_from_storage(f"Docs/album{album_id}.pdf")
         if cover_picture:
             storage.delete_file_from_storage(f"Images/album{album_id}.{cover_picture_ext}")
         return {"error": "album creation failed"}, 500
     
     finally:
-        connection.close()
+        release_connection(connection)
     
     return {"message": "album created successfully"}, 201
 
@@ -106,7 +110,7 @@ def get_albums():
 ### get_album_details
 def get_album_details(album_id):
     album_id = int(album_id)
-    
+
     result = execute_sql(
         "SELECT * FROM album WHERE album_id = %s", (album_id,),
         fetch_all = True
