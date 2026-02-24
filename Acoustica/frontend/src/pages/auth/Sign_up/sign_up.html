@@ -1,0 +1,64 @@
+<div class="auth-container">
+    <div class="auth-logo">
+        <img src="/src/assets/images/Logo.png" id="logo" alt="logo">
+        <img src="/src/assets/images/auth/name_2.png" id="acoustica" alt="Acoustica">
+    </div>
+
+    <div class="auth-left">
+        <p class="typewriter" id="typewriter"></p>
+        <div class="auth-underline"></div>
+    </div>
+
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Join Acoustica</p>
+        </div>
+
+        <form id="signup-form" class="auth-form">
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" placeholder="Enter your first name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" placeholder="Enter your last name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required />
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" placeholder="Re-enter your password" required />
+            </div>
+
+            <div class="form-group">
+                <label for="user_type">I am a...</label>
+                <select id="user_type">
+                    <option value="listener">Listener</option>
+                    <option value="artist">Artist</option>
+                </select>
+            </div>
+
+            <div id="error-message" class="error-message"></div>
+
+            <button type="submit" class="btn-primary" id="signup-btn">
+                Sign Up
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/sign-in" data-link>Sign In</a></p>
+        </div>
+    </div>
+
+</div>
