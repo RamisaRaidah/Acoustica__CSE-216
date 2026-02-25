@@ -22,16 +22,16 @@ def sign_up(data):
     user_type = data.get("user_type", "listener")
 
     if not email or not password:
-        return {"error": "Email and password required"}, 400
+        return {"error": "Please provide both email and password"}, 400
     
     if user_type not in ["listener","artist"]:
-        return {"error": "Invalid user type"},400
+        return {"error": "Please select either Listener or Artist"},400
     
     check_sql = """SELECT user_id FROM public.users WHERE email=%s"""
     existing = execute_sql(check_sql, (email,), fetch_one=True)
 
     if existing:
-        return {"error": "Email already exists"}, 409
+        return {"error": "This email is already registered. Try signing in instead"}, 409
 
     hashed_password = hash_password(password)
 
@@ -99,11 +99,11 @@ def sign_in(email, password):
     sql = 'SELECT user_id, user_type, "password" FROM users WHERE email=%s'
     result = execute_sql(sql, (email,), fetch_all=True)
     if not result:
-        return {"error": "Invalid credentials"}, 401
+        return {"error": "No account found with this email"}, 401
 
     user = result[0]
     if not check_password(password, user["password"]):
-        return {"error": "Invalid credentials"}, 401
+        return {"error": "Invalid email or password"}, 401
 
     access_token = create_access_token(
         identity=str(user["user_id"]), 

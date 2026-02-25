@@ -15,11 +15,16 @@ export async function renderSignIn() {
     content.style.marginLeft = '0';
     content.style.marginTop = '0';
     content.style.padding = '0';
+    content.style.overflow = 'hidden';
+    content.style.height = '100vh';
+    document.body.style.overflow = 'hidden';
 
     try {
         const response = await fetch('/src/pages/auth/Sign_in/sign_in.html');
         const html = await response.text();
         content.innerHTML = html;
+        content.classList.remove('scrollable');
+        content.classList.add('no-scroll');
     } catch (error) {
         console.error('Failed to load sign-in template:', error);
         content.innerHTML = '<div class="error">Failed to load sign-in page</div>';
@@ -89,14 +94,14 @@ export async function renderSignIn() {
         if (typing) {
             if (charIndex < lines[lineIndex].length) {
                 charIndex++;
-                setTimeout(type, 80);
+                setTimeout(type, 70);
             } else if (lineIndex < lines.length - 1) {
                 lineIndex++;
                 charIndex = 0;
                 setTimeout(type, 200); // pause between lines
             } else {
                 underline.style.width = '300px';
-                setTimeout(() => { typing = false; setTimeout(erase, 2000); }, 500);
+                setTimeout(() => { typing = false; setTimeout(erase, 1500); }, 500);
             }
         }
     }

@@ -6,6 +6,8 @@
 @import url('/src/pages/auth/auth.css');
 @import url('/src/pages/music/music.css');
 
+@import url('/src/components/scrollbar/scrollbar.css');
+
 html, body {
   -webkit-user-select: none; 
   -ms-user-select: none;     

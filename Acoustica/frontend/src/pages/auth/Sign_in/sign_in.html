@@ -1,6 +1,6 @@
 <div class="auth-container">
     <div class="auth-logo">
-        <img src="/src/assets/images/Logo.png" id="logo" alt="Aaaa logoooo" >
+        <img src="/src/assets/images/Deco/Logo.png" id="logo" alt="Aaaa logoooo" >
         <img src="/src/assets/images/auth/name_2.png" id="acoustica" alt="Acoustica">
     </div>
 
@@ -34,6 +34,9 @@
                     name="password" 
                     required 
                     placeholder="Enter your password"
+                    required
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+                    title="Must be at least 8 characters, include uppercase, lowercase, number and special character"
                 />
             </div>
 

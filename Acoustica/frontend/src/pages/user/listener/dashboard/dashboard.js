@@ -13,4 +13,10 @@ export async function renderListenerDashboard() {
     const html = await result.text();
 
     document.getElementById('content').innerHTML = html;
+
+    content.style.overflowY = 'auto'; 
+    content.style.overflowX = 'hidden'; 
+    content.classList.add('dashboard-scroll');
+    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'hidden';
 }

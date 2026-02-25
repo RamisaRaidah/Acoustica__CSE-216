@@ -3,11 +3,9 @@ import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
 import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
-import { enterAuthMode } from '/src/utils/helper.js';
 import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
 
-export function renderSignUp() {
-    //enterAuthMode();
+export async function renderSignUp() {;
     const content = document.getElementById('content');
 
     removeSidebar();
@@ -16,72 +14,27 @@ export function renderSignUp() {
 
     content.style.marginLeft = '0';
     content.style.marginTop = '0';
-    content.innerHTML = `
-        <div class="auth-container">
-            <div class="auth-logo">
-                <img src="/src/assets/images/Logo.png" id="logo" alt="logo">
-                <img src="/src/assets/images/auth/name_2.png" id="acoustica" alt="Acoustica">
-            </div>
 
-            <div class="auth-left">
-                <p class="typewriter" id="typewriter"></p>
-                <div class="auth-underline"></div>
-            </div>
+    content.style.overflowY = 'auto';
+    content.style.overflowX = 'hidden';
+    content.style.height = 'auto';
 
-            <div class="auth-card">
-                <div class="auth-header">
-                    <h1>Create Account</h1>
-                    <p>Join Acoustica</p>
-                </div>
+    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'hidden';
 
-                <form id="signup-form" class="auth-form">
-                    <div class="form-group">
-                        <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" placeholder="Enter your first name" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" placeholder="Enter your last name" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="Enter your email" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" placeholder="Enter your password" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirm_password">Confirm Password</label>
-                        <input type="password" id="confirm_password" placeholder="Re-enter your password" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user_type">I am a...</label>
-                        <select id="user_type">
-                            <option value="listener">Listener</option>
-                            <option value="artist">Artist</option>
-                        </select>
-                    </div>
-
-                    <div id="error-message" class="error-message"></div>
-
-                    <button type="submit" class="btn-primary" id="signup-btn">
-                        Sign Up
-                    </button>
-                </form>
-
-                <div class="auth-footer">
-                    <p>Already have an account? <a href="/sign-in" data-link>Sign In</a></p>
-                </div>
-            </div>
-
-        </div>
-    `;
+    content.classList.add('scrollable');
+    content.classList.remove('no-scroll');
+    
+    try{
+        const response=await fetch('src/pages/auth/Sign_up/sign_up.html');
+        const html=await response.text();
+        content.innerHTML=html;
+       
+    }catch(error){
+        console.log("Failed to fetch sign up: ", error);
+        content.innerHTML='<div class="error">"Failed to load Sign-up page"</div>';
+        return;
+    }
 
     const form = document.getElementById('signup-form');
     const errorDiv = document.getElementById('error-message');
@@ -96,6 +49,7 @@ export function renderSignUp() {
         const password = document.getElementById('password').value;
         const user_type = document.getElementById('user_type').value;
         const confirm_password = document.getElementById('confirm_password').value;
+
 
         if (password !== confirm_password) {
             errorDiv.textContent = 'Passwords do not match.';
@@ -150,14 +104,14 @@ export function renderSignUp() {
         if (typing) {
             if (charIndex < lines[lineIndex].length) {
                 charIndex++;
-                setTimeout(type, 80);
+                setTimeout(type, 70);
             } else if (lineIndex < lines.length - 1) {
                 lineIndex++;
                 charIndex = 0;
                 setTimeout(type, 200); // pause between lines
             } else {
                 underline.style.width = '300px';
-                setTimeout(() => { typing = false; setTimeout(erase, 2000); }, 500);
+                setTimeout(() => { typing = false; setTimeout(erase, 1500); }, 500);
             }
         }
     }

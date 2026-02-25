@@ -1,6 +1,6 @@
 <div class="auth-container">
     <div class="auth-logo">
-        <img src="/src/assets/images/Logo.png" id="logo" alt="logo">
+        <img src="/src/assets/images/Deco/Logo.png" id="logo" alt="Aaaa logoooo" >
         <img src="/src/assets/images/auth/name_2.png" id="acoustica" alt="Acoustica">
     </div>
 
@@ -33,12 +33,22 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required />
+                <input type="password" id="password" placeholder="Enter your password" 
+                required 
+                minlength="8"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+                title="Must be at least 8 characters, include uppercase, lowercase, number and special character"
+                />
             </div>
 
             <div class="form-group">
                 <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" placeholder="Re-enter your password" required />
+                <input type="password" id="confirm_password" placeholder="Re-enter your password" 
+                required 
+                minlength="8"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+                title="Must be at least 8 characters, include uppercase, lowercase, number and special character"
+                />
             </div>
 
             <div class="form-group">

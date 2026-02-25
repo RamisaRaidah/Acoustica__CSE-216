@@ -3,10 +3,8 @@ import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
 import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
-import { enterAuthMode } from '/src/utils/helper.js';
 
 export async function renderOnboarding() {
-    //enterAuthMode();
     const content = document.getElementById('content');
 
     removeSidebar();
@@ -15,6 +13,16 @@ export async function renderOnboarding() {
 
     content.style.marginLeft = '0';
     content.style.marginTop = '0';
+
+    content.style.overflowY = 'auto';
+    content.style.overflowX = 'hidden';
+    content.style.height = 'auto';
+
+    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'hidden';
+
+    content.classList.add('scrollable');
+    content.classList.remove('no-scroll');
 
     const user = JSON.parse(localStorage.getItem('user'));
     const user_type = user?.user_type;
@@ -31,6 +39,7 @@ export async function renderOnboarding() {
         const response = await fetch(templatePath);
         const html = await response.text();
         content.innerHTML = html;
+        
     } catch (error) {
         console.error('Failed to load sign-in template:', error);
         content.innerHTML = '<div class="error">Failed to load onboarding page </div>';
@@ -115,14 +124,14 @@ export async function renderOnboarding() {
         if (typing) {
             if (charIndex < lines[lineIndex].length) {
                 charIndex++;
-                setTimeout(type, 80);
+                setTimeout(type, 70);
             } else if (lineIndex < lines.length - 1) {
                 lineIndex++;
                 charIndex = 0;
                 setTimeout(type, 200); // pause between lines
             } else {
                 underline.style.width = '300px';
-                setTimeout(() => { typing = false; setTimeout(erase, 2000); }, 500);
+                setTimeout(() => { typing = false; setTimeout(erase, 1500); }, 500);
             }
         }
     }

@@ -27,7 +27,8 @@ class ApiService {
             );
             
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || errorData.message || `HTTP error! status: ${response.status}`);
             }
             
             return await response.json();
