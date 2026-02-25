@@ -1,3 +1,5 @@
+import { getUser } from "/src/services/user.js";
+
 class Router {
   constructor() {
     this.routes = [];
@@ -32,6 +34,11 @@ class Router {
 
   resolve(path, push = false) {
     const normalizedPath = this.normalize(path);
+    const user = getUser();
+
+    console.log("RAW:", localStorage.getItem("user"));
+    console.log("PARSED:", JSON.parse(localStorage.getItem("user")));
+    console.log("GETUSER:", getUser());
 
     for (const route of this.routes) {
       const match = normalizedPath.match(route.regex);
@@ -47,6 +54,14 @@ class Router {
         history.pushState({}, "", "/dashboard");
         this.resolve("/dashboard");
         return;
+      }
+
+      if (route.options.allowedRoles) {
+        if (!user || !route.options.allowedRoles.includes(user.user_type)) {
+          history.pushState({}, "", "/unauthorized");
+          this.resolve("/unauthorized");
+          return;
+        }
       }
 
       const params = {};

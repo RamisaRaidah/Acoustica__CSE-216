@@ -1,4 +1,5 @@
 import router from '/src/utils/routers.js';
+import { renderUnauthorized } from '/src/pages/user/unauthorized/unauthorized.js';
 import { renderSignIn } from '/src/pages/auth/Sign_in/sign_in.js';
 import { renderSignUp } from '/src/pages/auth/Sign_up/sign_up.js';
 import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
@@ -11,19 +12,20 @@ import { renderCreatePlaylist } from '/src/pages/music/playlist/create_playlist/
 
 
 //-----------------------------------User---------------------------------------------------//
-router.register('/dashboard', renderDashboard, { protected: true });
+router.register('/unauthorized', renderUnauthorized);
+router.register('/dashboard', renderDashboard, { protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
 
 //---------------------------------Music-----------------------------------------//
-router.register('/music/upload-song', renderUploadSong, { protected: true });
-router.register('/music/create-album', renderCreateAlbum, { protected: true });
-router.register('/music/create-playlist', renderCreatePlaylist, { protected: true });
+router.register('/music/upload-song', renderUploadSong, { protected: true, allowedRoles: ['artist'] });
+router.register('/music/create-album', renderCreateAlbum, { protected: true, allowedRoles: ['artist'] });
+router.register('/music/create-playlist', renderCreatePlaylist, { protected: true, allowedRoles: ['listener'] });
 
 
 //--------------------------Auth Routes---------------------------------------------------------------//
-router.register('/sign-in', renderSignIn, { publicOnly: true });
-router.register('/sign-up', renderSignUp, { publicOnly: true });
-//router.register('/onboarding', renderOnboarding, { protected: true });
-router.register('/sign-out', renderSignOut,{ protected: true });
+router.register('/sign-in', renderSignIn, { publicOnly: true});
+router.register('/sign-up', renderSignUp, { publicOnly: true});
+//router.register('/onboarding', renderOnboarding, { protected: true, allowedRoles: ['listener', 'artist'] });
+router.register('/sign-out', renderSignOut,{ protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
 
 document.addEventListener('click', (e) => {
   if (e.target.matches('[data-link]')) {

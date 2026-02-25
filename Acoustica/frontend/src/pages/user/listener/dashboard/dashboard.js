@@ -4,7 +4,7 @@ import { loadMusicPlayer } from '/src/components/music_player/music_player.js';
 import { exitAuthMode } from '/src/utils/helper.js';
 
 export async function renderDashboard() {
-    exitAuthMode();
+    // exitAuthMode();
     const content = document.getElementById('content');
     content.innerHTML = '';
     content.style.display = 'block';
