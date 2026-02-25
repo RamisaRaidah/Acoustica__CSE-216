@@ -36,10 +36,6 @@ class Router {
     const normalizedPath = this.normalize(path);
     const user = getUser();
 
-    console.log("RAW:", localStorage.getItem("user"));
-    console.log("PARSED:", JSON.parse(localStorage.getItem("user")));
-    console.log("GETUSER:", getUser());
-
     for (const route of this.routes) {
       const match = normalizedPath.match(route.regex);
       if (!match) continue;

@@ -2,9 +2,9 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 20vw;
+  width: 18vw;
   height: 100vh;
-  background: #1a1a1a;
+  background: #111111;
   color: #eee;
   display: flex;
   flex-direction: column;
@@ -17,37 +17,45 @@
 .app_info {
   display: flex;
   align-items: center;
-  gap: 1.2vw;
+  gap: 1vw;
   align-self: center;
-  margin-bottom: 8vh;
+  margin-bottom: 6vh;
 }
 
-#logo,
-#app_name {
+#logo {
   height: 3vw;
+}
+
+#app_name {
+  height: 2.8vw;
 }
 
 .sidebar_navigation_top,
 .sidebar_navigation_bottom {
   display: flex;
   flex-direction: column;
-  gap: 0.4vw;
-  margin-left: 1.6vw;
+  gap: 0.2vw;
+  margin-left: 1vw;
 }
 
 .sidebar_navigation_top {
   margin-bottom: 18vh;
 }
 
+.sidebar_navigation_bottom {
+  margin-top: auto;
+  margin-bottom: 3vh;
+}
+
 .sidebar_navigation_top a,
 .sidebar_navigation_bottom a {
   display: flex;
   align-items: center;
-  gap: 0.8vw;
+  gap: 0.6vw;
   color: #bbb;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.1vw;
+  font-size: 1vw;
   padding: 0.6vw 1vw;
   border-radius: 0.6vw;
   transition: all 0.3s ease;
@@ -61,8 +69,8 @@
 
 .sidebar_navigation_top img,
 .sidebar_navigation_bottom img {
-  width: 1.25vw;
-  height: 1.2vw;
+  width: 1.15vw;
+  height: 1.1vw;
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
@@ -72,7 +80,7 @@
 }
 
 #about_us_button {
-  font-size: 1.3vw;
+  font-size: 1.2vw;
   padding: 0.6vw 1vw;
   border-radius: 0.6vw;
   transition: all 0.3s ease;

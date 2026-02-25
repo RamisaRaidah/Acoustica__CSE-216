@@ -1,17 +1,16 @@
 import { loadSidebar } from '/src/components/sidebar/sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
 import { loadMusicPlayer } from '/src/components/music_player/music_player.js';
-import { exitAuthMode } from '/src/utils/helper.js';
 
-export async function renderDashboard() {
-    // exitAuthMode();
-    const content = document.getElementById('content');
-    content.innerHTML = '';
-    content.style.display = 'block';
-
+export async function renderListenerDashboard() {
     await Promise.all([
       loadSidebar(),
       loadTopbar(),
       loadMusicPlayer(2, 0)
     ]);
+
+    const result = await fetch('src/pages/user/listener/dashboard/dashboard.html');
+    const html = await result.text();
+
+    document.getElementById('content').innerHTML = html;
 }

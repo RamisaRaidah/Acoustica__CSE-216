@@ -4,7 +4,7 @@ import { renderSignIn } from '/src/pages/auth/Sign_in/sign_in.js';
 import { renderSignUp } from '/src/pages/auth/Sign_up/sign_up.js';
 import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
 import { renderSignOut } from '/src/pages/auth/Sign_out/sign_out.js';
-import { renderDashboard } from '/src/pages/user/listener/dashboard/dashboard.js';
+import { renderListenerDashboard } from '/src/pages/user/listener/dashboard/dashboard.js';
 import { renderUploadSong } from '/src/pages/music/song/upload_song/upload_song.js';
 import { renderCreateAlbum } from '/src/pages/music/album/create_album/create_album.js';
 import { renderCreatePlaylist } from '/src/pages/music/playlist/create_playlist/create_playlist.js';
@@ -13,7 +13,7 @@ import { renderCreatePlaylist } from '/src/pages/music/playlist/create_playlist/
 
 //-----------------------------------User---------------------------------------------------//
 router.register('/unauthorized', renderUnauthorized);
-router.register('/dashboard', renderDashboard, { protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
+router.register('/dashboard', renderListenerDashboard, { protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
 
 //---------------------------------Music-----------------------------------------//
 router.register('/music/upload-song', renderUploadSong, { protected: true, allowedRoles: ['artist'] });

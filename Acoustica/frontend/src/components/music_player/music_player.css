@@ -1,11 +1,11 @@
 .music_player {
   position: fixed;
   bottom: 0;
-  left: 20vw;
-  width: 80vw;
+  left: 18vw;
+  width: 82vw;
   height: 12vh;
 
-  background: rgba(152, 199, 206, 0.75);
+  background: #608a83;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
