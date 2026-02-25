@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 import logging
 import sys
+from flask_jwt_extended import jwt_required
 
 from music_service.services import songs
 
@@ -17,26 +18,37 @@ def health():
     return jsonify("Song is alive!!!")
 
 @songs_bp.post("/api/music/songs")
+@jwt_required()
 def upload_song_route():
-    title = request.form.get('title')
-    file = request.files.get('file')
-    result, status = songs.upload_song(file, title)
+    title = request.form.get('song_title')
+    album = request.form.get('album_id')
+    language = request.form.get('language')
+    release_date = request.form.get('release_date')
+    song_file = request.files.get('song_file')
+    lyrics = request.files.get('lyrics_file')
+    copyright_certificate = request.files.get('copyright_certificate')
+
+    result, status = songs.upload_song(title, album, language, release_date, song_file, lyrics, copyright_certificate)
     return jsonify(result), status
 
 @songs_bp.get("/api/music/songs/<song_id>")
+@jwt_required()
 def get_song_details_route(song_id):
     result, status = songs.get_song_details(song_id)
     return jsonify(result),status
 
 @songs_bp.put("/api/music/songs/<song_id>")
+@jwt_required()
 def edit_song_route(song_id):
     return jsonify(f"edit_song {song_id}")
 
 @songs_bp.delete("/api/music/songs/<song_id>")
+@jwt_required()
 def delete_song_route(song_id):
     return jsonify(f"delete_song {song_id}")
 
 @songs_bp.get("/api/music/songs/<song_id>/audio")
+@jwt_required()
 def get_song_audio_route(song_id):
     result, status = songs.get_song_audio(song_id)
     return jsonify(result), status

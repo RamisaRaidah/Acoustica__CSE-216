@@ -61,7 +61,7 @@
 
 .sidebar_navigation_top img,
 .sidebar_navigation_bottom img {
-  width: 1.2vw;
+  width: 1.25vw;
   height: 1.2vw;
   transition: transform 0.3s ease, filter 0.3s ease;
 }

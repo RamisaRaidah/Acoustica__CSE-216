@@ -139,6 +139,7 @@ CREATE TABLE IF NOT EXISTS "album" (
   "description" TEXT,
   release_date DATE NOT NULL,
   cover_picture TEXT,
+  "visibility" visibility_enum,
   copyright_certificate TEXT NOT NULL
 );
 
@@ -153,6 +154,7 @@ CREATE TABLE IF NOT EXISTS "song" (
   release_date DATE,
   song_audio TEXT,
   lyrics TEXT,
+  "visibility" visibility_enum,
   copyright_certificate TEXT
 );
 
@@ -163,8 +165,8 @@ CREATE TABLE IF NOT EXISTS "playlist" (
   creator_id INT CONSTRAINT fk_playlist_listener_creator_id REFERENCES listener(listener_id),
   "description" TEXT,
   creation_date DATE DEFAULT CURRENT_DATE,
-  "visibility" visibility_enum,
-  cover_picture TEXT
+  cover_picture TEXT,
+  "visibility" visibility_enum
 );
 
 CREATE TABLE IF NOT EXISTS "playlist_song" (

@@ -1,0 +1,50 @@
+<div id="create_playlist_container">
+  <form id="create_playlist_form" enctype="multipart/form-data">
+    
+    <!-- Playlist Title -->
+    <div class="form_group">
+      <label>Playlist Title</label>
+      <input 
+        type="text" 
+        id="playlist_title" 
+        name="playlist_title" 
+        placeholder="Enter playlist title"
+        required
+      >
+    </div>
+
+    <!-- Description (optional) -->
+    <div class="form_group">
+      <label>Description (optional)</label>
+      <input 
+        type="text" 
+        id="description" 
+        name="description" 
+      >
+    </div>
+
+    <!-- Visibility -->
+    <div class="form_group">
+      <label>Visibility</label>
+      <select id="visibility_select" name="visibility" required>
+        <option value="" disabled selected>Select visibility</option>
+        <option value="private">Private</option>
+        <option value="public">Public</option>
+      </select>
+    </div>
+
+    <!-- Cover picture -->
+    <div class="form_group">
+      <label>Cover Picture</label>
+      <input 
+        type="file" 
+        id="cover_picture" 
+        name="cover_picture" 
+        accept=".jpg"
+      >
+    </div>
+
+    <button type="submit">Upload</button>
+
+  </form>
+</div>
