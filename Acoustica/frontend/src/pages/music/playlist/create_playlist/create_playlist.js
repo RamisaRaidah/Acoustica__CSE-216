@@ -8,10 +8,8 @@ export async function renderCreatePlaylist() {
         removeSidebar()
     ]);
 
-    const result = await fetch('/src/pages/music/playlist/create_playlist/create_playlist.html');
-    const html = await result.text();
-
-    document.getElementById('content').innerHTML = html;
+    const response = await fetch('/src/pages/music/playlist/create_playlist/create_playlist.html');
+    document.getElementById('content').innerHTML = await response.text();
 
     const form = document.getElementById('create_playlist_form');
 

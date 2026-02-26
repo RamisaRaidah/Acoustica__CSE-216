@@ -8,10 +8,8 @@ export async function renderCreateAlbum() {
         removeSidebar()
     ]);
 
-    const result = await fetch('/src/pages/music/album/create_album/create_album.html');
-    const html = await result.text();
-
-    document.getElementById('content').innerHTML = html;
+    const response = await fetch('/src/pages/music/album/create_album/create_album.html');
+    document.getElementById('content').innerHTML = await response.text();
 
     const form = document.getElementById('create_album_form');
 

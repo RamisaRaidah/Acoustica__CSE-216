@@ -1,8 +1,19 @@
+import { getUser } from "/src/services/user.js"
+import { loadListenerSidebar } from "/src/components/sidebar/listener_sidebar/listener_sidebar.js";
+import { loadArtistSidebar } from "/src/components/sidebar/artist_sidebar/artist_sidebar.js";
+import { loadAdminSidebar } from "/src/components/sidebar/admin_sidebar/admin_sidebar.js";
+
 export async function loadSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const result = await fetch('/src/components/sidebar/sidebar.html');
-    sidebar.innerHTML = await result.text();
-    sidebar.style.setProperty('display', 'block', 'important');
+    const userType = getUser().user_type;
+    if (userType === "listener") {
+        loadListenerSidebar();
+    }
+    else if (userType === "artist") {
+        loadArtistSidebar();
+    }
+    else if (userType === "admin") {
+        loadAdminSidebar();
+    }
 }
 
 export async function removeSidebar() {

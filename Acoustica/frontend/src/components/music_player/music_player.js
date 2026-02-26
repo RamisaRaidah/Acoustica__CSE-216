@@ -5,10 +5,8 @@ let isPlaying = false;
 export async function loadMusicPlayer(songId, progress) {
   const musicPlayer = document.getElementById('music_player');
   musicPlayer.style.setProperty('display', 'block', 'important');
-  const result = await fetch('/src/components/music_player/music_player.html');
-  const html = await result.text();
-
-  document.getElementById('music_player').innerHTML = html;
+  const response = await fetch('/src/components/music_player/music_player.html');
+  document.getElementById('music_player').innerHTML = await response.text();
 
   const audio = document.getElementById('audio');
   const playPauseButton = document.getElementById('play_pause_button');

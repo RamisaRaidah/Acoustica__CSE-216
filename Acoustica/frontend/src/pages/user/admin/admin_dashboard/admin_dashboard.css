@@ -1,18 +1,17 @@
 #dashboard_container {
   position: fixed;
-  top: 10vh;
+  top: 12vh;
   left: 18vw;
   width: 82vw;
   height: auto;
   padding: 0 2vw;
   box-sizing: border-box;
   display: flex;
-  justify-content: center;
 }
 
 #banner1_wrapper {
   position: relative;
-  width: 78vw;
+  width: 50vw;
   height: auto;
   animation: float 5s ease-in-out infinite;
 }
