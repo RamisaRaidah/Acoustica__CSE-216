@@ -11,39 +11,67 @@
     <div class="auth-card">
         <div class="auth-header">
             <h1>Set Up Your Profile</h1>
-            <p>Tell us a bit about yourself</p>
         </div>
 
         <form id="onboarding-form" class="auth-form">
+            
+            <div class="form-group">
+                <label for="pfp">Profile Picture</label>
+                <input 
+                    type="file" 
+                    id="pfp" 
+                    name="pfp" 
+                    accept="image/png, image/jpeg, image/webp" 
+                />
+            </div>
+
+            <div class="form-group">
+                <img 
+                id="pfp-preview" 
+                style="display:none; 
+                width:80px; 
+                height:80px; 
+                border-radius:50%;"
+                >
+            </div>
 
             <div class="form-group">
                 <label for="bio">Bio</label>
-                <textarea id="bio" placeholder="Tell us about yourself..."maxlength="200"></textarea>
+                <textarea 
+                id="bio" 
+                name="bio" 
+                placeholder="Tell us about yourself..."
+                maxlength="200"></textarea>
                 <small id="bio-counter" style="color: #5c6465; text-align: right;">0/200</small>
             </div>
 
             <div class="form-group">
                 <label for="country_id">Country</label>
-                <select id="country_id">
+                <select id="country_id" name="country_id">
                     <option value="">Loading countries...</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="language_id">Language</label>
-                <select id="language_id">
+                <select id="language_id" name="language_id">
                     <option value="">Loading languages...</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="phone_number">Phone Number</label>
-                <input type="tel" id="phone_number" placeholder="e.g. +1234567890" />
+                <input 
+                    type="tel" 
+                    id="phone_number" 
+                    name="phone_number" 
+                    placeholder="e.g. +1234567890" 
+                />
             </div>
 
             <div class="form-group">
                 <label for="gender">Gender</label>
-                <select id="gender">
+                <select id="gender" name="gender">
                     <option value="">Prefer not to say</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -53,17 +81,21 @@
 
             <div class="form-group">
                 <label for="date_of_birth">Date of Birth</label>
-                <input type="date" id="date_of_birth" />
+                <input 
+                    type="date" 
+                    id="date_of_birth"
+                    name="date_of_birth" 
+                />
             </div>
 
             <div class="form-group">
                 <label for="app_mode">App Mode</label>
-                <select id="app_mode">
+                <select id="app_mode" name="app_mode">
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>
                 </select>
             </div>
-
+          
             <div id="error-message" class="error-message"></div>
 
             <button type="submit" class="btn-primary" id="onboarding-btn">

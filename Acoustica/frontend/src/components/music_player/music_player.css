@@ -1,6 +1,6 @@
 /* Orange */
 
-.music_player {
+/* .music_player {
   position: fixed;
   bottom: 0;
   left: 18vw;
@@ -261,12 +261,12 @@
 
 img {
   display: block;
-}
+} */
 
 
 /* Green */
 
-/* .music_player {
+.music_player {
   position: fixed;
   bottom: 0;
   left: 18vw;
@@ -535,4 +535,4 @@ img {
 
 img {
   display: block;
-} */
+}

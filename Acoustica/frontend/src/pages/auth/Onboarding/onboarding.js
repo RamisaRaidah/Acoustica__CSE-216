@@ -1,3 +1,4 @@
+//onboarding.js
 import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
@@ -5,6 +6,7 @@ import { removeTopbar } from '/src/components/topbar/topbar.js';
 import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
 
 export async function renderOnboarding() {
+    console.log('Hello onboarding');
     const content = document.getElementById('content');
 
     removeSidebar();
@@ -24,24 +26,37 @@ export async function renderOnboarding() {
     content.classList.add('scrollable');
     content.classList.remove('no-scroll');
 
+    console.log('We made ir here, scroll bars should be fine, but we know they are not');
+
     const user = JSON.parse(localStorage.getItem('user'));
     const user_type = user?.user_type;
 
-   try {
-        let templatePath;
+    console.log('Well, I am still alive');
 
+    let templatePath;
+    try {
+        
         if (user_type === 'artist') {
             templatePath = '/src/pages/auth/Onboarding/onboarding_artist.html';
         } else {
-            templatePath = '/src/pages/auth/Onboarding/onboarding_listener.html';
+            templatePath = '/src/pages/auth/Onboarding/onboarding_listener_copy.html';
         }
 
+        console.log('user_type:', user_type);
+        console.log('templatePath:', templatePath);
+
         const response = await fetch(templatePath);
-        const html = await response.text();
-        content.innerHTML = html;
+        console.log('fetch status:', response.status, response.ok);
         
-    } catch (error) {
-        console.error('Failed to load sign-in template:', error);
+        const html = await response.text();
+        console.log('html length:', html.length);
+        console.log('has pfp:', html.includes('id="pfp"'));
+        
+        content.innerHTML = html;
+        console.log('DOM has pfp after inject:', !!document.getElementById('pfp'));
+
+    }catch (error) {
+        console.error('Template load error:', error);
         content.innerHTML = '<div class="error">Failed to load onboarding page </div>';
         return;
     }
@@ -52,26 +67,64 @@ export async function renderOnboarding() {
         bioCounter.textContent = `${bioTextarea.value.length}/200`;
     });
 
-    const [countries, languages] = await Promise.all([
-        api.getCountries(),
-        api.getLanguages()
-    ]);
+    try {
+        const [countries, languages] = await Promise.all([
+            api.getCountries(),
+            api.getLanguages()
+        ]);
+
+        document.getElementById('country_id').innerHTML = 
+            `<option value="">Select your country</option>` +
+            countries.map(c => `<option value="${c.country_id}">${c.country_name}</option>`).join('');
+
+        document.getElementById('language_id').innerHTML = 
+            `<option value="">Select your language</option>` +
+            languages.map(l => `<option value="${l.language_id}">${l.language_name}</option>`).join('');
+
+    } catch (error) {
+        console.error('Failed to load countries/languages:', error);
+      
+        document.getElementById('country_id').innerHTML = `<option value="">Failed to load</option>`;
+        document.getElementById('language_id').innerHTML = `<option value="">Failed to load</option>`;
+    }
 
 
-    document.getElementById('country_id').innerHTML = 
-        `<option value="">Select your country</option>` +
-        countries.map(c => `<option value="${c.country_id}">${c.country_name}</option>`).join('');
+    console.log('Done with countries and languages');
 
-    document.getElementById('language_id').innerHTML = 
-        `<option value="">Select your language</option>` +
-        languages.map(l => `<option value="${l.language_id}">${l.language_name}</option>`).join('');
-
+    
     const form = document.getElementById('onboarding-form');
     const errorDiv = document.getElementById('error-message');
     const submitBtn = document.getElementById('onboarding-btn');
     
+    const pfpInput = document.getElementById('pfp');
+    const pfpPreview = document.getElementById('pfp-preview');
+    const pfpWrapper = document.querySelector('.pfp-wrapper');
+
+    if (pfpInput && pfpPreview && pfpWrapper) {
+
+        pfpWrapper.addEventListener('click', () => {
+            pfpInput.click();
+        });
+
+        pfpInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    pfpPreview.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+    } else {
+        console.warn("PFP elements missing in DOM");
+    }
+
 
     form.addEventListener('submit', async (e) => {
+        console.log('Ladies and gentlemen, we have gathered here to witness the destruction of my brain');
         e.preventDefault();
 
         errorDiv.textContent = '';
@@ -79,23 +132,14 @@ export async function renderOnboarding() {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Saving...';
 
-        const data = {
-            bio: document.getElementById('bio').value,
-            country_id: document.getElementById('country_id').value || null,
-            language_id: document.getElementById('language_id').value || null,
-            phone_number: document.getElementById('phone_number').value,
-            gender: document.getElementById('gender').value,
-            date_of_birth: document.getElementById('date_of_birth').value || null,
-            app_mode: document.getElementById('app_mode').value,
-            ...(user_type === 'artist' && {
-                stage_name: document.getElementById('stage_name').value,
-                bank_account: document.getElementById('bank_account').value,
-            })
-        };
+       const formData=new FormData(form);
 
+        console.log('Okkkkk workkkkkk');
         try {
-            const response = await api.onboarding(data);
+            const response = await api.onboarding(formData);
+            console.log('Welp, what happened now');
             if (response && response.message) {
+                console.log('Why will you not work now?');
                 router.navigate('/dashboard');
             } else {
                 throw new Error('Onboarding failed');
