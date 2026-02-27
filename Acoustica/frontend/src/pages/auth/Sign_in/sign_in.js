@@ -60,6 +60,13 @@ export async function renderSignIn() {
                     user_type: response.user_type
                 }));
                 localStorage.setItem('theme', response.theme); 
+                const theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+                    document.body.classList.remove('dark');
+                }
+                else {
+                    document.body.classList.add('dark');
+                }
 
                 console.log('Signed in successfully');
                 router.navigate('/dashboard');
