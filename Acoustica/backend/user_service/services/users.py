@@ -16,14 +16,31 @@ logging.basicConfig(
 ################################################### get_me ##################################################################
 def get_me(user_id):
     sql="""
-    SELECT user_id, email, first_name, last_name, user_type
+    SELECT 
+        user_id, 
+        email, 
+        first_name, 
+        last_name, 
+        user_type,
+        profile_picture
     FROM users
     WHERE user_id=%s
     """
 
     user=execute_sql(sql,(user_id,),fetch_one=True)
+
     if not user:
         return {"error": "User not found"}, 404
+    
+    if user.get("profile_picture_path"):
+        url = storage.generate_signed_url(user["profile_picture_path"], expires_in=3600)
+    else:
+        url = storage.generate_signed_url(
+            "Images/Profile_Pictures/default.png",
+            expires_in=3600
+        )
+
+    user["profile_picture_url"] = url
 
     return user, 200
 
@@ -62,8 +79,8 @@ def onboarding(user_id, user_type, data):
             if not success:
                 raise Exception()
         else:
-            logging.info("Uploading default profile picture for user")
-            default_file_url = "https://f003.backblazeb2.com/file/Acoustica-Media-Storage/Images/Profile_Pictures/Default_pfp.png"
+            logging.info("Pfp is now default pfp")
+            # default_file_url = "https://f003.backblazeb2.com/file/Acoustica-Media-Storage/Images/Profile_Pictures/Default_pfp.png"
             # pfp_ext = "png"
             # pfp_path = f"Images/Profile_Pictures/pfp{user_id}.{pfp_ext}"
             # import requests

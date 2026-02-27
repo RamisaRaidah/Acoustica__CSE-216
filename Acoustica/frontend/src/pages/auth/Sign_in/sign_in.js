@@ -59,10 +59,11 @@ export async function renderSignIn() {
                     email: email,
                     user_type: response.user_type
                 }));
-                localStorage.setItem('theme', 'light'); // change it by db query
+                localStorage.setItem('theme', response.theme); 
 
                 console.log('Signed in successfully');
                 router.navigate('/dashboard');
+                
             } else if (response && response.error) {
                 throw new Error(response.error);
             } else {

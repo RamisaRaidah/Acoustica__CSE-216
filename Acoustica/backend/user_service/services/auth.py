@@ -96,7 +96,7 @@ def sign_in(email, password):
     if not email or not password:
         return {"error": "Email and password required"}, 400
 
-    sql = 'SELECT user_id, user_type, "password" FROM users WHERE email=%s'
+    sql = 'SELECT user_id, user_type, "password", app_mode FROM users WHERE email=%s'
     result = execute_sql(sql, (email,), fetch_all=True)
     if not result:
         return {"error": "No account found with this email"}, 401
@@ -109,7 +109,11 @@ def sign_in(email, password):
         identity=str(user["user_id"]), 
         additional_claims={"user_type": user["user_type"]}
     )
-    return {"message": "Login successful", "token": access_token, "user_id": user["user_id"], "user_type": user["user_type"]}, 200
+    return {"message": "Login successful", 
+            "token": access_token, 
+            "user_id": user["user_id"], 
+            "user_type": user["user_type"],
+            "theme": user["app_mode"]},  200
 
 ###################################################### sign_out #############################################################
 def sign_out():

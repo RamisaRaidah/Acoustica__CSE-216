@@ -69,15 +69,20 @@ export async function renderSignUp() {;
 
             if (response && response.user_id) {
                 const signInResponse = await api.signIn(email, password);
+    
                 localStorage.setItem('token', signInResponse.token);
+    
                 localStorage.setItem('user', JSON.stringify({
                     user_id: signInResponse.user_id,
-                    email,
+                    email: email,
                     user_type: signInResponse.user_type
                 }));
+    
+                localStorage.setItem('theme', response.theme);
+    
                 console.log('Sign up and sign in done, going to Onboarding');
                await renderOnboarding();
-               //router.navigate('/onboarding');
+    
             } else {
                 throw new Error('Sign-up failed');
             }
