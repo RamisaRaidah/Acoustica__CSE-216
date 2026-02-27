@@ -12,3 +12,4 @@ mutagen
 Pillow
 PyJWT
 mutagen==1.47.0
+requests>=2.31.0

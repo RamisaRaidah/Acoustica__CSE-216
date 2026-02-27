@@ -1,7 +1,10 @@
+from flask import request
 from psycopg2.extras import RealDictCursor
 from db import execute_sql, get_db_connection, connection_pool, release_connection
 import logging
 import sys
+
+from storage_service.services import storage
 
 logging.basicConfig(
     level = logging.INFO,
@@ -27,22 +30,57 @@ def get_me(user_id):
 
 ######################################### Onboarding ##################################################################
 def onboarding(user_id, user_type, data):
+    logging.info('Hello dears')
+    bio = request.form.get("bio")
+    country_id = request.form.get("country_id")
+    language_id = request.form.get("language_id")
+    phone_number = request.form.get("phone_number")
+    gender = request.form.get("gender")
+    date_of_birth = request.form.get("date_of_birth")  ##iso format: 2025-02-19
+    app_mode = request.form.get("app_mode", "light")
+
+    pfp = request.files.get("pfp")
 
     connection = get_db_connection()
     if connection is None:
         return {"error": "Database connection failed"}, 500
+    
+    logging.info('Oh cool, cool')
+
+    pfp_path=None
 
     try:
+        if pfp:
+            logging.info('On your way to the sky')
+            pfp_ext=storage.get_file_extension(pfp)
+            pfp_path=f"Images/Profile_Pictures/pfp{user_id}.{pfp_ext}"
+            success=storage.upload_file_to_storage(
+                pfp.stream,
+                pfp_path,
+                pfp.mimetype
+            )
+            if not success:
+                raise Exception()
+        else:
+            logging.info("Uploading default profile picture for user")
+            default_file_url = "https://f003.backblazeb2.com/file/Acoustica-Media-Storage/Images/Profile_Pictures/Default_pfp.png"
+            # pfp_ext = "png"
+            # pfp_path = f"Images/Profile_Pictures/pfp{user_id}.{pfp_ext}"
+            # import requests
+            # resp = requests.get(default_file_url, stream=True)
+            # if resp.status_code == 200:
+            #     success = storage.upload_file_to_storage(
+            #         resp.raw,
+            #         pfp_path,
+            #         "image/png"
+            #     )
+            #     if not success:
+            #         raise Exception("Default profile picture upload failed")
+            # else:
+            #     raise Exception("Failed to fetch default profile picture from Backblaze")
+            
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-                bio=data.get("bio")
-                country_id=data.get("country_id")
-                language_id=data.get("language_id")
-                phone_number=data.get("phone_number")
-                gender=data.get("gender")
-                date_of_birth=data.get("date_of_birth")  ##iso format: 2025-02-19
-                app_mode=data.get("app_mode","light")
-
                 cursor.execute(
                     """
                         UPDATE users
@@ -52,12 +90,14 @@ def onboarding(user_id, user_type, data):
                             phone_number=%s,
                             gender=%s,
                             date_of_birth=%s,
-                            app_mode=%s
+                            app_mode=%s,
+                            profile_picture=%s
                         WHERE user_id=%s
                         RETURNING user_id
-                    """,(bio,country_id,language_id,phone_number,gender,date_of_birth,app_mode,user_id)
+                    """,(bio,country_id,language_id,phone_number,gender,date_of_birth,app_mode,pfp_path,user_id)
                 )
 
+                
                 user_updated=cursor.fetchone()
                 
                 if not user_updated:
@@ -92,14 +132,19 @@ def onboarding(user_id, user_type, data):
 
                 if not role_updated:
                     raise Exception("Role update failed")
-                connection.commit()
+                
         return {"message": "Onboarding completed"}, 200
+    
     except ValueError as e:
-        connection.rollback()
+        logging.info('Ooops 1')
+        if pfp and pfp_path:
+            storage.delete_file_from_storage(pfp_path)
         return {"error": str(e)}, 400
-
+    
     except Exception as e:
-        connection.rollback()
+        logging.info('Ooops 2')
+        if pfp and pfp_path:
+            storage.delete_file_from_storage(pfp_path)
         logging.error(f"Onboarding failed: {e}")
         return {"error": "Onboarding failed"}, 500
 

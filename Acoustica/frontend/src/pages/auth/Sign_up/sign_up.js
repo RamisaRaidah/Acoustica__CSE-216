@@ -75,6 +75,7 @@ export async function renderSignUp() {;
                     email,
                     user_type: signInResponse.user_type
                 }));
+                console.log('Sign up and sign in done, going to Onboarding');
                await renderOnboarding();
                //router.navigate('/onboarding');
             } else {

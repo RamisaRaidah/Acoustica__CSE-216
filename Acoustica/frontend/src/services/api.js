@@ -53,10 +53,10 @@ class ApiService {
         });
     }
 
-    async onboarding(data) {
+    async onboarding(formData) {
         return this.request('/api/users/me/onboarding', {
             method: 'POST',
-            body: JSON.stringify(data)
+            body: formData
         });
     }
 

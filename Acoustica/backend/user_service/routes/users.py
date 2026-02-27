@@ -31,7 +31,7 @@ def onboarding_route():
     user_id = get_jwt_identity()
     claims = get_jwt()
     user_type = claims["user_type"]
-    data = request.get_json()
+    data = {**request.form, 'pfp': request.files.get('pfp')}
 
     return users.onboarding(user_id, user_type, data)
 
