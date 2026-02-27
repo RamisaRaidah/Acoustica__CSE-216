@@ -32,4 +32,18 @@ document.addEventListener('click', (e) => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+});
+
+function loadTheme() {
+  const theme = localStorage.getItem('theme');
+  if (theme === 'light') {
+    document.body.classList.remove('dark');
+  }
+  else {
+    document.body.classList.add('dark');
+  }
+}
+
 router.init();

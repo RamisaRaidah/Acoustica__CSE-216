@@ -1,0 +1,19 @@
+:root {
+    --bg-color: #fffaed;
+    --text-color: black;
+    --sidebar-color: #fff5e2;
+    --sidebar-hover-color: #fff0d0;
+    --topbar-hover-color: #fff4e0;
+    --shadow: rgba(0, 0, 0, 0.2);
+    --icon-filter: invert(1);
+}
+
+.dark {
+    --bg-color: black;
+    --text-color: white;
+    --sidebar-color: #111111;
+    --sidebar-hover-color: #ffffff1a;
+    --topbar-hover-color: #ffffff0d;
+    --shadow: rgba(255, 255, 255, 0.2);
+    --icon-filter: invert(0);
+}

@@ -29,7 +29,7 @@ END $$;
 CREATE TYPE user_type_enum AS ENUM ('admin', 'listener', 'artist');
 CREATE TYPE listener_type_enum AS ENUM ('free', 'premium');
 CREATE TYPE admin_role_enum AS ENUM ('super_admin', 'administrator', 'moderator', 'analyst', 'audit');
-CREATE TYPE visibility_enum AS ENUM ('public', 'private');
+CREATE TYPE visibility_enum AS ENUM ('public', 'private', 'pending');
 CREATE TYPE song_artist_role_enum AS ENUM ('vocalist', 'lyricist', 'composer');
 CREATE TYPE transaction_type_enum AS ENUM ('subscription', 'buy', 'payment', 'refund');
 CREATE TYPE payment_method_enum AS ENUM ('bank', 'COD', 'card', 'online');
