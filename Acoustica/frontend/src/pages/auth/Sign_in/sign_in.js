@@ -59,6 +59,7 @@ export async function renderSignIn() {
                     email: email,
                     user_type: response.user_type
                 }));
+                localStorage.setItem('theme', 'light'); // change it by db query
 
                 console.log('Signed in successfully');
                 router.navigate('/dashboard');

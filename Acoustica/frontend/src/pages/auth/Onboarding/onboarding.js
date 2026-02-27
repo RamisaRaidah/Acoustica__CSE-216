@@ -140,6 +140,15 @@ export async function renderOnboarding() {
             console.log('Welp, what happened now');
             if (response && response.message) {
                 console.log('Why will you not work now?');
+                localStorage.setItem('theme', formData.get('app_mode'));
+                const theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+                    document.body.classList.remove('dark');
+                }
+                else {
+                    document.body.classList.add('dark');
+                }
+
                 router.navigate('/dashboard');
             } else {
                 throw new Error('Onboarding failed');
