@@ -8,8 +8,16 @@ logging.basicConfig(
     stream=sys.stdout
 )
 
-def search():
-    return ("search")
+### search ###
+
+def search(seed):
+    command = """
+    SELECT song_id, title FROM song 
+    WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
+    """
+    seed = seed.lower().replace(" ", "")
+    result = execute_sql(command, (f"%{seed}%",), fetch_all = True)
+    return result, 200
 
 def recommend_song():
     return ("recommend_song")

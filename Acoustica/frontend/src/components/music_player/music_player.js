@@ -1,8 +1,16 @@
 import { getSongAudio } from "/src/services/song.js";
 
 let isPlaying = false;
+let currentAudio = null;
 
-export async function loadMusicPlayer(songId, progress) {
+export async function loadMusicPlayer(songId = -1, title = null, artist = null, progress = 0, play = false) {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
+    isPlaying = false;
+  }
+
   const musicPlayer = document.getElementById('music_player');
   musicPlayer.style.setProperty('display', 'block', 'important');
   const response = await fetch('/src/components/music_player/music_player.html');
@@ -14,11 +22,17 @@ export async function loadMusicPlayer(songId, progress) {
   const progressBar = document.getElementById('progress_bar');
   const totalTime = document.getElementById('total_time');
   const playTime = document.getElementById('play_time');
+  const songName = document.getElementById('song_name');
+  const artistName = document.getElementById('artist_name');
+
+  if (songId === -1) return;
 
   if (!audio) {
     console.error('Audio element not found');
     return;
   }
+
+  currentAudio = audio;
 
   try {
     const response = await getSongAudio(songId);
@@ -38,6 +52,8 @@ export async function loadMusicPlayer(songId, progress) {
     progressBar.style.width = ((audio.currentTime / audio.duration) * 100) + "%";
     playTime.innerText = formatTime(audio.currentTime);
     totalTime.innerText = formatTime(audio.duration);
+    songName.innerHTML = title;
+    artistName.innerHTML = artist;
   })
 
   audio.addEventListener('timeupdate', () => {
@@ -104,9 +120,22 @@ export async function loadMusicPlayer(songId, progress) {
       playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Pause_Button.png';
     });
   }
+
+  if (play) {
+    audio.play();
+    playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Pause_Button.png';
+    isPlaying = true;
+  }
 }
 
 export async function removeMusicPlayer() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
+    isPlaying = false;
+  }
+
   const musicPlayer = document.getElementById('music_player');
   musicPlayer.innerHTML = '';
   musicPlayer.style.setProperty('display', 'none', 'important');
