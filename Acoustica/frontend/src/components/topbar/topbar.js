@@ -28,11 +28,19 @@
             const theme = localStorage.getItem('theme');
             document.body.classList.toggle('dark');
             if (theme === 'light') {
+                api.request('/api/users/me/settings/theme', {
+                    method: 'PATCH',
+                    body: JSON.stringify({'theme': 'dark'})
+                });
                 localStorage.setItem('theme', 'dark');
                 document.body.classList.add('dark');
                 document.getElementById('app_name').setAttribute('src', '/src/assets/images/Deco/Acoustica2.png');
             }
             else {
+                api.request('/api/users/me/settings/theme', {
+                    method: 'PATCH',
+                    body: JSON.stringify({'theme': 'light'})
+                });
                 localStorage.setItem('theme', 'light');
                 document.body.classList.remove('dark');
                 document.getElementById('app_name').setAttribute('src', '/src/assets/images/Deco/Acoustica1.png');
@@ -64,29 +72,70 @@
 
         function displaySearchResult(result) {
             const dropdown = document.getElementById('search_dropdown');
-
-            if (!result || result.length === 0) {
+            if (!dropdown) return;
+            
+            if (!result || (!result.songs.length && !result.albums.length && !result.artists.length)) {
                 closeDropdown();
                 return;
             }
 
-            dropdown.innerHTML = result.map(song => `
-                <div class="search-item"  
-                data-song-id="${song.song_id}"
-                data-title="${song.title}"
-                data-name="${song.name}">
-                ${song.title}
-                </div>
-            `).join('');
+            let html = '';
 
+            if (result.songs.length) {
+                html += `<div class="search-section-header">Songs</div>`;
+                html += result.songs.map(song => `
+                    <div class="search-item"
+                        data-song-id="${song.song_id}"
+                        data-title="${song.title}"
+                        data-artist="${song.artist}">
+                        <span class="search-item-title">${song.title}</span>
+                        <span class="search-item-artist">· ${song.artist}</span>
+                    </div>
+                `).join('');
+            }
+
+            if (result.albums.length) {
+                html += `<div class="search-section-header">Albums</div>`;
+                html += result.albums.map(album => `
+                    <div class="search-item"
+                        data-album-id="${album.album_id}"
+                        data-title="${album.title}"
+                        data-artist="${album.artist}">
+                        <span class="search-item-title">${album.title}</span>
+                        <span class="search-item-artist">· ${album.artist}</span>
+                    </div>
+                `).join('');
+            }
+
+            if (result.artists.length) {
+                html += `<div class="search-section-header">Artists</div>`;
+                html += result.artists.map(artist => `
+                    <div class="search-item"
+                        data-artist-id="${artist.user_id}"
+                        data-name="${artist.name}">
+                        <span class="search-item-title">${artist.name}</span>
+                    </div>
+                `).join('');
+            }
+
+            dropdown.innerHTML = html;
             dropdown.classList.add('active');
 
             dropdown.querySelectorAll('.search-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    const songId = item.dataset.songId;
-                    const title = item.dataset.title;
-                    const name = item.dataset.name;
-                    loadMusicPlayer(songId, title, name, 0, true);
+                    if (item.dataset.songId) {
+                        const songId = parseInt(item.dataset.songId);
+                        const title = item.dataset.title;
+                        const artist = item.dataset.artist;
+                        loadMusicPlayer(songId, title, artist, 0, true);
+
+                    } else if (item.dataset.albumId) {
+                        console.log('album clicked:', item.dataset.albumId); 
+
+                    } else if (item.dataset.artistId) {
+                        console.log('artist clicked:', item.dataset.artistId); 
+                    }
+
                     closeDropdown();
                     searchBar.value = '';
                 });
@@ -95,6 +144,7 @@
 
         function closeDropdown() {
             const dropdown = document.getElementById('search_dropdown');
+            if (!dropdown) return;
             dropdown.classList.remove('active');
             dropdown.innerHTML = '';
         }

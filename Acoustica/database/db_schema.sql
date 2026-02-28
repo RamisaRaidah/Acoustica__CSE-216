@@ -34,7 +34,7 @@ CREATE TYPE song_artist_role_enum AS ENUM ('vocalist', 'lyricist', 'composer');
 CREATE TYPE transaction_type_enum AS ENUM ('subscription', 'buy', 'payment', 'refund');
 CREATE TYPE payment_method_enum AS ENUM ('bank', 'COD', 'card', 'online');
 CREATE TYPE auto_renew_enum AS ENUM ('on', 'off');
-CREATE TYPE app_mode_enum AS ENUM ('light', 'dark');
+CREATE TYPE theme_enum AS ENUM ('light', 'dark');
 CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
 CREATE TYPE asset_type_enum AS ENUM ('user','song','playlist','album','product','report');
 
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   phone_number TEXT,
   gender TEXT,
   date_of_birth DATE,
-  app_mode app_mode_enum DEFAULT 'light'
+  theme theme_enum DEFAULT 'light'
 );
 
 CREATE TABLE IF NOT EXISTS "listener" (
@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS "album" (
   asset_id INT CONSTRAINT fk_album_asset_id  REFERENCES asset(asset_id),
   "title" TEXT NOT NULL,
   "description" TEXT,
+  owner_id INT CONSTRAINT fk_song_artist_owner_id REFERENCES artist(artist_id),
   release_date DATE NOT NULL,
   cover_picture TEXT,
   "visibility" visibility_enum,
@@ -148,7 +149,6 @@ CREATE TABLE IF NOT EXISTS "song" (
   asset_id INT CONSTRAINT fk_song_asset_id REFERENCES asset(asset_id),
   "title" TEXT NOT NULL,
   album_id INT CONSTRAINT fk_song_album_id REFERENCES album(album_id),
-  owner_id INT CONSTRAINT fk_song_artist_owner_id REFERENCES artist(artist_id),
   language_id INT CONSTRAINT fk_song_language_id REFERENCES "language"(language_id),
   "length" INT,
   release_date DATE,

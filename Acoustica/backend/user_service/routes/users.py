@@ -35,7 +35,7 @@ def onboarding_route():
 
     return users.onboarding(user_id, user_type, data)
 
-@users_bp.route('/api/users/me/pfp', methods=['GET'])
+@users_bp.get('/api/users/me/pfp')
 @jwt_required()
 def get_pfp():
     user_id = get_jwt_identity()
@@ -43,53 +43,68 @@ def get_pfp():
     return jsonify(result), status
 
 @users_bp.put("/api/users/me")
+@jwt_required()
 def update_account_route():
     return jsonify("update_account")
 
 @users_bp.delete("/api/users/me")
+@jwt_required()
 def delete_account_route():
     return jsonify("delete_account")
 
 @users_bp.get("/api/users")
+@jwt_required()
 def get_user_list_route():
     return jsonify("get_user_list")
 
 @users_bp.get("/api/users/<user_id>")
+@jwt_required()
 def get_user_account_route(user_id):
     return jsonify(f"get_user_account {user_id}")
 
 @users_bp.get("/api/users/<user_id>/profile")
+@jwt_required()
 def get_user_profile_route(user_id):
     return jsonify(f"get_user_profile {user_id}")
 
-@users_bp.patch("/api/users/me/settings/app-mode")
-def set_app_mode_route():
-    return jsonify("set_app_mode")
+@users_bp.patch("/api/users/me/settings/theme")
+@jwt_required()
+def set_theme_route():
+    theme = request.json.get("theme")
+    result, status = users.set_theme(theme)
+    return jsonify(result), status
 
 @users_bp.patch("/api/users/me/settings/play-mode")
+@jwt_required()
 def set_play_mode_route():
     return jsonify("set_play_mode")
 
 @users_bp.post("/api/users/<user_id>/notifications")
+@jwt_required()
 def add_notification_route(user_id):
     return jsonify(f"add_notification {user_id}")
 
 @users_bp.get("/api/users/me/notifications")
+@jwt_required()
 def get_notifications_route():
     return jsonify("get_notifications")
 
 @users_bp.post("/api/users/badges")
+@jwt_required()
 def add_badge_route():
     return jsonify("add_badge")
 
 @users_bp.get("/api/users/badges")
+@jwt_required()
 def get_badges_route():
     return jsonify("get_badges")
 
 @users_bp.post("/api/users/<user_id>/badges")
+@jwt_required()
 def add_user_badge_route(user_id):
     return jsonify(f"add_user_badge {user_id}")
 
 @users_bp.get("/api/users/<user_id>/badges")
+@jwt_required()
 def get_user_badges_route(user_id):
     return jsonify(f"get_user_badges {user_id}")

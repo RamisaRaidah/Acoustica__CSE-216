@@ -11,14 +11,35 @@ logging.basicConfig(
 ### search ###
 
 def search(seed):
-    command = """
-    SELECT song_id, title, (first_name || ' ' || last_name) name
-    FROM song s JOIN users a ON (s.owner_id = a.user_id)
-    WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
-    """
     seed = seed.lower().replace(" ", "")
-    result = execute_sql(command, (f"%{seed}%",), fetch_all = True)
-    return result, 200
+    param = (f"%{seed}%",)
+
+    songs_query = """
+        SELECT song_id, s.title, (first_name || ' ' || last_name) AS artist
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
+        WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
+        LIMIT 5
+    """
+
+    albums_query = """
+        SELECT album_id, title, (first_name || ' ' || last_name) AS artist
+        FROM album a JOIN users u ON (a.owner_id = u.user_id)
+        WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
+        LIMIT 5
+    """
+
+    artists_query = """
+        SELECT user_id, (first_name || ' ' || last_name) AS name
+        FROM users
+        WHERE user_type = 'artist' AND LOWER(REPLACE((first_name || last_name), ' ', '')) LIKE %s
+        LIMIT 5
+    """
+
+    songs = execute_sql(songs_query, param, fetch_all = True) or []
+    albums = execute_sql(albums_query, param, fetch_all = True) or []
+    artists = execute_sql(artists_query, param, fetch_all = True) or []
+
+    return {"songs": songs, "albums": albums, "artists": artists}, 200
 
 def recommend_song():
     return ("recommend_song")

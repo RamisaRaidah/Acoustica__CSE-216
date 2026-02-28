@@ -3,6 +3,7 @@ from psycopg2.extras import RealDictCursor
 from db import execute_sql, get_db_connection, connection_pool, release_connection
 import logging
 import sys
+from flask_jwt_extended import get_jwt_identity
 
 from storage_service.services import storage
 
@@ -43,7 +44,7 @@ def onboarding(user_id, user_type, data):
     phone_number = request.form.get("phone_number")
     gender = request.form.get("gender")
     date_of_birth = request.form.get("date_of_birth")  ##iso format: 2025-02-19
-    app_mode = request.form.get("app_mode", "light")
+    theme = request.form.get("theme", "light")
 
     pfp = request.files.get("pfp")
 
@@ -96,11 +97,11 @@ def onboarding(user_id, user_type, data):
                             phone_number=%s,
                             gender=%s,
                             date_of_birth=%s,
-                            app_mode=%s,
+                            theme=%s,
                             profile_picture=%s
                         WHERE user_id=%s
                         RETURNING user_id
-                    """,(bio,country_id,language_id,phone_number,gender,date_of_birth,app_mode,pfp_path,user_id)
+                    """,(bio,country_id,language_id,phone_number,gender,date_of_birth,theme,pfp_path,user_id)
                 )
 
                 
@@ -196,8 +197,15 @@ def get_user_account(user_id):
 def get_user_profile(user_id):
     return (f"get_user_profile {user_id}")
 
-def set_app_mode():
-    return ("set_app_mode")
+### set_theme ###
+def set_theme(theme):
+    command = """
+        UPDATE users
+        SET theme = %s
+        WHERE user_id = %s
+    """
+    execute_sql(command, (theme, get_jwt_identity(),))
+    return {"message": "theme set"}, 200 
 
 def set_play_mode():
     return ("set_play_mode")

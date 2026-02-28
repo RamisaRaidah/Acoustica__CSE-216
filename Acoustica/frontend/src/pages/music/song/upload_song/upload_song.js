@@ -1,17 +1,19 @@
-import { loadSidebar } from '/src/components/sidebar/sidebar.js';
+import { loadArtistSidebar } from '/src/components/sidebar/artist_sidebar/artist_sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
 import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
 import { getAlbums } from '/src/services/album.js';
 
 export async function renderUploadSong() {
-    const response = await fetch('/src/pages/music/song/upload_song/upload_song.html');
-    document.getElementById('content').innerHTML = await response.text();
-
     await Promise.all([
         loadTopbar(),
-        loadSidebar()
+        loadArtistSidebar()
     ]);
+
+    document.getElementById('content').innerHTML = '';
+    
+    const response = await fetch('/src/pages/music/song/upload_song/upload_song.html');
+    document.getElementById('content').innerHTML = await response.text();
 
     const [languages, albums] = await Promise.all ([
         api.getLanguages(),
@@ -19,6 +21,10 @@ export async function renderUploadSong() {
     ]);
 
     const create_album_button = document.getElementById('create_album_button');
+
+    if(!create_album_button) {
+        console.log('create album button not found');
+    }
 
     create_album_button.addEventListener('click', () => {
         router.navigate('/music/create-album');

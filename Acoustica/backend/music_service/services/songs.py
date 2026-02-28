@@ -2,7 +2,6 @@ from db import get_db_connection, execute_sql, release_connection
 from psycopg2.extras import RealDictCursor
 import logging
 import sys
-from flask_jwt_extended import get_jwt_identity
 from mutagen import File
 
 from storage_service.services import storage
@@ -41,10 +40,10 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
                 # Uploading to db
                 cursor.execute(
                     """
-                    INSERT INTO song (title, album_id, owner_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING song_id
-                    """, (title, album, get_jwt_identity(), language, length, release_date, 'null', 'null', 'private', 'null')
+                    """, (title, album, language, length, release_date, 'null', 'null', 'private', 'null')
                 )
                 song_id = cursor.fetchone()["song_id"]
 

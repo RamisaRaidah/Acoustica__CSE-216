@@ -140,7 +140,7 @@ export async function renderOnboarding() {
             console.log('Welp, what happened now');
             if (response && response.message) {
                 console.log('Why will you not work now?');
-                localStorage.setItem('theme', formData.get('app_mode'));
+                localStorage.setItem('theme', formData.get('theme'));
                 const theme = localStorage.getItem('theme');
                 if (theme === 'light') {
                     document.body.classList.remove('dark');

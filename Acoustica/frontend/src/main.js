@@ -47,3 +47,4 @@ function loadTheme() {
 }
 
 router.init();
+router.navigate('/dashboard');

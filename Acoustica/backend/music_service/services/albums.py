@@ -2,6 +2,7 @@ from db import get_db_connection, execute_sql, release_connection
 from psycopg2.extras import RealDictCursor
 import logging
 import sys
+from flask_jwt_extended import get_jwt_identity
 
 from storage_service.services import storage
 
@@ -30,10 +31,10 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                 # Uploading to db
                 cursor.execute(
                     """
-                    INSERT INTO album (title, description, release_date, cover_picture, visibility, copyright_certificate)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO album (title, description, owner_id, release_date, cover_picture, visibility, copyright_certificate)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
                     RETURNING album_id
-                    """, (title, description, release_date, None, 'private', 'null')
+                    """, (title, description, get_jwt_identity(), release_date, None, 'private', 'null')
                 )
                 album_id = cursor.fetchone()["album_id"]
 
