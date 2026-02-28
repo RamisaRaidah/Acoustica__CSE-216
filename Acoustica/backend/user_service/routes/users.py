@@ -21,9 +21,13 @@ def health():
 
 @users_bp.get("/api/users/me")
 @jwt_required()
-def get_me():
-    user_id=get_jwt_identity()
-    return users.get_me(user_id)
+def get_my_profile_route():
+    logging.info('Hello to my own profile')
+    user_id = get_jwt_identity()
+    claims = get_jwt()
+    user_type = claims["user_type"]
+    result, status = users.get_my_profile(user_id, user_type)
+    return jsonify(result), status
 
 @users_bp.post("/api/users/me/onboarding")
 @jwt_required()
@@ -108,3 +112,4 @@ def add_user_badge_route(user_id):
 @jwt_required()
 def get_user_badges_route(user_id):
     return jsonify(f"get_user_badges {user_id}")
+

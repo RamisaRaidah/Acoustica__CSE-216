@@ -14,26 +14,63 @@ logging.basicConfig(
 )
 
 
-################################################### get_me ##################################################################
-def get_me(user_id):
-    sql="""
-    SELECT 
-        user_id, 
-        email, 
-        first_name, 
-        last_name, 
-        user_type
-    FROM users
-    WHERE user_id=%s
+################################################### get_my_profile #########################################################
+def get_my_profile(user_id, user_type):
+    logging.info('To the helper func for profile')
+    sql = """
+        SELECT 
+            u.user_id,
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.phone_number,
+            u.gender,
+            u.date_of_birth,
+            u.bio,
+            u.theme,
+            u.profile_picture,
+            u.user_type,
+            c.country_name,
+            l.language_name
+        FROM users u
+        LEFT JOIN country c ON u.country_id = c.country_id
+        LEFT JOIN language l ON u.language_id = l.language_id
+        WHERE u.user_id = %s
     """
-
-    user=execute_sql(sql,(user_id,),fetch_one=True)
+    user = execute_sql(sql, (user_id,), fetch_one=True)
 
     if not user:
         return {"error": "User not found"}, 404
-    
-    return user, 200
 
+    user = dict(user)
+
+    if user.get("profile_picture"):
+        user["profile_picture_url"] = storage.generate_signed_url(user["profile_picture"], expires_in=3600)
+    else:
+        user["profile_picture_url"] = storage.generate_signed_url(
+            "Images/Profile_Pictures/Default_pfp.png", expires_in=3600
+        )
+    del user["profile_picture"]
+
+    if user_type == "listener":
+        sql = """
+            SELECT listener_type FROM listener WHERE listener_id = %s
+        """
+        l_type = execute_sql(sql, (user_id,), fetch_one=True)
+        if l_type:
+            user["listener_type"] =l_type["listener_type"]
+            logging.info(f'type for listener: {l_type["listener_type"]}')
+
+    elif user_type == "artist":
+        sql = """
+            SELECT stage_name, bank_account FROM artist WHERE artist_id = %s
+        """
+        role = execute_sql(sql, (user_id,), fetch_one=True)
+        if role:
+            user["stage_name"] = role["stage_name"]
+            user["bank_account"] = role["bank_account"]
+
+    return user, 200
 
 ######################################### Onboarding ##################################################################
 def onboarding(user_id, user_type, data):

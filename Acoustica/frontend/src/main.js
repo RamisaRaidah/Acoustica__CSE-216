@@ -7,7 +7,7 @@ import { renderDashboard } from '/src/pages/user/dashboard.js';
 import { renderUploadSong } from '/src/pages/music/song/upload_song/upload_song.js';
 import { renderCreateAlbum } from '/src/pages/music/album/create_album/create_album.js';
 import { renderCreatePlaylist } from '/src/pages/music/playlist/create_playlist/create_playlist.js';
-
+import { renderPrivateProfile } from '/src/pages/profile/private/my_profile.js';
 
 
 //-----------------------------------User---------------------------------------------------//
@@ -24,6 +24,9 @@ router.register('/music/create-playlist', renderCreatePlaylist, { protected: tru
 router.register('/sign-in', renderSignIn, { publicOnly: true});
 router.register('/sign-up', renderSignUp, { publicOnly: true});
 router.register('/sign-out', renderSignOut,{ protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
+
+//----------------------------Profiles-------------------------------------------------------------//
+router.register('/myProfile',renderPrivateProfile,{protected:true});
 
 document.addEventListener('click', (e) => {
   if (e.target.matches('[data-link]')) {

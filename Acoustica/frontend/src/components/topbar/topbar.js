@@ -173,7 +173,7 @@
         document.getElementById('profile_option').addEventListener('click', (e) => {
             e.preventDefault();
             profileDropdown.classList.add('hidden');
-            router.navigate('/profile');
+            router.navigate('/myProfile');
         });
 
         document.getElementById('signout_option').addEventListener('click', async (e) => {

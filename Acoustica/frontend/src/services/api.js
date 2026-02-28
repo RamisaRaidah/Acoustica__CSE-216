@@ -85,6 +85,10 @@ class ApiService {
         sessionStorage.setItem('pfp_time', String(Date.now()));
         return data;
     }
+
+    async getMyProfile() {
+        return this.request('/api/users/me');
+    }    
 }
 
 export default new ApiService();
