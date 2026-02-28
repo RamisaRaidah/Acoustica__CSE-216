@@ -29,8 +29,7 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 # Uploading to db
-                cursor.execute(
-                    """
+                cursor.execute("""
                     INSERT INTO album (title, description, owner_id, release_date, cover_picture, visibility, copyright_certificate)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)
                     RETURNING album_id
@@ -42,7 +41,7 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                     raise Exception()
                 
                 # Uploading to cloud
-                copyright_certificate_path = f"Docs/album{album_id}.pdf"
+                copyright_certificate_path = f"Docs/Copyright_Certificates/album{album_id}.pdf"
                 success = storage.upload_file_to_storage(
                     copyright_certificate.stream,
                     copyright_certificate_path,
@@ -54,7 +53,7 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
 
                 if cover_picture:
                     cover_picture_ext = storage.get_file_extension(cover_picture)
-                    cover_picture_path = f"Images/album{album_id}.{cover_picture_ext}"
+                    cover_picture_path = f"Images/Cover_Pictures/album{album_id}.{cover_picture_ext}"
                     success = storage.upload_file_to_storage(
                         cover_picture.stream,
                         cover_picture_path,
@@ -65,20 +64,18 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
                         raise Exception()
                     
                 # Updating table
-                cursor.execute(
-                    """
+                cursor.execute("""
                     UPDATE album
                     SET copyright_certificate = %s
                     WHERE album_id = %s
-                    """, (f"Docs/album{album_id}.pdf", album_id)
+                    """, (f"Docs/Copyright_Certificates/album{album_id}.pdf", album_id)
                 )
                 if cover_picture:
-                    cursor.execute(
-                        """
+                    cursor.execute("""
                         UPDATE album
                         SET cover_picture = %s
                         WHERE album_id = %s
-                        """, (f"Images/album{album_id}.{cover_picture_ext}", album_id)
+                        """, (f"Images/Cover_Pictures/album{album_id}.{cover_picture_ext}", album_id)
                     )
 
                 connection.commit()
@@ -86,9 +83,9 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
     except Exception as e:
         connection.rollback()
         if album_id:
-            storage.delete_file_from_storage(f"Docs/album{album_id}.pdf")
+            storage.delete_file_from_storage(f"Docs/Copyright_Certificates/album{album_id}.pdf")
         if cover_picture:
-            storage.delete_file_from_storage(f"Images/album{album_id}.{cover_picture_ext}")
+            storage.delete_file_from_storage(f"Images/Cover_Pictures/album{album_id}.{cover_picture_ext}")
         return {"error": "album creation failed"}, 500
     
     finally:

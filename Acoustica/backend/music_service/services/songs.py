@@ -38,8 +38,7 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 # Uploading to db
-                cursor.execute(
-                    """
+                cursor.execute("""
                     INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING song_id
@@ -51,7 +50,7 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
                     raise Exception()
                 
                 # Uploading to cloud
-                copyright_certificate_path = f"Docs/song{song_id}.pdf"
+                copyright_certificate_path = f"Docs/Copyright_Certificates/song{song_id}.pdf"
                 success = storage.upload_file_to_storage(
                     copyright_certificate.stream,
                     copyright_certificate_path,
@@ -73,7 +72,7 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
                     raise Exception()
 
                 if lyrics:
-                    lyrics_path = f"Docs/lyrics{song_id}.txt"
+                    lyrics_path = f"Docs/Lyrics/song{song_id}.txt"
                     success = storage.upload_file_to_storage(
                         lyrics.stream,
                         lyrics_path,
@@ -84,27 +83,24 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
                         raise Exception()
                     
                 # Updating table
-                cursor.execute(
-                    """
+                cursor.execute("""
                     UPDATE song
                     SET copyright_certificate = %s
                     WHERE song_id = %s
-                    """, (f"Docs/song{song_id}.pdf", song_id)
+                    """, (f"Docs/Copyright_Certificates/song{song_id}.pdf", song_id)
                 )
-                cursor.execute(
-                    """
+                cursor.execute("""
                     UPDATE song
                     SET song_audio = %s
                     WHERE song_id = %s
                     """, (f"Songs/song{song_id}.{song_file_ext}", song_id)
                 )
                 if lyrics:
-                    cursor.execute(
-                        """
+                    cursor.execute("""
                         UPDATE song
                         SET lyrics = %s
                         WHERE song_id = %s
-                        """, (f"Docs/lyrics{song_id}.txt", song_id)
+                        """, (f"Docs/Lyrics/song{song_id}.txt", song_id)
                     )
                 
                 connection.commit()
@@ -112,10 +108,10 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
     except Exception as e:
         connection.rollback()
         if song_id:
-            storage.delete_file_from_storage(f"Docs/song{song_id}.pdf")
+            storage.delete_file_from_storage(f"Docs/Copyright_Certificates/song{song_id}.pdf")
             storage.delete_file_from_storage(f"Songs/song{song_id}.{song_file_ext}")
         if lyrics:
-            storage.delete_file_from_storage(f"Docs/lyrics{song_id}.txt")
+            storage.delete_file_from_storage(f"Docs/Lyrics/song{song_id}.txt")
         return {"error": "song upload failed"}, 500
     
     finally:

@@ -83,8 +83,6 @@ export async function renderSignUp() {;
                     user_type: signInResponse.user_type
                 }));
     
-                localStorage.setItem('theme', response.theme);
-    
                 console.log('Sign up and sign in done, going to Onboarding');
                await renderOnboarding();
     

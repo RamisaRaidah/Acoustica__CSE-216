@@ -44,18 +44,10 @@ def sign_up(data):
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(
                     """
-                    INSERT INTO asset (asset_type) VALUES (%s) RETURNING asset_id
-                    """,("user",)
-                )
-                asset=cursor.fetchone()
-                asset_id=asset["asset_id"]
-
-                cursor.execute(
-                    """
-                    INSERT INTO users (asset_id,email,password,first_name,last_name,user_type)
-                    VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO users (email,password,first_name,last_name,user_type)
+                    VALUES (%s, %s, %s, %s, %s)
                     RETURNING user_id, user_type
-                    """, (asset_id,email,hashed_password,first_name,last_name,user_type)
+                    """, (email,hashed_password,first_name,last_name,user_type)
                 )
 
                 user=cursor.fetchone()

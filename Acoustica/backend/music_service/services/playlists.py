@@ -29,8 +29,7 @@ def create_playlist(title, description, visibility, cover_picture):
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 # Uploading to db
-                cursor.execute(
-                    """
+                cursor.execute("""
                     INSERT INTO playlist (title, creator_id, description, cover_picture, visibility)
                     VALUES (%s, %s, %s, %s, %s)
                     RETURNING playlist_id
@@ -44,7 +43,7 @@ def create_playlist(title, description, visibility, cover_picture):
                 # Uploading to cloud
                 if cover_picture:
                     cover_picture_ext = storage.get_file_extension(cover_picture)
-                    cover_picture_path = f"Images/playlist{playlist_id}.{cover_picture_ext}"
+                    cover_picture_path = f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}"
                     success = storage.upload_file_to_storage(
                         cover_picture.stream,
                         cover_picture_path,
@@ -56,12 +55,11 @@ def create_playlist(title, description, visibility, cover_picture):
                     
                 # Updating table
                 if cover_picture:
-                    cursor.execute(
-                        """
+                    cursor.execute("""
                         UPDATE playlist
                         SET cover_picture = %s
                         WHERE playlist_id = %s
-                        """, (f"Images/playlist{playlist_id}.{cover_picture_ext}", playlist_id)
+                        """, (f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}", playlist_id)
                     )
 
                 connection.commit()
@@ -69,7 +67,7 @@ def create_playlist(title, description, visibility, cover_picture):
     except Exception as e:
         connection.rollback()
         if cover_picture:
-            storage.delete_file_from_storage(f"Images/playlist{playlist_id}.{cover_picture_ext}")
+            storage.delete_file_from_storage(f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}")
         return {"error": "playlist creation failed"}, 500
     
     finally:
