@@ -66,11 +66,11 @@ export async function renderSignIn() {
                 }));
                 localStorage.setItem('theme', response.theme); 
                 const theme = localStorage.getItem('theme');
-                if (theme === 'light') {
-                    document.body.classList.remove('dark');
+                if (theme === 'add') {
+                    document.body.classList.add('dark');
                 }
                 else {
-                    document.body.classList.add('dark');
+                    document.body.classList.remove('dark');
                 }
 
                 console.log('Signed in successfully');

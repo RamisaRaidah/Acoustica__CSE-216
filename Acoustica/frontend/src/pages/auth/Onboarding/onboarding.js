@@ -37,9 +37,9 @@ export async function renderOnboarding() {
     try {
         
         if (user_type === 'artist') {
-            templatePath = '/src/pages/auth/Onboarding/onboarding_artist.html';
+            templatePath = '/src/pages/auth/Onboarding/onboarding_artist1.html';
         } else {
-            templatePath = '/src/pages/auth/Onboarding/onboarding_listener_copy.html';
+            templatePath = '/src/pages/auth/Onboarding/onboarding_listener1.html';
         }
 
         console.log('user_type:', user_type);
@@ -132,7 +132,7 @@ export async function renderOnboarding() {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Saving...';
 
-       const formData=new FormData(form);
+        const formData=new FormData(form);
 
         console.log('Okkkkk workkkkkk');
         try {
@@ -140,7 +140,9 @@ export async function renderOnboarding() {
             console.log('Welp, what happened now');
             if (response && response.message) {
                 console.log('Why will you not work now?');
-                localStorage.setItem('theme', formData.get('theme'));
+
+                console.log(document.getElementById('theme').value);
+                localStorage.setItem('theme', document.getElementById('theme').value);
                 const theme = localStorage.getItem('theme');
                 if (theme === 'dark') {
                     document.body.classList.add('dark');
