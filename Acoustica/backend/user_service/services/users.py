@@ -21,8 +21,7 @@ def get_me(user_id):
         email, 
         first_name, 
         last_name, 
-        user_type,
-        profile_picture
+        user_type
     FROM users
     WHERE user_id=%s
     """
@@ -32,16 +31,6 @@ def get_me(user_id):
     if not user:
         return {"error": "User not found"}, 404
     
-    if user.get("profile_picture_path"):
-        url = storage.generate_signed_url(user["profile_picture_path"], expires_in=3600)
-    else:
-        url = storage.generate_signed_url(
-            "Images/Profile_Pictures/default.png",
-            expires_in=3600
-        )
-
-    user["profile_picture_url"] = url
-
     return user, 200
 
 
@@ -168,6 +157,28 @@ def onboarding(user_id, user_type, data):
     finally:
         release_connection(connection)
 
+
+######################################### get_profile_picture ##################################################
+def get_profile_picture(user_id):
+    sql = """
+        SELECT profile_picture
+        FROM users
+        WHERE user_id = %s
+    """
+    user = execute_sql(sql, (user_id,), fetch_one=True)
+
+    if not user:
+        return {"error": "User not found"}, 404
+
+    if user.get("profile_picture"):
+        url = storage.generate_signed_url(user["profile_picture"], expires_in=3600)
+    else:
+        url = storage.generate_signed_url(
+            "Images/Profile_Pictures/default.png",
+            expires_in=3600
+        )
+
+    return {"profile_picture_url": url}, 200
 
 
 def update_account():

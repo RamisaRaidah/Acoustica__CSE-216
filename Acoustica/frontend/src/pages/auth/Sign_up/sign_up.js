@@ -40,6 +40,11 @@ export async function renderSignUp() {;
     const errorDiv = document.getElementById('error-message');
     const submitBtn = document.getElementById('signup-btn');
 
+    document.getElementById('toggle-password').addEventListener('click', () => {
+        const input = document.getElementById('password');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 

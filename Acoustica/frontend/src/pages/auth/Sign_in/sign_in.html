@@ -25,19 +25,21 @@
                     placeholder="Enter your email"
                 />
             </div>
-
+            
             <div class="form-group">
                 <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    placeholder="Enter your password"
-                    required
-                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
-                    title="Must be at least 8 characters, include uppercase, lowercase, number and special character"
-                />
+                <div class="password-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        placeholder="Enter your password"
+                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+                        title="Must be at least 8 characters, include uppercase, lowercase, number and special character"
+                    />
+                    <button type="button" id="toggle-password">👁</button>
+                </div>
             </div>
 
             <div class="auth-forgot-pass"><a href="/forgot-pass" data-link>Forgot your password?</a> </div>

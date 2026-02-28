@@ -35,6 +35,13 @@ def onboarding_route():
 
     return users.onboarding(user_id, user_type, data)
 
+@users_bp.route('/api/users/me/pfp', methods=['GET'])
+@jwt_required()
+def get_pfp():
+    user_id = get_jwt_identity()
+    result, status = users.get_profile_picture(user_id)
+    return jsonify(result), status
+
 @users_bp.put("/api/users/me")
 def update_account_route():
     return jsonify("update_account")

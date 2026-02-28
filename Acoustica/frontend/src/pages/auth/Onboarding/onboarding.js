@@ -26,7 +26,7 @@ export async function renderOnboarding() {
     content.classList.add('scrollable');
     content.classList.remove('no-scroll');
 
-    console.log('We made ir here, scroll bars should be fine, but we know they are not');
+    console.log('We made it here, scroll bars should be fine, but we know they are not');
 
     const user = JSON.parse(localStorage.getItem('user'));
     const user_type = user?.user_type;

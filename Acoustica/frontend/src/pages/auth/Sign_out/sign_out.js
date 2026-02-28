@@ -9,6 +9,9 @@ export async function renderSignOut() {
     } finally {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('theme');
+        sessionStorage.removeItem('pfp_url');
+        sessionStorage.removeItem('pfp_time'); 
         router.navigate('/sign-in');
     }
 }

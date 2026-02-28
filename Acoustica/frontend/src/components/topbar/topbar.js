@@ -1,11 +1,24 @@
     import api from '/src/services/api.js';
     import { loadMusicPlayer } from '/src/components/music_player/music_player.js';
+    import router from '/src/utils/routers.js';
 
     export async function loadTopbar() {
         const topbar = document.getElementById('topbar');
         const result = await fetch('/src/components/topbar/topbar.html');
         topbar.innerHTML = await result.text();
         topbar.style.setProperty('display', 'block', 'important');
+
+        const DEFAULT_PFP = '/src/assets/images/Default_pfp.png';
+
+        try {
+            const data = await api.getProfilePicture();
+            const img = document.getElementById('profile_picture_img');
+            img.src = data?.profile_picture_url ?? DEFAULT_PFP;
+            img.onerror = () => { img.src = DEFAULT_PFP; };
+        } catch (e) {
+            console.error('Failed to load pfp:', e);
+            document.getElementById('profile_picture_img').src = DEFAULT_PFP;
+        }
 
         document.getElementById('toggle_button').addEventListener('click', ()=>{
             toggleAppMode();
@@ -89,7 +102,35 @@
                 closeDropdown();
             }
         });
-    }
+
+        
+        const profileDropdown = document.getElementById('profile_dropdown');
+
+        document.getElementById('profile_picture').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#profile_wrapper')) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        document.getElementById('profile_option').addEventListener('click', (e) => {
+            e.preventDefault();
+            profileDropdown.classList.add('hidden');
+            router.navigate('/profile');
+        });
+
+        document.getElementById('signout_option').addEventListener('click', async (e) => {
+            e.preventDefault();
+            router.navigate('/sign-out');
+        });
+
+
+}
 
     export async function removeTopbar() {
         const topbar = document.getElementById('topbar');

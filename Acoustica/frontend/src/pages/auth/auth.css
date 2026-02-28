@@ -419,3 +419,30 @@ body:has(.auth-container) #content {
 .pfp-wrapper:hover .pfp-overlay {
     opacity: 1;
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.password-wrapper button {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.password-wrapper button:hover {
+    opacity: 1;
+}
