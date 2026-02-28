@@ -47,4 +47,8 @@ function loadTheme() {
 }
 
 router.init();
-router.navigate('/dashboard');
+
+const currentPath = window.location.pathname;
+if (currentPath === '/' || currentPath === '') {
+    router.navigate('/dashboard');
+}

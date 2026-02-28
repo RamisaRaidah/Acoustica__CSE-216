@@ -5,13 +5,9 @@ import router from '/src/utils/routers.js';
 import { getAlbums } from '/src/services/album.js';
 
 export async function renderUploadSong() {
-    await Promise.all([
-        loadTopbar(),
-        loadArtistSidebar()
-    ]);
+    loadArtistSidebar();
+    loadTopbar();
 
-    document.getElementById('content').innerHTML = '';
-    
     const response = await fetch('/src/pages/music/song/upload_song/upload_song.html');
     document.getElementById('content').innerHTML = await response.text();
 

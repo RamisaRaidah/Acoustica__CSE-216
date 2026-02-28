@@ -3,10 +3,8 @@ import { removeSidebar } from "/src/components/sidebar/sidebar.js";
 import api from '/src/services/api.js';
 
 export async function renderCreatePlaylist() {
-    await Promise.all([
-        removeTopbar(),
-        removeSidebar()
-    ]);
+    removeTopbar();
+    removeSidebar();
 
     const response = await fetch('/src/pages/music/playlist/create_playlist/create_playlist.html');
     document.getElementById('content').innerHTML = await response.text();
