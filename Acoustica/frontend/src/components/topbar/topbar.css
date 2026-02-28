@@ -127,6 +127,13 @@
     background: #2a2a2a;
 }
 
+#toggle_button {
+  background-color: transparent;
+  border: 0.1vh solid var(--text-color);
+  border-radius: 1vh;
+  font-weight: bold;
+  color: var(--text-color);
+}
 
 /*--------------------------PFP--------------------------------------*/
 #profile_wrapper {

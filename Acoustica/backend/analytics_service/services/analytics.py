@@ -12,7 +12,8 @@ logging.basicConfig(
 
 def search(seed):
     command = """
-    SELECT song_id, title FROM song 
+    SELECT song_id, title, (first_name || ' ' || last_name) name
+    FROM song s JOIN users a ON (s.owner_id = a.user_id)
     WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
     """
     seed = seed.lower().replace(" ", "")

@@ -10,8 +10,8 @@
   background: linear-gradient(
     135deg,
     rgba(175, 85, 25, 0.97) 0%,
-    rgba(209, 103, 28, 0.97) 50%,
-    rgba(168, 80, 22, 0.97) 100%
+    rgba(216, 107, 30, 0.97) 50%,
+    rgba(148, 69, 16, 0.97) 100%
   );
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -70,7 +70,7 @@
   justify-content: center;
   text-decoration: none;
   font-weight: 500;
-  gap: 0.6vh;
+  gap: 0.8vh;
   line-height: 1.1;
   margin-top: 1vh;
   margin-bottom: 1vh;
@@ -96,7 +96,7 @@
 }
 
 #artist_name {
-  font-size: 0.78vw;
+  font-size: 0.6vw;
   margin: 0;
   letter-spacing: 0.08em;
   text-transform: uppercase;

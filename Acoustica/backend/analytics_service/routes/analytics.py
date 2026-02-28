@@ -21,8 +21,9 @@ def health():
 @jwt_required()
 def search_route():
     seed = request.args.get("q")
+    if (seed == ""): 
+        return jsonify(None), 200
     result, status = analytics.search(seed)
-
     return jsonify(result), status
 
 @analytics_bp.get("/api/analytics/me/song-recommendations")

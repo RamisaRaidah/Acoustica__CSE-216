@@ -11,7 +11,7 @@
   padding: 1.5vw 1.5vw 0;
   box-sizing: border-box;
   box-shadow: 0.3vh 0 0.3vh var(--shadow);
-  z-index: 999;
+  z-index: 9999;
 }
 
 .app_info {

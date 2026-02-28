@@ -73,7 +73,8 @@
             dropdown.innerHTML = result.map(song => `
                 <div class="search-item"  
                 data-song-id="${song.song_id}"
-                data-title="${song.title}">
+                data-title="${song.title}"
+                data-name="${song.name}">
                 ${song.title}
                 </div>
             `).join('');
@@ -84,7 +85,8 @@
                 item.addEventListener('click', () => {
                     const songId = item.dataset.songId;
                     const title = item.dataset.title;
-                    loadMusicPlayer(songId, title, 'Me', 0, true);
+                    const name = item.dataset.name;
+                    loadMusicPlayer(songId, title, name, 0, true);
                     closeDropdown();
                     searchBar.value = '';
                 });
