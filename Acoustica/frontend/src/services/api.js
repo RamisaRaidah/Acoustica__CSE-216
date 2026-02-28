@@ -73,17 +73,7 @@ class ApiService {
     }
 
     async getProfilePicture() {
-        const cached = sessionStorage.getItem('pfp_url');
-        const cachedTime = sessionStorage.getItem('pfp_time');
-        
-        if (cached && cachedTime && (Date.now() - Number(cachedTime) < 50 * 60 * 1000)) {
-            return { profile_picture_url: cached };
-        }
-
-        const data = await this.request('/api/users/me/pfp');
-        sessionStorage.setItem('pfp_url', data.profile_picture_url);
-        sessionStorage.setItem('pfp_time', String(Date.now()));
-        return data;
+        return this.request('/api/users/me/pfp');
     }
 
     async getMyProfile() {
