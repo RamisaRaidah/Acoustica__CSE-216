@@ -142,11 +142,11 @@ export async function renderOnboarding() {
                 console.log('Why will you not work now?');
                 localStorage.setItem('theme', formData.get('theme'));
                 const theme = localStorage.getItem('theme');
-                if (theme === 'light') {
-                    document.body.classList.remove('dark');
+                if (theme === 'dark') {
+                    document.body.classList.add('dark');
                 }
                 else {
-                    document.body.classList.add('dark');
+                    document.body.classList.remove('dark');
                 }
 
                 router.navigate('/dashboard');
