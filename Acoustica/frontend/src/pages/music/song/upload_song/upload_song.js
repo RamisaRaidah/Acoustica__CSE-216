@@ -16,13 +16,13 @@ export async function renderUploadSong() {
         getAlbums()
     ]);
 
-    const create_album_button = document.getElementById('create_album_button');
+    const new_album_button = document.getElementById('new_album_button');
 
-    if(!create_album_button) {
+    if(!new_album_button) {
         console.log('create album button not found');
     }
 
-    create_album_button.addEventListener('click', () => {
+    new_album_button.addEventListener('click', () => {
         router.navigate('/music/create-album');
     });
 
