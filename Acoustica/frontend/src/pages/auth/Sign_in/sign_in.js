@@ -66,7 +66,7 @@ export async function renderSignIn() {
                 }));
                 localStorage.setItem('theme', response.theme); 
                 const theme = localStorage.getItem('theme');
-                if (theme === 'add') {
+                if (theme === 'dark') {
                     document.body.classList.add('dark');
                 }
                 else {
