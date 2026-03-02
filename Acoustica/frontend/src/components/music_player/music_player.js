@@ -123,6 +123,7 @@ class MusicPlayer {
     const updateTimeFromDrag = (e) => {
       if (!Number.isFinite(audio.duration)) return;
 
+      this.endSegment();
       const rect = progressContainer.getBoundingClientRect();
       let offsetX = e.clientX - rect.left;
       offsetX = Math.max(0, Math.min(offsetX, rect.width));
@@ -130,7 +131,6 @@ class MusicPlayer {
       progressBar.style.width = ((audio.currentTime / audio.duration) * 100) + "%";
       playTime.innerText = formatTime(audio.currentTime);
       audio.play().then(() => {
-        this.endSegment();
         this.isPlaying = true;
         playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Pause_Button.png';
         this.startSegment();
