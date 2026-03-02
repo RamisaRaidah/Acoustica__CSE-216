@@ -45,6 +45,12 @@ export async function renderSignUp() {;
         input.type = input.type === 'password' ? 'text' : 'password';
     });
 
+    document.getElementById('toggle-password2').addEventListener('click', () => {
+        const input = document.getElementById('confirm_password');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
