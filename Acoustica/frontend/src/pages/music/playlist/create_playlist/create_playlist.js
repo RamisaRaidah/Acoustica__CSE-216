@@ -1,10 +1,15 @@
-import { removeTopbar } from "/src/components/topbar/topbar.js";
-import { removeSidebar } from "/src/components/sidebar/sidebar.js";
+import { loadTopbar } from "/src/components/topbar/topbar.js";
+import { loadSidebar } from "/src/components/sidebar/sidebar.js";
+import MusicPlayer from "/src/components/music_player/music_player.js";
 import api from '/src/services/api.js';
 
 export async function renderCreatePlaylist() {
-    removeTopbar();
-    removeSidebar();
+    const playerState = MusicPlayer.loadPlayerState();
+    await Promise.all([
+        loadSidebar(),
+        loadTopbar(),
+        MusicPlayer.loadMusicPlayer(playerState.songId, playerState.title, playerState.artist, playerState.progress, false)
+    ]);
 
     const response = await fetch('/src/pages/music/playlist/create_playlist/create_playlist.html');
     document.getElementById('content').innerHTML = await response.text();

@@ -1,6 +1,13 @@
 import { API_BASE_URL } from './config.js';
 
 class ApiService {
+    constructor() {
+        if (ApiService._instance) {
+            return ApiService._instance;
+        }
+        ApiService._instance = this;
+    }
+
     getToken(){
         return localStorage.getItem("token");
     }

@@ -1,5 +1,5 @@
     import api from '/src/services/api.js';
-    import { loadMusicPlayer } from '/src/components/music_player/music_player.js';
+    import MusicPlayer from '/src/components/music_player/music_player.js';
     import router from '/src/utils/routers.js';
 
     export async function loadTopbar() {
@@ -127,7 +127,7 @@
                         const songId = parseInt(item.dataset.songId);
                         const title = item.dataset.title;
                         const artist = item.dataset.artist;
-                        loadMusicPlayer(songId, title, artist, 0, true);
+                        MusicPlayer.loadMusicPlayer(songId, title, artist, 0, true);
 
                     } else if (item.dataset.albumId) {
                         console.log('album clicked:', item.dataset.albumId); 

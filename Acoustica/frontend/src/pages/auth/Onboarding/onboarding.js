@@ -3,7 +3,7 @@ import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
-import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
+import MusicPlayer from '/src/components/music_player/music_player.js';
 
 export async function renderOnboarding() {
     console.log('Hello onboarding');
@@ -11,7 +11,7 @@ export async function renderOnboarding() {
 
     removeSidebar();
     removeTopbar();
-    removeMusicPlayer();
+    MusicPlayer.removeMusicPlayer();
 
     content.style.marginLeft = '0';
     content.style.marginTop = '0';

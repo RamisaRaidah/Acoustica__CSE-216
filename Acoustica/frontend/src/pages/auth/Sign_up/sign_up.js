@@ -2,7 +2,7 @@ import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
-import { removeMusicPlayer } from '/src/components/music_player/music_player.js';
+import MusicPlayer from '/src/components/music_player/music_player.js';
 import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
 
 export async function renderSignUp() {;
@@ -10,7 +10,7 @@ export async function renderSignUp() {;
 
     removeSidebar();
     removeTopbar();
-    removeMusicPlayer();
+    MusicPlayer.removeMusicPlayer();
 
     content.style.marginLeft = '0';
     content.style.marginTop = '0';
