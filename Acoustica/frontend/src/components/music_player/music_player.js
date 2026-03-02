@@ -1,4 +1,5 @@
 import { getSongAudio } from "/src/services/song.js";
+import api from '/src/services/api.js';
 
 class MusicPlayer {
   constructor() {
@@ -6,8 +7,14 @@ class MusicPlayer {
       return MusicPlayer._instance;
     }
     MusicPlayer._instance = this;
+    this.songId = null;
     this.isPlaying = false;
     this.audio = null;
+    this.startTime = null;
+    window.addEventListener('beforeunload', () => {
+      this.endSegment();
+      this.flushSegments();
+    });
   }
 
   async loadMusicPlayer(songId = -1, title = null, artist = null, progress = 0, play = false) {
@@ -16,6 +23,8 @@ class MusicPlayer {
       this.audio.src = '';
       this.audio = null;
       this.isPlaying = false;
+      this.endSegment();
+      this.flushSegments();
     }
 
     const musicPlayer = document.getElementById('music_player');
@@ -40,6 +49,7 @@ class MusicPlayer {
     }
 
     this.audio = audio;
+    this.songId = songId;
 
     try {
       const response = await getSongAudio(songId);
@@ -56,6 +66,7 @@ class MusicPlayer {
       playPauseButton.style.pointerEvents = 'auto';
 
       audio.currentTime = audio.duration * (progress / 100);
+      this.startTime = audio.currentTime;
       progressBar.style.width = ((audio.currentTime / audio.duration) * 100) + "%";
       playTime.innerText = formatTime(audio.currentTime);
       totalTime.innerText = formatTime(audio.duration);
@@ -88,11 +99,13 @@ class MusicPlayer {
         audio.pause();
         playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Play_Button.png';
         this.isPlaying = false;
+        this.endSegment();
       }
       else {
         audio.play();
         playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Pause_Button.png';
         this.isPlaying = true;
+        this.startSegment();
       }
       this.savePlayerState({
         songId, title, artist,
@@ -104,6 +117,7 @@ class MusicPlayer {
     audio.addEventListener('ended', () => {
       this.isPlaying = false;
       playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Play_Button.png';
+      this.endSegment();
     });
 
     const updateTimeFromDrag = (e) => {
@@ -116,8 +130,10 @@ class MusicPlayer {
       progressBar.style.width = ((audio.currentTime / audio.duration) * 100) + "%";
       playTime.innerText = formatTime(audio.currentTime);
       audio.play().then(() => {
+        this.endSegment();
         this.isPlaying = true;
         playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Pause_Button.png';
+        this.startSegment();
       });
     };
 
@@ -143,6 +159,7 @@ class MusicPlayer {
       audio.play();
       playPauseButton.src = '/src/assets/images/Musicbar_Buttons/Pause_Button.png';
       this.isPlaying = true;
+      this.startSegment();
     }
   }
 
@@ -152,6 +169,8 @@ class MusicPlayer {
       this.audio.src = '';
       this.audio = null;
       this.isPlaying = false;
+      this.endSegment();
+      this.flushSegments();
     }
 
     this.removePlayerState();
@@ -176,6 +195,40 @@ class MusicPlayer {
 
   removePlayerState() {
     localStorage.removeItem('music_player_state');
+  }
+
+  startSegment() {
+    if (this.startTime === null) {
+      this.startTime = this.audio.currentTime;
+    }
+  }
+
+  endSegment() {
+    if (!this.audio || this.startTime === null) return;
+    const endTime = this.audio.currentTime;
+    const duration = endTime - this.startTime;
+    console.log('endSegment called, duration:', duration);
+    if (duration > 5) {
+      const segments = JSON.parse(localStorage.getItem('stream_segments') || '[]');
+      segments.push({'song_id': this.songId, 'datetime': new Date().toISOString(), 'duration': duration});
+      localStorage.setItem('stream_segments', JSON.stringify(segments));
+      console.log('segments saved:', segments);
+      if (segments.length >= 5) {
+        this.flushSegments();
+      }
+    }
+    this.startTime = null;
+  }
+
+  flushSegments() {
+    const segments = JSON.parse(localStorage.getItem('stream_segments') || '[]');
+    if (segments.length === 0) return;
+
+    api.request('/api/listeners/me/stream-history', {
+      method: 'POST',
+      body: JSON.stringify(segments)
+    });
+    localStorage.removeItem('stream_segments');
   }
 }
 

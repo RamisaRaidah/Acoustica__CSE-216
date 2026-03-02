@@ -88,7 +88,7 @@ export async function renderSignUp() {;
                     email: email,
                     user_type: signInResponse.user_type
                 }));
-    
+                document.cookie = `jwt=${signInResponse.token}; path=/; SameSite=Strict;`;
                 console.log('Sign up and sign in done, going to Onboarding');
                await renderOnboarding();
     

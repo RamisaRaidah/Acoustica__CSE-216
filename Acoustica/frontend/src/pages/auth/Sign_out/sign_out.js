@@ -13,6 +13,7 @@ export async function renderSignOut() {
         sessionStorage.removeItem('pfp_url');
         sessionStorage.removeItem('pfp_time'); 
         router.navigate('/sign-in');
+        document.cookie = 'jwt=; path=/; SameSite=Strict; Max-Age=0';
     }
 }
 

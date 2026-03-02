@@ -64,6 +64,7 @@ export async function renderSignIn() {
                     email: email,
                     user_type: response.user_type
                 }));
+                document.cookie = `jwt=${response.token}; path=/; SameSite=Strict;`;
                 localStorage.setItem('theme', response.theme); 
                 const theme = localStorage.getItem('theme');
                 if (theme === 'dark') {
