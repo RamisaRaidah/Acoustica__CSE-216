@@ -105,7 +105,7 @@ def get_albums():
     else:
         return {"error": "coudn't fetch data"}, 500
     
-### get_album_details
+### get_album_details ###
 def get_album_details(album_id):
     album_id = int(album_id)
 
@@ -118,7 +118,26 @@ def get_album_details(album_id):
         return result, 200
     else:
         return {"error": "coudn't fetch data"}, 500
+    
+def get_album_cover_picture(album_id):
+    result = execute_sql(
+        "SELECT cover_picture FROM album WHERE album_id = %s", (album_id,),
+        fetch_one = True
+    )
 
+    if not result:
+        return {"error": "coudn't fetch data"}, 500
+    
+    album_cover_picture_path = result["cover_picture"]
+    signed_url = storage.generate_signed_url(album_cover_picture_path)
+
+    logging.info(album_cover_picture_path)
+
+    if not signed_url:
+        return {"error": "coudn't generate signed url"}
+    
+    return {"cover_picture_url": signed_url}, 200
+        
 def edit_album(album_id):
     return (f"edit_album {album_id}")
 

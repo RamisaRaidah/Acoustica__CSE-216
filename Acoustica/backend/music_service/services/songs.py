@@ -123,7 +123,7 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
 
 def get_song_details(song_id):
     command = "SELECT * FROM song WHERE song_id=%s"
-    result = execute_sql(command, (1,), fetch_one=True)
+    result = execute_sql(command, (song_id,), fetch_one=True)
 
     if not result:
         return {"error": "coudn't find song"}, 401
@@ -137,8 +137,10 @@ def delete_song(song_id):
     return (f"delete_song {song_id}")
 
 def get_song_audio(song_id):
-    command = "SELECT song_audio FROM song WHERE song_id = %s"
-    result = execute_sql(command, (song_id,), fetch_one = True)
+    result = execute_sql(
+        "SELECT song_audio FROM song WHERE song_id = %s", (song_id,), 
+        fetch_one = True
+    )
     if not result:
         return {"error": "coudn't find song audio"}, 401
     

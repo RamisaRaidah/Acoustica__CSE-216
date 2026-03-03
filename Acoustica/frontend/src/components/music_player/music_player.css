@@ -49,7 +49,7 @@
   pointer-events: none;
 }
 
-#song_cover_pic {
+#cover_picture {
   width: 3.3vw;
   height: 3.3vw;
   border-radius: 0.5vw;
@@ -260,6 +260,10 @@
 
 img {
   display: block;
+}
+
+img[src=""] {
+  display: none;
 }
 
 

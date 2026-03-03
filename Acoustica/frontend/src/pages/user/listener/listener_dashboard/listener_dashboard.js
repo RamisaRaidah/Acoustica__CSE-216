@@ -7,7 +7,7 @@ export async function renderListenerDashboard() {
   await Promise.all([
     loadSidebar(),
     loadTopbar(),
-    MusicPlayer.loadMusicPlayer(playerState.songId, playerState.title, playerState.artist, playerState.progress, false)
+    MusicPlayer.loadMusicPlayer(playerState.songId, playerState.albumId, playerState.title, playerState.artist, playerState.progress, false)
   ]);
 
   const response = await fetch('src/pages/user/listener/listener_dashboard/listener_dashboard.html');

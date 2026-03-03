@@ -1,4 +1,5 @@
 import { getSongAudio } from "/src/services/song.js";
+import { getAlbumCoverPicture } from "/src/services/album.js";
 import api from '/src/services/api.js';
 
 class MusicPlayer {
@@ -17,7 +18,7 @@ class MusicPlayer {
     });
   }
 
-  async loadMusicPlayer(songId = -1, title = null, artist = null, progress = 0, play = false) {
+  async loadMusicPlayer(songId = -1, albumId = -1, title = null, artist = null, progress = 0, play = false) {
     if (this.audio) {
       this.audio.pause();
       this.audio.src = '';
@@ -40,6 +41,7 @@ class MusicPlayer {
     const playTime = document.getElementById('play_time');
     const songName = document.getElementById('song_name');
     const artistName = document.getElementById('artist_name');
+    const coverPicture = document.getElementById('cover_picture');
 
     if (songId === -1) return;
 
@@ -52,8 +54,10 @@ class MusicPlayer {
     this.songId = songId;
 
     try {
-      const response = await getSongAudio(songId);
-      audio.src = response.stream_url;
+      const songAudio = await getSongAudio(songId);
+      const albumCoverpicture = await getAlbumCoverPicture(albumId);
+      audio.src = songAudio.stream_url;
+      coverPicture.src = albumCoverpicture.cover_picture_url;
     }
     catch (error) {
       console.error(error.message);
@@ -81,7 +85,7 @@ class MusicPlayer {
       playTime.innerText = formatTime(audio.currentTime);
 
       this.savePlayerState({
-        songId, title, artist,
+        songId, albumId, title, artist,
         progress: (audio.currentTime / audio.duration) * 100,
         isPlaying: this.isPlaying
       });
@@ -108,7 +112,7 @@ class MusicPlayer {
         this.startSegment();
       }
       this.savePlayerState({
-        songId, title, artist,
+        songId, albumId, title, artist,
         progress: (audio.currentTime / audio.duration) * 100,
         isPlaying: this.isPlaying
       });
@@ -207,12 +211,11 @@ class MusicPlayer {
     if (!this.audio || this.startTime === null) return;
     const endTime = this.audio.currentTime;
     const duration = endTime - this.startTime;
-    console.log('endSegment called, duration:', duration);
+    const progress = (this.audio.currentTime / this.audio.duration) * 100;
     if (duration > 5) {
       const segments = JSON.parse(localStorage.getItem('stream_segments') || '[]');
-      segments.push({'song_id': this.songId, 'datetime': new Date().toISOString(), 'duration': duration});
+      segments.push({'song_id': this.songId, 'datetime': new Date().toISOString(), 'duration': duration, 'progress': progress});
       localStorage.setItem('stream_segments', JSON.stringify(segments));
-      console.log('segments saved:', segments);
       if (segments.length >= 5) {
         this.flushSegments();
       }

@@ -15,14 +15,6 @@ def get_dashboard():
 def get_profile():
     return ("get_profile")
 
-# CREATE TABLE IF NOT EXISTS "song_stream_history" (
-#   song_stream_id SERIAL CONSTRAINT pk_song_stream_history PRIMARY KEY,
-#   listener_id INT CONSTRAINT fk_song_stream_history_listener_id REFERENCES listener(listener_id),
-#   song_id INT CONSTRAINT fk_song_stream_history_song_id REFERENCES song(song_id),
-#   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-#   "duration" INT
-# );
-
 ### add_stream_history ###
 
 def add_stream_history(segments):
@@ -37,12 +29,13 @@ def add_stream_history(segments):
         song_id = segment.get('song_id')
         datetime = segment.get('datetime')
         duration = int(segment.get('duration'))
+        progress = float(segment.get('progress'))
 
-        placeholders.append("(%s, %s, %s, %s)")
-        values.extend([listener_id, song_id, datetime, duration])
+        placeholders.append("(%s, %s, %s, %s, %s)")
+        values.extend([listener_id, song_id, datetime, duration, progress])
 
     command = f"""
-        INSERT INTO song_stream_history (listener_id, song_id, date_time, duration)
+        INSERT INTO song_stream_history (listener_id, song_id, date_time, duration, progress)
         VALUES {', '.join(placeholders)}
     """
 
@@ -51,6 +44,22 @@ def add_stream_history(segments):
 
 def get_stream_history():
     return ("get_stream_history")
+
+### get_last_listening ###
+
+def get_last_listening():
+    command = """
+        SELECT t.song_id, album_id, title, (first_name || ' ' || last_name) artist, progress
+        FROM song_stream_history s JOIN song t ON (s.song_id = t.song_id) 
+        ORDER BY song_stream_id DESC
+        LIMIT 1
+    """
+    result = execute_sql(command, fetch_one = True)
+    
+    if not result:
+        return {"error": "could load data"}, 400
+    
+    return result, 200
 
 def add_liked_song(song_id):
     return (f"add_liked_song {song_id}")

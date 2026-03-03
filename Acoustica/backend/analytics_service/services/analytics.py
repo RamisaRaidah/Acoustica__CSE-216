@@ -15,21 +15,21 @@ def search(seed):
     param = (f"%{seed}%",)
 
     songs_query = """
-        SELECT song_id, s.title, (first_name || ' ' || last_name) AS artist
+        SELECT song_id, s.album_id, s.title, (first_name || ' ' || last_name) artist
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
         WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
         LIMIT 5
     """
 
     albums_query = """
-        SELECT album_id, title, (first_name || ' ' || last_name) AS artist
+        SELECT album_id, title, (first_name || ' ' || last_name) artist
         FROM album a JOIN users u ON (a.owner_id = u.user_id)
         WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
         LIMIT 5
     """
 
     artists_query = """
-        SELECT user_id, (first_name || ' ' || last_name) AS name
+        SELECT user_id, (first_name || ' ' || last_name) name
         FROM users
         WHERE user_type = 'artist' AND LOWER(REPLACE((first_name || last_name), ' ', '')) LIKE %s
         LIMIT 5

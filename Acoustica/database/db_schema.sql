@@ -206,6 +206,7 @@ CREATE TABLE IF NOT EXISTS "song_stream_history" (
   song_id INT CONSTRAINT fk_song_stream_history_song_id REFERENCES song(song_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "duration" INT
+  progress NUMERIC(10,2)
 );
 
 CREATE TABLE IF NOT EXISTS "album_stream_history" (

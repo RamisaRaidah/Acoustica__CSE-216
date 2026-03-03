@@ -86,6 +86,7 @@
                 html += result.songs.map(song => `
                     <div class="search-item"
                         data-song-id="${song.song_id}"
+                        data-album-id="${song.album_id}"
                         data-title="${song.title}"
                         data-artist="${song.artist}">
                         <span class="search-item-title">${song.title}</span>
@@ -125,9 +126,11 @@
                 item.addEventListener('click', () => {
                     if (item.dataset.songId) {
                         const songId = parseInt(item.dataset.songId);
+                        const albumId = parseInt(item.dataset.albumId);
+                        console.log(albumId);
                         const title = item.dataset.title;
                         const artist = item.dataset.artist;
-                        MusicPlayer.loadMusicPlayer(songId, title, artist, 0, true);
+                        MusicPlayer.loadMusicPlayer(songId, albumId, title, artist, 0, true);
 
                     } else if (item.dataset.albumId) {
                         console.log('album clicked:', item.dataset.albumId); 

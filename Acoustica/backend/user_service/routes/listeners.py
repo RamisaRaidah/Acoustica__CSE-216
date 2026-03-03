@@ -40,6 +40,12 @@ def add_stream_history_route():
 def get_stream_history_route():
     return jsonify("get_stream_history")
 
+@listeners_bp.get("/api/listeners/me/last-listening")
+@jwt_required()
+def get_last_listening():
+    result, status = listeners.get_last_listening()
+    return jsonify(result), status
+
 @listeners_bp.post("/api/listeners/me/liked-songs/<song_id>")
 @jwt_required()
 def add_liked_song_route(song_id):

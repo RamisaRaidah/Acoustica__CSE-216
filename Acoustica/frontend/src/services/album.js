@@ -7,3 +7,7 @@ export async function getAlbums() {
 export async function getAlbumDetails(albumId) {
     return api.request(`/api/music/albums/${albumId}`, { method: 'GET' });
 }
+
+export async function getAlbumCoverPicture(albumId) {
+    return api.request(`/api/music/albums/${albumId}/cover-picture`, { method: 'GET' });
+}

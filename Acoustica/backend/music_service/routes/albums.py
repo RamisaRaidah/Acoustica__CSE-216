@@ -42,6 +42,12 @@ def get_album_details_route(album_id):
     result, status = albums.get_album_details(album_id)
     return jsonify(result), status
 
+@albums_bp.get("/api/music/albums/<album_id>/cover-picture")
+@jwt_required()
+def get_album_cover_picture_route(album_id):
+    result, status = albums.get_album_cover_picture(album_id)
+    return jsonify(result), status
+
 @albums_bp.put("/api/music/albums/<album_id>")
 @jwt_required()
 def edit_album_route(album_id):
