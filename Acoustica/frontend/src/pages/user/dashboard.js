@@ -8,13 +8,13 @@ export async function renderDashboard() {
     enterApp();
     const userType = getUser().user_type;
     if (userType === "listener") {
-        renderListenerDashboard();
+        await renderListenerDashboard();
     }
     else if (userType === "artist") {
-        renderArtistDashboard();
+        await renderArtistDashboard();
     }
     else if (userType === "admin") {
-        renderAdminDashboard();
+        await renderAdminDashboard();
     }
 
     const content = document.getElementById('content');
