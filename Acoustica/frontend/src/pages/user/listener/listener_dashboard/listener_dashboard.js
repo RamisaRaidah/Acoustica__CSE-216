@@ -2,8 +2,10 @@ import { loadSidebar } from '/src/components/sidebar/sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
 import { getLastListening } from '/src/services/user.js';
 import MusicPlayer from '/src/components/music_player/music_player.js';
+import { enterApp } from '/src/utils/helper.js';
 
 export async function renderListenerDashboard() {
+  enterApp();
   const lastListening = await getLastListening();
   MusicPlayer.savePlayerState({
     songId: lastListening['song_id'], 

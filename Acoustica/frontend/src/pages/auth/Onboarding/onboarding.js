@@ -4,27 +4,26 @@ import router from '/src/utils/routers.js';
 import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
 import MusicPlayer from '/src/components/music_player/music_player.js';
+import { exitApp } from '/src/utils/helper.js';
 
 export async function renderOnboarding() {
+    exitApp();
     console.log('Hello onboarding');
-    const content = document.getElementById('content');
+    
+    const page=document.getElementById('page');
 
-    removeSidebar();
-    removeTopbar();
-    MusicPlayer.removeMusicPlayer();
+    page.style.marginLeft = '0';
+    page.style.marginTop = '0';
 
-    content.style.marginLeft = '0';
-    content.style.marginTop = '0';
-
-    content.style.overflowY = 'auto';
-    content.style.overflowX = 'hidden';
-    content.style.height = 'auto';
+    page.style.overflowY = 'auto';
+    page.style.overflowX = 'hidden';
+    page.style.height = 'auto';
 
     document.body.style.overflowY = 'auto';
     document.body.style.overflowX = 'hidden';
 
-    content.classList.add('scrollable');
-    content.classList.remove('no-scroll');
+    page.classList.add('scrollable');
+    page.classList.remove('no-scroll');
 
     console.log('We made it here, scroll bars should be fine, but we know they are not');
 
@@ -52,12 +51,12 @@ export async function renderOnboarding() {
         console.log('html length:', html.length);
         console.log('has pfp:', html.includes('id="pfp"'));
         
-        content.innerHTML = html;
+        page.innerHTML = html;
         console.log('DOM has pfp after inject:', !!document.getElementById('pfp'));
 
     }catch (error) {
         console.error('Template load error:', error);
-        content.innerHTML = '<div class="error">Failed to load onboarding page </div>';
+        page.innerHTML = '<div class="error">Failed to load onboarding page </div>';
         return;
     }
 

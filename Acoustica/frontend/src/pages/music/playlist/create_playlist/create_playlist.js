@@ -2,8 +2,10 @@ import { loadTopbar } from "/src/components/topbar/topbar.js";
 import { loadSidebar } from "/src/components/sidebar/sidebar.js";
 import MusicPlayer from "/src/components/music_player/music_player.js";
 import api from '/src/services/api.js';
+import { enterApp } from "/src/utils/helper.js";
 
 export async function renderCreatePlaylist() {
+    enterApp();
     const playerState = MusicPlayer.loadPlayerState();
     await Promise.all([
         loadSidebar(),

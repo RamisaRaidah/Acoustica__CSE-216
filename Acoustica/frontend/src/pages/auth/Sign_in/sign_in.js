@@ -1,33 +1,31 @@
 import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
-import { removeSidebar } from '/src/components/sidebar/sidebar.js';
-import { removeTopbar } from '/src/components/topbar/topbar.js';
-import MusicPlayer from '/src/components/music_player/music_player.js';
+import { exitApp } from '/src/utils/helper.js';
 
 export async function renderSignIn() {
-    const app = document.getElementById('app');
-    
-    removeSidebar();
-    removeTopbar();
-    MusicPlayer.removeMusicPlayer();
+    exitApp();
 
-    const content = document.getElementById('content');
-    content.style.marginLeft = '0';
-    content.style.marginTop = '0';
-    content.style.padding = '0';
-    content.style.overflow = 'hidden';
-    content.style.height = '100vh';
+    const page = document.getElementById('page');
+    page.style.marginLeft = '0';
+    page.style.marginTop = '0';
+    page.style.padding = '0';
+    page.style.overflow = 'hidden';
+    page.style.height = '100vh';
     document.body.style.overflow = 'hidden';
 
     try {
+        console.log('Here we go, sign-in!!');
         const response = await fetch('/src/pages/auth/Sign_in/sign_in.html');
+        console.log('Response:', response);
         const html = await response.text();
-        content.innerHTML = html;
-        content.classList.remove('scrollable');
-        content.classList.add('no-scroll');
+        console.log('HTML length:', html.length);
+        console.log('HTML preview:', html.substring(0, 200));
+        page.innerHTML = html;
+        page.classList.remove('scrollable');
+        page.classList.add('no-scroll');
     } catch (error) {
         console.error('Failed to load sign-in template:', error);
-        content.innerHTML = '<div class="error">Failed to load sign-in page</div>';
+        page.innerHTML = '<div class="error">Failed to load sign-in page</div>';
         return;
     }
 

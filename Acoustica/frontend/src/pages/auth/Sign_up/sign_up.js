@@ -4,35 +4,34 @@ import { removeSidebar } from '/src/components/sidebar/sidebar.js';
 import { removeTopbar } from '/src/components/topbar/topbar.js';
 import MusicPlayer from '/src/components/music_player/music_player.js';
 import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
+import { exitApp } from '/src/utils/helper.js';
 
-export async function renderSignUp() {;
-    const content = document.getElementById('content');
+export async function renderSignUp() {
+    exitApp();
+    
+    const page=document.getElementById('page');
 
-    removeSidebar();
-    removeTopbar();
-    MusicPlayer.removeMusicPlayer();
+    page.style.marginLeft = '0';
+    page.style.marginTop = '0';
 
-    content.style.marginLeft = '0';
-    content.style.marginTop = '0';
-
-    content.style.overflowY = 'auto';
-    content.style.overflowX = 'hidden';
-    content.style.height = 'auto';
+    page.style.overflowY = 'auto';
+    page.style.overflowX = 'hidden';
+    page.style.height = 'auto';
 
     document.body.style.overflowY = 'auto';
     document.body.style.overflowX = 'hidden';
 
-    content.classList.add('scrollable');
-    content.classList.remove('no-scroll');
+    page.classList.add('scrollable');
+    page.classList.remove('no-scroll');
     
     try{
         const response=await fetch('src/pages/auth/Sign_up/sign_up.html');
         const html=await response.text();
-        content.innerHTML=html;
+        page.innerHTML=html;
        
     }catch(error){
         console.log("Failed to fetch sign up: ", error);
-        content.innerHTML='<div class="error">"Failed to load Sign-up page"</div>';
+        page.innerHTML='<div class="error">"Failed to load Sign-up page"</div>';
         return;
     }
 

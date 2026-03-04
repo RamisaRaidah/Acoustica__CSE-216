@@ -11,6 +11,11 @@ body:has(.auth-container) {
 }
 
 body:has(.auth-container) #app {
+  display: none !important;  
+}
+
+
+body:has(.auth-container) #page {
   display: block;
 }
 
@@ -367,12 +372,6 @@ body:has(.auth-container) #app {
 }
 
 
-body:has(.auth-container) #content {
-  padding: 0 !important;
-  margin: 0 !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
-}
 
 /* PFP Section */
 .pfp-group {

@@ -3,8 +3,10 @@ import { loadTopbar } from '/src/components/topbar/topbar.js';
 import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
 import { getAlbums } from '/src/services/album.js';
+import { enterApp } from '/src/utils/helper.js';
 
 export async function renderUploadSong() {
+    enterApp();
     loadArtistSidebar();
     loadTopbar();
 
