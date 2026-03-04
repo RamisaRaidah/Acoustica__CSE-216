@@ -14,12 +14,15 @@ export async function renderListenerDashboard() {
     isPlaying: false
   });
 
+  const playerState = MusicPlayer.loadPlayerState();
+
   await Promise.all([
     loadSidebar(),
     loadTopbar(),
-    MusicPlayer.loadMusicPlayer(lastListening['song_id'], lastListening['album_id'], lastListening['title'], lastListening['artist'], lastListening['progress'], false)
+    MusicPlayer.loadMusicPlayer(playerState['song_id'], playerState['album_id'], playerState['title'], playerState['artist'], playerState['progress'], false)
   ]);
   
   const response = await fetch('src/pages/user/listener/listener_dashboard/listener_dashboard.html');
   document.getElementById('content').innerHTML = await response.text();
+  document.getElementById('content').style.display = 'block';
 }

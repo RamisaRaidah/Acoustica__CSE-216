@@ -6,11 +6,13 @@ import { enterApp } from '/src/utils/helper.js';
 
 export async function renderPrivateProfile() {
     enterApp();
+    
     const playerState = MusicPlayer.loadPlayerState();
+
     await Promise.all([
         loadSidebar(),
         loadTopbar(),
-        MusicPlayer.loadMusicPlayer(playerState.songId, playerState.title, playerState.artist, playerState.progress, false)
+        MusicPlayer.loadMusicPlayer(playerState['song_id'], playerState['album_id'], playerState['title'], playerState['artist'], playerState['progress'], false)
     ]);
 
     const response = await fetch('/src/pages/profile/private/my_profile.html');
