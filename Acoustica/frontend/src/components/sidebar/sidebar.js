@@ -6,13 +6,13 @@ import { loadAdminSidebar } from "/src/components/sidebar/admin_sidebar/admin_si
 export async function loadSidebar() {
     const userType = getUser().user_type;
     if (userType === "listener") {
-        loadListenerSidebar();
+        await loadListenerSidebar();
     }
     else if (userType === "artist") {
-        loadArtistSidebar();
+        await loadArtistSidebar();
     }
     else if (userType === "admin") {
-        loadAdminSidebar();
+        await loadAdminSidebar();
     }
 }
 

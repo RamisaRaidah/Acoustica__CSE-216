@@ -42,7 +42,7 @@ def get_stream_history_route():
 
 @listeners_bp.get("/api/listeners/me/last-listening")
 @jwt_required()
-def get_last_listening():
+def get_last_listening_route():
     result, status = listeners.get_last_listening()
     return jsonify(result), status
 

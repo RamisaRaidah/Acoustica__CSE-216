@@ -1,6 +1,4 @@
 import router from '/src/utils/routers.js';
-import { getLastListening } from '/src/services/user.js';
-import MusicPlayer from '/src/components/music_player/music_player.js';
 import { renderUnauthorized } from '/src/pages/user/unauthorized/unauthorized.js';
 import { renderSignIn } from '/src/pages/auth/Sign_in/sign_in.js';
 import { renderSignUp } from '/src/pages/auth/Sign_up/sign_up.js';
@@ -10,7 +8,6 @@ import { renderUploadSong } from '/src/pages/music/song/upload_song/upload_song.
 import { renderCreateAlbum } from '/src/pages/music/album/create_album/create_album.js';
 import { renderCreatePlaylist } from '/src/pages/music/playlist/create_playlist/create_playlist.js';
 import { renderPrivateProfile } from '/src/pages/profile/private/my_profile.js';
-
 
 //-----------------------------------User---------------------------------------------------//
 router.register('/unauthorized', renderUnauthorized);
@@ -57,13 +54,3 @@ const currentPath = window.location.pathname;
 if (currentPath === '/' || currentPath === '') {
     router.navigate('/dashboard');
 }
-
-const lastListening = await getLastListening();
-MusicPlayer.savePlayerState({
-  songId: lastListening['song_id'], 
-  albumId: lastListening['album_id'],
-  title: lastListening['title'],
-  artist: lastListening['artist'],
-  progress: lastListening['progress'], 
-  isPlaying: false
-});

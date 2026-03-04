@@ -6,13 +6,13 @@ import { renderAdminDashboard } from "/src/pages/user/admin/admin_dashboard/admi
 export async function renderDashboard() {
     const userType = getUser().user_type;
     if (userType === "listener") {
-        renderListenerDashboard();
+        await renderListenerDashboard();
     }
     else if (userType === "artist") {
-        renderArtistDashboard();
+        await renderArtistDashboard();
     }
     else if (userType === "admin") {
-        renderAdminDashboard();
+        await renderAdminDashboard();
     }
 
     const content = document.getElementById('content');

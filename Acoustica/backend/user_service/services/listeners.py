@@ -49,15 +49,23 @@ def get_stream_history():
 
 def get_last_listening():
     command = """
-        SELECT t.song_id, album_id, title, (first_name || ' ' || last_name) artist, progress
-        FROM song_stream_history s JOIN song t ON (s.song_id = t.song_id) 
+        SELECT s.song_id, s.album_id, s.title, (first_name || ' ' || last_name) artist, progress
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
         ORDER BY song_stream_id DESC
         LIMIT 1
     """
     result = execute_sql(command, fetch_one = True)
+
+    logging.info(result)
     
     if not result:
-        return {"error": "could load data"}, 400
+        return {
+            "song_id": -1,
+            "album_id": -1,
+            "title": None,
+            "artist": None,
+            "progress": 0
+        }, 200
     
     return result, 200
 
