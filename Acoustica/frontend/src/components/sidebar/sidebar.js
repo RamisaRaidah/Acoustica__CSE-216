@@ -5,6 +5,7 @@ import { loadAdminSidebar } from "/src/components/sidebar/admin_sidebar/admin_si
 
 export async function loadSidebar() {
     const userType = getUser().user_type;
+    
     if (userType === "listener") {
         await loadListenerSidebar();
     }

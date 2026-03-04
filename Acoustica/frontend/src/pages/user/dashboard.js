@@ -16,12 +16,4 @@ export async function renderDashboard() {
     else if (userType === "admin") {
         await renderAdminDashboard();
     }
-
-    const content = document.getElementById('content');
-
-    content.style.overflowY = 'auto'; 
-    content.style.overflowX = 'hidden'; 
-    content.classList.add('dashboard-scroll');
-    document.body.style.overflowY = 'auto';
-    document.body.style.overflowX = 'hidden';
 }

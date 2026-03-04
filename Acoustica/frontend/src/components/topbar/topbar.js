@@ -5,6 +5,7 @@ import { loadAdminTopbar } from "/src/components/topbar/admin_topbar/admin_topba
 
 export async function loadTopbar() {
     const userType = getUser().user_type;
+    
     if (userType === "listener") {
         await loadListenerTopbar();
     }
