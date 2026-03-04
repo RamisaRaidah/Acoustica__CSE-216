@@ -1,7 +1,9 @@
+import { enterApp } from '/src/utils/helper.js';
 import { loadAdminSidebar } from '/src/components/sidebar/admin_sidebar/admin_sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
 
 export async function renderAdminDashboard() {
+    enterApp();
     await Promise.all([
       loadAdminSidebar(),
       loadTopbar(),
