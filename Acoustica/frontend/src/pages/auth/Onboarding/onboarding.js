@@ -150,6 +150,10 @@ export async function renderOnboarding() {
                     document.body.classList.remove('dark');
                 }
 
+                const user = JSON.parse(localStorage.getItem('user'));
+                user.onboarding_done = true;
+                localStorage.setItem('user', JSON.stringify(user))
+
                 router.navigate('/dashboard');
             } else {
                 throw new Error('Onboarding failed');

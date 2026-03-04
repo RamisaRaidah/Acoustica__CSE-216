@@ -32,6 +32,11 @@ class Router {
     return !!localStorage.getItem("token");
   }
 
+  hasCompletedOnboarding(){
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user.onboarding_done === true;
+  }
+
   resolve(path, push = false) {
     const normalizedPath = this.normalize(path);
     const user = getUser();
@@ -43,6 +48,18 @@ class Router {
       if(route.options.protected && !this.isAuthenticated()){
         history.pushState({}, "", "/sign-in");  
         this.resolve("/sign-in");
+        return;
+      }
+
+      if (route.options.requiresOnboarding && !this.hasCompletedOnboarding()) {
+        history.pushState({}, "", "/onboarding");
+        this.resolve("/onboarding");
+        return;
+      }
+
+      if (normalizedPath === "/onboarding" && this.hasCompletedOnboarding()) {
+        history.pushState({}, "", "/dashboard");
+        this.resolve("/dashboard");
         return;
       }
 

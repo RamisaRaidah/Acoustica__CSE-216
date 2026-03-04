@@ -60,7 +60,8 @@ export async function renderSignIn() {
                 localStorage.setItem('user', JSON.stringify({
                     user_id: response.user_id,
                     email: email,
-                    user_type: response.user_type
+                    user_type: response.user_type,
+                    onboarding_done: response.onboarding_done
                 }));
                 document.cookie = `jwt=${response.token}; path=/; SameSite=Strict;`;
                 localStorage.setItem('theme', response.theme); 
@@ -73,7 +74,11 @@ export async function renderSignIn() {
                 }
 
                 console.log('Signed in successfully');
-                router.navigate('/dashboard');
+                if (response.onboarding_completed) {
+                    router.navigate('/dashboard');
+                } else {
+                    router.navigate('/onboarding');
+                }   
                 
             } else if (response && response.error) {
                 throw new Error(response.error);

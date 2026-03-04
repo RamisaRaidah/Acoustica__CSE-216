@@ -85,7 +85,8 @@ CREATE TABLE IF NOT EXISTS "users" (
   phone_number TEXT,
   gender TEXT,
   date_of_birth DATE,
-  theme theme_enum DEFAULT 'light'
+  theme theme_enum DEFAULT 'light',
+  onboarding_done BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "listener" (
@@ -97,7 +98,8 @@ CREATE TABLE IF NOT EXISTS "artist" (
   artist_id INT CONSTRAINT pk_artist PRIMARY KEY REFERENCES "users"(user_id),
   stage_name TEXT,
   bank_account TEXT,
-  points INT DEFAULT 0
+  points INT DEFAULT 0,
+  is_Band BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS "admin" (
@@ -205,7 +207,7 @@ CREATE TABLE IF NOT EXISTS "song_stream_history" (
   listener_id INT CONSTRAINT fk_song_stream_history_listener_id REFERENCES listener(listener_id),
   song_id INT CONSTRAINT fk_song_stream_history_song_id REFERENCES song(song_id),
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "duration" INT
+  "duration" INT,
   progress NUMERIC(10,2)
 );
 
