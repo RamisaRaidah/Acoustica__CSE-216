@@ -88,7 +88,7 @@ def sign_in(email, password):
     if not email or not password:
         return {"error": "Email and password required"}, 400
 
-    sql = 'SELECT user_id, user_type, "password", theme FROM users WHERE email=%s'
+    sql = 'SELECT user_id, user_type, "password", theme, onboarding_done FROM users WHERE email=%s'
     result = execute_sql(sql, (email,), fetch_all=True)
     if not result:
         return {"error": "No account found with this email"}, 401
@@ -110,7 +110,7 @@ def sign_in(email, password):
                 "user_id": user["user_id"], 
                 "user_type": user["user_type"],
                 "theme": user["theme"],
-                "onboarding_completed": user["onboarding_completed"] 
+                "onboarding_done": user["onboarding_done"] 
             },  200
 
 ###################################################### sign_out #############################################################

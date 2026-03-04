@@ -34,7 +34,7 @@ class Router {
 
   hasCompletedOnboarding(){
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    return user.onboarding_completed === true;
+    return user.onboarding_done === true;
   }
 
   resolve(path, push = false) {

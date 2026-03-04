@@ -85,11 +85,12 @@ export async function renderSignUp() {
                 localStorage.setItem('user', JSON.stringify({
                     user_id: signInResponse.user_id,
                     email: email,
-                    user_type: signInResponse.user_type
+                    user_type: signInResponse.user_type,
+                    onboarding_done: false
                 }));
                 document.cookie = `jwt=${signInResponse.token}; path=/; SameSite=Strict;`;
                 console.log('Sign up and sign in done, going to Onboarding');
-               await renderOnboarding();
+               router.navigate('/onboarding');
     
             } else {
                 throw new Error('Sign-up failed');
