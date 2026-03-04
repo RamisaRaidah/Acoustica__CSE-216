@@ -14,12 +14,22 @@ import { renderPrivateProfile } from '/src/pages/profile/private/my_profile.js';
 
 //-----------------------------------User---------------------------------------------------//
 router.register('/unauthorized', renderUnauthorized);
-router.register('/dashboard', renderDashboard, { protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
+router.register('/dashboard', renderDashboard,  {   protected: true, 
+                                                    allowedRoles: ['listener', 'artist', 'admin'], 
+                                                    requiresOnboarding: true 
+                                                });
 
 //---------------------------------Music-----------------------------------------//
-router.register('/music/upload-song', renderUploadSong, { protected: true, allowedRoles: ['artist'] });
-router.register('/music/create-album', renderCreateAlbum, { protected: true, allowedRoles: ['artist'] });
-router.register('/music/create-playlist', renderCreatePlaylist, { protected: true, allowedRoles: ['listener'] });
+router.register('/music/upload-song', renderUploadSong, { protected: true, 
+                                                          allowedRoles: ['artist'],
+                                                          requiresOnboarding: true
+                                                        });
+router.register('/music/create-album', renderCreateAlbum, { protected: true, 
+                                                            allowedRoles: ['artist'],
+                                                            requiresOnboarding: true });
+router.register('/music/create-playlist', renderCreatePlaylist, { protected: true, 
+                                                                  allowedRoles: ['listener'],
+                                                                requiresOnboarding: true });
 
 
 //--------------------------Auth Routes---------------------------------------------------------------//
@@ -28,7 +38,7 @@ router.register('/sign-up', renderSignUp, { publicOnly: true});
 router.register('/sign-out', renderSignOut,{ protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
 
 //----------------------------Profiles-------------------------------------------------------------//
-router.register('/myProfile',renderPrivateProfile,{protected:true});
+router.register('/myProfile',renderPrivateProfile,{protected:true, requiresOnboarding: true});
 
 document.addEventListener('click', (e) => {
   if (e.target.matches('[data-link]')) {

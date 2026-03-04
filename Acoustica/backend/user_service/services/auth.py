@@ -99,13 +99,19 @@ def sign_in(email, password):
 
     access_token = create_access_token(
         identity=str(user["user_id"]), 
-        additional_claims={"user_type": user["user_type"]}
+        additional_claims=  {   
+                                "user_type": user["user_type"],
+                                "onboarding_done": user["onboarding_done"]
+                            }
     )
-    return {"message": "Login successful", 
-            "token": access_token, 
-            "user_id": user["user_id"], 
-            "user_type": user["user_type"],
-            "theme": user["theme"]},  200
+    return  {
+                "message": "Login successful", 
+                "token": access_token, 
+                "user_id": user["user_id"], 
+                "user_type": user["user_type"],
+                "theme": user["theme"],
+                "onboarding_completed": user["onboarding_completed"] 
+            },  200
 
 ###################################################### sign_out #############################################################
 def sign_out():

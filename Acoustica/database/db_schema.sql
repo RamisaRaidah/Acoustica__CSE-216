@@ -85,7 +85,8 @@ CREATE TABLE IF NOT EXISTS "users" (
   phone_number TEXT,
   gender TEXT,
   date_of_birth DATE,
-  theme theme_enum DEFAULT 'light'
+  theme theme_enum DEFAULT 'light',
+  onboarding_done BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "listener" (

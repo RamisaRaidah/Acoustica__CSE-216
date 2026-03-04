@@ -107,21 +107,6 @@ def onboarding(user_id, user_type, data):
                 raise Exception()
         else:
             logging.info("Pfp is now default pfp")
-            # default_file_url = "https://f003.backblazeb2.com/file/Acoustica-Media-Storage/Images/Profile_Pictures/Default_pfp.png"
-            # pfp_ext = "png"
-            # pfp_path = f"Images/Profile_Pictures/pfp{user_id}.{pfp_ext}"
-            # import requests
-            # resp = requests.get(default_file_url, stream=True)
-            # if resp.status_code == 200:
-            #     success = storage.upload_file_to_storage(
-            #         resp.raw,
-            #         pfp_path,
-            #         "image/png"
-            #     )
-            #     if not success:
-            #         raise Exception("Default profile picture upload failed")
-            # else:
-            #     raise Exception("Failed to fetch default profile picture from Backblaze")
             
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
@@ -135,7 +120,8 @@ def onboarding(user_id, user_type, data):
                             gender=%s,
                             date_of_birth=%s,
                             theme=%s,
-                            profile_picture=%s
+                            profile_picture=%s,
+                            onboarding_done=TRUE
                         WHERE user_id=%s
                         RETURNING user_id
                     """,(bio,country_id,language_id,phone_number,gender,date_of_birth,theme,pfp_path,user_id)
