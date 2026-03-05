@@ -1,11 +1,11 @@
 import { enterApp } from "/src/utils/helper.js";
-import { loadArtistSidebar } from "/src/components/sidebar/artist_sidebar/artist_sidebar.js"; 
+import { loadSidebar } from "/src/components/sidebar/sidebar.js"; 
 import { loadTopbar } from "/src/components/topbar/topbar.js"; 
 import api from '/src/services/api.js';
 
 export async function renderCreateAlbum() {
     enterApp();
-    loadArtistSidebar();
+    // loadSidebar();
     loadTopbar();
 
     const response = await fetch('/src/pages/music/album/create_album/create_album.html');

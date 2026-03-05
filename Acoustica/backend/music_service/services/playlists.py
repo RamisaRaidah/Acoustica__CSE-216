@@ -93,4 +93,21 @@ def remove_song_from_playlist(playlist_id,song_id):
 def set_playlist_visibility(playlist_id):
     return (f"set_playlist_visibility {playlist_id}")
 
+### get_my_playlists ###
+
+def get_my_playlists():
+    command = """
+        SELECT playlist_id, title, cover_picture
+        FROM playlist 
+        WHERE creator_id = %s
+    """
+
+    result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
+    playlists = []
+    for r in result:
+        playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
+
+    return playlists, 200
+        
+
 ### Helper functions ###

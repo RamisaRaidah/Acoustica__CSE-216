@@ -6,11 +6,12 @@ import { enterApp } from "/src/utils/helper.js";
 
 export async function renderCreatePlaylist() {
     enterApp();
+
     const playerState = MusicPlayer.loadPlayerState();
     await Promise.all([
-        loadSidebar(),
+        // loadSidebar(),
         loadTopbar(),
-        MusicPlayer.loadMusicPlayer(playerState.songId, playerState.title, playerState.artist, playerState.progress, false)
+        MusicPlayer.loadMusicPlayer(playerState.songId, playerState.album_id, playerState.title, playerState.artist, playerState.progress, false)
     ]);
 
     const response = await fetch('/src/pages/music/playlist/create_playlist/create_playlist.html');

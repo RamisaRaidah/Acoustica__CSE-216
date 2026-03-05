@@ -1,0 +1,10 @@
+#create_album_container {
+  position: fixed;
+  top: 12vh;
+  left: 18vw;
+  width: 82vw;
+  height: auto;
+  padding: 0 2vw;
+  box-sizing: border-box;
+  display: flex;
+}

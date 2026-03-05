@@ -1,4 +1,4 @@
-import { loadArtistSidebar } from '/src/components/sidebar/artist_sidebar/artist_sidebar.js';
+import { loadSidebar } from '/src/components/sidebar/sidebar.js';
 import { loadTopbar } from '/src/components/topbar/topbar.js';
 import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
@@ -7,7 +7,7 @@ import { enterApp } from '/src/utils/helper.js';
 
 export async function renderUploadSong() {
     enterApp();
-    loadArtistSidebar();
+    loadSidebar();
     loadTopbar();
 
     const response = await fetch('/src/pages/music/song/upload_song/upload_song.html');
@@ -25,7 +25,7 @@ export async function renderUploadSong() {
     }
 
     new_album_button.addEventListener('click', () => {
-        router.navigate('/music/create-album');
+        router.navigate('/music/album/create-album');
     });
 
     document.getElementById('album_select').innerHTML = 

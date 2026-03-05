@@ -6,6 +6,7 @@ import { enterApp } from "/src/utils/helper.js";
 
 export async function renderDashboard() {
     enterApp();
+
     const userType = getUser().user_type;
     if (userType === "listener") {
         await renderListenerDashboard();

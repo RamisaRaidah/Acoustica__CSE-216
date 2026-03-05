@@ -6,9 +6,11 @@ import { renderSignOut } from '/src/pages/auth/Sign_out/sign_out.js';
 import { renderDashboard } from '/src/pages/user/dashboard.js';
 import { renderUploadSong } from '/src/pages/music/song/upload_song/upload_song.js';
 import { renderCreateAlbum } from '/src/pages/music/album/create_album/create_album.js';
+import { renderPlaylist } from './pages/music/playlist/playlist.js';
 import { renderCreatePlaylist } from '/src/pages/music/playlist/create_playlist/create_playlist.js';
 import { renderPrivateProfile } from '/src/pages/profile/private/my_profile.js';
 import { renderOnboarding } from '/src/pages/auth/Onboarding/onboarding.js';
+import { renderArtists } from '/src/pages/user/artist/artists/artists.js';
 
 //-----------------------------------User---------------------------------------------------//
 router.register('/unauthorized', renderUnauthorized);
@@ -16,21 +18,30 @@ router.register('/dashboard', renderDashboard,  {   protected: true,
                                                     allowedRoles: ['listener', 'artist', 'admin'], 
                                                     requiresOnboarding: true 
                                                 });
+router.register('/artists', renderArtists, { protected: true, 
+                                                    allowedRoles: ['listener'],
+                                                    requiresOnboarding: true 
+                                                  });
 
 //---------------------------------Music-----------------------------------------//
-router.register('/music/upload-song', renderUploadSong, { protected: true, 
+router.register('/music/song/upload-song', renderUploadSong, { protected: true, 
                                                           allowedRoles: ['artist'],
                                                           requiresOnboarding: true
                                                         });
-router.register('/music/create-album', renderCreateAlbum, { protected: true, 
+router.register('/music/album/create-album', renderCreateAlbum, { protected: true, 
                                                             allowedRoles: ['artist'],
                                                             requiresOnboarding: true });
-router.register('/music/create-playlist', renderCreatePlaylist, { protected: true, 
+router.register('/music/playlists', renderPlaylist, { protected: true, 
                                                                   allowedRoles: ['listener'],
-                                                                requiresOnboarding: true });
+                                                                  requiresOnboarding: true 
+                                                                });  
+router.register('/music/playlist/create-playlist', renderCreatePlaylist, { protected: true, 
+                                                                  allowedRoles: ['listener'],
+                                                                  requiresOnboarding: true 
+                                                                });
 
 
-//--------------------------Auth Routes---------------------------------------------------------------//
+//-------------------------- Auth ---------------------------------------------------------------//
 router.register('/sign-in', renderSignIn, { publicOnly: true});
 router.register('/sign-up', renderSignUp, { publicOnly: true});
 router.register('/sign-out', renderSignOut,{ protected: true, allowedRoles: ['listener', 'artist', 'admin'] });
@@ -39,7 +50,7 @@ router.register('/onboarding',renderOnboarding,{protected:true,
                                                 requiresOnboarding: false
                                               });
 
-//----------------------------Profiles-------------------------------------------------------------//
+//---------------------------- Profiles -------------------------------------------------------------//
 router.register('/myProfile',renderPrivateProfile,{protected:true, requiresOnboarding: true});
 
 document.addEventListener('click', (e) => {

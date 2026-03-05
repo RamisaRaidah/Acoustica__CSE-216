@@ -1,19 +1,31 @@
 :root {
-    --bg-color: #fffaed;
-    --text-color: black;
+    --bg-color: #fff9ea;
+    --text-color: #1a1a1a;
     --sidebar-color: #fff5e2;
     --sidebar-hover-color: #fff0d0;
     --topbar-hover-color: #fff4e0;
     --shadow: rgba(0, 0, 0, 0.2);
     --icon-filter: invert(1);
+    --content-bg: #fff8e3;
+
+    /* playlist additions */
+    --card-bg: rgba(0, 0, 0, 0.06);
+    --card-hover-bg: rgba(0, 0, 0, 0.1);
+    --text-muted: #666666;
 }
 
 .dark {
-    --bg-color: black;
-    --text-color: white;
+    --bg-color: #0d0d0d;
+    --text-color: #f0f0f0;
     --sidebar-color: #111111;
     --sidebar-hover-color: #ffffff1a;
     --topbar-hover-color: #ffffff0d;
-    --shadow: rgba(255, 255, 255, 0.2);
+    --shadow: rgba(255, 255, 255, 0.08);
     --icon-filter: invert(0);
+    --content-bg: #111111;
+
+    /* playlist additions */
+    --card-bg: rgba(255, 255, 255, 0.06);
+    --card-hover-bg: rgba(255, 255, 255, 0.1);
+    --text-muted: #aaaaaa;
 }

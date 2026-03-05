@@ -22,7 +22,6 @@ export async function renderListenerDashboard() {
     MusicPlayer.loadMusicPlayer(playerState['song_id'], playerState['album_id'], playerState['title'], playerState['artist'], playerState['progress'], false)
   ]);
   
-  const response = await fetch('src/pages/user/listener/listener_dashboard/listener_dashboard.html');
+  const response = await fetch('/src/pages/user/listener/listener_dashboard/listener_dashboard.html');
   document.getElementById('content').innerHTML = await response.text();
-  document.getElementById('content').style.display = 'block';
 }

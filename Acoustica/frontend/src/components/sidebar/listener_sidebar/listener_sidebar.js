@@ -1,3 +1,5 @@
+import { dashboard, playlists, artists } from '/src/utils/paths.js';
+
 export async function loadListenerSidebar() {
     const sidebar = document.getElementById('sidebar');
     const response = await fetch('/src/components/sidebar/listener_sidebar/listener_sidebar.html');
@@ -12,4 +14,9 @@ export async function loadListenerSidebar() {
     else {
         document.getElementById('app_name').setAttribute('src', '/src/assets/images/Deco/Acoustica2.png');
     }
+
+    // assigning paths
+    document.getElementById('home_button').href = dashboard;
+    document.getElementById('playlist_button').href = playlists;
+    document.getElementById('artist_button').href = artists;
 }

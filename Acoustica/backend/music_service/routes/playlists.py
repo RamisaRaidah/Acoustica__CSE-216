@@ -57,3 +57,9 @@ def remove_song_from_playlist_route(playlist_id,song_id):
 @jwt_required()
 def set_playlist_visibility_route(playlist_id):
     return jsonify(f"set_playlist_visibility {playlist_id}")
+
+@playlists_bp.get("/api/music/playlists/me")
+@jwt_required()
+def get_my_playlists_route():
+    result, status = playlists.get_my_playlists()
+    return jsonify(result), status

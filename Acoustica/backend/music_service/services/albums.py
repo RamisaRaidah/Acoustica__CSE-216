@@ -100,10 +100,7 @@ def get_albums():
         fetch_all = True
     )
 
-    if result:
-        return result, 200
-    else:
-        return {"error": "coudn't fetch data"}, 500
+    return result, 200
     
 ### get_album_details ###
 def get_album_details(album_id):
