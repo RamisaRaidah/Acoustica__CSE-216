@@ -259,6 +259,7 @@ CREATE TABLE IF NOT EXISTS "plan" (
   plan_id SERIAL CONSTRAINT pk_plan PRIMARY KEY,
   plan_type TEXT,
   plan_cost NUMERIC(10,2),
+  plan_validity INT NOT NULL,
   max_members INT
 );
 

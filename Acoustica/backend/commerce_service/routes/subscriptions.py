@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify
 import logging
 import sys
 
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
 from commerce_service.services import subscriptions
 
 logging.basicConfig(
@@ -18,15 +20,22 @@ def health():
 
 @subscriptions_bp.get("/api/subscriptions/plans")
 def get_plans_route():
-    return jsonify("get_plans")
+    result, status=subscriptions.get_plans()
+    return jsonify(result),status
 
-@subscriptions_bp.post("/api/subscriptions/plans")
+@subscriptions_bp.post("/api/subscriptions")
+@jwt_required()
 def subscribe_route():
-    return jsonify("subscribe")
+    user_id = get_jwt_identity()
+    result, status = subscriptions.subscribe(user_id)
+    return jsonify(result), status
 
-@subscriptions_bp.get("/api/subscriptions/<subscription_id>")
-def get_subscription_details_route(subscription_id):
-    return jsonify(f"get_subscription_details {subscription_id}")
+@subscriptions_bp.get("/api/subscriptions-details")
+@jwt_required()
+def get_subscription_details_route():
+    user_id = get_jwt_identity()
+    result, status = subscriptions.get_subscription_details(user_id)
+    return jsonify(result), status
 
 @subscriptions_bp.delete("/api/subscriptions/<subscription_id>")
 def delete_subscription_route(subscription_id):
