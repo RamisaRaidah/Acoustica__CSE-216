@@ -30,7 +30,7 @@ export async function renderArtists() {
                 <img src="${artist.profile_picture_url}">
             </div>
             <div class="artist_card_info">
-                <p class="artist_card_title">${artist.name}</p>
+                <p class="artist_card_title">${artist.artist_name}</p>
             </div>
         `;
         artistGrid.appendChild(artistCard);

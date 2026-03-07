@@ -20,12 +20,34 @@
         <select id="album_select" name="album_id" required>
           <option value="" disabled selected>Select an album</option>
         </select>
-        
-        <button type="button" id="new_album_button" class="btn-side" title="Create New Album">
+
+        <button type="button" id="new_album_button" class="btn-side">
           + New
         </button>
       </div>
     </div>
+
+    <!-- Collaborators -->
+    <div class="form_group">
+  <label>Collaborators</label>
+
+  <div class="input-group">
+    <select id="collaborator_select">
+      <option value="" disabled selected>Select artist</option>
+    </select>
+
+    <select id="collaborator_role_select">
+      <option value="" disabled selected>Select role</option>
+      <option value="vocalist">Vocalist</option>
+      <option value="lyricist">Lyricist</option>
+      <option value="composer">Composer</option>
+    </select>
+  </div>
+
+  <div id="selected_collaborators" class="selected_items"></div>
+
+  <input type="hidden" name="collaborators" id="collaborators_input">
+</div>
 
     <!-- Language -->
     <div class="form_group">
@@ -33,6 +55,45 @@
       <select id="language_select" name="language" required>
         <option value="" disabled selected>Select language</option>
       </select>
+    </div>
+
+    <!-- Genres -->
+    <div class="form_group">
+      <label>Genres</label>
+
+      <select id="genre_select">
+        <option value="" disabled selected>Select genre</option>
+      </select>
+
+      <div id="selected_genres" class="selected_items"></div>
+
+      <input type="hidden" name="genres" id="genres_input">
+    </div>
+
+    <!-- Moods -->
+    <div class="form_group">
+      <label>Moods</label>
+
+      <select id="mood_select">
+        <option value="" disabled selected>Select mood</option>
+      </select>
+
+      <div id="selected_moods" class="selected_items"></div>
+
+      <input type="hidden" name="moods" id="moods_input">
+    </div>
+
+    <!-- Instruments -->
+    <div class="form_group">
+      <label>Instruments</label>
+
+      <select id="instrument_select">
+        <option value="" disabled selected>Select instrument</option>
+      </select>
+
+      <div id="selected_instruments" class="selected_items"></div>
+
+      <input type="hidden" name="instruments" id="instruments_input">
     </div>
 
     <!-- Release Date -->
@@ -58,7 +119,7 @@
       >
     </div>
 
-    <!-- Lyrics (optional) -->
+    <!-- Lyrics -->
     <div class="form_group">
       <label>Lyrics (optional)</label>
       <input 

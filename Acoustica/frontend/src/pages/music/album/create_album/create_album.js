@@ -5,7 +5,7 @@ import api from '/src/services/api.js';
 
 export async function renderCreateAlbum() {
     enterApp();
-    // loadSidebar();
+    loadSidebar();
     loadTopbar();
 
     const response = await fetch('/src/pages/music/album/create_album/create_album.html');

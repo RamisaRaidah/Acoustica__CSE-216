@@ -13,8 +13,8 @@ logging.basicConfig(
 )
 
 ### upload_song ###
-def upload_song(title, album, language, release_date, song_file, lyrics, copyright_certificate):
-    if not title or not album or not language or not release_date or not song_file or not copyright_certificate:
+def upload_song(title, album, collaborators, language, genres, moods, instruments, release_date, song_file, lyrics, copyright_certificate):
+    if not title or not album or not collaborators or not language or not genres or not moods or not instruments or not release_date or not song_file or not copyright_certificate:
         return {"error": "Missing file or title"}, 400
     
     connection = get_db_connection()
@@ -102,6 +102,20 @@ def upload_song(title, album, language, release_date, song_file, lyrics, copyrig
                         WHERE song_id = %s
                         """, (f"Docs/Lyrics/song{song_id}.txt", song_id)
                     )
+
+                # Uploading song other metadata in db
+                for collaborator in collaborators:
+                    artist, role = collaborator.split(':')
+                    cursor.execute("INSERT INTO song_artist (song_id, artist_id, role) VALUES (%s, %s, %s)", (song_id, artist, role))
+
+                for genre in genres:
+                    cursor.execute("INSERT INTO song_genre (song_id, genre_id) VALUES (%s, %s)", (song_id, genre))
+
+                for mood in moods:
+                    cursor.execute("INSERT INTO song_mood (song_id, mood_id) VALUES (%s, %s)", (song_id, mood))
+
+                for instrument in instruments:
+                    cursor.execute("INSERT INTO song_instrument (song_id, instrument_id) VALUES (%s, %s)", (song_id, instrument))
                 
                 connection.commit()
                 

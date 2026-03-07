@@ -22,13 +22,17 @@ def health():
 def upload_song_route():
     title = request.form.get('song_title')
     album = request.form.get('album_id')
+    collaborators = request.form.get('collaborators').split(',')
     language = request.form.get('language')
+    genres = request.form.get('genres').split(',')
+    moods = request.form.get('moods').split(',')
+    instruments = request.form.get('instruments').split(',')
     release_date = request.form.get('release_date')
     song_file = request.files.get('song_file')
     lyrics = request.files.get('lyrics_file')
     copyright_certificate = request.files.get('copyright_certificate')
 
-    result, status = songs.upload_song(title, album, language, release_date, song_file, lyrics, copyright_certificate)
+    result, status = songs.upload_song(title, album, collaborators, language, genres, moods, instruments, release_date, song_file, lyrics, copyright_certificate)
     return jsonify(result), status
 
 @songs_bp.get("/api/music/songs/<song_id>")

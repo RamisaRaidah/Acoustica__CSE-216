@@ -63,7 +63,7 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadTheme();
-  initScrollbar()
+  initScrollbar();
 ;});
 
 function loadTheme() {

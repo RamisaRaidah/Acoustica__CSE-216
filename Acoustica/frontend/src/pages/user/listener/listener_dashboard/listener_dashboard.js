@@ -15,6 +15,7 @@ export async function renderListenerDashboard() {
   });
 
   const playerState = MusicPlayer.loadPlayerState();
+  console.log(playerState);
 
   await Promise.all([
     loadSidebar(),

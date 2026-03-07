@@ -25,7 +25,7 @@ def get_artists():
     result = execute_sql(command, fetch_all = True)
     artists = []
     for r in result:
-        artists.append({'artist_id': r['artist_id'], 'name': r['name'], 'profile_picture_url': storage.generate_signed_url(r['profile_picture'])})
+        artists.append({'artist_id': r['artist_id'], 'artist_name': r['name'], 'profile_picture_url': storage.generate_signed_url(r['profile_picture'])})
 
     return artists, 200  
 

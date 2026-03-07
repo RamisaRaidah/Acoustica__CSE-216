@@ -111,8 +111,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  opacity: 0.4;
-  pointer-events: none;
 }
 
 .music_control1_top {
@@ -145,6 +143,8 @@
 #play_pause_button {
   height: 2.6vh;
   width: 2.6vh;
+  opacity: 0.4;
+  pointer-events: none;
   filter: brightness(1.8) sepia(0.1);
 }
 
@@ -249,8 +249,6 @@
   display: flex;
   align-items: center;
   gap: 1.2vw;
-  opacity: 0.4;
-  pointer-events: none;
 }
 
 #lyrics_button,
