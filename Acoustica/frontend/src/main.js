@@ -1,4 +1,5 @@
 import router from '/src/utils/routers.js';
+import { initScrollbar } from '/src/components/scrollbar/scrollbar.js';
 import { renderUnauthorized } from '/src/pages/user/unauthorized/unauthorized.js';
 import { renderSignIn } from '/src/pages/auth/Sign_in/sign_in.js';
 import { renderSignUp } from '/src/pages/auth/Sign_up/sign_up.js';
@@ -25,20 +26,20 @@ router.register('/artists', renderArtists, { protected: true,
 
 //---------------------------------Music-----------------------------------------//
 router.register('/music/song/upload-song', renderUploadSong, { protected: true, 
-                                                          allowedRoles: ['artist'],
-                                                          requiresOnboarding: true
-                                                        });
+                                                                allowedRoles: ['artist'],
+                                                                requiresOnboarding: true
+                                                              });
 router.register('/music/album/create-album', renderCreateAlbum, { protected: true, 
-                                                            allowedRoles: ['artist'],
-                                                            requiresOnboarding: true });
+                                                                  allowedRoles: ['artist'],
+                                                                  requiresOnboarding: true });
 router.register('/music/playlists', renderPlaylist, { protected: true, 
-                                                                  allowedRoles: ['listener'],
-                                                                  requiresOnboarding: true 
-                                                                });  
+                                                      allowedRoles: ['listener'],
+                                                      requiresOnboarding: true 
+                                                    });  
 router.register('/music/playlist/create-playlist', renderCreatePlaylist, { protected: true, 
-                                                                  allowedRoles: ['listener'],
-                                                                  requiresOnboarding: true 
-                                                                });
+                                                                            allowedRoles: ['listener'],
+                                                                            requiresOnboarding: true 
+                                                                          });
 
 
 //-------------------------- Auth ---------------------------------------------------------------//
@@ -62,7 +63,8 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadTheme();
-});
+  initScrollbar()
+;});
 
 function loadTheme() {
   const theme = localStorage.getItem('theme');
