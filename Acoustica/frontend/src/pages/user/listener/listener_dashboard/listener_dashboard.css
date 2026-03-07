@@ -1,12 +1,11 @@
 #dashboard_container {
   display: block;
-  padding: 0 2vw;
   box-sizing: border-box;
 }
 
 #banner1_wrapper {
   display: flex;
-  width: 60vw;
+  width: 50vw;
   height: auto;
   animation: float 5s ease-in-out infinite;
 }

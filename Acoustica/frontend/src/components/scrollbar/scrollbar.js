@@ -78,3 +78,7 @@ export function initScrollbar() {
 
   updateThumb();
 }
+
+export function removeScrollbar() {
+    document.getElementById('scrollbar').innerHTML = '';
+}

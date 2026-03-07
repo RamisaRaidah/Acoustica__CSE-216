@@ -1,9 +1,12 @@
+import { initScrollbar, removeScrollbar } from "/src/components/scrollbar/scrollbar.js";
+
 export function enterApp(){
     const page=document.getElementById('page');
     page.innerHTML="";
     page.style.display='none';
     const app=document.getElementById('app');
     app.style.display='block';
+    initScrollbar();
 }
 
 export function exitApp(){
@@ -17,4 +20,5 @@ export function exitApp(){
     music_player.innerHTML="";
     const page=document.getElementById('page');
     page.style.display='block';
+    removeScrollbar();
 }

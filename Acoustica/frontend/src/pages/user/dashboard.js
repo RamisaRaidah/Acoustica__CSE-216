@@ -8,13 +8,22 @@ export async function renderDashboard() {
     enterApp();
 
     const userType = getUser().user_type;
+    const content = document.getElementById('content');
+    const scrollbar = document.getElementById('scrollbar');
+
     if (userType === "listener") {
+        content.style.height = '77vh';
+        scrollbar.style.height = '77vh';
         await renderListenerDashboard();
     }
     else if (userType === "artist") {
+        content.style.height = '89vh';
+        scrollbar.style.height = '89vh';
         await renderArtistDashboard();
     }
     else if (userType === "admin") {
+        content.style.height = '89vh';
+        scrollbar.style.height = '89vh';
         await renderAdminDashboard();
     }
 }

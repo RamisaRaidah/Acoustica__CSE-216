@@ -48,11 +48,10 @@ body {
   top: 10vh;
   left: 21vw;
   width: 76vw;
-  height: 77vh;
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
-  padding: 1rem 2vw;
+  padding: 1rem 1vw;
   background-color: var(--content-bg);
   border-radius: 1vh;
 }

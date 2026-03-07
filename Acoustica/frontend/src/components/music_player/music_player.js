@@ -34,6 +34,8 @@ class MusicPlayer {
     document.getElementById('music_player').innerHTML = await response.text();
 
     const audio = document.getElementById('audio');
+    const musicControl1 = document.getElementById('music_control1');
+    const musicControl2 = document.getElementById('music_control2');
     const playPauseButton = document.getElementById('play_pause_button');
     const progressContainer = document.getElementById('progress_container');
     const progressBar = document.getElementById('progress_bar');
@@ -66,8 +68,10 @@ class MusicPlayer {
     audio.addEventListener('loadedmetadata', () => {
       if (!Number.isFinite(audio.duration)) return;
 
-      playPauseButton.style.opacity = '1';
-      playPauseButton.style.pointerEvents = 'auto';
+      musicControl1.style.opacity = 1;
+      musicControl1.style.pointerEvents = 'auto';
+      musicControl2.style.opacity = 1;
+      musicControl2.style.pointerEvents = 'auto';
 
       audio.currentTime = audio.duration * (progress / 100);
       this.startTime = audio.currentTime;

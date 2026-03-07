@@ -30,7 +30,6 @@ body:has(.auth-container)::-webkit-scrollbar-thumb:hover {
   top: 10vh;
   right: 0;
   width: 0.5vw;
-  height: 77vh;
   background: transparent;
   border-radius: 0.3vh;
   z-index: 999;
@@ -73,10 +72,12 @@ body:has(.auth-container)::-webkit-scrollbar-thumb:hover {
   top: 0;
   cursor: pointer;
   transition: background 0.2s;
+  opacity: 0.7;
 }
 
 #thumb:hover {
   background: #a34d20;
+  opacity: 0.7;
 }
 
 #content::-webkit-scrollbar {
