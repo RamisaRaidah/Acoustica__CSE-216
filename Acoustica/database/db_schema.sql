@@ -38,6 +38,11 @@ CREATE TYPE theme_enum AS ENUM ('light', 'dark');
 CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
 CREATE TYPE asset_type_enum AS ENUM ('user','song','playlist','album','product','report');
 
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_user_id ON users(user_id);   
+CREATE INDEX idx_listener_listener_id ON listener(listener_id);
+CREATE INDEX idx_artist_artist_id ON artist(artist_id);
+
 -- Creating tables
 
 CREATE TABLE IF NOT EXISTS "country" (
@@ -256,7 +261,8 @@ CREATE TABLE IF NOT EXISTS "plan_subscription" (
   start_date DATE,
   end_date DATE,
   transaction_id INT CONSTRAINT fk_plan_subscription_transaction_id REFERENCES transaction_history(transaction_id) ON DELETE CASCADE,
-  auto_renewal_mode auto_renew_enum
+  auto_renewal_mode auto_renew_enum,
+  is_active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS "family_plan" (
