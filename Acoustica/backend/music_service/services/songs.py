@@ -1,3 +1,6 @@
+import io
+import subprocess
+
 from db import get_db_connection, execute_sql, release_connection
 from psycopg2.extras import RealDictCursor
 import logging
@@ -23,21 +26,27 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
         return {"error": "database connection failed"}, 500
 
     song_id = None
-    song_file_ext = None
 
-    song_file.stream.seek(0)
-    audio = File(song_file.stream)
+    song_file = compress_audio(song_file)
+
+    song_file.seek(0)
+    audio = File(song_file)
 
     if not audio or not hasattr(audio, "info"):
         return {"error": "invalid audio file"}, 400
     
     length = audio.info.length
-    song_file.stream.seek(0)
+    song_file.seek(0)
     
     try:
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 # Uploading to db
+                cursor.execute("SELECT title FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s", (title.lower().replace(' ', ''),))
+                
+                if cursor.fetchone():
+                    raise Exception('song already exists')
+                
                 cursor.execute("""
                     INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -48,12 +57,6 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
 
                 if not song_id:
                     raise Exception()
-                
-                cursor.execute("SELECT title FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s", (title.lower().replace(' ', ''),))
-                
-                if cursor.fetchone():
-                    raise Exception('song already exists!')
-                
                 
                 # Uploading to cloud
                 copyright_certificate_path = f"Docs/Copyright_Certificates/song{song_id}.pdf"
@@ -66,12 +69,11 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 if not success:
                     raise Exception()
                 
-                song_file_ext = storage.get_file_extension(song_file)
-                song_file_path = f"Songs/song{song_id}.{song_file_ext}"
+                song_file_path = f"Songs/song{song_id}.mp3"
                 success = storage.upload_file_to_storage(
-                    song_file.stream,
+                    song_file,
                     song_file_path,
-                    song_file.mimetype
+                    "audio/mpeg"
                 )
 
                 if not success:
@@ -99,7 +101,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                     UPDATE song
                     SET song_audio = %s
                     WHERE song_id = %s
-                    """, (f"Songs/song{song_id}.{song_file_ext}", song_id)
+                    """, (f"Songs/song{song_id}.mp3", song_id)
                 )
                 if lyrics:
                     cursor.execute("""
@@ -127,9 +129,11 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 
     except Exception as e:
         connection.rollback()
+        if str(e) == 'song already exists':
+            return {"error": "song already exists"}, 409
         if song_id:
             storage.delete_file_from_storage(f"Docs/Copyright_Certificates/song{song_id}.pdf")
-            storage.delete_file_from_storage(f"Songs/song{song_id}.{song_file_ext}")
+            storage.delete_file_from_storage(f"Songs/song{song_id}.mp3")
         if lyrics:
             storage.delete_file_from_storage(f"Docs/Lyrics/song{song_id}.txt")
         return {"error": "song upload failed"}, 500
@@ -173,3 +177,18 @@ def get_song_audio(song_id):
     return {"stream_url": song_signed_url}, 200
 
 ### Helper functions ###
+
+def compress_audio(file) -> io.BytesIO:
+    input_bytes = file.read()
+
+    try:
+        process = subprocess.run(
+            ["ffmpeg", "-i", "pipe:0", "-c:a", "libmp3lame", "-b:a", "192k", "-f", "mp3", "pipe:1"],
+            input=input_bytes,
+            capture_output=True,
+            check=True
+        )
+        return io.BytesIO(process.stdout)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"FFmpeg compression failed: {e.stderr.decode()}")
+        raise ValueError("Audio compression failed. File may be corrupt or unsupported.")

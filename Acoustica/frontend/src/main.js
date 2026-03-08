@@ -1,5 +1,4 @@
 import router from '/src/utils/routers.js';
-import { initScrollbar } from '/src/components/scrollbar/scrollbar.js';
 import { renderUnauthorized } from '/src/pages/user/unauthorized/unauthorized.js';
 import { renderSignIn } from '/src/pages/auth/Sign_in/sign_in.js';
 import { renderSignUp } from '/src/pages/auth/Sign_up/sign_up.js';
@@ -63,7 +62,6 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadTheme();
-  initScrollbar();
 ;});
 
 function loadTheme() {

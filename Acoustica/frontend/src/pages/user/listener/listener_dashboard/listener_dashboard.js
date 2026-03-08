@@ -18,8 +18,8 @@ export async function renderListenerDashboard() {
   console.log(playerState);
 
   await Promise.all([
-    loadSidebar(),
-    loadTopbar(),
+    await loadSidebar(),
+    await loadTopbar(),
     MusicPlayer.loadMusicPlayer(playerState['song_id'], playerState['album_id'], playerState['title'], playerState['artist'], playerState['progress'], false)
   ]);
   
