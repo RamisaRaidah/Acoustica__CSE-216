@@ -49,6 +49,12 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 if not song_id:
                     raise Exception()
                 
+                cursor.execute("SELECT title FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s", (title.lower().replace(' ', ''),))
+                
+                if cursor.fetchone():
+                    raise Exception('song already exists!')
+                
+                
                 # Uploading to cloud
                 copyright_certificate_path = f"Docs/Copyright_Certificates/song{song_id}.pdf"
                 success = storage.upload_file_to_storage(
