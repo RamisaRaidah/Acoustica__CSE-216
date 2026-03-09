@@ -445,3 +445,18 @@ body:has(.auth-container) #page {
 .password-wrapper button:hover {
     opacity: 1;
 }
+
+.show-pass-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.show-pass-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
