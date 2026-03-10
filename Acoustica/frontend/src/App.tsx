@@ -1,20 +1,19 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import SignIn from '/src/pages/auth/Sign_in/sign_in.jsx';
-// import SignUp from '/src/pages/auth/Sign_up/sign_up.jsx';
-// import SignOut from '/src/pages/auth/Sign_out/sign_out.jsx';
-// import Dashboard from '/src/pages/user/dashboard.jsx';
-// import UploadSong from '/src/pages/music/song/upload_song/upload_song.jsx';
-// import CreateAlbum from '/src/pages/music/album/create_album/create_album.jsx';
-// import Playlist from './pages/music/playlist/playlist.jsx';
-// import CreatePlaylist from '/src/pages/music/playlist/create_playlist/create_playlist.jsx';
-// import PrivateProfile from '/src/pages/profile/private/my_profile.jsx';
-// import Onboarding from '/src/pages/auth/Onboarding/onboarding.jsx';
-// import Artists from '/src/pages/user/artist/artists/artists.jsx';
+import SignIn from './pages/auth/Sign_in/sign_in';
+// import SignUp from './pages/auth/Sign_up/sign_up';
+// import SignOut from './pages/auth/Sign_out/sign_out';
+// import Dashboard from './pages/user/dashboard';
+// import UploadSong from './pages/music/song/upload_song/upload_song';
+// import CreateAlbum from './pages/music/album/create_album/create_album';
+// import Playlist from './pages/music/playlist/playlist';
+// import CreatePlaylist from './pages/music/playlist/create_playlist/create_playlist';
+// import PrivateProfile from './pages/profile/private/my_profile';
+// import Onboarding from './pages/auth/Onboarding/onboarding';
+// import Artists from './pages/user/artist/artists/artists';
 
-import ProtectedRoute from '/src/components/Routes/ProtectedRoute.jsx';
-import PublicOnlyRoute from '/src/components/Routes/PublicOnlyRoute.jsx';
+import ProtectedRoute from './components/Routes/ProtectedRoute.tsx';
+import PublicOnlyRoute from './components/Routes/PublicOnlyRoute.tsx';
 
 function App() {
   return (

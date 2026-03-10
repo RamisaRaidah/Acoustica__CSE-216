@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {useNavigate} from 'react-router-dom'
-import api from '/src/services/api.js';
-import '/src/pages/auth/auth.css';
-import logo_img from '/src/assets/images/Deco/Logo.png'
-import name_img from '/src/assets/images/auth/name_2.png'
-import hide_pass_img from '/src/assets/images/auth/hide_pass.png'
-import show_pass_img from '/src/assets/images/auth/show_pass.png'
+import { useState, useEffect,ChangeEvent, SubmitEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {signIn} from '../../../services/auth.ts';
+import '../auth.css'; 
+import logo_img from '../../../assets/images/Deco/Logo.png';
+import name_img from '../../../assets/images/auth/name_2.png';
+import hide_pass_img from '../../../assets/images/auth/hide_pass.png';
+import show_pass_img from '../../../assets/images/auth/show_pass.png';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -15,13 +15,13 @@ function SignIn() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const response = await api.signIn(email, password);
+      const response = await signIn(email, password);
 
       if (response && response.token) {
         localStorage.setItem('token', response.token);
@@ -51,7 +51,7 @@ function SignIn() {
       }
     } catch (err) {
       console.error('Sign-in error:', err);
-      setError(err.message || 'Invalid credentials.');
+      setError( err instanceof Error? err.message : 'Invalid credentials.');
     } finally {
       setLoading(false);
     }
@@ -80,7 +80,7 @@ function SignIn() {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
             />
@@ -93,7 +93,7 @@ function SignIn() {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
               />
@@ -148,8 +148,11 @@ function SignIn() {
   );
 }
 
-function Typewriter({ lines }) {
-  const [displayLines, setDisplayLines] = useState([]);
+interface TypewriterProps{
+  lines: string[];
+}
+
+function Typewriter({lines}: TypewriterProps ) {
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [typing, setTyping] = useState(true);

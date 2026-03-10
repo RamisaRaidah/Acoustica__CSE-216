@@ -11,3 +11,4 @@ __pycache__/
 *.pyc
 tempCodeRunnerFile.py
 app.log
+node_modules/

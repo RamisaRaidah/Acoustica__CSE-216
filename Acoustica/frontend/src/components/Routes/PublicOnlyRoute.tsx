@@ -1,7 +1,11 @@
 import React from "react";
 import {Navigate} from 'react-router-dom';
 
-function PublicOnlyRoute({children}){
+interface PublicOnlyProps{
+    children:React.ReactNode;
+}
+
+function PublicOnlyRoute({children}:PublicOnlyProps){
     const token=localStorage.getItem('token');
 
     if(token){
