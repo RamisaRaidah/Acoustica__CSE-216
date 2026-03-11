@@ -1,11 +1,11 @@
-import { useState, useEffect,ChangeEvent, SubmitEventHandler } from 'react';
+import { useState, useEffect, ChangeEvent, SubmitEventHandler } from "react";
 import { useNavigate } from 'react-router-dom';
-import {signIn} from '../../../services/auth.ts';
-import '../auth.css'; 
-import logo_img from '../../../assets/images/Deco/Logo.png';
-import name_img from '../../../assets/images/auth/name_2.png';
-import hide_pass_img from '../../../assets/images/auth/hide_pass.png';
-import show_pass_img from '../../../assets/images/auth/show_pass.png';
+import { signIn } from '@/services/auth.ts';
+import '@/pages/auth/auth.css';
+import logo_img from '@/assets/images/Deco/Logo.png';
+import name_img from '@/assets/images/auth/name_2.png';
+import hide_pass_img from '@/assets/images/auth/hide_pass.png';
+import show_pass_img from '@/assets/images/auth/show_pass.png';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function SignIn() {
           onboarding_done: response.onboarding_done
         }));
 
-    
+
         const theme = response.theme || 'light';
         localStorage.setItem('theme', theme);
         if (theme === 'dark') {
@@ -51,7 +51,7 @@ function SignIn() {
       }
     } catch (err) {
       console.error('Sign-in error:', err);
-      setError( err instanceof Error? err.message : 'Invalid credentials.');
+      setError(err instanceof Error ? err.message : 'Invalid credentials.');
     } finally {
       setLoading(false);
     }
@@ -101,12 +101,12 @@ function SignIn() {
                 type="button"
                 className="show-pass-btn"
                 onClick={() => setShowPassword(!showPassword)}
-                >
+              >
                 <img
-                    src={showPassword ? hide_pass_img : show_pass_img}
-                    alt="toggle password"
+                  src={showPassword ? hide_pass_img : show_pass_img}
+                  alt="toggle password"
                 />
-                </button>
+              </button>
             </div>
           </div>
 
@@ -132,8 +132,8 @@ function SignIn() {
         <div className="auth-footer">
           <p>
             Don't have an account?{' '}
-            <a 
-              href="/sign-up" 
+            <a
+              href="/sign-up"
               onClick={(e) => {
                 e.preventDefault();
                 navigate('/sign-up');
@@ -148,11 +148,11 @@ function SignIn() {
   );
 }
 
-interface TypewriterProps{
+interface TypewriterProps {
   lines: string[];
 }
 
-function Typewriter({lines}: TypewriterProps ) {
+function Typewriter({ lines }: TypewriterProps) {
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [typing, setTyping] = useState(true);
