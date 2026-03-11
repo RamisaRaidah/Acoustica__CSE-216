@@ -36,11 +36,11 @@ function SignIn() {
 
         const theme = response.theme || 'light';
         localStorage.setItem('theme', theme);
-        if (theme === 'dark') {
-          document.body.classList.add('dark');
-        } else {
-          document.body.classList.remove('dark');
-        }
+        // if (theme === 'dark') {
+        //   document.body.classList.add('dark');
+        // } else {
+        //   document.body.classList.remove('dark');
+        // }
 
         console.log('Signed in successfully');
 
