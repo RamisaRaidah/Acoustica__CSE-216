@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, PrefetchPageLinks } from 'react-router-dom';
 
 import SignIn from './pages/auth/Sign_in/sign_in';
 // import SignUp from './pages/auth/Sign_up/sign_up';
 // import SignOut from './pages/auth/Sign_out/sign_out';
-// import Dashboard from './pages/user/dashboard';
+import Dashboard from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -24,7 +24,7 @@ function App() {
           path="/sign-in" 
           element={
             <PublicOnlyRoute>
-              <SignIn/>
+              <SignIn />
             </PublicOnlyRoute>
           } 
         />
@@ -43,16 +43,6 @@ function App() {
           element={
             <ProtectedRoute requireOnboarding={false}>
               <Onboarding/>
-            </ProtectedRoute>
-          } 
-        />
-
-
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
             </ProtectedRoute>
           } 
         />
@@ -97,11 +87,19 @@ function App() {
 
         
        
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        
         <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
         
         */}
-      </Routes>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>  
     </BrowserRouter>
   );
 }

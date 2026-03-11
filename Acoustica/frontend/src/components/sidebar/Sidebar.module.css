@@ -22,11 +22,11 @@
   margin-bottom: 6vh;
 }
 
-#logo {
+.logo {
   height: 3vw;
 }
 
-#app_name {
+.app_name {
   height: 2.8vw;
 }
 
@@ -80,7 +80,7 @@
   filter: var(--icon-filter) brightness(1.3);
 }
 
-#about_us_button {
+.about_us_button {
   font-size: 1.2vw;
   padding: 0.6vw 1vw;
   border-radius: 0.6vw;
