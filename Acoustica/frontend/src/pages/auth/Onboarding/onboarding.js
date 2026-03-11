@@ -41,18 +41,11 @@ export async function renderOnboarding() {
             templatePath = '/src/pages/auth/Onboarding/onboarding_listener1.html';
         }
 
-        console.log('user_type:', user_type);
-        console.log('templatePath:', templatePath);
 
         const response = await fetch(templatePath);
-        console.log('fetch status:', response.status, response.ok);
-        
         const html = await response.text();
-        console.log('html length:', html.length);
-        console.log('has pfp:', html.includes('id="pfp"'));
-        
         page.innerHTML = html;
-        console.log('DOM has pfp after inject:', !!document.getElementById('pfp'));
+
 
     }catch (error) {
         console.error('Template load error:', error);
