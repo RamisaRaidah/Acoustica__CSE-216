@@ -1,6 +1,6 @@
 function AdminSidebar() {
     return (
-
+        <></>
     );
 }
 

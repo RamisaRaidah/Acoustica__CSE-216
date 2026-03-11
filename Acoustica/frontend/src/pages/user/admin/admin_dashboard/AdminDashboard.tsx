@@ -1,6 +1,6 @@
 function AdminDashboard() {
     return (
-
+        <></>
     );
 }
 

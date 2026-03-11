@@ -1,6 +1,6 @@
 function ArtistDashboard() {
     return (
-
+        <></>
     );
 }
 
