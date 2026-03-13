@@ -2,6 +2,8 @@ import { ChangeEvent, SubmitEventHandler, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCountries, getLanguages, onboarding } from "@/services/auth.ts";
 import { Typewriter } from "@/components/auth/typewriter";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 import logo_img from '@/assets/images/Deco/Logo.png';
 import name_img from '@/assets/images/auth/name_2.png';
@@ -18,14 +20,15 @@ interface Language{
 }
 
 function Onboarding(){
+    console.log('Onboarding is here');
     const navigate=useNavigate();
     const [bio, setBio]=useState<string>('');
     const [country_id, setCountryId]=useState<string>('');
     const [language_id, setLanguageId] = useState<string>('');
     const [phone_number, setPhoneNumber] = useState<string>('');
-    const [gender, setGender] = useState<string>('');
+    const [gender, setGender] = useState<'male'|'female'|'other'|'prefer not to say'>('prefer not to say');
     const [date_of_birth, setDateOfBirth] = useState<string>('');
-    const [theme, setTheme] = useState<string>('');
+    const [themeForm, setTheme] = useState<'light'|'dark'>('light');
     const [pfp, setPfp] = useState<File|null>(null);
     const [pfp_Preview, setPfpPreview]= useState<string>(default_pfp_img);
 
@@ -37,17 +40,15 @@ function Onboarding(){
     
     const [countries, setCountries] = useState<Country[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
-    const [user_type, setUserType] = useState<'listener' | 'artist'>('listener');
+
+    const {theme,toggleTheme}=useTheme();
+    const{ user }=useAuth();
+    const { updateUser }=useAuth();
     
 
     useEffect(() => {
         const loadData = async () => {
         try {
-            const userStr = localStorage.getItem('user');
-            if (userStr) {
-            const user = JSON.parse(userStr);
-            setUserType(user.user_type);
-            }
 
             const [countriesData, languagesData] = await Promise.all([
             getCountries(),
@@ -81,27 +82,34 @@ function Onboarding(){
         }
     };
 
-    
+    console.log('Hello, I have reached here');
 
 
     const handleSubmit: SubmitEventHandler<HTMLFormElement>=async(e)=>{
         e.preventDefault();
         setError('');
         setLoading(true);
-        console.log('user_type:', user_type);
+    
         const formData=new FormData();
+        console.log({bio});
         formData.append('bio',bio);
+        console.log({country_id});
         formData.append('country_id',country_id);
+        console.log({language_id});
         formData.append('language_id',language_id);
+        console.log({phone_number});
         formData.append('phone_number',phone_number);
+        console.log({gender});
         formData.append('gender',gender);
+        console.log({date_of_birth});
         formData.append('date_of_birth',date_of_birth);
-        formData.append('theme',theme);
+        console.log({themeForm});
+        formData.append('theme',themeForm);
         if (pfp) {
         formData.append('pfp', pfp);
       }
 
-        if (user_type === 'artist') {
+        if (user && user.user_type === 'artist') {
             formData.append('stage_name', stage_name);
             formData.append('bank_account', bank_account);
         }
@@ -110,22 +118,20 @@ function Onboarding(){
         try {
             const response = await onboarding(formData);
             if (response && response.message) {
-                localStorage.setItem('theme', theme);
-                if (theme === 'dark') {
+                console.log('Theme form '+themeForm);
+                console.log('Theme '+theme);
+                if(themeForm!=theme){
+                    toggleTheme();
+                }
+
+                if (themeForm === 'dark') {
                     document.body.classList.add('dark');
                 }
                 else {
                     document.body.classList.remove('dark');
                 }
 
-                const userStr = localStorage.getItem('user');
-                if (userStr) {
-                    const user = JSON.parse(userStr);
-                    user.onboarding_done = true;
-                    localStorage.setItem('user', JSON.stringify(user));
-                }else {
-                    throw new Error('Onboarding failed');
-                }
+                updateUser({ onboarding_done: true });
 
                 navigate('/dashboard');
             } else {
@@ -143,6 +149,7 @@ function Onboarding(){
         }
     }
 
+    console.log('Work please');
 
     return(
         <div className="auth-container">
@@ -257,9 +264,9 @@ function Onboarding(){
                             id="gender"
                             name="gender"
                             value={gender}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setGender(e.target.value as 'male'|'female'|'other'|'prefer not to say')}
                         >
-                            <option value="">Prefer not to say</option>
+                            <option value="prefer not to say">Prefer not to say</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="other">Other</option>
@@ -282,15 +289,15 @@ function Onboarding(){
                         <select
                             id="theme"
                             name="theme"
-                            value={theme}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setTheme(e.target.value)}
+                            value={themeForm}
+                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setTheme(e.target.value as 'light'|'dark')}
                         >
                             <option value="light">Light</option>
                             <option value="dark">Dark</option>
                         </select>
                     </div>
 
-                    {user_type === 'artist' && (
+                    {user && user.user_type === 'artist' && (
                         <>
                         <div className="form-group">
                             <label htmlFor="stage_name">Stage Name</label>

@@ -1,5 +1,6 @@
 import React from "react";
 import {Navigate} from 'react-router-dom';
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,14 +12,12 @@ function ProtectedRoute({
         children,
         requireOnboarding=true,
         allowedRoles=null
-    }:ProtectedRouteProps)
+    }:ProtectedRouteProps){
     
-    {
+    const {user}=useAuth();
     
-    const token=localStorage.getItem('token');
-    const user=JSON.parse(localStorage.getItem('user')||'{}')
 
-    if(!token){
+    if(!user || !user.token){
         localStorage.clear();
         return <Navigate to="/sign-in" replace/>;
     }

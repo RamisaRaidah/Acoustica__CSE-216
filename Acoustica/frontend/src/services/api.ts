@@ -2,15 +2,18 @@ import { API_BASE_URL } from './config.ts';
 
 class ApiService {
     private static _instance: ApiService;
+    
     constructor() {
+        
         if (ApiService._instance) {
             return ApiService._instance;
         }
         ApiService._instance = this;
     }
 
-    getToken():string|null{
-        return localStorage.getItem("token");
+    getToken(): string | null {
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        return user?.token ?? null;
     }
 
     async request<T=any>(endpoint:string, options:RequestInit = {}): Promise<T> {

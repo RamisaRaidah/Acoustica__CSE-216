@@ -2,6 +2,9 @@ import { useState, ChangeEvent, SubmitEventHandler } from "react";
 import { useNavigate } from 'react-router-dom';
 import { signIn } from '@/services/auth.ts';
 import { Typewriter } from "@/components/auth/typewriter";
+import { useAuth } from "@/contexts/AuthContext.tsx"
+import { useTheme } from "@/contexts/ThemeContext";
+
 
 import logo_img from '@/assets/images/Deco/Logo.png';
 import name_img from '@/assets/images/auth/name_2.png';
@@ -15,6 +18,8 @@ function SignIn() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const {signin }=useAuth();
+  const { theme, toggleTheme } = useTheme(); 
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -22,39 +27,40 @@ function SignIn() {
     setLoading(true);
 
     try {
-      const response = await signIn(email, password);
+        const response = await signIn(email, password);
+        if (response && response.token) {
+            signin({
+                user_id: response.user_id.toString(),
+                email: email,
+                token: response.token,
+                user_type: response.user_type,
+                onboarding_done: response.onboarding_done
+              });
 
-      if (response && response.token) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify({
-          user_id: response.user_id,
-          email: email,
-          user_type: response.user_type,
-          onboarding_done: response.onboarding_done
-        }));
+            const chosenTheme = response.theme || 'light';
+            if (chosenTheme !== theme) {
+              toggleTheme();
+            }
 
+              // if (theme === 'dark') {
+              //   document.body.classList.add('dark');
+              // } else {
+              //   document.body.classList.remove('dark');
+              // }
 
-        const theme = response.theme || 'light';
-        localStorage.setItem('theme', theme);
-        // if (theme === 'dark') {
-        //   document.body.classList.add('dark');
-        // } else {
-        //   document.body.classList.remove('dark');
-        // }
+              console.log('Signed in successfully');
 
-        console.log('Signed in successfully');
-
-        if (response.onboarding_done) {
-          navigate('/dashboard');
-        } else {
-          navigate('/onboarding');
+              if (response.onboarding_done) {
+                navigate('/dashboard');
+              } else {
+                navigate('/onboarding');
+              }
         }
-      }
     } catch (err) {
-      console.error('Sign-in error:', err);
-      setError(err instanceof Error ? err.message : 'Invalid credentials.');
+          console.error('Sign-in error:', err);
+          setError(err instanceof Error ? err.message : 'Invalid credentials.');
     } finally {
-      setLoading(false);
+          setLoading(false);
     }
   };
 

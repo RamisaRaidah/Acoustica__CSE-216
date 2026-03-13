@@ -1,15 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate, PrefetchPageLinks } from 'react-router-dom';
 
-import SignIn from './pages/auth/Sign_in/sign_in';
-// import SignUp from './pages/auth/Sign_up/sign_up';
-// import SignOut from './pages/auth/Sign_out/sign_out';
+import SignIn from '@/pages/auth/Sign_in/sign_in';
+import SignUp from '@/pages/auth/Sign_up/sign_up';
+import SignOut from '@/pages/auth/Sign_out/sign_out';
+import Onboarding from '@/pages/auth/Onboarding/onboarding';
+
 import Dashboard from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
 // import CreatePlaylist from './pages/music/playlist/create_playlist/create_playlist';
 // import PrivateProfile from './pages/profile/private/my_profile';
-// import Onboarding from './pages/auth/Onboarding/onboarding';
 // import Artists from './pages/user/artist/artists/artists';
 
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx';
@@ -28,7 +29,7 @@ function App() {
             </PublicOnlyRoute>
           } 
         />
-        {/* <Route 
+        <Route 
           path="/sign-up" 
           element={
             <PublicOnlyRoute>
@@ -47,6 +48,17 @@ function App() {
           } 
         />
 
+        <Route
+          path="/sign-out"
+          element={
+            <ProtectedRoute>
+              <SignOut/>
+            </ProtectedRoute>
+          }
+        />
+
+        
+         {/*
         <Route 
           path="/myProfile" 
           element={
@@ -85,12 +97,6 @@ function App() {
         />
 
 
-        
-       
-        
-        <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
-        
-        */}
         <Route
           path="/dashboard"
           element={
@@ -99,6 +105,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+       
+        
+        <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
+        
+        
+        
+        */}
       </Routes>  
     </BrowserRouter>
   );

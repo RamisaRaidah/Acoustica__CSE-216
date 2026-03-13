@@ -19,7 +19,16 @@ interface SignOutResponse{
     message: string;
 }
 
-export async function signIn(email:string, password:string): Promise<SignInResponse> {
+interface OnboardingResponse{
+    message: string;
+}
+
+interface GetCountries{
+    
+}
+
+export async function signIn(email:string, password:string): 
+Promise<SignInResponse> {
     return api.request<SignInResponse>('/api/auth/sign-in',{
         method: 'POST',
         body: JSON.stringify({email, password})
@@ -34,14 +43,16 @@ Promise<SignUpResponse>{
     });
 }
 
-export async function onboarding(formData: FormData) {
-    return api.request('/api/users/me/onboarding', {
+export async function onboarding(formData: FormData):
+Promise<OnboardingResponse> {
+    return api.request<OnboardingResponse>('/api/users/me/onboarding', {
         method: 'POST',
         body: formData
     });
 }
 
-export async function signOut():Promise<SignOutResponse> {
+export async function signOut():
+Promise<SignOutResponse> {
     return api.request<SignOutResponse>('/api/auth/sign-out', { 
         method: 'POST' 
     });

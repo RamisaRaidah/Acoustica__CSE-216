@@ -83,6 +83,8 @@ def onboarding(user_id, user_type, data):
     date_of_birth = request.form.get("date_of_birth")  ##iso format: 2025-02-19
     theme = request.form.get("theme", "light")
 
+    logging.info(f'Theme: {theme}')
+
     pfp = request.files.get("pfp")
 
     connection = get_db_connection()

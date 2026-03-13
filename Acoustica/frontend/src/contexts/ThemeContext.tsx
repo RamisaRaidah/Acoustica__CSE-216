@@ -18,6 +18,7 @@ export function ThemeProvider ({ children }: { children: React.ReactNode }) {
         setTheme(prev => {
             const next = prev === "light" ? "dark" : "light";
             localStorage.setItem("theme", next);
+            console.log('Theme set to '+next);
             return next;
         });
     }
