@@ -1,0 +1,141 @@
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 18vw;
+    height: 10vh;
+    width: 82vw;
+    background: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1vw 2vw;
+    box-sizing: border-box;
+    backdrop-filter: blur(6px);
+    z-index: 9998;
+}
+
+.topbar_left {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+}
+
+.topbar_center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0 1vw;
+    max-width: 40%;
+}
+
+.topbar_right {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+}
+  
+.topbar a {
+    display: flex;
+    align-items: center;
+    gap: 0.8vw;
+    color: var(--text-color);
+    opacity: 0.7;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1vw;
+    padding: 0.5vw 1vw;
+    border-radius: 0.6vw;
+    transition: all 0.3s ease;
+}
+  
+.topbar a:hover {
+    opacity: 1;
+    background: var(--topbar-hover-color);
+}
+  
+.shop_button img,
+.explore_button img,
+.notification_button img,
+.wallet_button img {
+    width: 1.3vw;
+    height: 1.3vw;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+  
+.shop_button:hover img,
+.explore_button:hover img,
+.notification_button:hover img,
+.wallet_button:hover img {
+    filter: var(--icon-filter) brightness(1.3);
+}
+  
+.profile_picture {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2vw;
+    border-radius: 50%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 1;
+    cursor: pointer;
+}
+  
+.profile_picture img {
+    width: 2.5vw;
+    height: 2.5vw;
+    border-radius: 50%;
+    object-fit: cover;
+}
+  
+.toggle_button {
+    background-color: transparent;
+    border: 0.1vh solid var(--text-color, #1a1a1a);
+    border-radius: 1vh;
+    font-weight: bold;
+    font-size: 1.1vw;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5vw 1vw;
+    transition: all 0.3s ease;
+}
+  
+.toggle_button:hover {
+    background: var(--topbar-hover-color, #fff4e0);
+}
+  
+.profile_wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.profile_dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5vh);
+    background: var(--bg-secondary, #1e1e1e);
+    border: 1px solid var(--border-color, #333);
+    border-radius: 0.8vh;
+    min-width: 12vw;
+    box-shadow: 0 0.4vh 1.2vh rgba(0,0,0,0.3);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.profile_dropdown a {
+    display: block;
+    padding: 1vh 1.2vw;
+    color: var(--text-primary, #fff);
+    text-decoration: none;
+    font-size: 1vw;
+    opacity: 1;
+    font-weight: 400;
+    border-radius: 0;
+    gap: 0;
+    transition: background 0.2s;
+}
+
+.profile_dropdown a:hover {
+    background: var(--hover-color, #2e2e2e);
+    opacity: 1;
+}
