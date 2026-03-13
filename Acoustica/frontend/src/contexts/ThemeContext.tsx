@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import { sendTheme } from "@/services/auth";
 
 type Theme = "light" | "dark";
 
@@ -10,16 +11,18 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export function ThemeProvider ({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>(
-        localStorage.getItem("theme") as Theme || "light"
-    );
+    const [theme, setTheme] = useState<Theme>(() => {
+        const saved = localStorage.getItem("theme") as Theme || "light";
+        document.documentElement.classList.toggle('dark', saved === "dark");
+        return saved;
+    });
 
-    function toggleTheme() {
-        setTheme(prev => {
-            const next = prev === "light" ? "dark" : "light";
-            localStorage.setItem("theme", next);
-            return next;
-        });
+    async function toggleTheme() {
+        const next = theme === "light" ? "dark" : "light";
+        localStorage.setItem("theme", next);
+        document.documentElement.classList.toggle('dark', next === "dark");
+        setTheme(next);
+        await sendTheme(next);
     }
 
     return (

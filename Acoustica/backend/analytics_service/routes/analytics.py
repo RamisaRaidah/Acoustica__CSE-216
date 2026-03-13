@@ -17,13 +17,32 @@ analytics_bp = Blueprint("analytics", __name__)
 def health():
     return jsonify("alive!!!")
 
-@analytics_bp.get("/api/search")
+@analytics_bp.get("/api/search/song")
 @jwt_required()
-def search_route():
+def search_song_route():
+    seed = request.args.get("q")
+    logging.info(seed)
+    if (seed == ""): 
+        return jsonify(None), 200
+    result, status = analytics.search_song(seed)
+    return jsonify(result), status
+
+@analytics_bp.get("/api/search/album")
+@jwt_required()
+def search_album_route():
     seed = request.args.get("q")
     if (seed == ""): 
         return jsonify(None), 200
-    result, status = analytics.search(seed)
+    result, status = analytics.search_album(seed)
+    return jsonify(result), status
+
+@analytics_bp.get("/api/search/artist")
+@jwt_required()
+def search_artist_route():
+    seed = request.args.get("q")
+    if (seed == ""): 
+        return jsonify(None), 200
+    result, status = analytics.search_artist(seed)
     return jsonify(result), status
 
 @analytics_bp.get("/api/analytics/me/song-recommendations")

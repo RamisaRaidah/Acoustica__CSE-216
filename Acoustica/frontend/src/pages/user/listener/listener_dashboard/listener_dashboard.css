@@ -1,23 +1,23 @@
-#dashboard_container {
+.dashboard_container {
   display: block;
   box-sizing: border-box;
 }
 
-#banner1_wrapper {
+.banner1_wrapper {
   display: flex;
   width: 50vw;
   height: auto;
   animation: float 5s ease-in-out infinite;
 }
 
-#banner1_inner {
+.banner1_inner {
   width: 100%;
   height: auto;
   border-radius: 2vh;
   overflow: hidden;
 }
 
-#banner1 {
+.banner1 {
   width: 100%;
   height: auto;
   border-radius: 2vh;
@@ -31,7 +31,7 @@
     0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-#banner1_inner::before {
+.banner1_inner::before {
   content: '';
   top: 0;
   left: -100%;
@@ -50,7 +50,7 @@
   pointer-events: none;
 }
 
-#banner1_inner::after {
+.banner1_inner::after {
   content: '';
   inset: 0;
   border-radius: 2vh;
@@ -64,7 +64,7 @@
   transition: opacity 0.4s ease;
 }
 
-#banner1_wrapper:hover #banner1 {
+.banner1_wrapper:hover .banner1 {
   transform: scale(1.02);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.25),
@@ -73,7 +73,7 @@
     0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
-#banner1_wrapper:hover #banner1_inner::after {
+.banner1_wrapper:hover .banner1_inner::after {
   opacity: 0.4;
 }
 
@@ -87,154 +87,3 @@
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-6px); }
 }
-
-/* #playlist_container {
-  display: block;
-  padding: 0 2vw;
-  box-sizing: border-box;
-}
-
-#playlist_header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 5vh;
-}
-
-#playlist_container h1 {
-  margin: 0;
-  font-size: 1.8vw;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--text-color);
-}
-
-#create_playlist_button {
-  display: flex;
-  align-items: center;
-  gap: 0.4vw;
-  background: linear-gradient(135deg, rgb(225, 107, 29), rgb(255, 140, 60));
-  color: white;
-  border-radius: 2vw;
-  padding: 0.6vh 1.4vw;
-  font-size: 0.8vw;
-  font-weight: 600;
-  cursor: pointer;
-  letter-spacing: 0.05em;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0.3vh 1.2vh rgba(225, 107, 29, 0.35);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-#create_playlist_button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-#create_playlist_button:hover {
-  transform: translateY(-0.25vh) scale(1.03);
-  box-shadow: 0 0.6vh 2vh rgba(225, 107, 29, 0.55);
-}
-
-#create_playlist_button:hover::before {
-  opacity: 1;
-}
-
-#create_playlist_button:active {
-  transform: translateY(0) scale(0.97);
-  box-shadow: 0 0.2vh 0.8vh rgba(225, 107, 29, 0.3);
-  transition: all 0.1s ease;
-}
-
-#playlist_grid {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1.2vw;
-  padding: 2vh 0 1vh 0;
-}
-
-.playlist_card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  width: 10vw;
-  transition: transform 0.25s ease;
-}
-
-.playlist_card:hover {
-  transform: translateY(-0.6vh);
-}
-
-.playlist_card_cover {
-  position: relative;
-  width: 10vw;
-  height: 10vw;
-  border-radius: 0.7vw;
-  overflow: hidden;
-  box-shadow: 0 0.4vh 1.5vh var(--shadow);
-  transition: box-shadow 0.25s ease;
-}
-
-.playlist_card:hover .playlist_card_cover {
-  box-shadow: 0 0.8vh 2.5vh var(--shadow);
-}
-
-.playlist_card_cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.35s ease;
-}
-
-.playlist_card:hover .playlist_card_cover img {
-  transform: scale(1.06);
-}
-
-.playlist_card_cover::after {
-  content: '▶';
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8vw;
-  color: white;
-  background: rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(3px);
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.playlist_card:hover .playlist_card_cover::after {
-  opacity: 1;
-}
-
-.playlist_card_title {
-  margin-top: 0.7vh;
-  font-size: 0.9vw;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 10vw;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 0.2vh 0.3vw;
-  border-radius: 0.3vw;
-  transition: color 0.2s ease;
-  user-select: text;
-}
-
-.playlist_card_title:hover {
-  text-decoration: underline;
-} */

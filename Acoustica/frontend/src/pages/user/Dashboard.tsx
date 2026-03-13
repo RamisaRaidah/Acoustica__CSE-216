@@ -1,20 +1,14 @@
-import ListenerDashboard from '@/pages/user/listener/listener_dashboard/ListenerDashboard';
-import ArtistDashboard from '@/pages/user/artist/artist_dashboard/ArtistDashboard';
-import AdminDashboard from '@/pages/user/admin/admin_dashboard/AdminDashboard';
+import { ListenerDashboard } from '@/pages/user/listener/listener_dashboard/ListenerDashboard';
+import { ArtistDashboard } from '@/pages/user/artist/artist_dashboard/ArtistDashboard';
+import { AdminDashboard } from '@/pages/user/admin/admin_dashboard/AdminDashboard';
+import { useAuth } from '@/contexts/AuthContext';
+import { Navigate } from 'react-router-dom';
 
+export function Dashboard() {
+    const { user } = useAuth();
 
-interface DashboardProps {
-    user_type: 'listener' | 'artist' | 'admin';
+    if (!user) return <Navigate to="/sign-in" />;
+    if (user?.user_type === "listener") return <ListenerDashboard />;
+    else if (user?.user_type === "artist") return <ArtistDashboard />;
+    else return <AdminDashboard />;
 }
-
-function Dashboard({ user_type }: DashboardProps) {
-    const dashboardMap = {
-        listener: <ListenerDashboard />,
-        artist: <ArtistDashboard />,
-        admin: <AdminDashboard />
-    }
-
-    return dashboardMap[user_type];
-}
-
-export default Dashboard;

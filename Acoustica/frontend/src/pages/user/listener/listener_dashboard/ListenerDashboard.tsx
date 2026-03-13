@@ -1,11 +1,18 @@
-import ListenerSidebar from "@/components/sidebar/listener_sidebar/ListenerSidebar";
+import { Sidebar } from "@/components/sidebar/Sidebar";
+import { Topbar } from "@/components/topbar/Topbar";
+// import banner_img from '@/assets/images/Deco/Banner2.png';
 
-function ListenerDashboard() {
+export function ListenerDashboard() {
     return (
-        <div className="listener_dashboard">
-            <ListenerSidebar />
+        <div className="dashboard_container">
+            <Sidebar />
+            <Topbar />
+
+            {/* <div className="banner1_wrapper">
+                <div className="banner1_inner">
+                    <img src={banner_img} className="banner1" />
+                </div>
+            </div> */}
         </div>
     );
 }
-
-export default ListenerDashboard;

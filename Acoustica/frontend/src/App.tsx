@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, PrefetchPageLinks } from 'react
 import SignIn from './pages/auth/Sign_in/sign_in';
 // import SignUp from './pages/auth/Sign_up/sign_up';
 // import SignOut from './pages/auth/Sign_out/sign_out';
-import Dashboard from '@/pages/user/Dashboard';
+import { Dashboard } from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';

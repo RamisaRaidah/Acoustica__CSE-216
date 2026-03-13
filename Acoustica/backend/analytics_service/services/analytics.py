@@ -8,38 +8,56 @@ logging.basicConfig(
     stream=sys.stdout
 )
 
-### search ###
+### search_song ###
 
-def search(seed):
+def search_song(seed):
     seed = seed.lower().replace(" ", "")
     param = (f"%{seed}%",)
 
     songs_query = """
-        SELECT song_id, s.album_id, s.title, (first_name || ' ' || last_name) artist
+        SELECT song_id, s.album_id, s.title, (first_name || ' ' || last_name) artist_name
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
         WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
         LIMIT 5
     """
 
+    songs = execute_sql(songs_query, param, fetch_all = True) or []
+
+    return {"songs": songs}, 200
+
+### search_album ###
+
+def search_album(seed):
+    seed = seed.lower().replace(" ", "")
+    param = (f"%{seed}%",)
+
     albums_query = """
-        SELECT album_id, title, (first_name || ' ' || last_name) artist
+        SELECT album_id, title, (first_name || ' ' || last_name) artist_name
         FROM album a JOIN users u ON (a.owner_id = u.user_id)
         WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
         LIMIT 5
     """
 
+    albums = execute_sql(albums_query, param, fetch_all = True) or []
+
+    return {"albums": albums}, 200
+
+### search_artist ###
+
+def search_artist(seed):
+    seed = seed.lower().replace(" ", "")
+    param = (f"%{seed}%",)
+
     artists_query = """
-        SELECT user_id, (first_name || ' ' || last_name) name
+        SELECT user_id artist_id, (first_name || ' ' || last_name) artist_name
         FROM users
         WHERE user_type = 'artist' AND LOWER(REPLACE((first_name || last_name), ' ', '')) LIKE %s
         LIMIT 5
     """
 
-    songs = execute_sql(songs_query, param, fetch_all = True) or []
-    albums = execute_sql(albums_query, param, fetch_all = True) or []
     artists = execute_sql(artists_query, param, fetch_all = True) or []
 
-    return {"songs": songs, "albums": albums, "artists": artists}, 200
+    return {"artists": artists}, 200
 
 def recommend_song():
     return ("recommend_song")
