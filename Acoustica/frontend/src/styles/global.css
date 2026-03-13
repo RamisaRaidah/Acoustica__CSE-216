@@ -3,7 +3,6 @@
 @import url('/src/pages/auth/auth.css');
 @import url('/src/pages/music/music.css');
 
-@import url('/src/components/scrollbar/scrollbar.css');
 @import url('/src/pages/profile/private/my_profile.css');
 
 html, body {
