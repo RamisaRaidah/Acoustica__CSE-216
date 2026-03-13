@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 import logo_img from '@/assets/images/Deco/Logo.png';
 import name_img_light from '@/assets/images/Deco/Acoustica1.png';
 import name_img_dark from '@/assets/images/Deco/Acoustica2.png';
-import home_button_img from '@/assets/images/sidebar_buttons/Home_Button.png';
-import discography_button_img from '@/assets/images/sidebar_buttons/Discography_Button.png';
-import create_album_button_img from '@/assets/images/sidebar_buttons/Create_Album_Button.png';
-import upload_song_button_img from '@/assets/images/sidebar_buttons/Upload_Song_Button.png';
-import draft_button_img from '@/assets/images/sidebar_buttons/Draft_Button.png';
-import approval_status_button_img from '@/assets/images/sidebar_buttons/Approval_Status_Button.png';
-import report_button_img from '@/assets/images/sidebar_buttons/Report_Button.png';
-import settings_button_img from '@/assets/images/sidebar_buttons/Settings_Button.png';
+import home_button_img from '@/assets/images/Sidebar_Buttons/Home_Button.png';
+import discography_button_img from '@/assets/images/Sidebar_Buttons/Discography_Button.png';
+import create_album_button_img from '@/assets/images/Sidebar_Buttons/Create_Album_Button.png';
+import upload_song_button_img from '@/assets/images/Sidebar_Buttons/Upload_Song_Button.png';
+import draft_button_img from '@/assets/images/Sidebar_Buttons/Draft_Button.png';
+import approval_status_button_img from '@/assets/images/Sidebar_Buttons/Approval_Status_Button.png';
+import report_button_img from '@/assets/images/Sidebar_Buttons/Report_Button.png';
+import settings_button_img from '@/assets/images/Sidebar_Buttons/Settings_Button.png';
 
 export function ArtistSidebar() {
     const { theme, toggleTheme } = useTheme();
