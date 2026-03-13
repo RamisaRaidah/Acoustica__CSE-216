@@ -51,8 +51,7 @@ def get_my_profile(user_id, user_type):
             "Images/Profile_Pictures/Default_pfp.png",
             expires_in=3600
         )
-    
-    del user["profile_picture"]
+
 
     if user_type == "listener":
         sql = """
