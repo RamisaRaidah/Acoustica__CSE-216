@@ -1,6 +1,7 @@
 import '@/components/searchbar/Searchbar.css'
 import api from "@/services/api";
 import { useEffect, useRef, useState } from "react";
+import { useMusic } from '@/contexts/MusicContext';
 
 interface SearchbarProps {
     song?: boolean;
@@ -9,20 +10,20 @@ interface SearchbarProps {
 }
 
 interface SongType {
-    song_id: string;
-    album_id: string;
+    song_id: number;
+    album_id: number;
     title: string;
     artist_name: string;
 }
 
 interface AlbumType {
-    album_id: string;
+    album_id: number;
     title: string;
     artist_name: string;
 }
 
 interface ArtistType {
-    artist_id: string;
+    artist_id: number;
     artist_name: string;
 }
 
@@ -33,6 +34,7 @@ export function Searchbar({ song = false, album = false, artist = false} : Searc
     const [artists, setArtists] = useState<ArtistType[] | null>(null);
     const [searchDropdownOpen, setSearchDropdownOpen] = useState<boolean>(false);
     const seachWrapperRef = useRef<HTMLDivElement>(null);
+    const { playSong } = useMusic();
 
     useEffect(() => {
         if (!queryParam) {
@@ -105,7 +107,7 @@ export function Searchbar({ song = false, album = false, artist = false} : Searc
                                         data-album-id={song.album_id}
                                         data-title={song.title}
                                         data-artist_name={song.artist_name}
-                                        onClick={() => alert(song.title)}
+                                        onClick={() => playSong({song_id: song.song_id, album_id: song.album_id, title: song.title, artist_name:song.artist_name, progress: 0, playing: true})}
                                     >
                                         <span className="search_item_title">{song.title}</span>
                                         <span className="search_item_artist_name">{song.artist_name}</span>

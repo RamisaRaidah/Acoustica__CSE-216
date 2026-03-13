@@ -75,7 +75,7 @@ export async function getProfilePicture() {
 }
 
 export async function sendTheme(theme: string) {
-    return api.request('/api/users/me/settings/theme', {
+    api.request('/api/users/me/settings/theme', {
         method: 'PATCH',
         body: JSON.stringify({'theme': theme})
     });

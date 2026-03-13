@@ -49,7 +49,7 @@
   pointer-events: none;
 }
 
-#cover_picture {
+.cover_picture {
   width: 3.3vw;
   height: 3.3vw;
   border-radius: 0.5vw;
@@ -87,7 +87,7 @@
   opacity: 0.7;
 }
 
-#song_name {
+.song_name {
   font-size: 1vw;
   margin: 0;
   color: #fff4e8;
@@ -95,7 +95,7 @@
   text-shadow: 0 0 1.5vh rgba(255, 170, 70, 0.2);
 }
 
-#artist_name {
+.artist_name {
   font-size: 0.6vw;
   margin: 0;
   letter-spacing: 0.08em;
@@ -140,11 +140,9 @@
   opacity: 1;
 }
 
-#play_pause_button {
-  height: 2.6vh;
-  width: 2.6vh;
-  opacity: 0.4;
-  pointer-events: none;
+.play_pause_button {
+  height: 2.6vh !important;
+  width: 2.6vh !important;
   filter: brightness(1.8) sepia(0.1);
 }
 
@@ -156,16 +154,17 @@
   padding-top: 0.1vh;
 }
 
-#play_time,
-#total_time {
+.play_time,
+.total_time {
   font-size: 0.75vw;
   font-weight: 500;
   letter-spacing: 0.05em;
   color: rgba(255, 225, 185, 0.65);
   font-variant-numeric: tabular-nums;
+  margin: 0;
 }
 
-#progress_container {
+.progress_container {
   width: 26vw;
   height: 2vh;
   display: flex;
@@ -186,11 +185,11 @@
   transition: height 0.2s ease;
 }
 
-#progress_container:hover .progress_track {
+.progress_container:hover .progress_track {
   height: 0.5vh;
 }
 
-#progress_bar {
+.progress_bar {
   position: relative;
   height: 100%;
   width: 0%;
@@ -208,7 +207,7 @@
   overflow: hidden;
 }
 
-#progress_bar::after {
+.progress_bar::after {
   content: "";
   position: absolute;
   top: 0;
@@ -224,7 +223,7 @@
   animation: shine 4s infinite;
 }
 
-#progress_knob {
+.progress_knob {
   position: absolute;
   right: -0.35vw;
   top: 50%;
@@ -240,7 +239,7 @@
   transition: transform 0.2s ease;
 }
 
-#progress_container:hover #progress_knob {
+.progress_container:hover .progress_knob {
   transform: translateY(-50%) scale(1);
 }
 
@@ -251,9 +250,9 @@
   gap: 1.2vw;
 }
 
-#lyrics_button,
-#like_button,
-#full_screen_button {
+.lyrics_button,
+.like_button,
+.full_screen_button {
   height: 2.2vh;
   cursor: pointer;
 }
