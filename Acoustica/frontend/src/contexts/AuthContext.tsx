@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { getProfilePicture } from "@/services/auth";
-import default_pfp_img from "@/assets/images/Default_pfp.png";
 
 interface User {
     user_id: string;
@@ -51,7 +50,11 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         async function fetchProfilePicture() {
             const response = await getProfilePicture();
-            setProfilePicture(response ? response.profile_picture_url : default_pfp_img);
+            if(response){
+                setProfilePicture(response.profile_picture_url);
+            }else{
+                setProfilePicture(null);
+            }
         }
         if (user) fetchProfilePicture();
     }, [user]);

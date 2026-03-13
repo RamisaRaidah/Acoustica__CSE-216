@@ -1,9 +1,7 @@
-@import url('/src/components/music_player/music_player.css');
+@import url('@/components/music_player/music_player.css');
 
-@import url('/src/pages/auth/auth.css');
-@import url('/src/pages/music/music.css');
-
-@import url('/src/pages/profile/private/my_profile.css');
+@import url('@/pages/auth/auth.css');
+@import url('@/pages/music/music.css');
 
 html, body {
   -webkit-user-select: none; 

@@ -45,11 +45,13 @@ def get_my_profile(user_id, user_type):
     user = dict(user)
 
     if user.get("profile_picture"):
-        user["profile_picture_url"] = storage.generate_signed_url(user["profile_picture"], expires_in=3600)
+        user["profile_picture"] = storage.generate_signed_url(user["profile_picture"], expires_in=3600)
     else:
-        user["profile_picture_url"] = storage.generate_signed_url(
-            "Images/Profile_Pictures/Default_pfp.png", expires_in=3600
+        user["profile_picture"] = storage.generate_signed_url(
+            "Images/Profile_Pictures/Default_pfp.png",
+            expires_in=3600
         )
+    
     del user["profile_picture"]
 
     if user_type == "listener":
@@ -200,7 +202,7 @@ def get_profile_picture(user_id):
         url = storage.generate_signed_url(user["profile_picture"], expires_in=3600)
     else:
         url = storage.generate_signed_url(
-            "Images/Profile_Pictures/default.png",
+            "Images/Profile_Pictures/Default_pfp.png",
             expires_in=3600
         )
 

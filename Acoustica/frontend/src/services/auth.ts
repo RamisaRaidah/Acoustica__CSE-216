@@ -64,11 +64,7 @@ export async function getCountries() {
 
 export async function getLanguages() {
     return api.request('/api/analytics/languages');
-}
-
-export async function getMyProfile() {
-    return api.request('/api/users/me');
-}    
+}   
 
 export async function getProfilePicture() {
     return api.request('/api/users/me/pfp');
