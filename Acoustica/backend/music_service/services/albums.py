@@ -101,13 +101,13 @@ def get_albums():
     )
 
     return result, 200
-    
+
 ### get_album_details ###
 def get_album_details(album_id):
     album_id = int(album_id)
 
     result = execute_sql(
-        "SELECT * FROM album WHERE album_id = %s", (album_id,),
+        "SELECT album_id, asset_id, title, description, owner_id, release_date, visibility FROM album WHERE album_id = %s", (album_id,),
         fetch_all = True
     )
     
