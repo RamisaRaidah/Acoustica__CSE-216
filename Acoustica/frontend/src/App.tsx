@@ -5,7 +5,7 @@ import SignUp from '@/pages/auth/Sign_up/sign_up';
 import SignOut from '@/pages/auth/Sign_out/sign_out';
 import Onboarding from '@/pages/auth/Onboarding/onboarding';
 
-import Dashboard from '@/pages/user/Dashboard';
+import { Dashboard } from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -97,6 +97,14 @@ function App() {
         />
 
 
+        
+       
+        
+        <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
+        
+        
+        
+        */}
         <Route
           path="/dashboard"
           element={
@@ -105,13 +113,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-       
-        
-        <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
-        
-        
-        
-        */}
       </Routes>  
     </BrowserRouter>
   );

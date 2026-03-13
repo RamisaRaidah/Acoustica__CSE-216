@@ -1,4 +1,6 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { getProfilePicture } from "@/services/auth";
+import default_pfp_img from "@/assets/images/Default_pfp.png";
 
 interface User {
     user_id: string;
@@ -10,6 +12,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
+    profile_picture: string | null;
     signin: (user: User) => void;
     signout: () => void;
     updateUser: (updates: Partial<User>) => void;
@@ -21,6 +24,7 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(
         JSON.parse(localStorage.getItem("user") || "null")
     );
+    const [profile_picture, setProfilePicture] = useState<string | null>(null);
 
     function signin(user: User) {
         setUser(user);
@@ -43,8 +47,17 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
         }
     }
 
+    
+    useEffect(() => {
+        async function fetchProfilePicture() {
+            const response = await getProfilePicture();
+            setProfilePicture(response ? response.profile_picture_url : default_pfp_img);
+        }
+        if (user) fetchProfilePicture();
+    }, [user]);
+
     return (
-        <AuthContext.Provider value={{ user, signin, signout, updateUser }}>
+        <AuthContext.Provider value={{ user, profile_picture, signin, signout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

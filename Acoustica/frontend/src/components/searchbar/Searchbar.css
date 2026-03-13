@@ -1,0 +1,127 @@
+.searchbar {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.search_wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 20vh;
+    max-width: 73vh;
+    display: flex;
+    align-items: center;
+}
+
+.search_bar {
+    width: 100%;
+    padding: 0.5em 1em;
+    font-size: 1rem;
+    border: 1px solid #555;
+    border-radius: 2.5vh;
+    background-color: #222;
+    color: #eee !important;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.search_bar::placeholder {
+    color: #aaa !important;
+}
+
+.search_bar:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 8px rgba(108, 99, 255, 0.6);
+    background-color: #1a1a1a;
+}
+
+.search_dropdown {
+    position: absolute;
+    top: calc(100% + 0.5em);
+    left: 0;
+    background: rgba(18, 18, 18, 0.97);
+    backdrop-filter: blur(20px);
+    border-radius: 0.75em;
+    width: 100%;
+    max-height: 26em;
+    overflow-y: auto;
+    z-index: 99999;
+    display: none;
+    box-shadow: 0 1em 3em rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.06);
+    padding: 0.4em 0 0.6em;
+}
+
+.search_dropdown::-webkit-scrollbar {
+    width: 0.25em;
+}
+
+.search_dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.search_dropdown::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 0.25em;
+}
+
+.search_dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.search_dropdown.active {
+    display: block;
+    animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from { opacity: 0; transform: translateY(-0.25em); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.song_result_header,
+.album_result_header,
+.artist_result_header {
+    padding: 0.75em 1em 0.3em;
+    font-size: 0.65em;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.album_result_header,
+.artist_result_header {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 0.4em;
+}
+
+.search_item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    border-radius: 0.4em;
+    margin: 0.06em 0.4em;
+}
+
+.search_item:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.search_item_title {
+    display: block;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.9em;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.search_item_artist_name {
+    display: block;
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 0.75em;
+    margin-top: 0.15em;
+    font-weight: 400;
+}

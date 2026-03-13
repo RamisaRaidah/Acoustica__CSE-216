@@ -1,7 +1,5 @@
-function ArtistDashboard() {
+export function ArtistDashboard() {
     return (
         <></>
     );
 }
-
-export default ArtistDashboard;

@@ -1,4 +1,4 @@
-import '@/components/sidebar/Sidebar.module.css';
+import '@/components/sidebar/Sidebar.css';
 import { useTheme } from "@/contexts/ThemeContext";
 import { Link } from "react-router-dom";
 import logo_img from '@/assets/images/Deco/Logo.png';
@@ -13,10 +13,8 @@ import subscription_button_img from '@/assets/images/sidebar_buttons/Subscriptio
 import report_button_img from '@/assets/images/sidebar_buttons/Report_Button.png';
 import settings_button_img from '@/assets/images/sidebar_buttons/Settings_Button.png';
 
-function ListenerSidebar() {
+export function ListenerSidebar() {
     const { theme, toggleTheme } = useTheme();
-
-    const iconFilter = { filter: theme === "light" ? "invert(0)" : "invert(1)" };
 
     return (
         <div className="sidebar">
@@ -26,21 +24,19 @@ function ListenerSidebar() {
             </div>
 
             <div className="sidebar_navigation_top">
-                <Link to="/dashboard" className="home_button"><img src={home_button_img} style={iconFilter} />Home</Link>
-                <Link to="#" className="library_button"><img src={library_button_img} style={iconFilter} />Library</Link>
-                <Link to="/music/playlists" className="playlist_button"><img src={playlist_button_img} style={iconFilter} />Playlists</Link>
-                <Link to="/artists" className="artist_button"><img src={artist_button_img} style={iconFilter} />Artists</Link>
-                <Link to="#" className="community_button"><img src={community_button_img} style={iconFilter} />Community</Link>
-                <Link to="#" className="subscription_button"><img src={subscription_button_img} style={iconFilter} />Subscriptions</Link>
+                <Link to="/dashboard" className="home_button"><img src={home_button_img} className="icon" />Home</Link>
+                <Link to="#" className="library_button"><img src={library_button_img} className="icon" />Library</Link>
+                <Link to="/music/playlists" className="playlist_button"><img src={playlist_button_img} className="icon" />Playlists</Link>
+                <Link to="/artists" className="artist_button"><img src={artist_button_img} className="icon" />Artists</Link>
+                <Link to="#" className="community_button"><img src={community_button_img} className="icon" />Community</Link>
+                <Link to="#" className="subscription_button"><img src={subscription_button_img} className="icon" />Subscriptions</Link>
             </div>
 
             <div className="sidebar_navigation_bottom">
-                <Link to="#" className="report_button"><img src={report_button_img} style={iconFilter} />Report</Link>
-                <Link to="#" className="settings_button"><img src={settings_button_img} style={iconFilter} />Settings</Link>
+                <Link to="#" className="report_button"><img src={report_button_img} className="icon" />Report</Link>
+                <Link to="#" className="settings_button"><img src={settings_button_img} className="icon" />Settings</Link>
                 <Link to="#" className="about_us_button">About us</Link>
             </div>
         </div>
     );
 }
-
-export default ListenerSidebar;

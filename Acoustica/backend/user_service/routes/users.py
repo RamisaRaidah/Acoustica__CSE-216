@@ -75,6 +75,7 @@ def get_user_profile_route(user_id):
 @jwt_required()
 def set_theme_route():
     theme = request.json.get("theme")
+    logging.info(theme)
     result, status = users.set_theme(theme)
     return jsonify(result), status
 

@@ -1,7 +1,5 @@
-function ArtistSidebar() {
+export function ArtistSidebar() {
     return (
         <></>
     );
 }
-
-export default ArtistSidebar;

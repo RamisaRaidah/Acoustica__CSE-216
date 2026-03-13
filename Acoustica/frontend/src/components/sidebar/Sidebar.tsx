@@ -1,20 +1,12 @@
-import ListenerSidebar from '@/components/sidebar/listener_sidebar/ListenerSidebar';
-import ArtistSidebar from '@/components/sidebar/artist_sidebar/ArtistSidebar';
-import AdminSidebar from '@/components/sidebar/admin_sidebar/AdminSidebar';
+import { ListenerSidebar } from '@/components/sidebar/listener_sidebar/ListenerSidebar';
+import { ArtistSidebar } from '@/components/sidebar/artist_sidebar/ArtistSidebar';
+import { AdminSidebar } from '@/components/sidebar/admin_sidebar/AdminSidebar';
+import { useAuth } from '@/contexts/AuthContext';
 
+export function Sidebar() {
+    const { user } = useAuth();
 
-interface SidebarProps {
-    user_type: 'listener' | 'artist' | 'admin';
+    if (user?.user_type === "listener") return <ListenerSidebar />;
+    else if (user?.user_type === "artist") return <ArtistSidebar />;
+    else return <AdminSidebar />;
 }
-
-function Sidebar({ user_type }: SidebarProps) {
-    const SidebarMap = {
-        listener: <ListenerSidebar />,
-        artist: <ArtistSidebar />,
-        admin: <AdminSidebar />
-    }
-
-    return SidebarMap[user_type];
-}
-
-export default Sidebar;

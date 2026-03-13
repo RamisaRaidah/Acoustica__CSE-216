@@ -1,4 +1,4 @@
-import api from './api.ts'
+import api from '@/services/api';
 
 interface SignInResponse{
     message: string; 
@@ -66,10 +66,17 @@ export async function getLanguages() {
     return api.request('/api/analytics/languages');
 }
 
+export async function getMyProfile() {
+    return api.request('/api/users/me');
+}    
+
 export async function getProfilePicture() {
     return api.request('/api/users/me/pfp');
 }
 
-export async function getMyProfile() {
-    return api.request('/api/users/me');
-}    
+export async function sendTheme(theme: string) {
+    return api.request('/api/users/me/settings/theme', {
+        method: 'PATCH',
+        body: JSON.stringify({'theme': theme})
+    });
+}

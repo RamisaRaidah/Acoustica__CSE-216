@@ -1,7 +1,5 @@
-function AdminSidebar() {
+export function AdminSidebar() {
     return (
         <></>
     );
 }
-
-export default AdminSidebar;
