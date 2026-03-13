@@ -23,8 +23,14 @@ interface OnboardingResponse{
     message: string;
 }
 
-interface GetCountries{
-    
+interface Countries{
+    country_id:number;
+    country_name:string;
+}
+
+interface Languages{
+    language_id:number;
+    language_name:string;
 }
 
 export async function signIn(email:string, password:string): 
@@ -58,12 +64,12 @@ Promise<SignOutResponse> {
     });
 }
 
-export async function getCountries() {
-    return api.request('/api/analytics/countries');
+export async function getCountries():Promise<Countries[]> {
+    return api.request<Countries[]>('/api/analytics/countries');
 }
 
-export async function getLanguages() {
-    return api.request('/api/analytics/languages');
+export async function getLanguages():Promise<Languages[]> {
+    return api.request<Languages[]>('/api/analytics/languages');
 }   
 
 export async function getProfilePicture() {
