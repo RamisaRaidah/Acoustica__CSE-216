@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 import logo_img from '@/assets/images/Deco/Logo.png';
 import name_img_light from '@/assets/images/Deco/Acoustica1.png';
 import name_img_dark from '@/assets/images/Deco/Acoustica2.png';
-import home_button_img from '@/assets/images/sidebar_buttons/Home_Button.png';
-import library_button_img from '@/assets/images/sidebar_buttons/Library_Button.png';
-import playlist_button_img from '@/assets/images/sidebar_buttons/Playlist_Button.png';
-import artist_button_img from '@/assets/images/sidebar_buttons/Artist_Button.png';
-import community_button_img from '@/assets/images/sidebar_buttons/Community_Button.png';
-import subscription_button_img from '@/assets/images/sidebar_buttons/Subscription_Button.png';
-import report_button_img from '@/assets/images/sidebar_buttons/Report_Button.png';
-import settings_button_img from '@/assets/images/sidebar_buttons/Settings_Button.png';
+import home_button_img from '@/assets/images/Sidebar_Buttons/Home_Button.png';
+import library_button_img from '@/assets/images/Sidebar_Buttons/Library_Button.png';
+import playlist_button_img from '@/assets/images/Sidebar_Buttons/Playlist_Button.png';
+import artist_button_img from '@/assets/images/Sidebar_Buttons/Artist_Button.png';
+import community_button_img from '@/assets/images/Sidebar_Buttons/Community_Button.png';
+import subscription_button_img from '@/assets/images/Sidebar_Buttons/Subscription_Button.png';
+import report_button_img from '@/assets/images/Sidebar_Buttons/Report_Button.png';
+import settings_button_img from '@/assets/images/Sidebar_Buttons/Settings_Button.png';
 
 export function ListenerSidebar() {
     const { theme, toggleTheme } = useTheme();
