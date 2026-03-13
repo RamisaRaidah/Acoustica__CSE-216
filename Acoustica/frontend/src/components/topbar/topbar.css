@@ -57,7 +57,7 @@
 .shop_button img,
 .explore_button img,
 .notification_button img,
-.ledger_button img {
+.wallet_button img {
     width: 1.3vw;
     height: 1.3vw;
     transition: transform 0.3s ease, filter 0.3s ease;
@@ -66,7 +66,7 @@
 .shop_button:hover img,
 .explore_button:hover img,
 .notification_button:hover img,
-.ledger_button:hover img {
+.wallet_button:hover img {
     filter: var(--icon-filter) brightness(1.3);
 }
   
