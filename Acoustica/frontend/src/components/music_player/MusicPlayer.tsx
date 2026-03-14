@@ -10,7 +10,7 @@ import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
 
 export function MusicPlayer() {
-    const { song, song_url, cover_picture_url } = useMusic();
+    const { song, song_url, cover_picture_url, play_key } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
@@ -34,20 +34,20 @@ export function MusicPlayer() {
 
     const savePlayerState = useCallback((data: object) => {
         localStorage.setItem("song", JSON.stringify(data));
-    }, [song]);
+    }, [song?.song_id, play_key]);
 
     const startSegment = useCallback(() => {
         if (startTimeRef.current === null && audioRef.current) {
             startTimeRef.current = audioRef.current.currentTime;
         }
-    }, [song]);
+    }, [song?.song_id, play_key]);
 
     const flushSegments = useCallback(() => {
         const segments = JSON.parse(localStorage.getItem('stream_segments') || '[]');
         if (segments.length === 0) return;
         sendStreamHistory(segments);
         localStorage.removeItem('stream_segments');
-    }, [song]);
+    }, [song?.song_id, play_key]);
 
     const endSegment = useCallback(() => {
         const audio = audioRef.current;
@@ -69,7 +69,7 @@ export function MusicPlayer() {
             if (segments.length >= 5) flushSegments();
         }
         startTimeRef.current = null;
-    }, [song, flushSegments]);
+    }, [song?.song_id, play_key, flushSegments]);
 
     useEffect(() => {
         const handleUnload = () => { 
@@ -78,7 +78,7 @@ export function MusicPlayer() {
         };
         window.addEventListener('beforeunload', handleUnload);
         return () => window.removeEventListener('beforeunload', handleUnload);
-    }, [song, endSegment, flushSegments]);
+    }, [song?.song_id, play_key, endSegment, flushSegments]);
 
     useEffect(() => {
         setReady(false);
@@ -87,7 +87,7 @@ export function MusicPlayer() {
         setProgressWidth("0%");
         setIsPlaying(false);
         startTimeRef.current = null;
-    }, [song]);
+    }, [song?.song_id, play_key]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -114,15 +114,15 @@ export function MusicPlayer() {
 
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         return () => audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    }, [song, song?.progress, song?.playing, startSegment]);
+    }, [song?.song_id, play_key, song?.progress, song?.playing, startSegment]);
 
     useEffect(() => {
         if (cover_picture_url) setCoverPictureReady(true);
-    }, [song, cover_picture_url]);
+    }, [song?.song_id, play_key, cover_picture_url]);
 
     useEffect(() => {
         if (songReady && coverPictureReady) setReady(true);
-    }, [song, songReady, coverPictureReady]);
+    }, [song?.song_id, play_key, songReady, coverPictureReady]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -144,7 +144,7 @@ export function MusicPlayer() {
 
         audio.addEventListener('timeupdate', handleTimeUpdate);
         return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-    }, [song, isPlaying, savePlayerState]);
+    }, [song?.song_id, play_key, isPlaying, savePlayerState]);
 
     useEffect(() => {
         const audio = audioRef.current;

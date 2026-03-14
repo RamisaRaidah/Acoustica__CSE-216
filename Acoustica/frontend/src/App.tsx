@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
 import SignIn from '@/pages/auth/Sign_in/sign_in.tsx';
 import SignUp from '@/pages/auth/Sign_up/sign_up.tsx';
@@ -16,58 +16,36 @@ import { Dashboard } from '@/pages/user/Dashboard';
 
 import ProtectedRoute from './components/Routes/ProtectedRoute.tsx';
 import PublicOnlyRoute from './components/Routes/PublicOnlyRoute.tsx';
+import { Sidebar } from '@/components/sidebar/Sidebar';
+import { Topbar } from '@/components/topbar/Topbar';
+import { MusicPlayer } from '@/components/music_player/MusicPlayer';
+import { Scrollbar } from './components/scrollbar/Scrollbar';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        
-        <Route 
-          path="/sign-in" 
-          element={
-            <PublicOnlyRoute>
-              <SignIn />
-            </PublicOnlyRoute>
-          } 
-        />
-        <Route 
-          path="/sign-up" 
-          element={
-            <PublicOnlyRoute>
-              <SignUp/>
-            </PublicOnlyRoute>
-          } 
-        />
 
+        <Route path="/sign-in" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
+        <Route path="/sign-up" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
+        <Route path="/onboarding" element={<ProtectedRoute requireOnboarding={false}><Onboarding /></ProtectedRoute>} />
 
-        <Route 
-          path="/onboarding" 
-          element={
-            <ProtectedRoute requireOnboarding={false}>
-              <Onboarding/>
-            </ProtectedRoute>
-          } 
-        />
+        <Route element={
+          <ProtectedRoute>
+            <div className="app_layout">
+              <Sidebar />
+              <Topbar />
+              <Scrollbar />
+              <MusicPlayer />
+              <Outlet />
+            </div>
+          </ProtectedRoute>
+        }>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/sign-out" element={<SignOut />} />
+        </Route>
 
-        <Route
-          path="/sign-out"
-          element={
-            <ProtectedRoute>
-              <SignOut/>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/my-profile"
-          element={
-            <ProtectedRoute>
-              <MyProfile/>
-            </ProtectedRoute>
-          }
-        />
-
-        
          {/*
         <Route 
           path="/myProfile" 
@@ -115,14 +93,6 @@ function App() {
         
         
         */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
       </Routes>  
     </BrowserRouter>
   );

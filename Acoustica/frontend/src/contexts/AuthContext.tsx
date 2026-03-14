@@ -46,7 +46,6 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
         }
     }
 
-    
     useEffect(() => {
         async function fetchProfilePicture() {
             const response = await getProfilePicture();
