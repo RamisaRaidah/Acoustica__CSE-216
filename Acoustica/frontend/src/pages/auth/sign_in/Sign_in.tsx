@@ -4,6 +4,7 @@ import { signIn } from '@/services/auth.ts';
 import { Typewriter } from "@/components/auth/Typewriter";
 import { useAuth } from "@/contexts/AuthContext.tsx"
 import { useTheme } from "@/contexts/ThemeContext";
+import "@/pages/auth/Auth.css";
 
 
 import logo_img from '@/assets/images/Deco/Logo.png';
