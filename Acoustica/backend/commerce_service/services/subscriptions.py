@@ -250,7 +250,7 @@ def leave_family(user_id):
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(
                     """
-                        SELECT f.family_id, f.owner_id
+                        SELECT f.family_id, f.parent_account_id
                         FROM family_member fm
                         JOIN family f ON f.family_id=fm.family_id
                         JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
@@ -266,7 +266,7 @@ def leave_family(user_id):
                 
                 
                 f_id=family["family_id"]
-                owner_id=family["owner_id"]
+                owner_id=family["parent_account_id"]
 
                 if owner_id==user_id:
                     return {"error":"Family owner cannot leave the family without deleting subscription for all"},403
@@ -333,7 +333,7 @@ def add_members(user_id,user2_id):
                                 FROM family_member fm
                                 JOIN family f ON f.family_id=fm.family_id
                                 JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
-                                WHERE f.owner_id=%s 
+                                WHERE f.parent_account_id=%s 
                                 AND s.end_date>=CURRENT_DATE 
                                 AND s.is_active=true
                                 GROUP BY f.family_id, s.plan_id
