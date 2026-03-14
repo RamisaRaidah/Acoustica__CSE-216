@@ -107,7 +107,10 @@ export function Searchbar({ song = false, album = false, artist = false} : Searc
                                         data-album-id={song.album_id}
                                         data-title={song.title}
                                         data-artist_name={song.artist_name}
-                                        onClick={() => playSong({song_id: song.song_id, album_id: song.album_id, title: song.title, artist_name:song.artist_name, progress: 0, playing: true})}
+                                        onClick={() => {
+                                            playSong({ song_id: song.song_id, album_id: song.album_id, title: song.title, artist_name: song.artist_name, progress: 0, playing: true });
+                                            setSearchDropdownOpen(false);
+                                        }}
                                     >
                                         <span className="search_item_title">{song.title}</span>
                                         <span className="search_item_artist_name">{song.artist_name}</span>
@@ -128,7 +131,10 @@ export function Searchbar({ song = false, album = false, artist = false} : Searc
                                         data-album-id={album.album_id}
                                         data-title={album.title}
                                         data-artist_name={album.artist_name}
-                                        onClick={() => alert(album.title)}
+                                        onClick={() => {
+                                            alert(album.title);
+                                            setSearchDropdownOpen(false);
+                                        }}
                                     >
                                         <span className="search_item_title">{album.title}</span>
                                         <span className="search_item_artist_name">{album.artist_name}</span>
@@ -148,7 +154,10 @@ export function Searchbar({ song = false, album = false, artist = false} : Searc
                                         key={artist.artist_id}
                                         data-artist_id={artist.artist_id}
                                         data-artist_name={artist.artist_name}
-                                        onClick={() => alert(artist.artist_name)}
+                                        onClick={() => {
+                                            alert(artist.artist_name);
+                                            setSearchDropdownOpen(false);
+                                        }}
                                     >
                                         <span className="search_item_title">{artist.artist_name}</span>
                                     </div>

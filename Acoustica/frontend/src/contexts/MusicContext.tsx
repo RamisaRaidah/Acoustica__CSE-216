@@ -33,10 +33,17 @@ export function MusicProvider ({ children }: { children: React.ReactNode}) {
     }
 
     useEffect(() => {
+        if (song) {
+            setSong({ ...song, playing: false });
+            localStorage.setItem("song", JSON.stringify(song));
+        }
+    }, []);
+
+    useEffect(() => {
         if (!song?.song_id) return;
         getSongAudio(song.song_id).then(res => setSongURL(res.stream_url));
         getAlbumCoverPicture(song.album_id).then(res => setCoverPictureURL(res.cover_picture_url));
-    }, [song?.song_id]);
+    }, [song]);
 
     return (
         <MusicContext.Provider value={{ song, playSong, song_url, cover_picture_url }}>

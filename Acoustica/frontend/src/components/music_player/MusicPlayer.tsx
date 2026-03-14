@@ -8,7 +8,6 @@ import play_next_button from '@/assets/images/Musicbar_Buttons/Play_Next_Button.
 import lyrics_button from '@/assets/images/Musicbar_Buttons/Lyrics_Button.png';
 import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
-import api from '@/services/api';
 
 export function MusicPlayer() {
     const { song, song_url, cover_picture_url } = useMusic();
@@ -16,14 +15,15 @@ export function MusicPlayer() {
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
+    const startTimeRef = useRef<number | null>(null);
 
     const [isPlaying, setIsPlaying] = useState(song?.playing ?? false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [progressWidth, setProgressWidth] = useState("0%");
     const [ready, setReady] = useState(false);
-
-    const startTimeRef = useRef<number | null>(null);
+    const [songReady, setSongReady] = useState(false);
+    const [coverPictureReady, setCoverPictureReady] = useState(false);
 
     const formatTime = (seconds: number) => {
         if (!Number.isFinite(seconds)) return "0:00";
@@ -34,20 +34,20 @@ export function MusicPlayer() {
 
     const savePlayerState = useCallback((data: object) => {
         localStorage.setItem("song", JSON.stringify(data));
-    }, []);
+    }, [song]);
 
     const startSegment = useCallback(() => {
         if (startTimeRef.current === null && audioRef.current) {
             startTimeRef.current = audioRef.current.currentTime;
         }
-    }, []);
+    }, [song]);
 
     const flushSegments = useCallback(() => {
         const segments = JSON.parse(localStorage.getItem('stream_segments') || '[]');
         if (segments.length === 0) return;
         sendStreamHistory(segments);
         localStorage.removeItem('stream_segments');
-    }, []);
+    }, [song]);
 
     const endSegment = useCallback(() => {
         const audio = audioRef.current;
@@ -69,13 +69,16 @@ export function MusicPlayer() {
             if (segments.length >= 5) flushSegments();
         }
         startTimeRef.current = null;
-    }, [song?.song_id, flushSegments]);
+    }, [song, flushSegments]);
 
     useEffect(() => {
-        const handleUnload = () => { endSegment(); flushSegments(); };
+        const handleUnload = () => { 
+            endSegment(); 
+            flushSegments(); 
+        };
         window.addEventListener('beforeunload', handleUnload);
         return () => window.removeEventListener('beforeunload', handleUnload);
-    }, [endSegment, flushSegments]);
+    }, [song, endSegment, flushSegments]);
 
     useEffect(() => {
         setReady(false);
@@ -84,7 +87,7 @@ export function MusicPlayer() {
         setProgressWidth("0%");
         setIsPlaying(false);
         startTimeRef.current = null;
-    }, [song_url]);
+    }, [song]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -100,7 +103,7 @@ export function MusicPlayer() {
             setDuration(audio.duration);
             setCurrentTime(audio.currentTime);
             setProgressWidth(((audio.currentTime / audio.duration) * 100) + "%");
-            setReady(true);
+            setSongReady(true);
 
             if (song?.playing) {
                 audio.play();
@@ -111,7 +114,15 @@ export function MusicPlayer() {
 
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         return () => audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    }, [song_url, song?.progress, song?.playing, startSegment]);
+    }, [song, song?.progress, song?.playing, startSegment]);
+
+    useEffect(() => {
+        if (cover_picture_url) setCoverPictureReady(true);
+    }, [song, cover_picture_url]);
+
+    useEffect(() => {
+        if (songReady && coverPictureReady) setReady(true);
+    }, [song, songReady, coverPictureReady]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -139,7 +150,10 @@ export function MusicPlayer() {
         const audio = audioRef.current;
         if (!audio) return;
 
-        const handleEnded = () => { setIsPlaying(false); endSegment(); };
+        const handleEnded = () => { 
+            setIsPlaying(false); 
+            endSegment(); 
+        };
         audio.addEventListener('ended', handleEnded);
         return () => audio.removeEventListener('ended', handleEnded);
     }, [endSegment]);
@@ -180,7 +194,10 @@ export function MusicPlayer() {
         setProgressWidth(((audio.currentTime / audio.duration) * 100) + "%");
         setCurrentTime(audio.currentTime);
 
-        audio.play().then(() => { setIsPlaying(true); startSegment(); });
+        audio.play().then(() => { 
+            setIsPlaying(true); 
+            startSegment(); 
+        });
     }, [endSegment, startSegment]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -203,28 +220,27 @@ export function MusicPlayer() {
             <img
                 src={cover_picture_url ?? ""}
                 className="cover_picture"
-                style={{ display: cover_picture_url ? "block" : "none" }}
+                style={{ display: ready ? "block" : "none" }}
             />
 
             <div className="song_info">
-                <div className="song_name"><a href="#">{song?.title}</a></div>
-                <div className="artist_name"><a href="#">{song?.artist_name}</a></div>
+                <div className="song_name"><a href="#">{ready ? song?.title : ""}</a></div>
+                <div className="artist_name"><a href="#">{ready ? song?.artist_name : ""}</a></div>
             </div>
 
-            <div className="music_control1">
-                <div className="music_control1_top">
+            <div className="music_control1" >
+                <div className="music_control1_top" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
                     <img src={play_previous_button} className="play_previous_button" />
                     <img
                         src={isPlaying ? pause_button : play_button}
                         className="play_pause_button"
-                        style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}
                         onClick={handlePlayPause}
                     />
                     <img src={play_next_button} className="play_next_button" />
                 </div>
 
                 <div className="music_control1_bottom">
-                    <p className="play_time">{song ? formatTime(currentTime) : "..."}</p>
+                    <p className="play_time">{song_url ? formatTime(currentTime) : "..."}</p>
                     <div
                         className="progress_container"
                         ref={progressContainerRef}
@@ -237,11 +253,11 @@ export function MusicPlayer() {
                             </div>
                         </div>
                     </div>
-                    <p className="total_time">{song ? formatTime(duration) : "..."}</p>
+                    <p className="total_time">{song_url ? formatTime(duration) : "..."}</p>
                 </div>
             </div>
 
-            <div className="music_control2">
+            <div className="music_control2" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
                 <img src={lyrics_button} className="lyrics_button" />
                 <img src={like_button} className="like_button" />
                 <img src={full_screen_button} className="full_screen_button" />
