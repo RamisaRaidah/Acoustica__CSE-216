@@ -1,10 +1,33 @@
+:root {
+    --bg-color: #ffffff;
+    --bg-card: #fafafa;
+    --bg-secondary: #f5f5f5;
+    --text-color: #1a1a1a;
+    --text-muted: #6c757d;
+    --border-color: #e0e0e0;
+    --card-color:rgba(249, 194, 170, 0.02);
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+html.dark {
+    --bg-color: #0a0a0a;          
+    --bg-card: #1e1e1e; 
+    --bg-secondary: #2a2a2a;
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: rgba(255,255,255,0.15);
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
 .profile-page {
-    padding: 2rem 2.5rem 12vh 2.5rem;
-    min-height: 100vh;
     background: var(--bg-color);
     color: var(--text-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 12vh;
+    padding-left: 22vw;
+    padding-bottom: 14vh;
+    padding-right: 2rem;
 }
+
 
 /* ---- Header ---- */
 .page-header {
@@ -157,7 +180,6 @@
     grid-template-columns: 155px 1fr;
     align-items: center;
     padding: 0.72rem 1.4rem;
-    border-bottom: 1px solid var(--border-color);
     transition: background 0.15s;
 }
 
@@ -204,25 +226,3 @@
 }
 
 
-body.dark .identity-card,
-body.dark .info-card {
-    background: #1e1e1e;
-    border-color: rgba(255,255,255,0.07);
-}
-
-body.dark .card-header {
-    background: #1a1a1a;
-    border-color: rgba(255,255,255,0.07);
-}
-
-body.dark .info-row {
-    border-color: rgba(255,255,255,0.07);
-}
-
-body.dark .info-row:hover {
-    background: rgba(200, 98, 42, 0.08);
-}
-
-body.dark .profile-page {
-    background: #111111;
-}

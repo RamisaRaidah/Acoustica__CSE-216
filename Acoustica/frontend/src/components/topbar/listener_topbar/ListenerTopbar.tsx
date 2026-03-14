@@ -26,7 +26,10 @@ export function ListenerTopbar() {
         return () => document.removeEventListener('click', handleClick);
     }, []);
 
-    if (!profile_picture) return null;
+    if (!profile_picture){
+        console.log('We should never see this day');
+        return null;
+    }
 
     return (
         <div className="topbar">

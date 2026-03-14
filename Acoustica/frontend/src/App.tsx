@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate, PrefetchPageLinks } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import SignIn from '@/pages/auth/Sign_in/sign_in';
-import SignUp from '@/pages/auth/Sign_up/sign_up';
-import SignOut from '@/pages/auth/Sign_out/sign_out';
-import Onboarding from '@/pages/auth/Onboarding/onboarding';
+import SignIn from '@/pages/auth/Sign_in/sign_in.tsx';
+import SignUp from '@/pages/auth/Sign_up/sign_up.tsx';
+import SignOut from '@/pages/auth/Sign_out/sign_out.tsx';
+import Onboarding from '@/pages/auth/Onboarding/onboarding.tsx';
+import MyProfile from '@/pages/profile/private/my_profile.tsx';
 
 import { Dashboard } from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
@@ -53,6 +54,15 @@ function App() {
           element={
             <ProtectedRoute>
               <SignOut/>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-profile"
+          element={
+            <ProtectedRoute>
+              <MyProfile/>
             </ProtectedRoute>
           }
         />
