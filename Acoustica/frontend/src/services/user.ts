@@ -14,7 +14,7 @@ export function getUser() {
 }
 
 export async function getLastListening(): Promise<GetLastListeningResponse> {
-    return api.request('/api/listeners/me/last-listening', { method: 'GET' });
+    return api.request('/api/listeners/me/last-listening');
 }
 
 export async function sendStreamHistory(segments: {}) {
