@@ -1,3 +1,4 @@
+import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { sendStreamHistory } from "@/services/user";
