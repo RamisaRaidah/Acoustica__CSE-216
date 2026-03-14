@@ -29,6 +29,13 @@ def subscribe(user_id):
     payment_method=data.get("payment_method")
     auto_renewal=data.get("auto_renewal","off")
 
+    if payment_method not in ["bank", "COD", "card", "online"]:
+        logging.error("Invalid payment method")
+        return {"error":"Invalid payment method"},400
+    
+    if auto_renewal not in ["on", "off"]:
+        return {"error": "auto_renewal must be 'on' or 'off'"}, 400
+
     if plan_id is None:
         logging.info("Plan id was not provided")
         return {"error":"plan_id is needed"},400
@@ -121,10 +128,26 @@ def get_subscription_details(user_id):
     s_id="""
             SELECT subscription_id
             FROM plan_subscription
-            WHERE owner_id=%s AND end_date>=CURRENT_DATE AND is_active=true
+            WHERE owner_id=%s 
+            AND end_date>=CURRENT_DATE 
+            AND is_active=true
         """
+    
+    family_s_id="""
+                    SELECT s.subscription_id,f.parent_account_id
+                    FROM family_member fm
+                    JOIN family f ON f.family_id=fm.family_id
+                    JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
+                    WHERE fm.member_id=%s 
+                    AND s.end_date>=CURRENT_DATE 
+                    AND s.is_active=true
+                """
     subscription = execute_sql(s_id, (user_id,), fetch_one=True)
     
+    if not subscription:
+        subscription = execute_sql(family_s_id, (user_id,), fetch_one=True)
+        if subscription: 
+            user_id=subscription["parent_account_id"]
     if not subscription:
         return {"error": "No active subscription found"}, 404
 
@@ -164,6 +187,7 @@ def delete_subscription(subscription_id, user_id):
                                FROM plan_subscription 
                                WHERE subscription_id=%s
                                AND owner_id=%s
+                               AND end_date >= CURRENT_DATE
                                """,(subscription_id, user_id))
                 if not cursor.fetchone():
                     return {"error":"Subscription not found"},404
@@ -173,8 +197,9 @@ def delete_subscription(subscription_id, user_id):
                                 SET end_date= CURRENT_DATE,
                                 is_active=false
                                 WHERE subscription_id=%s
+                                AND owner_id=%s
                                 AND end_date >= CURRENT_DATE
-                                """,(subscription_id,))
+                                """,(subscription_id,user_id,))
                 
                 cursor.execute(
                     """
@@ -213,5 +238,157 @@ def set_auto_renewal(subscription_id, user_id):
         return {"error": "Subscription not found"}, 404
 
     return {"message": f"Auto renewal set to {mode}"}, 200
+
+def leave_family(user_id):
+    connection=get_db_connection()
+
+    if connection is None:
+        return {"error":"Database Connection failed"},500
+    
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(
+                    """
+                        SELECT f.family_id, f.owner_id
+                        FROM family_member fm
+                        JOIN family f ON f.family_id=fm.family_id
+                        JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
+                        WHERE fm.member_id=%s 
+                        AND s.end_date>=CURRENT_DATE 
+                        AND s.is_active=true
+                    """,(user_id,)
+                )
+                family=cursor.fetchone()
+
+                if not family:
+                    return {"error":"No family found"},404
+                
+                
+                f_id=family["family_id"]
+                owner_id=family["owner_id"]
+
+                if owner_id==user_id:
+                    return {"error":"Family owner cannot leave the family without deleting subscription for all"},403
+
+                cursor.execute(
+                    """
+                        DELETE FROM family_member
+                        WHERE family_id=%s
+                        AND member_id=%s
+                    """,(f_id,user_id)
+                )
+
+                cursor.execute(
+                    """
+                    UPDATE listener 
+                    SET listener_type = 'free' 
+                    WHERE listener_id = %s
+                    """,(user_id,)
+                )
+
+        return {"message": "Successfully left family"}, 200
+    except Exception as e:
+            logging.error(f"Mission family abandonment failed {e}")
+            return {"error":"Leaving family failed"},500
+    finally:
+        release_connection(connection)
+
+
+def my_family(user_id):
+    sql="""
+            SELECT f.family_id
+            FROM family_member fm
+            JOIN family f ON f.family_id=fm.family_id
+            JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
+            WHERE fm.member_id=%s 
+            AND s.end_date>=CURRENT_DATE 
+            AND s.is_active=true
+        """
+    
+    family=execute_sql(sql,(user_id,),fetch_one=True)
+    if not family:
+        return {"error": "No family found"},404
+    f_id=family["family_id"]
+
+    sql2="""
+            SELECT family_id, member_id
+            FROM family_member
+            WHERE family_id=%s
+        """
+    result=execute_sql(sql2,(f_id,),fetch_all=True)
+    return [dict(r) for r in result], 200
+
+def add_members(user_id,user2_id):
+    connection=get_db_connection()
+
+    if connection is None:
+        return {"error":"DB connection failed"},500
+    
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("""
+                                SELECT f.family_id, COUNT(fm.member_id) AS members,s.plan_id
+                                FROM family_member fm
+                                JOIN family f ON f.family_id=fm.family_id
+                                JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
+                                WHERE f.owner_id=%s 
+                                AND s.end_date>=CURRENT_DATE 
+                                AND s.is_active=true
+                                GROUP BY f.family_id, s.plan_id
+                            """,(user_id,))
+                
+    
+                family=cursor.fetchone()
+                if not family:
+                    return {"error": "No family found"},404
+                f_id=family["family_id"]
+                cnt=family["members"]
+                p_id=family["plan_id"]
+
+                cursor.execute("""
+                                    SELECT max_members
+                                    FROM plan
+                                    WHERE plan_id=%s
+                                """,(p_id,))
+                plan=cursor.fetchone()
+                mx=plan["max_members"]
+                if cnt>=mx:
+                    return {"error":"You have already added the maxmimum possible members"},409
+                cursor.execute("""
+                            SELECT subscription_id
+                            FROM plan_subscription
+                            WHERE owner_id=%s 
+                            AND end_date>=CURRENT_DATE 
+                            AND is_active=true  
+                            """,(user2_id,))
+                
+                if cursor.fetchone():
+                    return {"error":"This user already has a subscription"},409
+
+                cursor.execute("""
+                                    SELECT s.subscription_id
+                                    FROM family_member fm
+                                    JOIN family f ON f.family_id=fm.family_id
+                                    JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
+                                    WHERE fm.member_id=%s 
+                                    AND s.end_date>=CURRENT_DATE 
+                                    AND s.is_active=true
+
+                                """,(user2_id,))
+                if cursor.fetchone():
+                    return {"error":"This user is already part of a family"},409
+
+                cursor.execute("""
+                                INSERT INTO family_member (family_id,member_id)
+                                VALUES( %s, %s)
+                                """,(f_id,user2_id))
+        return {"message": "Member added successfully"}, 200
+    except Exception as e:
+            logging.error(f"Member was not added {e}")
+            return {"error":"New member addition failed"},500
+    finally:
+        release_connection(connection)
 
 ### Helper functions ###

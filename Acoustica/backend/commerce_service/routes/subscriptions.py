@@ -37,7 +37,7 @@ def get_subscription_details_route():
     result, status = subscriptions.get_subscription_details(user_id)
     return jsonify(result), status
 
-@subscriptions_bp.delete("/api/subscriptions/<subscription_id>")
+@subscriptions_bp.delete("/api/subscriptions/<subscription_id>/delete-subscription")
 @jwt_required()
 def delete_subscription_route(subscription_id):
     user_id=get_jwt_identity()
@@ -49,4 +49,25 @@ def delete_subscription_route(subscription_id):
 def set_auto_renewal_route(subscription_id):
     user_id=get_jwt_identity()
     result, status=subscriptions.set_auto_renewal(subscription_id, user_id)
+    return jsonify(result),status
+
+@subscriptions_bp.delete("/api/subscriptions/leave-family")
+@jwt_required()
+def leave_family_route():
+    user_id=get_jwt_identity()
+    result, status=subscriptions.leave_family(user_id)
+    return jsonify(result),status
+
+@subscriptions_bp.get("/api/subscriptions/my-family")
+@jwt_required()
+def my_family_route():
+    user_id=get_jwt_identity()
+    result, status=subscriptions.my_family(user_id)
+    return jsonify(result),status
+
+@subscriptions_bp.post("/api/subscriptions/add-members/<user2_id>")
+@jwt_required()
+def add_members_route(user2_id):
+    user_id=get_jwt_identity()
+    result, status=subscriptions.add_members(user_id,user2_id)
     return jsonify(result),status

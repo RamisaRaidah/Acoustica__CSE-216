@@ -1,0 +1,22 @@
+2xx — Success:
+    200 — general success (GET, PATCH, DELETE worked)
+    201 — something was created (POST that inserts a new row)
+
+
+4xx — Client's fault:
+    400 — bad input (missing field, invalid value, wrong format)
+    401 — not logged in (no token or invalid token)
+    403 — logged in but not allowed 
+    404 — the thing they're asking for doesn't exist
+    409 — conflict with current state 
+
+
+5xx — Server's fault:
+    500 — something unexpected went wrong on your end (DB connection failed, unhandled exception)
+
+
+Quick rule of thumb:
+Did the user send something wrong? → 4xx. 
+Did something break on your side? → 5xx. 
+Did it work? → 2xx.
+

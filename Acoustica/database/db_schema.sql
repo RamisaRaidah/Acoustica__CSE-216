@@ -265,17 +265,17 @@ CREATE TABLE IF NOT EXISTS "plan_subscription" (
   is_active BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE IF NOT EXISTS "family_plan" (
-  family_plan_id SERIAL CONSTRAINT pk_family_plan PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS "family" (
+  family_id SERIAL CONSTRAINT pk_family PRIMARY KEY,
   family_name TEXT,
-  parent_account_id INT CONSTRAINT fk_family_plan_listener_parent_account_id REFERENCES listener(listener_id) ON DELETE CASCADE,
-  subscription_id INT CONSTRAINT fk_family_plan_plan_subscription_id REFERENCES plan_subscription(subscription_id) ON DELETE CASCADE
+  parent_account_id INT CONSTRAINT fk_family_listener_parent_account_id REFERENCES listener(listener_id) ON DELETE CASCADE,
+  subscription_id INT CONSTRAINT fk_family_subscription_id REFERENCES plan_subscription(subscription_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "family_plan_member" (
-  family_plan_id INT CONSTRAINT fk_family_plan_member_family_plan_id REFERENCES family_plan(family_plan_id) ON DELETE CASCADE,
-  member_id INT CONSTRAINT fk_family_plan_member_listener_member_id REFERENCES listener(listener_id) ON DELETE CASCADE,
-  CONSTRAINT pk_family_plan_member PRIMARY KEY (family_plan_id, member_id)
+CREATE TABLE IF NOT EXISTS "family_member" (
+  family_id INT CONSTRAINT fk_family_member_family_id REFERENCES family(family_id) ON DELETE CASCADE,
+  member_id INT CONSTRAINT fk_family_member_listener_member_id REFERENCES listener(listener_id) ON DELETE CASCADE,
+  CONSTRAINT pk_family_member PRIMARY KEY (family_id, member_id)
 );
 
 CREATE TABLE IF NOT EXISTS "friend_shared_content" (
@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS "friend_shared_content" (
 
 CREATE TABLE IF NOT EXISTS "family_shared_content" (
   family_shared_id SERIAL CONSTRAINT pk_family_shared_content PRIMARY KEY,
-  family_plan_id INT CONSTRAINT fk_family_shared_content_family_plan_family_plan_id REFERENCES family_plan(family_plan_id) ON DELETE CASCADE,
+  family_id INT CONSTRAINT fk_family_shared_content_family_family_id REFERENCES family(family_id) ON DELETE CASCADE,
   sender_id INT CONSTRAINT fk_family_shared_content_listener_sender_id REFERENCES listener(listener_id) ON DELETE CASCADE,
   content_id INT CONSTRAINT fk_family_shared_content_asset_content_id REFERENCES asset(asset_id) ON DELETE CASCADE,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP

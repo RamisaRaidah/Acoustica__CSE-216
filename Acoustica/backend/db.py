@@ -140,10 +140,8 @@ def execute_sql(sql_command, param = None, fetch_one = False, fetch_all = False)
                     result = cursor.fetchall()
                 else:
                     result = None
-                    connection.commit()
                 return result
     except Exception as e:
-        connection.rollback()
         logging.error(f"Execution failed: {e}")
         return None
     finally:
