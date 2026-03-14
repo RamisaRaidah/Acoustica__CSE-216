@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
-import SignIn from '@/pages/auth/Sign_in/sign_in.tsx';
-import SignUp from '@/pages/auth/Sign_up/sign_up.tsx';
-import SignOut from '@/pages/auth/Sign_out/sign_out.tsx';
-import Onboarding from '@/pages/auth/Onboarding/onboarding.tsx';
-import MyProfile from '@/pages/profile/private/my_profile.tsx';
+import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
+import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
+import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
+import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
+import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
 
 import { Dashboard } from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
@@ -14,8 +14,8 @@ import { Dashboard } from '@/pages/user/Dashboard';
 // import PrivateProfile from './pages/profile/private/my_profile';
 // import Artists from './pages/user/artist/artists/artists';
 
-import ProtectedRoute from '@/components/Routes/ProtectedRoute.tsx';
-import PublicOnlyRoute from '@/components/Routes/PublicOnlyRoute.tsx';
+import ProtectedRoute from '@/components/routes/ProtectedRoute';
+import PublicOnlyRoute from '@/components/routes/PublicOnlyRoute';
 import { Sidebar } from '@/components/sidebar/Sidebar';
 import { Topbar } from '@/components/topbar/Topbar';
 import { MusicPlayer } from '@/components/music_player/MusicPlayer';

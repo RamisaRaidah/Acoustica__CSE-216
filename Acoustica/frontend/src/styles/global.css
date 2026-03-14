@@ -1,5 +1,6 @@
 @import url('@/pages/auth/auth.css');
 @import url('@/pages/music/music.css');
+@import url('@/components/scrollbar/Scrollbar.css');
 
 html, body {
   -webkit-user-select: none; 

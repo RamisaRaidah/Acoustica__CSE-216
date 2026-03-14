@@ -1,10 +1,7 @@
 import { getMyProfile } from "@/services/profile.ts";
-import { Scrollbar } from "@/components/scrollbar/Scrollbar";
-import { Sidebar } from "@/components/sidebar/Sidebar";
-import { Topbar } from "@/components/topbar/Topbar";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "@/pages/profile/private/my_profile.css"
+import "@/pages/user/profile/private/MyProfile.css"
 import { useAuth } from "@/contexts/AuthContext";
 
 interface GetMyProfileResponse{
