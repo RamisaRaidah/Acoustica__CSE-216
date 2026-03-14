@@ -7,6 +7,8 @@ import Onboarding from '@/pages/auth/Onboarding/onboarding.tsx';
 import MyProfile from '@/pages/profile/private/my_profile.tsx';
 
 import { Dashboard } from '@/pages/user/Dashboard';
+import { Playlists } from '@/pages/music/playlist/playlists/Playlists';
+import { Artists } from '@/pages/user/artist/artists/Artists';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -47,6 +49,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
+          <Route path="/music/playlists" element={<Playlists />}></Route>
+          <Route path="/artists" element={<Artists />}></Route>
         </Route>
 
          {/*

@@ -20,13 +20,13 @@ interface GetAlbumCoverPictureResponse {
 }
 
 export async function getAlbums(): Promise<GetAlbumsResponse[]> {
-    return api.request('/api/music/albums/all', { method: 'GET' });
+    return api.request('/api/music/albums/all');
 }
 
 export async function getAlbumDetails(albumId: number): Promise<GetAlbumDetailsResponse> {
-    return api.request(`/api/music/albums/${albumId}`, { method: 'GET' });
+    return api.request(`/api/music/albums/${albumId}`);
 }
 
 export async function getAlbumCoverPicture(albumId: number): Promise<GetAlbumCoverPictureResponse> {
-    return api.request(`/api/music/albums/${albumId}/cover-picture`, { method: 'GET' });
+    return api.request(`/api/music/albums/${albumId}/cover-picture`);
 }
