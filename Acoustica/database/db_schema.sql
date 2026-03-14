@@ -38,10 +38,6 @@ CREATE TYPE theme_enum AS ENUM ('light', 'dark');
 CREATE TYPE product_category_enum AS ENUM ('ticket','merch','cd');
 CREATE TYPE asset_type_enum AS ENUM ('user','song','playlist','album','product','report');
 
-CREATE UNIQUE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_user_id ON users(user_id);   
-CREATE INDEX idx_listener_listener_id ON listener(listener_id);
-CREATE INDEX idx_artist_artist_id ON artist(artist_id);
 
 -- Creating tables
 
@@ -389,3 +385,10 @@ CREATE TABLE IF NOT EXISTS "notification" (
   text TEXT,
   date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_user_id ON users(user_id);   
+CREATE INDEX idx_listener_listener_id ON listener(listener_id);
+CREATE INDEX idx_artist_artist_id ON artist(artist_id);

@@ -64,3 +64,31 @@ BEFORE INSERT
 ON report
 FOR EACH ROW
 EXECUTE FUNCTION INSERT_INTO_ASSET('report');
+
+
+CREATE OR REPLACE FUNCTION CREATE_FAMILY_ON_SUBSCRIBE()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_mx_members INT;
+    v_family_id INT;
+BEGIN
+    SELECT max_members INTO v_mx_members
+    FROM plan
+    WHERE plan_id=NEW.plan_id;
+
+    IF v_mx_members > 1 THEN
+        INSERT INTO family (family_name, parent_account_id, subscription_id)
+        VALUES ('family_' || NEW.owner_id, NEW.owner_id, NEW.subscription_id)
+        RETURNING family_id INTO v_family_id;
+
+        INSERT INTO family_member (family_id, member_id)
+        VALUES (v_family_id, NEW.owner_id);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_create_family_on_subscribe
+AFTER INSERT ON plan_subscription
+FOR EACH ROW
+EXECUTE FUNCTION create_family_on_subscribe();
