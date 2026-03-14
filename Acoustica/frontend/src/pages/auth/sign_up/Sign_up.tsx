@@ -1,9 +1,10 @@
 import { useState, SubmitEventHandler, ChangeEvent } from "react";
 import { signUp,signIn } from "@/services/auth.ts";
-import { Typewriter } from "@/components/auth/typewriter";
+import { Typewriter } from "@/components/auth/Typewriter";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import "@/pages/auth/Auth.css";
 
 import logo_img from '@/assets/images/Deco/Logo.png';
 import name_img from '@/assets/images/auth/name_2.png';
