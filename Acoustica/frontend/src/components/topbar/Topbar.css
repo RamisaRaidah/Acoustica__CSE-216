@@ -113,8 +113,8 @@
     position: absolute;
     right: 0;
     top: calc(100% + 0.5vh);
-    background: var(--bg-secondary, #1e1e1e);
-    border: 1px solid var(--border-color, #333);
+    background: #222;
+    border: 1px solid #333;
     border-radius: 0.8vh;
     min-width: 12vw;
     box-shadow: 0 0.4vh 1.2vh rgba(0,0,0,0.3);
@@ -125,7 +125,7 @@
 .profile_dropdown a {
     display: block;
     padding: 1vh 1.2vw;
-    color: var(--text-primary, #fff);
+    color: #eee;
     text-decoration: none;
     font-size: 1vw;
     opacity: 1;
@@ -136,6 +136,6 @@
 }
 
 .profile_dropdown a:hover {
-    background: var(--hover-color, #2e2e2e);
+    background: rgba(255, 255, 255, 0.07);
     opacity: 1;
 }
