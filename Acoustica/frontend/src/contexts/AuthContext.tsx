@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { getProfilePicture } from "@/services/auth";
+import { getProfilePicture } from "@/services/auth/auth";
 
 interface User {
     user_id: string;

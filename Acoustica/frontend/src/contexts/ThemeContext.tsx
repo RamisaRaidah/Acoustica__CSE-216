@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
-import { sendTheme } from "@/services/auth";
+import { sendTheme } from "@/services/auth/auth";
 
 type Theme = "light" | "dark";
 

@@ -1,4 +1,4 @@
-import { signOut } from "@/services/auth";
+import { signOut } from "@/services/auth/auth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";

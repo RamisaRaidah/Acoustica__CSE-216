@@ -5,6 +5,7 @@ import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
 import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
+import GetPlanDetails from './pages/subscriptions/GetPlanDetails';
 
 import { Dashboard } from '@/pages/user/Dashboard';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
@@ -47,6 +48,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
+          <Route path="/get-plan-details" element={<GetPlanDetails/>}/>
         </Route>
 
          {/*

@@ -1,0 +1,255 @@
+/* ===== VARIABLES ===== */
+:root {
+    --primary-color: #c8622a;
+    --primary-hover: #e8924a;
+    --bg-color: #ffffff;
+    --card-bg: #fafafa;
+    --text-color: #1a1a1a;
+    --text-muted: #6c757d;
+    --border-color: #e0e0e0;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+    
+
+    --individual-bg: #1a4d2e;
+    --individual-hover: #245c3a;
+    --family-bg: #6a1b9a;
+    --family-hover: #7b1fa2;
+}
+
+body.dark {
+    --bg-color: #0a0a0a;
+    --card-bg: #1a1a1a;
+    --text-color: #e8e8e8;
+    --text-muted: #9ca3af;
+    --border-color: rgba(255,255,255,0.1);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.7);
+}
+
+/* ===== MAIN CONTAINER ===== */
+.GetPlanDetailsContainer {
+    position: fixed;
+    top: 10vh;
+    left: 20vw;
+    width: 78vw;
+    height: 77vh;
+    padding: 2vw;
+    box-sizing: border-box;
+    border-radius: 0.5vw;
+    background: var(--bg-color);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* ✅ TRANSPARENT SCROLLBAR */
+.GetPlanDetailsContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.GetPlanDetailsContainer::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.GetPlanDetailsContainer::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+.GetPlanDetailsContainer::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+}
+
+/* Firefox */
+.GetPlanDetailsContainer {
+    scrollbar-width: none; 
+}
+/* ===== HEADER ===== */
+.Plan-Header {
+    text-align: center;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.Plan-Header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-color);
+    margin: 0 0 0.5rem 0;
+}
+
+.Plan-Header p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ===== PLAN CARDS CONTAINER (STACKED) ===== */
+.Plan-card {
+    display: flex;
+    flex-direction: column; 
+    gap: 1.5rem;
+    max-width: 700px;  
+    margin: 0 auto;
+    padding-bottom: 2rem;
+}
+
+/* ===== PLAN BANNER BASE ===== */
+.Plan-Banner {
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: none;
+    will-change: transform;  
+}
+
+.Plan-Banner:nth-child(1) { animation-delay: 0.1s; }
+.Plan-Banner:nth-child(2) { animation-delay: 0.2s; }
+.Plan-Banner:nth-child(3) { animation-delay: 0.3s; }
+.Plan-Banner:nth-child(4) { animation-delay: 0.4s; }
+
+.Plan-Banner:hover {
+    transform: translateY(-8px) scale(1.08);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.Plan-Banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;  
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.Plan-Banner h2::before {
+    content: '⭐';
+    font-size: 1.5rem;
+}
+
+.Plan-Banner p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9); 
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.Plan-Banner p:first-of-type::before {
+    content: '📅';
+}
+
+.Plan-Banner p:last-of-type::before {
+    content: '👥';
+}
+
+/* ===== INDIVIDUAL PLAN (DARK GREEN) ===== */
+.Individual-Plan {
+    background: linear-gradient(135deg, var(--individual-bg), var(--individual-hover));
+}
+
+.Individual-Plan:hover {
+    background: linear-gradient(135deg, var(--individual-hover), #2d7a4a);
+}
+
+/* ===== FAMILY PLAN (ELEGANT PURPLE) ===== */
+.Family-Plan {
+    background: linear-gradient(135deg, var(--family-bg), var(--family-hover));
+}
+
+.Family-Plan:hover {
+    background: linear-gradient(135deg, var(--family-hover), #8e24aa);
+}
+
+/* ===== LOADING STATE ===== */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+/* ===== ERROR STATE ===== */
+.error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ellipsis {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .GetPlanDetailsContainer {
+        padding: 2vw 3vw;
+    }
+
+    .Plan-Header h1 {
+        font-size: 2rem;
+    }
+
+    .Plan-Header p {
+        font-size: 0.95rem;
+    }
+
+    .Plan-card {
+        max-width: 100%;
+        gap: 1.2rem;
+    }
+
+    .Plan-Banner {
+        padding: 2rem 1.5rem;
+    }
+
+    .Plan-Banner h2 {
+        font-size: 1.5rem;
+    }
+}
