@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-@import url('@/pages/auth/auth.css');
-=======
-@import url('@/pages/music/music.css');
-@import url('@/components/scrollbar/Scrollbar.css');
->>>>>>> d475233cd0d4ac5316d67baa9403a22a5f86f56c
-
 html, body {
   -webkit-user-select: none; 
   -ms-user-select: none;     

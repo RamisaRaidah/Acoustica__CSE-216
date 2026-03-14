@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 
-import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
-import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
-import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
-import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
+import SignIn from '@/pages/auth/Sign_in/Sign_in.tsx';
+import SignUp from '@/pages/auth/Sign_up/Sign_up.tsx';
+import SignOut from '@/pages/auth/Sign_out/Sign_out.tsx';
+import Onboarding from '@/pages/auth/Onboarding/Onboarding.tsx';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
 
 import { Dashboard } from '@/pages/user/Dashboard';
