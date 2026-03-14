@@ -14,14 +14,17 @@ import { Dashboard } from '@/pages/user/Dashboard';
 // import PrivateProfile from './pages/profile/private/my_profile';
 // import Artists from './pages/user/artist/artists/artists';
 
-import ProtectedRoute from './components/Routes/ProtectedRoute.tsx';
-import PublicOnlyRoute from './components/Routes/PublicOnlyRoute.tsx';
+import ProtectedRoute from '@/components/Routes/ProtectedRoute.tsx';
+import PublicOnlyRoute from '@/components/Routes/PublicOnlyRoute.tsx';
 import { Sidebar } from '@/components/sidebar/Sidebar';
 import { Topbar } from '@/components/topbar/Topbar';
 import { MusicPlayer } from '@/components/music_player/MusicPlayer';
-import { Scrollbar } from './components/scrollbar/Scrollbar';
+import { Scrollbar } from '@/components/scrollbar/Scrollbar';
+import { useScroll } from '@/contexts/ScrollContext';
 
 function App() {
+  const scrollRef = useScroll();
+
   return (
     <BrowserRouter>
       <Routes>
@@ -32,7 +35,7 @@ function App() {
 
         <Route element={
           <ProtectedRoute>
-            <div className="app_layout">
+            <div className="app_layout" ref={scrollRef} style={{ overflowY: "auto", height: "100vh" }}>
               <Sidebar />
               <Topbar />
               <Scrollbar />

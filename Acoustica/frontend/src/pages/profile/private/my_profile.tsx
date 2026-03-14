@@ -48,9 +48,6 @@ function MyProfile(){
     if(!data){
         return(
             <div className="My_Profile_Container">
-                <Sidebar />
-                <Topbar />
-                <Scrollbar />
                 <div className="profile-page">
                     <div className="page-header">
                         <h1>My Profile</h1>
@@ -178,9 +175,6 @@ function MyProfile(){
 
     return(
         <div className="My_Profile_Container">
-            <Sidebar />
-            <Topbar />
-            <Scrollbar />
             <div className="profile-page">
                 <div className="page-header">
                     <h1>My Profile</h1>

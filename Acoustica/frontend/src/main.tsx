@@ -4,6 +4,7 @@ import App from '@/App';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { MusicProvider } from '@/contexts/MusicContext';
+import { ScrollProvider } from '@/contexts/ScrollContext';
 import '@/styles/global.css';
 import '@/styles/variable.css';
 
@@ -15,7 +16,9 @@ ReactDOM.createRoot(root).render(
     <AuthProvider>
       <ThemeProvider>
         <MusicProvider>
-          <App />
+          <ScrollProvider>
+            <App />
+          </ScrollProvider>
         </MusicProvider>
       </ThemeProvider>
     </AuthProvider>
