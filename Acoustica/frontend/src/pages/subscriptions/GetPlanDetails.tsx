@@ -1,19 +1,12 @@
-import { getPlanDetails } from "@/services/subscriptions/getPlanDetails";
+import { getPlanDetails, GetPlanDetailsResponse } from "@/services/commerce_service/subscriptions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "@/pages/subscriptions/GetPlanDetails.css"
 
-interface PlanDetails{
-    plan_id: number; 
-    plan_type: string;
-    plan_cost: number;
-    plan_validity: number;
-    max_members: number; 
-}
 
-function GetPlanDetails(){
+function PlanDetails(){
     const navigate=useNavigate();
-    const [data,setData]=useState<PlanDetails[]>([]);
+    const [data,setData]=useState<GetPlanDetailsResponse[]>([]);
     const [loading,setLoading]=useState<boolean>(true);
     const [error, setError] = useState('');
     useEffect(()=>{
@@ -62,4 +55,4 @@ function GetPlanDetails(){
         </div>
     );
 }
-export default GetPlanDetails;
+export default PlanDetails;

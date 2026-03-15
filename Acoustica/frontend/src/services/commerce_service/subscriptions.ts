@@ -1,6 +1,6 @@
 import api from '@/services/api';
 
-interface GetPlanDetailsResponse{
+export interface GetPlanDetailsResponse{
     plan_id: number; 
     plan_type: string;
     plan_cost: number;

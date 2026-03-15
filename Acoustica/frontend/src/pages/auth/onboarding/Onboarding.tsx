@@ -1,6 +1,6 @@
 import { ChangeEvent, SubmitEventHandler, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCountries, getLanguages, onboarding } from "@/services/auth/auth";
+import { getCountries, getLanguages, onboarding } from "@/services/user_service/auth";
 import { Typewriter } from "@/components/auth/Typewriter";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
