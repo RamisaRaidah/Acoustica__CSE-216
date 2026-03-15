@@ -24,7 +24,7 @@ export async function sendStreamHistory(segments: {}) {
     });
 }
 
-interface GetMyProfileResponse{
+export interface GetMyProfileResponse{
     user_id: number;
     first_name: string;
     last_name: string;

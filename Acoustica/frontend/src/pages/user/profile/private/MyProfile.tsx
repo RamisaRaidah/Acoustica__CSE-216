@@ -1,27 +1,8 @@
-import { getMyProfile } from "@/services/user_service/users";
+import { getMyProfile, GetMyProfileResponse } from "@/services/user_service/users";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "@/pages/user/profile/private/MyProfile.css"
 import { useAuth } from "@/contexts/AuthContext";
-
-interface GetMyProfileResponse{
-    user_id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone_number: string;
-    gender: string;
-    date_of_birth: string;
-    bio: string;
-    theme: string;
-    profile_picture: string;
-    user_type: string;
-    country_name: string;
-    language_name: string;
-    listener_type: string;
-    stage_name: string;
-    bank_account: string;
-}
 
 function MyProfile(){
     const navigate=useNavigate();
