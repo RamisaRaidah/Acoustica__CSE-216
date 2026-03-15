@@ -5,8 +5,6 @@
     --bg-color: #ffffff;
     --text-color: #1a1a1a;
     --text-muted: #6c757d;
-    
-    /* Plan colors */
     --individual-color: #f8b365;
     --family-color: #964f4f;
 }
@@ -47,8 +45,8 @@ body.dark {
     font-size: 1.1rem;
     color: var(--text-muted);
     margin: 0;
-    animation: fadeIn 1s ease 0.2s forwards;
     opacity: 0;
+    animation: fadeIn 1s ease 0.2s forwards;
 }
 
 /* ===== PLAN CARDS CONTAINER ===== */
@@ -61,25 +59,33 @@ body.dark {
     padding-bottom: 2rem;
 }
 
-/* ===== PLAN BANNER ===== */
+/* ===== PLAN BANNER BASE ===== */
 .Plan-Banner {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    position: relative;
+    padding: 2rem;
     border-radius: 20px;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    min-height: 220px;
     opacity: 0;
     animation: fadeInUp 0.6s ease forwards;
-    overflow: hidden;
-    width: 100%;
-    box-sizing: border-box;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.Plan-Banner:nth-child(1) { animation-delay: 0.1s; }
+.Plan-Banner:nth-child(2) { animation-delay: 0.25s; }
 
+.Plan-Banner:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Shimmer effect */
 .Plan-Banner::before {
     content: '';
     position: absolute;
@@ -87,114 +93,120 @@ body.dark {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: none; 
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
     pointer-events: none;
+    transition: none;
 }
 
 .Plan-Banner:hover::before {
     left: 100%;
-    transition: left 0.6s ease; 
+    transition: left 0.6s ease;
 }
 
-.Plan-Banner:nth-child(1) { animation-delay: 0.1s; }
-.Plan-Banner:nth-child(2) { animation-delay: 0.25s; }
-.Plan-Banner:nth-child(3) { animation-delay: 0.4s; }
-.Plan-Banner:nth-child(4) { animation-delay: 0.55s; }
-
-.Plan-Banner:hover {
-    transform: translateY(-12px) scale(1.03);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
-}
-
-/* ===== INDIVIDUAL PLAN COLOR ===== */
+/* ===== PLAN COLORS ===== */
 .Individual-Plan {
     background: var(--individual-color);
 }
-
 .Individual-Plan:hover {
     background: linear-gradient(135deg, var(--individual-color), #fac484);
 }
 
-/* ===== FAMILY PLAN COLOR ===== */
 .Family-Plan {
     background: var(--family-color);
 }
-
 .Family-Plan:hover {
     background: linear-gradient(135deg, var(--family-color), #a85f5f);
 }
 
-/* ===== BANNER CONTENT (IMAGE + TEXT) ===== */
-.banner-content {
+/* ===== IMAGE (absolutely positioned, corner-anchored, vertically centered) ===== */
+.banner-image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    width: 100%;
-    box-sizing: border-box;
+    pointer-events: none;
 }
 
-/* ===== BANNER LEFT (IMAGE) ===== */
-.banner-left {
-    flex-shrink: 0;
-    width: 220px;
-    height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.Individual-Plan .banner-image {
+    left: 0;
+    padding-left: 1rem;
+}
+
+.Family-Plan .banner-image {
+    right: 0;
+    padding-right: 1rem;
 }
 
 .individual-image,
 .family-image {
-    width: 100%;
-    height: 100%;
+    max-height: 200px;
+    width: auto;
     object-fit: contain;
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     animation: float 3s ease-in-out infinite;
 }
 
 .Plan-Banner:hover .individual-image,
 .Plan-Banner:hover .family-image {
     transform: scale(1.1) rotate(3deg);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     animation-play-state: paused;
 }
 
-/* ===== BANNER RIGHT (TEXT) ===== */
-.banner-right {
-    flex: 1;
-    text-align: right;
+/* ===== WRITING (fills its column across both rows) ===== */
+.banner-writing {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
     color: #ffffff;
-    min-width: 0;
 }
 
-.banner-right h2 {
+.Individual-Plan .banner-writing {
+    grid-column: 2;
+    grid-row: 1;   
+    text-align: right;
+}
+
+.Family-Plan .banner-writing {
+    grid-column: 1;
+    grid-row: 1;  
+    text-align: left;
+}
+
+.banner-writing h2 {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
     font-weight: 800;
     margin: 0 0 0.8rem 0;
     color: #ffffff;
     text-transform: capitalize;
+    transition: none;
+}
+
+.Individual-Plan:hover .banner-writing h2 {
+    transform: translateX(-5px);
     transition: transform 0.3s ease;
 }
 
-.Plan-Banner:hover .banner-right h2 {
-    transform: translateX(-5px);
+.Family-Plan:hover .banner-writing h2 {
+    transform: translateX(5px);
+    transition: transform 0.3s ease;
 }
 
-.banner-right p {
+.banner-writing p {
     font-size: 1rem;
     margin: 0.5rem 0;
     color: rgba(255, 255, 255, 0.95);
     font-weight: 500;
-    transition: all 0.3s ease;
     opacity: 0.9;
+    transition: none;
 }
 
-.Plan-Banner:hover .banner-right p {
+.Plan-Banner:hover .banner-writing p {
     opacity: 1;
-    transform: translateX(-3px);
+    transition: opacity 0.3s ease;
 }
 
 .plan-tagline {
@@ -205,9 +217,8 @@ body.dark {
     font-weight: 600 !important;
 }
 
-/* ===== GET STARTED BUTTON ===== */
+/* ===== GET STARTED BUTTON (horizontally centered in image column) ===== */
 .plan-cta {
-    align-self: center;
     padding: 0.75rem 2rem;
     background: #ffffff;
     border: none;
@@ -215,14 +226,27 @@ body.dark {
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
     position: relative;
-    margin: 0;
     z-index: 2;
+    align-self: center;
+    justify-self: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.Individual-Plan .plan-cta {
+    grid-column: 1 / 3;  
+    grid-row: 2;
+    color: var(--individual-color);
+}
+
+.Family-Plan .plan-cta {
+    grid-column: 1 / 3;  
+    grid-row: 2;
+    color: var(--family-color);
 }
 
 .plan-cta::before {
@@ -232,41 +256,22 @@ body.dark {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s ease;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: none;
 }
 
 .plan-cta:hover::before {
     left: 100%;
+    transition: left 0.5s ease;
 }
 
-/* Individual Plan Button */
-.Individual-Plan .plan-cta {
-    color: var(--individual-color);
-}
-
-.Individual-Plan .plan-cta:hover {
+.plan-cta:hover {
     background: #f5f5f5;
     transform: translateY(-4px) scale(1.05);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-.Individual-Plan .plan-cta:active {
-    transform: translateY(-2px) scale(1.02);
-}
-
-/* Family Plan Button */
-.Family-Plan .plan-cta {
-    color: var(--family-color);
-}
-
-.Family-Plan .plan-cta:hover {
-    background: #f5f5f5;
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.Family-Plan .plan-cta:active {
+.plan-cta:active {
     transform: translateY(-2px) scale(1.02);
 }
 
@@ -315,98 +320,70 @@ body.dark {
 
 /* ===== ANIMATIONS ===== */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @keyframes slideInFromTop {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-50px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-10px); }
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 @keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    25% {
-        transform: translateX(-5px);
-    }
-    75% {
-        transform: translateX(5px);
-    }
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-5px); }
+    75%       { transform: translateX(5px); }
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .GetPlanDetailsContainer {
-        padding: 3vw;
+    .Plan-Banner {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        min-height: auto;
     }
 
-    .Plan-Header h1 {
-        font-size: 2rem;
+    .banner-image {
+        position: relative;
+        top: auto;
+        bottom: auto;
+        left: auto !important;
+        right: auto !important;
+        padding: 0 !important;
+        justify-content: center;
     }
 
-    .Plan-card {
-        max-width: 100%;
+    .Individual-Plan .banner-image,
+    .Family-Plan .banner-image {
+        grid-column: 1;
+        grid-row: 1;
     }
 
-    .banner-content {
-        flex-direction: column;
+    .Individual-Plan .banner-writing,
+    .Family-Plan .banner-writing {
+        grid-column: 1;
+        grid-row: 2;
+        grid-row: 2 / 3;
         text-align: center;
     }
 
-    .banner-left {
-        width: 180px;
-        height: 180px;
-    }
-
-    .banner-right {
-        text-align: center;
-    }
-
-    .banner-right h2 {
-        font-size: 1.6rem;
-    }
-
-    .plan-cta {
-        align-self: center;
-        width: 100%;
-        max-width: 300px;
+    .Individual-Plan .plan-cta,
+    .Family-Plan .plan-cta {
+        grid-column: 1;
+        grid-row: 3;
     }
 }

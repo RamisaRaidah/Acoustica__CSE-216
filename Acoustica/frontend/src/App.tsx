@@ -5,7 +5,7 @@ import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
 import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
-import PlanDetails from './pages/subscriptions/GetPlanDetails';
+import PlanDetails from '@/pages/subscriptions/PlanDetails';
 
 
 import { Dashboard } from '@/pages/user/Dashboard';
