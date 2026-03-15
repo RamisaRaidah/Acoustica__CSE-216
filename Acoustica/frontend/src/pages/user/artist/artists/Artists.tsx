@@ -11,7 +11,7 @@ export function Artists() {
         async function loadArtists() {
             try {
                 const artists = await getArtists();
-                if (artists) setArtists(artists);
+                if (artists) setArtists(artists.concat(artists).concat(artists));
             }
             catch(e) {
                 console.log("ERROR: ", e);

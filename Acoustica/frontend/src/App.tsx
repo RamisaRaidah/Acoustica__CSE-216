@@ -39,12 +39,14 @@ function App() {
 
         <Route element={
           <ProtectedRoute>
-            <div className="app_layout" ref={scrollRef} style={{ overflowY: "auto", height: "100vh" }}>
+            <div className="app_layout">
               <Sidebar />
               <Topbar />
               <Scrollbar />
               <MusicPlayer />
-              <Outlet />
+              <div id="content" ref={scrollRef}>
+                <Outlet />
+              </div>
             </div>
           </ProtectedRoute>
         }>
@@ -52,8 +54,8 @@ function App() {
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
           <Route path="/plan-details" element={<PlanDetails/>}/>
-          <Route path="/music/playlists" element={<Playlists />}></Route>
-          <Route path="/artists" element={<Artists />}></Route>
+          <Route path="/music/playlists" element={<Playlists />} />
+          <Route path="/artists" element={<Artists />} />
         </Route>
 
          {/*
