@@ -33,8 +33,7 @@ body {
   top: 10vh;
   left: 20vw;
   width: 78vw;
-  height: 77vh;
-  padding: 1.5vw;
+  padding: 2vw;
   box-sizing: border-box;
   border-radius: 0.5vw;
   background: var(--content-bg);

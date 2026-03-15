@@ -26,20 +26,20 @@ export function Artists() {
     if (error) return <div className="error">{error}</div>;
 
     return (
-        <div id="artist_container">
-            <div id="artist_header">
+        <div id="artist-container">
+            <div id="artist-header">
                 <h1>Artists</h1>
             </div>
             {artists && (
-                <div id="artist_grid">
+                <div id="artist-grid">
                     {
                         artists.map(artist => (
-                            <div className="artist_card" key={artist.artist_id}>
-                                <div className="artist_card_cover">
+                            <div className="artist-card" key={artist.artist_id}>
+                                <div className="artist-card-cover">
                                     <img src={artist.profile_picture_url} />
                                 </div>
-                                <div className="artist_card_info">
-                                    <p className="artist_card_title">{artist.artist_name}</p>
+                                <div className="artist-card-info">
+                                    <p className="artist-card-title">{artist.artist_name}</p>
                                 </div>
                             </div>
                         ))

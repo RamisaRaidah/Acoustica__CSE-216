@@ -27,9 +27,11 @@ import { Topbar } from '@/components/topbar/Topbar';
 import { MusicPlayer } from '@/components/music_player/MusicPlayer';
 import { Scrollbar } from '@/components/scrollbar/Scrollbar';
 import { useScroll } from '@/contexts/ScrollContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 function App() {
   const scrollRef = useScroll();
+  const { user } = useAuth();
 
   return (
     <BrowserRouter>
@@ -45,8 +47,8 @@ function App() {
               <Sidebar />
               <Topbar />
               <Scrollbar />
-              <MusicPlayer />
-              <div id="content" ref={scrollRef}>
+              {user?.user_type === "listener" && <MusicPlayer />}
+              <div id="content" ref={scrollRef} style={{ height : user?.user_type === "listener" ? "77vh" : "89vh"}}>
                 <Outlet />
               </div>
             </div>
