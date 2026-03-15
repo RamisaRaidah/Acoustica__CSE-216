@@ -1,8 +1,10 @@
 import api from '@/services/api';
 
-interface GetAlbumsResponse {
-    album_id: number;
-    title: string;
+export async function createAlbum(formData: FormData) {
+    return api.request('/api/music/albums', {
+        method: 'POST',
+        body: formData
+    });
 }
 
 interface GetAlbumDetailsResponse {
@@ -17,6 +19,11 @@ interface GetAlbumDetailsResponse {
 
 interface GetAlbumCoverPictureResponse {
     cover_picture_url: string;
+}
+
+interface GetAlbumsResponse {
+    album_id: number;
+    title: string;
 }
 
 export async function getAlbums(): Promise<GetAlbumsResponse[]> {

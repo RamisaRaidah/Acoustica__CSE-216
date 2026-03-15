@@ -11,6 +11,7 @@ import PlanDetails from './pages/subscriptions/PlanDetails';
 import { Dashboard } from '@/pages/user/Dashboard';
 import { Playlists } from '@/pages/music/playlist/playlists/Playlists';
 import { Artists } from '@/pages/user/artist/artists/Artists';
+import { CreateAlbum } from '@/pages/music/album/create_album/CreateAlbum';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -56,6 +57,7 @@ function App() {
           <Route path="/plan-details" element={<PlanDetails/>}/>
           <Route path="/music/playlists" element={<Playlists />} />
           <Route path="/artists" element={<Artists />} />
+          <Route path="/music/create-album" element={<CreateAlbum />} />
         </Route>
 
          {/*
