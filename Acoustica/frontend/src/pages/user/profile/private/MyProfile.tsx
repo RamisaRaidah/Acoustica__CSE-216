@@ -1,4 +1,4 @@
-import { getMyProfile } from "@/services/users/profile";
+import { getMyProfile } from "@/services/user_service/users";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "@/pages/user/profile/private/MyProfile.css"
