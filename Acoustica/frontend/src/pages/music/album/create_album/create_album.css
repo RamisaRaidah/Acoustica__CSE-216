@@ -1,7 +1,0 @@
-#create-album-container {
-  display: block;
-  position: relative;
-  overflow-y: visible;
-  width: 100%;
-  box-sizing: border-box;
-}

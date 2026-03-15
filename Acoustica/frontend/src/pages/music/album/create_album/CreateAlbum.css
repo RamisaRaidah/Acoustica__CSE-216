@@ -1,0 +1,187 @@
+:root {
+    --input-bg: rgba(0, 0, 0, 0.06);
+    --input-border: rgba(0, 0, 0, 0.15);
+}
+
+.dark {
+    --input-bg: rgba(255, 255, 255, 0.08);
+    --input-border: rgba(255, 255, 255, 0.1);
+}
+
+#create-album-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#create-album-form-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+    width: 45%;
+}
+
+#create-album-form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    width: 35%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    letter-spacing: 0.01em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: var(--input-bg);
+    border: 1.5px solid var(--input-border);
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
+}
+
+.form-group input[type="text"]::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.form-group input[type="file"] {
+    display: none;
+}
+
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 1rem;
+    background: var(--input-bg);
+    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.file-input-wrapper:hover {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+.file-input-wrapper .file-btn {
+    flex-shrink: 0;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border-radius: 0.35rem;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.file-input-wrapper .file-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.7;
+}
+
+#cover-picture {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.7rem;
+    overflow: hidden;
+    background: var(--input-bg);
+    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#cover-picture:hover {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+#cover-picture input[type="file"] {
+    display: none;
+}
+
+#cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: rgba(224, 123, 42, 0.6);
+    pointer-events: none;
+}
+
+#cover-placeholder span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+#cover-picture img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+#create-album-form-right button[type="submit"] {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(224, 123, 42, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    margin-top: auto;
+}
+
+#create-album-form-right button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(224, 123, 42, 0.5);
+}
+
+#create-album-form-right button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(224, 123, 42, 0.3);
+}
+

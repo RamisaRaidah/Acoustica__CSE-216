@@ -11,21 +11,21 @@ export function Playlists() {
     }, []);
 
     return (
-        <div id="playlist_container">
-            <div id="playlist_header">
+        <div id="playlist-container">
+            <div id="playlist-header">
                 <h1>Playlists</h1>
-                <Link to="/music/create-playlist" id="create_playlist_button">+ Create playlist</Link>
+                <span><Link to="/music/create-playlist" id="create_playlist_button">+ Create playlist</Link></span>
             </div>
             {playlists && (
-                <div id="playlist_grid">
+                <div id="playlist-grid">
                     {
                         playlists.map(playlist => (
-                            <div className="playlist_card" key={playlist.playlist_id}>
-                                <div className="playlist_card_cover">
+                            <div className="playlist-card" key={playlist.playlist_id}>
+                                <div className="playlist-card-cover">
                                     <img src={playlist.cover_picture_url} />
                                 </div>
-                                <div className="playlist_card_info">
-                                    <p className="playlist_card_title">{playlist.title}</p>
+                                <div className="playlist-card-info">
+                                    <p className="playlist-card-title">{playlist.title}</p>
                                 </div>
                             </div>
                         ))
