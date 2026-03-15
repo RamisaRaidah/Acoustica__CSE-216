@@ -6,7 +6,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 import "@/pages/auth/Auth.css";
 
-import logo_img from '@/assets/images/Deco/Logo.png';
+import logo_img from '@/assets/images/deco/Logo.png';
 import name_img from '@/assets/images/auth/name_2.png';
 import default_pfp_img from '@/assets/images/Default_pfp.png'
 

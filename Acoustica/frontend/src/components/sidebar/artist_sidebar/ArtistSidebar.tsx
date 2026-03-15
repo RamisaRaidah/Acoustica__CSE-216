@@ -1,9 +1,9 @@
 import '@/components/sidebar/Sidebar.css';
 import { useTheme } from "@/contexts/ThemeContext";
 import { Link } from "react-router-dom";
-import logo_img from '@/assets/images/Deco/Logo.png';
-import name_img_light from '@/assets/images/Deco/Acoustica1.png';
-import name_img_dark from '@/assets/images/Deco/Acoustica2.png';
+import logo_img from '@/assets/images/deco/Logo.png';
+import name_img_light from '@/assets/images/deco/Acoustica1.png';
+import name_img_dark from '@/assets/images/deco/Acoustica2.png';
 import home_button_img from '@/assets/images/Sidebar_Buttons/Home_Button.png';
 import discography_button_img from '@/assets/images/Sidebar_Buttons/Discography_Button.png';
 import create_album_button_img from '@/assets/images/Sidebar_Buttons/Create_Album_Button.png';

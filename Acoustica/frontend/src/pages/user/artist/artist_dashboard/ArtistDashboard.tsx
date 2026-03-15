@@ -1,7 +1,7 @@
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { Topbar } from "@/components/topbar/Topbar";
 import { Scrollbar } from "@/components/scrollbar/Scrollbar";
-// import banner_img from '@/assets/images/Deco/Banner2.png';
+// import banner_img from '@/assets/images/deco/Banner2.png';
 
 export function ArtistDashboard() {
     return (
