@@ -1,3 +1,40 @@
+/* ===== LOADING STATE ===== */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+/* ===== ERROR STATE ===== */
+.error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ===== CONTENT ===== */
+
 #playlist-container {
     display: block;
     position: relative;
@@ -8,7 +45,6 @@
 
 #playlist-header {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 5vh;
@@ -23,11 +59,11 @@
 }
 
 #playlist-grid {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1.2vw;
-    padding: 2vh 0 1vh 0;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    row-gap: 2vw;
+    justify-items: center;
+    column-gap: 1vw;
 }
 
 .playlist-card {
@@ -35,7 +71,7 @@
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    width: 10vw;
+    width: 100%;
     transition: transform 0.25s ease;
 }
 
@@ -45,8 +81,8 @@
 
 .playlist-card-cover {
     position: relative;
-    width: 10vw;
-    height: 10vw;
+    width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 0.7vw;
     overflow: hidden;
     box-shadow: 0 0.4vh 1.5vh var(--shadow);
@@ -96,7 +132,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 10vw;
+    width: 100%;
     color: var(--text-color);
     cursor: pointer;
     padding: 0.2vh 0.3vw;

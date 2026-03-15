@@ -5,16 +5,32 @@ import { getMyPlaylists, GetMyPlaylistsResponse } from "@/services/music_service
 
 export function Playlists() {
     const [playlists, setPlaylists] = useState<GetMyPlaylistsResponse[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        getMyPlaylists().then(setPlaylists);
+        async function loadPlaylists() {
+            try {
+                const playlists = await getMyPlaylists();
+                if (playlists) setPlaylists(playlists);
+            }
+            catch(e) {
+                console.log("ERROR: ", e);
+                setError("Failed to load playlists.");
+            }
+            setLoading(false);
+        }
+        loadPlaylists();
     }, []);
+
+    if (loading) return <div className="loading">Loading playlists...</div>;
+    if (error) return <div className="error">{error}</div>;
 
     return (
         <div id="playlist-container">
             <div id="playlist-header">
                 <h1>Playlists</h1>
-                <span><Link to="/music/create-playlist" id="create_playlist_button">+ Create playlist</Link></span>
+                <span><Link to="/music/create-playlist" id="create-playlist-button">+ Create playlist</Link></span>
             </div>
             {playlists && (
                 <div id="playlist-grid">
