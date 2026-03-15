@@ -1,13 +1,29 @@
 import "@/pages/user/artist/artists/Artists.css"
 import { useEffect, useState } from "react";
-import { getArtists, GetArtistsResponse } from "@/services/artist";
+import { getArtists, GetArtistsResponse } from "@/services/user_service/artists";
 
 export function Artists() {
     const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        getArtists().then(setArtists);
+        async function loadArtists() {
+            try {
+                const artists = await getArtists();
+                if (artists) setArtists(artists);
+            }
+            catch(e) {
+                console.log("ERROR: ", e);
+                setError("Failed to load artists.");
+            }
+            setLoading(false);
+        }
+        loadArtists();
     }, []);
+
+    if (loading) return <div className="loading">Loading artists...</div>;
+    if (error) return <div className="error">{error}</div>;
 
     return (
         <div id="artist_container">

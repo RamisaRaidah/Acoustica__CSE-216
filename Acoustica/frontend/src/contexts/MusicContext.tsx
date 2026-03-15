@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { getSongAudio } from "@/services/song";
-import { getAlbumCoverPicture } from "@/services/album";
-import { getLastListening } from "@/services/user";
+import { getSongAudio } from "@/services/music_service/songs";
+import { getAlbumCoverPicture } from "@/services/music_service/albums";
+import { getLastListening } from "@/services/user_service/users";
 
 interface Song {
     song_id: number;
@@ -22,7 +22,7 @@ interface MusicContextType {
 
 const MusicContext = createContext<MusicContextType | null>(null);
 
-export function MusicProvider ({ children }: { children: React.ReactNode }) {
+export function MusicProvider({ children }: { children: React.ReactNode }) {
     const [song, setSong] = useState<Song | null>(
         JSON.parse(localStorage.getItem("song") || "null")
     );
@@ -51,13 +51,13 @@ export function MusicProvider ({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (localStorage.getItem("song")) return;
-        getLastListening().then(res => localStorage.setItem("song", JSON.stringify({ 
-            "song_id": res.song_id, 
-            "album_id": res.album_id, 
-            "title": res.title, 
-            "artist_name": res.artist_name, 
-            "progress": res.progress, 
-            "playing": false 
+        getLastListening().then(res => localStorage.setItem("song", JSON.stringify({
+            "song_id": res.song_id,
+            "album_id": res.album_id,
+            "title": res.title,
+            "artist_name": res.artist_name,
+            "progress": res.progress,
+            "playing": false
         })))
     }, []);
 

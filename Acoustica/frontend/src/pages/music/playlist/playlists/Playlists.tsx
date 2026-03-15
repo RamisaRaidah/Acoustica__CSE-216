@@ -1,7 +1,7 @@
 import "@/pages/music/playlist/playlists/Playlists.css"
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getMyPlaylists, GetMyPlaylistsResponse } from "@/services/playlist";
+import { getMyPlaylists, GetMyPlaylistsResponse } from "@/services/music_service/playlists";
 
 export function Playlists() {
     const [playlists, setPlaylists] = useState<GetMyPlaylistsResponse[]>([]);

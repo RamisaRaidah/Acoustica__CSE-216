@@ -1,7 +1,7 @@
 import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { sendStreamHistory } from "@/services/user";
+import { sendStreamHistory } from "@/services/user_service/users";
 import play_previous_button from '@/assets/images/Musicbar_Buttons/Play_Previous_Button.png';
 import play_button from '@/assets/images/Musicbar_Buttons/Play_Button.png';
 import pause_button from '@/assets/images/Musicbar_Buttons/Pause_Button.png';
@@ -73,9 +73,9 @@ export function MusicPlayer() {
     }, [song?.song_id, play_key, flushSegments]);
 
     useEffect(() => {
-        const handleUnload = () => { 
-            endSegment(); 
-            flushSegments(); 
+        const handleUnload = () => {
+            endSegment();
+            flushSegments();
         };
         window.addEventListener('beforeunload', handleUnload);
         return () => window.removeEventListener('beforeunload', handleUnload);
@@ -151,9 +151,9 @@ export function MusicPlayer() {
         const audio = audioRef.current;
         if (!audio) return;
 
-        const handleEnded = () => { 
-            setIsPlaying(false); 
-            endSegment(); 
+        const handleEnded = () => {
+            setIsPlaying(false);
+            endSegment();
         };
         audio.addEventListener('ended', handleEnded);
         return () => audio.removeEventListener('ended', handleEnded);
@@ -195,9 +195,9 @@ export function MusicPlayer() {
         setProgressWidth(((audio.currentTime / audio.duration) * 100) + "%");
         setCurrentTime(audio.currentTime);
 
-        audio.play().then(() => { 
-            setIsPlaying(true); 
-            startSegment(); 
+        audio.play().then(() => {
+            setIsPlaying(true);
+            startSegment();
         });
     }, [endSegment, startSegment]);
 
