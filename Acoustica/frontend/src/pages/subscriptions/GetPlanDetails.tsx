@@ -2,7 +2,8 @@ import { getPlanDetails, GetPlanDetailsResponse } from "@/services/commerce_serv
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "@/pages/subscriptions/GetPlanDetails.css"
-
+import person from "@/assets/images/commerce/Individual_Plan.png"
+import family from "@/assets/images/commerce/Family_Plan.png"
 
 function PlanDetails(){
     const navigate=useNavigate();
@@ -39,18 +40,41 @@ function PlanDetails(){
                 <p>Choose a plan that works for you</p>
             </div>
             <div className="Plan-card">
-                
-                    {data.map((plan)=>(
-                        <div
-                            key={plan.plan_id}
-                            className={`Plan-Banner ${plan.max_members > 1 ? "Family-Plan" : "Individual-Plan"}`}
-                            onClick={() => navigate(`/plans/${plan.plan_id}`)}
-                        >
-                            <h2>{plan.plan_type}</h2>
-                            <p>{plan.plan_validity} days</p>
-                            <p>{plan.max_members > 1 ? `Up to ${plan.max_members} members` : "Individual"}</p>
+                {data.map((plan) => (
+                    <div
+                        key={plan.plan_id}
+                        className={`Plan-Banner ${plan.max_members > 1 ? "Family-Plan" : "Individual-Plan"}`}
+                        onClick={() => navigate(`/plans/${plan.plan_id}`)}
+                    >
+                        <div className="banner-content">
+                            <div className="banner-left">
+                                {plan.max_members === 1 && (
+                                    <img className="individual-image" src={person} alt="Individual Plan" />
+                                )}
+                                
+                                {plan.max_members > 1 && (
+                                    <img className="family-image" src={family} alt="Family Plan" />
+                                )}
+                            </div>
+
+                            <div className="banner-right">
+                                <h2>{plan.plan_type}</h2>
+                                <p>{plan.plan_validity} days access</p>
+                                <p>{plan.max_members > 1 ? `Up to ${plan.max_members} members` : "Individual"}</p>
+                                
+                                <p className="plan-tagline">
+                                    {plan.max_members > 1 
+                                        ? "Music for the whole family" 
+                                        : "Your personal music journey"}
+                                </p>
+                            </div>
                         </div>
-                    ))}
+
+                        <button className="plan-cta">
+                            Get Started
+                        </button>
+                    </div>
+                ))}
             </div>
         </div>
     );

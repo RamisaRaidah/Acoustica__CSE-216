@@ -3,73 +3,33 @@
     --primary-color: #c8622a;
     --primary-hover: #e8924a;
     --bg-color: #ffffff;
-    --card-bg: #fafafa;
     --text-color: #1a1a1a;
     --text-muted: #6c757d;
-    --border-color: #e0e0e0;
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
-    --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
     
-
-    --individual-bg: #1a4d2e;
-    --individual-hover: #245c3a;
-    --family-bg: #6a1b9a;
-    --family-hover: #7b1fa2;
+    /* Plan colors */
+    --individual-color: #f8b365;
+    --family-color: #964f4f;
 }
 
 body.dark {
     --bg-color: #0a0a0a;
-    --card-bg: #1a1a1a;
     --text-color: #e8e8e8;
     --text-muted: #9ca3af;
-    --border-color: rgba(255,255,255,0.1);
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
-    --shadow-lg: 0 8px 24px rgba(0,0,0,0.7);
 }
 
 /* ===== MAIN CONTAINER ===== */
 .GetPlanDetailsContainer {
-    position: fixed;
-    top: 10vh;
-    left: 20vw;
-    width: 78vw;
-    height: 77vh;
-    padding: 2vw;
+    display: block;
+    position: relative;
+    overflow-y: visible;
+    width: 100%;
     box-sizing: border-box;
-    border-radius: 0.5vw;
-    background: var(--bg-color);
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
-
-/* ✅ TRANSPARENT SCROLLBAR */
-.GetPlanDetailsContainer::-webkit-scrollbar {
-    width: 8px;
-}
-
-.GetPlanDetailsContainer::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.GetPlanDetailsContainer::-webkit-scrollbar-thumb {
-    background: transparent;
-}
-
-.GetPlanDetailsContainer::-webkit-scrollbar-thumb:hover {
-    background: transparent;
-}
-
-/* Firefox */
-.GetPlanDetailsContainer {
-    scrollbar-width: none; 
-}
 /* ===== HEADER ===== */
 .Plan-Header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
     opacity: 0;
     animation: fadeInUp 0.6s ease forwards;
 }
@@ -80,97 +40,234 @@ body.dark {
     font-weight: 800;
     color: var(--text-color);
     margin: 0 0 0.5rem 0;
+    animation: slideInFromTop 0.8s ease forwards;
 }
 
 .Plan-Header p {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--text-muted);
     margin: 0;
+    animation: fadeIn 1s ease 0.2s forwards;
+    opacity: 0;
 }
 
-/* ===== PLAN CARDS CONTAINER (STACKED) ===== */
+/* ===== PLAN CARDS CONTAINER ===== */
 .Plan-card {
     display: flex;
-    flex-direction: column; 
-    gap: 1.5rem;
-    max-width: 700px;  
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 100%;
     margin: 0 auto;
     padding-bottom: 2rem;
 }
 
-/* ===== PLAN BANNER BASE ===== */
+/* ===== PLAN BANNER ===== */
 .Plan-Banner {
-    border-radius: 16px;
-    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 1.5rem;
+    border-radius: 20px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     opacity: 0;
     animation: fadeInUp 0.6s ease forwards;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: none;
-    will-change: transform;  
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.Plan-Banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: none; 
+    pointer-events: none;
+}
+
+.Plan-Banner:hover::before {
+    left: 100%;
+    transition: left 0.6s ease; 
 }
 
 .Plan-Banner:nth-child(1) { animation-delay: 0.1s; }
-.Plan-Banner:nth-child(2) { animation-delay: 0.2s; }
-.Plan-Banner:nth-child(3) { animation-delay: 0.3s; }
-.Plan-Banner:nth-child(4) { animation-delay: 0.4s; }
+.Plan-Banner:nth-child(2) { animation-delay: 0.25s; }
+.Plan-Banner:nth-child(3) { animation-delay: 0.4s; }
+.Plan-Banner:nth-child(4) { animation-delay: 0.55s; }
 
 .Plan-Banner:hover {
-    transform: translateY(-8px) scale(1.08);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
 }
 
-.Plan-Banner h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #ffffff;  
-    margin: 0 0 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.Plan-Banner h2::before {
-    content: '⭐';
-    font-size: 1.5rem;
-}
-
-.Plan-Banner p {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9); 
-    margin: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.Plan-Banner p:first-of-type::before {
-    content: '📅';
-}
-
-.Plan-Banner p:last-of-type::before {
-    content: '👥';
-}
-
-/* ===== INDIVIDUAL PLAN (DARK GREEN) ===== */
+/* ===== INDIVIDUAL PLAN COLOR ===== */
 .Individual-Plan {
-    background: linear-gradient(135deg, var(--individual-bg), var(--individual-hover));
+    background: var(--individual-color);
 }
 
 .Individual-Plan:hover {
-    background: linear-gradient(135deg, var(--individual-hover), #2d7a4a);
+    background: linear-gradient(135deg, var(--individual-color), #fac484);
 }
 
-/* ===== FAMILY PLAN (ELEGANT PURPLE) ===== */
+/* ===== FAMILY PLAN COLOR ===== */
 .Family-Plan {
-    background: linear-gradient(135deg, var(--family-bg), var(--family-hover));
+    background: var(--family-color);
 }
 
 .Family-Plan:hover {
-    background: linear-gradient(135deg, var(--family-hover), #8e24aa);
+    background: linear-gradient(135deg, var(--family-color), #a85f5f);
+}
+
+/* ===== BANNER CONTENT (IMAGE + TEXT) ===== */
+.banner-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ===== BANNER LEFT (IMAGE) ===== */
+.banner-left {
+    flex-shrink: 0;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.individual-image,
+.family-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: float 3s ease-in-out infinite;
+}
+
+.Plan-Banner:hover .individual-image,
+.Plan-Banner:hover .family-image {
+    transform: scale(1.1) rotate(3deg);
+    animation-play-state: paused;
+}
+
+/* ===== BANNER RIGHT (TEXT) ===== */
+.banner-right {
+    flex: 1;
+    text-align: right;
+    color: #ffffff;
+    min-width: 0;
+}
+
+.banner-right h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 0.8rem 0;
+    color: #ffffff;
+    text-transform: capitalize;
+    transition: transform 0.3s ease;
+}
+
+.Plan-Banner:hover .banner-right h2 {
+    transform: translateX(-5px);
+}
+
+.banner-right p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+}
+
+.Plan-Banner:hover .banner-right p {
+    opacity: 1;
+    transform: translateX(-3px);
+}
+
+.plan-tagline {
+    font-size: 1.1rem !important;
+    font-style: italic;
+    margin-top: 0.8rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 600 !important;
+}
+
+/* ===== GET STARTED BUTTON ===== */
+.plan-cta {
+    align-self: center;
+    padding: 0.75rem 2rem;
+    background: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    z-index: 2;
+}
+
+.plan-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.plan-cta:hover::before {
+    left: 100%;
+}
+
+/* Individual Plan Button */
+.Individual-Plan .plan-cta {
+    color: var(--individual-color);
+}
+
+.Individual-Plan .plan-cta:hover {
+    background: #f5f5f5;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.Individual-Plan .plan-cta:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Family Plan Button */
+.Family-Plan .plan-cta {
+    color: var(--family-color);
+}
+
+.Family-Plan .plan-cta:hover {
+    background: #f5f5f5;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.Family-Plan .plan-cta:active {
+    transform: translateY(-2px) scale(1.02);
 }
 
 /* ===== LOADING STATE ===== */
@@ -181,13 +278,20 @@ body.dark {
     color: var(--text-muted);
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 1rem;
 }
 
 .loading::after {
-    content: '...';
-    animation: ellipsis 1.5s infinite;
+    content: '';
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(200, 98, 42, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 /* ===== ERROR STATE ===== */
@@ -198,21 +302,22 @@ body.dark {
     color: #dc3545;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
 .error::before {
-    content: '⚠️ ';
-    font-size: 2rem;
-    margin-right: 0.5rem;
+    content: '⚠️';
+    font-size: 3rem;
+    animation: shake 0.5s ease infinite;
 }
 
 /* ===== ANIMATIONS ===== */
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -220,36 +325,88 @@ body.dark {
     }
 }
 
-@keyframes ellipsis {
-    0% { content: '.'; }
-    33% { content: '..'; }
-    66% { content: '...'; }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .GetPlanDetailsContainer {
-        padding: 2vw 3vw;
+        padding: 3vw;
     }
 
     .Plan-Header h1 {
         font-size: 2rem;
     }
 
-    .Plan-Header p {
-        font-size: 0.95rem;
-    }
-
     .Plan-card {
         max-width: 100%;
-        gap: 1.2rem;
     }
 
-    .Plan-Banner {
-        padding: 2rem 1.5rem;
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
     }
 
-    .Plan-Banner h2 {
-        font-size: 1.5rem;
+    .banner-left {
+        width: 180px;
+        height: 180px;
+    }
+
+    .banner-right {
+        text-align: center;
+    }
+
+    .banner-right h2 {
+        font-size: 1.6rem;
+    }
+
+    .plan-cta {
+        align-self: center;
+        width: 100%;
+        max-width: 300px;
     }
 }
