@@ -1,11 +1,11 @@
 import { getPlanDetails, GetPlanDetailsResponse } from "@/services/commerce_service/subscriptions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "@/pages/subscriptions/PlanDetails.css"
+import "@/pages/subscriptions/Plans.css"
 import person from "@/assets/images/commerce/Individual_Plan.png"
 import family from "@/assets/images/commerce/Family_Plan.png"
 
-function PlanDetails(){
+function Plans(){
     const navigate=useNavigate();
     const [data,setData]=useState<GetPlanDetailsResponse[]>([]);
     const [loading,setLoading]=useState<boolean>(true);
@@ -44,7 +44,7 @@ function PlanDetails(){
                     <div
                         key={plan.plan_id}
                         className={`Plan-Banner ${plan.max_members > 1 ? "Family-Plan" : "Individual-Plan"}`}
-                        onClick={() => navigate(`/plans/${plan.plan_id}`)}
+                        
                     >
                         <div className="banner-image">
                             {plan.max_members === 1 && (
@@ -56,8 +56,10 @@ function PlanDetails(){
                             )}
                         </div>
 
-                        <div className="plan-cta">
-                            Get Started
+                        <div className="plan-cta"
+                            onClick={() => navigate(`/plan-details/${plan.plan_id}`)}
+                        >
+                            Get Details
                         </div>
 
                         <div className="banner-writing">
@@ -77,4 +79,4 @@ function PlanDetails(){
         </div>
     );
 }
-export default PlanDetails;
+export default Plans;

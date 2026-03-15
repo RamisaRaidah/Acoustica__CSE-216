@@ -29,7 +29,7 @@ def subscribe(user_id):
     payment_method=data.get("payment_method")
     auto_renewal=data.get("auto_renewal","off")
 
-    if payment_method not in ["bank", "COD", "card", "online"]:
+    if payment_method not in ["bank", "card", "online"]:
         logging.error("Invalid payment method")
         return {"error":"Invalid payment method"},400
     

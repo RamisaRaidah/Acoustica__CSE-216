@@ -5,7 +5,8 @@ import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
 import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
-import PlanDetails from './pages/subscriptions/PlanDetails';
+import Plans from '@/pages/subscriptions/Plans.tsx';
+import PlanDetails from '@/pages/subscriptions/PlanDetails_';
 
 
 import { Dashboard } from '@/pages/user/Dashboard';
@@ -54,7 +55,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
-          <Route path="/plan-details" element={<PlanDetails/>}/>
+          <Route path="/plans" element={<Plans/>}/>
+          <Route path="/plan-details/:plan_id" element={<PlanDetails/>}/>
           <Route path="/music/playlists" element={<Playlists />} />
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
