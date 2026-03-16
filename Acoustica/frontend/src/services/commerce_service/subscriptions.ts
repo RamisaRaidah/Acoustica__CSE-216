@@ -22,6 +22,13 @@ export interface SubscribeRequest {
     auto_renewal?: 'on' | 'off';
 }
 
+interface CreatePaymentIntentResponse {
+    client_secret: string;
+    publishable_key: string;
+    amount: number;
+    plan_type: string;
+}
+
 export async function getPlanDetails():Promise<GetPlanDetailsResponse[]>{
     return api.request<GetPlanDetailsResponse[]>('/api/subscriptions/plans');
 }
@@ -30,5 +37,25 @@ export async function subscribe(data: SubscribeRequest): Promise<SubscribeRespon
     return api.request<SubscribeResponse>('/api/subscriptions/subscribe', {
         method: 'POST',
         body: JSON.stringify(data) 
+    });
+}
+
+export async function createPaymentIntent(
+    plan_id: number,
+    auto_renewal: 'on' | 'off'
+): Promise<CreatePaymentIntentResponse> {
+    return api.request<CreatePaymentIntentResponse>('/api/transactions/checkout/create-payment-intent', {
+        method: 'POST',
+        body: JSON.stringify({ plan_id, auto_renewal })
+    });
+}
+
+export async function getSubscriptionDetails() {
+    return api.request('/api/subscriptions/details');
+}
+
+export async function cancelSubscription(subscription_id: number) {
+    return api.request(`/api/subscriptions/${subscription_id}/delete-subscription`, {
+        method: 'DELETE'
     });
 }

@@ -23,12 +23,12 @@ def get_plans_route():
     result, status=subscriptions.get_plans()
     return jsonify(result),status
 
-@subscriptions_bp.post("/api/subscriptions/subscribe")
-@jwt_required()
-def subscribe_route():
-    user_id = get_jwt_identity()
-    result, status = subscriptions.subscribe(user_id)
-    return jsonify(result), status
+# @subscriptions_bp.post("/api/subscriptions/subscribe")
+# @jwt_required()
+# def subscribe_route():
+#     user_id = get_jwt_identity()
+#     result, status = subscriptions.subscribe(user_id)
+#     return jsonify(result), status
 
 @subscriptions_bp.get("/api/subscriptions/details")
 @jwt_required()

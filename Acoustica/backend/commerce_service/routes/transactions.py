@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 import sys
 
@@ -29,3 +30,14 @@ def get_transaction_details_route(transaction_id):
 def refund_route(transaction_id):
     return jsonify(f"refund {transaction_id}")
 
+@transactions_bp.post("/api/transactions/checkout/create-payment-intent")
+@jwt_required()
+def create_payment_intent_route():
+    user_id = get_jwt_identity()
+    result, status = transactions.create_payment_intent(user_id)
+    return jsonify(result), status
+
+@transactions_bp.post("/api/transactions/checkout/webhook")
+def webhook_route():
+    result, status = transactions.handle_webhook(request)
+    return jsonify(result), status

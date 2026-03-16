@@ -23,12 +23,7 @@ def get_plans():
     
     return list(plans),200
 
-def subscribe(user_id):
-    data=request.get_json()
-    plan_id=data.get("plan_id")
-    payment_method=data.get("payment_method")
-    auto_renewal=data.get("auto_renewal","off")
-
+def subscribe(user_id, plan_id, auto_renewal, payment_method, amount):
     if payment_method not in ["bank", "card", "online"]:
         logging.error("Invalid payment method")
         return {"error":"Invalid payment method"},400
@@ -75,7 +70,9 @@ def subscribe(user_id):
                 if not plan:
                     logging.info("Plan id was invalid")
                     return {"error": "Invalid plan id"}, 404
-
+                if amount!=plan["plan_cost"]:
+                    logging.info("Insufficient amount for this plan")
+                    return {"error": "Insufficient amount for this plan"}, 404
                 start_date = date.today()
                 end_date = start_date + timedelta(days=plan["plan_validity"])
 
@@ -85,14 +82,15 @@ def subscribe(user_id):
                     VALUES (%s, 'subscription', %s, %s, 'completed')
                     RETURNING transaction_id
                     """,
-                    (user_id, plan["plan_cost"], payment_method)
+                    (user_id, amount, payment_method)
                 )
                 transaction = cursor.fetchone()
                 transaction_id = transaction["transaction_id"]
 
                 cursor.execute(
                     """
-                    INSERT INTO plan_subscription (plan_id, owner_id, start_date, end_date, transaction_id, auto_renewal_mode,is_active)
+                    INSERT INTO plan_subscription (plan_id, owner_id, start_date, end_date, 
+                    transaction_id, auto_renewal_mode,is_active)
                     VALUES (%s, %s, %s, %s, %s, %s, true)
                     RETURNING subscription_id
                     """,
