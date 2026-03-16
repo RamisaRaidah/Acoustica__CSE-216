@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMyPlaylists, GetMyPlaylistsResponse } from "@/services/music_service/playlists";
 
-export function Playlists() {
+export default function Playlists() {
     const [playlists, setPlaylists] = useState<GetMyPlaylistsResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");

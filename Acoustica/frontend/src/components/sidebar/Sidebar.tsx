@@ -1,9 +1,9 @@
-import { ListenerSidebar } from '@/components/sidebar/listener_sidebar/ListenerSidebar';
-import { ArtistSidebar } from '@/components/sidebar/artist_sidebar/ArtistSidebar';
-import { AdminSidebar } from '@/components/sidebar/admin_sidebar/AdminSidebar';
+import ListenerSidebar from '@/components/sidebar/listener_sidebar/ListenerSidebar';
+import ArtistSidebar from '@/components/sidebar/artist_sidebar/ArtistSidebar';
+import AdminSidebar from '@/components/sidebar/admin_sidebar/AdminSidebar';
 import { useAuth } from '@/contexts/AuthContext';
 
-export function Sidebar() {
+export default function Sidebar() {
     const { user } = useAuth();
 
     if (user?.user_type === "listener") return <ListenerSidebar />;

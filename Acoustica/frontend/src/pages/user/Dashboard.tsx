@@ -1,10 +1,10 @@
-import { ListenerDashboard } from '@/pages/user/listener/listener_dashboard/ListenerDashboard';
-import { ArtistDashboard } from '@/pages/user/artist/artist_dashboard/ArtistDashboard';
-import { AdminDashboard } from '@/pages/user/admin/admin_dashboard/AdminDashboard';
+import ListenerDashboard from '@/pages/user/listener/listener_dashboard/ListenerDashboard';
+import ArtistDashboard from '@/pages/user/artist/artist_dashboard/ArtistDashboard';
+import AdminDashboard from '@/pages/user/admin/admin_dashboard/AdminDashboard';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
-export function Dashboard() {
+export default function Dashboard() {
     const { user } = useAuth();
 
     if (!user) return <Navigate to="/sign-in" />;

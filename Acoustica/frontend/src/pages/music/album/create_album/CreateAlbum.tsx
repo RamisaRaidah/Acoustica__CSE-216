@@ -2,9 +2,9 @@ import "@/pages/music/album/create_album/CreateAlbum.css"
 import { useState, useRef } from "react";
 import { createAlbum } from "@/services/music_service/albums";
 import { DatePicker, DatePickerHandle } from "@/components/date_picker/DatePicker";
-import { Alert } from "@/components/alert/Alert";
+import Alert from "@/components/alert/Alert";
 
-export function CreateAlbum() {
+export default function CreateAlbum() {
     const formRef = useRef<HTMLFormElement>(null);
     const datePickerRef = useRef<DatePickerHandle>(null);
     const [creating, setCreating] = useState<boolean>(false);

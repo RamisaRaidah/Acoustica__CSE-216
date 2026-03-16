@@ -27,7 +27,7 @@ interface ArtistType {
     artist_name: string;
 }
 
-export function Searchbar({ song = false, album = false, artist = false} : SearchbarProps) {
+export default function Searchbar({ song = false, album = false, artist = false} : SearchbarProps) {
     const [queryParam, setQueryParam] = useState<string>("");
     const [songs, setSongs] = useState<SongType[] | null>(null);
     const [albums, setAlbums] = useState<AlbumType[] | null>(null);

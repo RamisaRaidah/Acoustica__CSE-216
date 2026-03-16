@@ -1,4 +1,4 @@
-export function AdminSidebar() {
+export default function AdminSidebar() {
     return (
         <></>
     );

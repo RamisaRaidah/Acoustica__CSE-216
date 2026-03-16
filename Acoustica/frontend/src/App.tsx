@@ -9,10 +9,10 @@ import Plans from '@/pages/subscriptions/Plans.tsx';
 import PlanDetails from '@/pages/subscriptions/PlanDetails_';
 
 
-import { Dashboard } from '@/pages/user/Dashboard';
-import { Playlists } from '@/pages/music/playlist/playlists/Playlists';
-import { Artists } from '@/pages/user/artist/artists/Artists';
-import { CreateAlbum } from '@/pages/music/album/create_album/CreateAlbum';
+import Dashboard from '@/pages/user/Dashboard';
+import Playlists from '@/pages/music/playlist/playlists/Playlists';
+import Artists from '@/pages/user/artist/artists/Artists';
+import CreateAlbum from '@/pages/music/album/create_album/CreateAlbum';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -22,10 +22,10 @@ import { CreateAlbum } from '@/pages/music/album/create_album/CreateAlbum';
 
 import ProtectedRoute from '@/components/routes/ProtectedRoute';
 import PublicOnlyRoute from '@/components/routes/PublicOnlyRoute';
-import { Sidebar } from '@/components/sidebar/Sidebar';
-import { Topbar } from '@/components/topbar/Topbar';
-import { MusicPlayer } from '@/components/music_player/MusicPlayer';
-import { Scrollbar } from '@/components/scrollbar/Scrollbar';
+import Sidebar from '@/components/sidebar/Sidebar';
+import Topbar from '@/components/topbar/Topbar';
+import MusicPlayer from '@/components/music_player/MusicPlayer';
+import Scrollbar from '@/components/scrollbar/Scrollbar';
 import { useScroll } from '@/contexts/ScrollContext';
 import { useAuth } from '@/contexts/AuthContext';
 

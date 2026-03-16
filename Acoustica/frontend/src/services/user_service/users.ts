@@ -17,7 +17,7 @@ export async function getLastListening(): Promise<GetLastListeningResponse> {
     return api.request('/api/listeners/me/last-listening');
 }
 
-export async function sendStreamHistory(segments: {}) {
+export async function addStreamHistory(segments: {}) {
     api.request('/api/listeners/me/stream-history', {
         method: 'POST',
         body: JSON.stringify(segments)

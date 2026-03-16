@@ -1,6 +1,6 @@
 // import banner_img from '@/assets/images/deco/Banner2.png';
 
-export function ArtistDashboard() {
+export default function ArtistDashboard() {
     return (
         <div className="dashboard_container">
             {/* <div className="banner1_wrapper">

@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from "react-router-dom";
-import { Searchbar } from '@/components/searchbar/Searchbar';
+import Searchbar from '@/components/searchbar/Searchbar';
 import shop_button_img from "@/assets/images/Topbar_Buttons/Shop_Button.png";
 import explore_button_img from "@/assets/images/Topbar_Buttons/Explore_Button.png";
 import notification_button_img from "@/assets/images/Topbar_Buttons/Notification_Button.png";
 
-export function ListenerTopbar() {
+export default function ListenerTopbar() {
     const { theme, toggleTheme } = useTheme();
     const { profile_picture } = useAuth();
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);

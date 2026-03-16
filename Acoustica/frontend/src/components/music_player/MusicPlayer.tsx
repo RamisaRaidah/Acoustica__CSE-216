@@ -1,7 +1,7 @@
 import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { sendStreamHistory } from "@/services/user_service/users";
+import { addStreamHistory } from "@/services/user_service/users";
 import play_previous_button from '@/assets/images/Musicbar_Buttons/Play_Previous_Button.png';
 import play_button from '@/assets/images/Musicbar_Buttons/Play_Button.png';
 import pause_button from '@/assets/images/Musicbar_Buttons/Pause_Button.png';
@@ -10,7 +10,7 @@ import lyrics_button from '@/assets/images/Musicbar_Buttons/Lyrics_Button.png';
 import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
 
-export function MusicPlayer() {
+export default function MusicPlayer() {
     const { song, song_url, cover_picture_url, play_key } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -46,7 +46,7 @@ export function MusicPlayer() {
     const flushSegments = useCallback(() => {
         const segments = JSON.parse(localStorage.getItem('stream_segments') || '[]');
         if (segments.length === 0) return;
-        sendStreamHistory(segments);
+        addStreamHistory(segments);
         localStorage.removeItem('stream_segments');
     }, [song?.song_id, play_key]);
 

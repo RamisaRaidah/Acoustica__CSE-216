@@ -13,7 +13,7 @@ import subscription_button_img from '@/assets/images/Sidebar_Buttons/Subscriptio
 import report_button_img from '@/assets/images/Sidebar_Buttons/Report_Button.png';
 import settings_button_img from '@/assets/images/Sidebar_Buttons/Settings_Button.png';
 
-export function ListenerSidebar() {
+export default function ListenerSidebar() {
     const { theme, toggleTheme } = useTheme();
 
     return (

@@ -13,7 +13,7 @@ import approval_status_button_img from '@/assets/images/Sidebar_Buttons/Approval
 import report_button_img from '@/assets/images/Sidebar_Buttons/Report_Button.png';
 import settings_button_img from '@/assets/images/Sidebar_Buttons/Settings_Button.png';
 
-export function ArtistSidebar() {
+export default function ArtistSidebar() {
     const { theme, toggleTheme } = useTheme();
 
     return (

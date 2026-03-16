@@ -2,7 +2,7 @@ import "@/pages/user/artist/artists/Artists.css"
 import { useEffect, useState } from "react";
 import { getArtists, GetArtistsResponse } from "@/services/user_service/artists";
 
-export function Artists() {
+export default function Artists() {
     const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");

@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useScroll } from "@/contexts/ScrollContext";
 import { useLocation } from 'react-router-dom';
 
-export function Scrollbar() {
+export default function Scrollbar() {
     const { user } = useAuth();
     const containerRef = useScroll();
     const location = useLocation();
