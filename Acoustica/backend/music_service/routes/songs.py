@@ -28,8 +28,8 @@ def upload_song_route():
     moods = request.form.get('moods').split(',')
     instruments = request.form.get('instruments').split(',')
     release_date = request.form.get('release_date')
-    song_file = request.files.get('song_file')
-    lyrics = request.files.get('lyrics_file')
+    song_file = request.files.get('song_audio')
+    lyrics = request.files.get('lyrics')
     copyright_certificate = request.files.get('copyright_certificate')
 
     result, status = songs.upload_song(title, album, collaborators, language, genres, moods, instruments, release_date, song_file, lyrics, copyright_certificate)

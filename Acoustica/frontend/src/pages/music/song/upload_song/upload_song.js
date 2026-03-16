@@ -4,7 +4,7 @@ import api from '/src/services/api.js';
 import router from '/src/utils/routers.js';
 import { getAlbums } from '/src/services/album.js';
 import { getArtists } from '/src/services/artist.js';
-import { getGenres, getMoods, getInstruments } from '/src/services/analytics.js';
+import { getGenres, getMoods, getInstruments } from '/src/services/analytics.ts';
 import { enterApp } from '/src/utils/helper.js';
 
 export async function renderUploadSong() {

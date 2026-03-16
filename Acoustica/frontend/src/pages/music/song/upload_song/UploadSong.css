@@ -1,0 +1,302 @@
+:root {
+    --upload-song-input-bg: rgba(0, 0, 0, 0.06);
+    --upload-song-input-border: rgba(0, 0, 0, 0.15);
+}
+
+.dark {
+    --upload-song-input-bg: rgba(255, 255, 255, 0.08);
+    --upload-song-input-border: rgba(255, 255, 255, 0.1);
+}
+
+#upload-song-container {
+    display: block;
+    position: relative;
+    overflow-y: visible;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#upload-song-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5vh;
+}
+
+#upload-song-container h1 {
+    margin: 0;
+    font-size: 2vw;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-color);
+}
+
+#upload-song-container #upload-song-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#upload-song-container #upload-song-form-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#upload-song-container #upload-song-form-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+    width: 40%;
+}
+
+#upload-song-container #upload-song-form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+    width: 40%;
+}
+
+#upload-song-container .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
+}
+
+#upload-song-container .form-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    letter-spacing: 0.01em;
+}
+
+#upload-song-container .form-group input[type="text"],
+#upload-song-container .form-group input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: var(--upload-song-input-bg);
+    border: 1.5px solid var(--upload-song-input-border);
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#upload-song-container .form-group input[type="text"]:focus,
+#upload-song-container .form-group input[type="date"]:focus {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
+}
+
+#upload-song-container .form-group input[type="text"]::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+#upload-song-container .form-group input[type="file"] {
+    display: none;
+}
+
+#upload-song-container .file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 1rem;
+    background: var(--upload-song-input-bg);
+    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#upload-song-container .file-input-wrapper:hover {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+#upload-song-container .file-input-wrapper .file-btn {
+    flex-shrink: 0;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border-radius: 0.35rem;
+    white-space: nowrap;
+    user-select: none;
+}
+
+#upload-song-container .file-input-wrapper .file-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.7;
+}
+
+#upload-song-container #cover-picture {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.7rem;
+    overflow: hidden;
+    background: var(--upload-song-input-bg);
+    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#upload-song-container #cover-picture:hover {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+#upload-song-container #cover-picture input[type="file"] {
+    display: none;
+}
+
+#upload-song-container #cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: rgba(224, 123, 42, 0.6);
+    pointer-events: none;
+}
+
+#upload-song-container #cover-placeholder span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+#upload-song-container #cover-picture img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+#upload-song-container button[type="submit"] {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(224, 123, 42, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    margin-top: auto;
+}
+
+#upload-song-container button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(224, 123, 42, 0.5);
+}
+
+#upload-song-container button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(224, 123, 42, 0.3);
+}
+
+#upload-song-container .datepicker-container {
+    position: relative;
+    width: 100%;
+}
+
+#upload-song-container .datepicker-trigger {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: var(--upload-song-input-bg);
+    border: 1.5px solid var(--upload-song-input-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#upload-song-container .datepicker-trigger.placeholder span {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+#upload-song-container .datepicker-trigger.active,
+#upload-song-container .datepicker-trigger:hover {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
+}
+
+#upload-song-container .datepicker-trigger svg:first-child {
+    color: #e07b2a;
+    flex-shrink: 0;
+}
+
+#upload-song-container .datepicker-trigger span {
+    flex: 1;
+}
+
+#upload-song-container .datepicker-chevron {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+#upload-song-container .datepicker-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+#upload-song-container .datepicker-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: 100%;
+    background: var(--sidebar-color);
+    border: 1.5px solid var(--upload-song-input-border);
+    border-radius: 0.7rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    box-shadow: 0 8px 24px var(--shadow);
+    z-index: 100;
+    animation: dp-fade-in 0.15s ease;
+}
+
+#upload-song-container .datepicker-weekdays span {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-color);
+    padding: 0.2rem 0;
+}
+
+@keyframes dp-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, useNavigate, Navigate } from 'react-router-dom';
 
 import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
 import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
@@ -13,6 +13,7 @@ import Dashboard from '@/pages/user/Dashboard';
 import Playlists from '@/pages/music/playlist/playlists/Playlists';
 import Artists from '@/pages/user/artist/artists/Artists';
 import CreateAlbum from '@/pages/music/album/create_album/CreateAlbum';
+import UploadSong from '@/pages/music/song/upload_song/UploadSong';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -28,6 +29,7 @@ import MusicPlayer from '@/components/music_player/MusicPlayer';
 import Scrollbar from '@/components/scrollbar/Scrollbar';
 import { useScroll } from '@/contexts/ScrollContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEffect } from 'react';
 
 function App() {
   const scrollRef = useScroll();
@@ -36,6 +38,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        <Route path='/' element={<Navigate to={'/dashboard'} replace />}/>
 
         <Route path="/sign-in" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
         <Route path="/sign-up" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
@@ -62,6 +66,7 @@ function App() {
           <Route path="/music/playlists" element={<Playlists />} />
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
+          <Route path="/music/upload-song" element={<UploadSong />} />
         </Route>
 
          {/*

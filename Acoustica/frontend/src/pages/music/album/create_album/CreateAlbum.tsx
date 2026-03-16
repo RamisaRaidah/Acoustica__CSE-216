@@ -37,7 +37,8 @@ export default function CreateAlbum() {
                 setAlertMessage("The album is created successfully!");
             }
         }
-        catch(error) {
+        catch(err) {
+            console.log('ERROR', err);
             setAlertMessage("Failed to create the album!");
         }
         finally {
@@ -83,7 +84,7 @@ export default function CreateAlbum() {
                     <div className="form-group">
                         <label>Copyright Certificate<span style={{ color: "red" }}>*</span></label>
                         <label className="file-input-wrapper">
-                            <span className="file-btn">Choose File</span>
+                            <span className="file-btn">+</span>
                             <span className="file-name" id="cert-name">No file chosen</span>
                             <input
                                 type="file"

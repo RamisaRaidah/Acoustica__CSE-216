@@ -18,6 +18,7 @@ albums_bp = Blueprint("albums", __name__)
 def health():
     return jsonify("album is alive!!!")
 
+### create_album_route ###
 @albums_bp.post("/api/music/albums")
 @jwt_required()
 def create_album_route():
@@ -30,22 +31,32 @@ def create_album_route():
     result, status = albums.create_album(title, description, release_date, cover_picture, copyright_certificate)
     return jsonify(result), status
 
+### get_albums_route ###
 @albums_bp.get("/api/music/albums/all")
 @jwt_required()
 def get_albums_route():
     result, status = albums.get_albums()
     return jsonify(result), status
 
+### get_album_details_route ###
 @albums_bp.get("/api/music/albums/<album_id>")
 @jwt_required()
 def get_album_details_route(album_id):
     result, status = albums.get_album_details(album_id)
     return jsonify(result), status
 
+### get_album_cover_picture_route ###
 @albums_bp.get("/api/music/albums/<album_id>/cover-picture")
 @jwt_required()
 def get_album_cover_picture_route(album_id):
     result, status = albums.get_album_cover_picture(album_id)
+    return jsonify(result), status
+
+### get_my_albums_route ###
+@albums_bp.get("/api/music/albums/me")
+@jwt_required()
+def get_my_albums_route():
+    result, status = albums.get_my_albums()
     return jsonify(result), status
 
 @albums_bp.put("/api/music/albums/<album_id>")

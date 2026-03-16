@@ -93,7 +93,7 @@ def create_album(title, description, release_date, cover_picture, copyright_cert
     
     return {"message": "album created successfully"}, 201
 
-### get_albums
+### get_albums ###
 def get_albums():
     result = execute_sql(
         "SELECT album_id, title FROM album",
@@ -116,6 +116,7 @@ def get_album_details(album_id):
     else:
         return {"error": "coudn't fetch data"}, 500
     
+### get_album_cover_picture ###  
 def get_album_cover_picture(album_id):
     result = execute_sql(
         "SELECT cover_picture FROM album WHERE album_id = %s", (album_id,),
@@ -134,6 +135,18 @@ def get_album_cover_picture(album_id):
         return {"error": "coudn't generate signed url"}
     
     return {"cover_picture_url": signed_url}, 200
+
+### get_my_albums ### 
+def get_my_albums():
+    result = execute_sql(
+        "SELECT album_id, title FROM album WHERE owner_id = %s", (get_jwt_identity(),),
+        fetch_all = True
+    )
+
+    if result:
+        return result, 200
+    else:
+        return {"error": "coudn't fetch data"}, 500
         
 def edit_album(album_id):
     return (f"edit_album {album_id}")

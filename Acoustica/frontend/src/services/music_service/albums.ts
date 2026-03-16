@@ -37,3 +37,12 @@ export interface GetAlbumCoverPictureResponse {
 export async function getAlbumCoverPicture(albumId: number): Promise<GetAlbumCoverPictureResponse> {
     return api.request(`/api/music/albums/${albumId}/cover-picture`);
 }
+
+export interface GetMyAlbumsResponse {
+    album_id: number;
+    title: string;
+}
+
+export async function getMyAlbums(): Promise<GetMyAlbumsResponse[]> {
+    return api.request('/api/music/albums/me');
+}

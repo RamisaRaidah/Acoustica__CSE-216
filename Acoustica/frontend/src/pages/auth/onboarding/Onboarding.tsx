@@ -1,7 +1,8 @@
 import { ChangeEvent, SubmitEventHandler, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCountries, getLanguages, onboarding } from "@/services/user_service/auth";
+import { onboarding } from "@/services/user_service/auth";
 import { Typewriter } from "@/components/auth/Typewriter";
+import { getCountries, Country, getLanguages, Language } from "@/services/analytics_service/analytics";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 import "@/pages/auth/Auth.css";
@@ -9,16 +10,6 @@ import "@/pages/auth/Auth.css";
 import logo_img from '@/assets/images/deco/Logo.png';
 import name_img from '@/assets/images/auth/name_2.png';
 import default_pfp_img from '@/assets/images/Default_pfp.png'
-
-interface Country{
-    country_id: number;
-    country_name: string;
-}
-
-interface Language{
-    language_id:number;
-    language_name: string;
-}
 
 function Onboarding(){
     console.log('Onboarding is here');

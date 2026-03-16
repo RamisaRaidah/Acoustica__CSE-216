@@ -1,6 +1,13 @@
 import api from '@/services/api';
 
-interface GetSongAudioRespose {
+export async function uploadSong(formData: FormData) {
+    return api.request('/api/music/songs', {
+        method: 'POST',
+        body: formData
+    });
+}
+
+export interface GetSongAudioRespose {
     stream_url: string;
 }
 

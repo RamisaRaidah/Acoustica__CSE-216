@@ -1,3 +1,4 @@
+import '@/components/date_picker/DatePicker.css'
 import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 
 interface DatePickerProps {

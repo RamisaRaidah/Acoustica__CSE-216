@@ -23,16 +23,6 @@ interface OnboardingResponse{
     message: string;
 }
 
-interface Country{
-    country_id:number;
-    country_name:string;
-}
-
-interface Language{
-    language_id:number;
-    language_name:string;
-}
-
 export async function signIn(email:string, password:string): 
 Promise<SignInResponse> {
     return api.request<SignInResponse>('/api/auth/sign-in',{
@@ -62,15 +52,7 @@ Promise<SignOutResponse> {
     return api.request<SignOutResponse>('/api/auth/sign-out', { 
         method: 'POST' 
     });
-}
-
-export async function getCountries():Promise<Country[]> {
-    return api.request<Country[]>('/api/analytics/countries');
-}
-
-export async function getLanguages():Promise<Language[]> {
-    return api.request<Language[]>('/api/analytics/languages');
-}   
+}  
 
 export async function getProfilePicture() {
     return api.request('/api/users/me/pfp');

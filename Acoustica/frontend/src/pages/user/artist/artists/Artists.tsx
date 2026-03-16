@@ -4,8 +4,8 @@ import { getArtists, GetArtistsResponse } from "@/services/user_service/artists"
 
 export default function Artists() {
     const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function loadArtists() {
@@ -13,12 +13,15 @@ export default function Artists() {
                 const artists = await getArtists();
                 if (artists) setArtists(artists);
             }
-            catch(e) {
-                console.log("ERROR: ", e);
+            catch(err) {
+                console.log("ERROR: ", err);
                 setError("Failed to load artists.");
             }
-            setLoading(false);
+            finally {
+                setLoading(false);
+            }
         }
+
         loadArtists();
     }, []);
 
