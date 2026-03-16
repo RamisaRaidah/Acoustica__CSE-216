@@ -29,7 +29,7 @@ export function ListenerSidebar() {
                 <Link to="/music/playlists" className="playlist_button"><img src={playlist_button_img} className="icon" />Playlists</Link>
                 <Link to="/artists" className="artist_button"><img src={artist_button_img} className="icon" />Artists</Link>
                 <Link to="#" className="community_button"><img src={community_button_img} className="icon" />Community</Link>
-                <Link to="#" className="subscription_button"><img src={subscription_button_img} className="icon" />Subscriptions</Link>
+                <Link to="/plans" className="subscription_button"><img src={subscription_button_img} className="icon" />Subscriptions</Link>
             </div>
 
             <div className="sidebar_navigation_bottom">
