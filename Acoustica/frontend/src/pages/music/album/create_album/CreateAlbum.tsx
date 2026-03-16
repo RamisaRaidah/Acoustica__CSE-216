@@ -59,7 +59,7 @@ export default function CreateAlbum() {
 
                 <div id="create-album-form-left">
                     <div className="form-group">
-                        <label>Album Title<span style={{ color: "red" }}>*</span></label>
+                        <label>Album Title<span style={{ color: "#e07b2a" }}>*</span></label>
                         <input
                             type="text"
                             name="album_title"
@@ -77,12 +77,12 @@ export default function CreateAlbum() {
                     </div>
 
                     <div className="form-group">
-                        <label>Release Date<span style={{ color: "red" }}>*</span></label>
+                        <label>Release Date<span style={{ color: "#e07b2a" }}>*</span></label>
                         <DatePicker ref={datePickerRef} name="release_date" required />
                     </div>
 
                     <div className="form-group">
-                        <label>Copyright Certificate<span style={{ color: "red" }}>*</span></label>
+                        <label>Copyright Certificate<span style={{ color: "#e07b2a" }}>*</span></label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
                             <span className="file-name" id="cert-name">No file chosen</span>

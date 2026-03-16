@@ -33,13 +33,8 @@
 
 #upload-song-container #upload-song-form {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-#upload-song-container #upload-song-form-top {
-    display: flex;
     flex-direction: row;
+    align-items: flex-start;
     justify-content: space-between;
 }
 
@@ -47,23 +42,46 @@
     display: flex;
     flex-direction: column;
     gap: 1.5vw;
-    width: 40%;
+    width: 72%;
 }
 
 #upload-song-container #upload-song-form-right {
     display: flex;
     flex-direction: column;
     gap: 1.5vw;
-    width: 40%;
+    width: 25%;
+}
+
+#upload-song-container #upload-song-form-left-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5vw;
+}
+
+#upload-song-container #upload-song-form-left-middle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5vw;
+}
+
+#upload-song-container #upload-song-form-left-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5vw;
+    align-items: flex-start;
 }
 
 #upload-song-container .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5vw;
+    flex: 1;
 }
 
-#upload-song-container .form-group label {
+#upload-song-container .form-group>label:first-child {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-color);
@@ -95,6 +113,179 @@
     opacity: 0.6;
 }
 
+#upload-song-container .form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: var(--upload-song-input-bg);
+    border: 1.5px solid var(--upload-song-input-border);
+    border-radius: 0.5rem;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#upload-song-container .form-group select:hover,
+#upload-song-container .form-group select:focus {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
+}
+
+#upload-song-container #new-album-button {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #e07b2a;
+    cursor: pointer;
+    text-align: left;
+    letter-spacing: 0.01em;
+    transition: opacity 0.15s ease;
+    width: fit-content;
+}
+
+#upload-song-container #new-album-button:hover {
+    opacity: 0.7;
+}
+
+#upload-song-container .multi-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#upload-song-container .multi-select-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 1rem;
+    background: var(--upload-song-input-bg);
+    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#upload-song-container .multi-select-box:hover,
+#upload-song-container .multi-select-box.active {
+    border-color: #e07b2a;
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+#upload-song-container .multi-select-placeholder {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+    user-select: none;
+}
+
+#upload-song-container .multi-select-btn {
+    flex-shrink: 0;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border-radius: 0.35rem;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+}
+
+#upload-song-container .multi-select-dropdown {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--sidebar-color);
+    border: 1.5px solid var(--upload-song-input-border);
+    border-radius: 0.6rem;
+    padding: 0.4rem;
+    z-index: 200;
+    box-shadow: 0 8px 24px var(--shadow);
+    animation: dp-fade-in 0.15s ease;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+#upload-song-container .multi-select-option {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.88rem;
+    color: var(--text-color);
+    border-radius: 0.4rem;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+#upload-song-container .multi-select-option:hover {
+    background: rgba(224, 123, 42, 0.12);
+    color: #e07b2a;
+}
+
+#upload-song-container .multi-select-empty {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    text-align: center;
+}
+
+#upload-song-container .selected-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.1rem;
+}
+
+#upload-song-container .selected-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    background: var(--upload-song-input-bg);
+    border: 1.5px solid var(--upload-song-input-border);
+    border-radius: 2rem;
+    transition: border-color 0.15s ease;
+}
+
+#upload-song-container .selected-tag:hover {
+    border-color: rgba(224, 123, 42, 0.4);
+}
+
+#upload-song-container .selected-tag span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+#upload-song-container .tag-remove-btn {
+    background: none;
+    border: none;
+    padding: 0 0 0 0.5rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s ease, color 0.15s ease;
+    display: flex;
+    align-items: center;
+}
+
+#upload-song-container .tag-remove-btn:hover {
+    opacity: 1;
+    color: #e07b2a;
+}
+
 #upload-song-container .form-group input[type="file"] {
     display: none;
 }
@@ -118,7 +309,7 @@
     box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
 }
 
-#upload-song-container .file-input-wrapper .file-btn {
+#upload-song-container .file-btn {
     flex-shrink: 0;
     padding: 0.35rem 0.9rem;
     font-size: 0.82rem;
@@ -137,81 +328,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     opacity: 0.7;
-}
-
-#upload-song-container #cover-picture {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 0.7rem;
-    overflow: hidden;
-    background: var(--upload-song-input-bg);
-    border: 1.5px dashed rgba(224, 123, 42, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-#upload-song-container #cover-picture:hover {
-    border-color: #e07b2a;
-    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
-}
-
-#upload-song-container #cover-picture input[type="file"] {
-    display: none;
-}
-
-#upload-song-container #cover-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    color: rgba(224, 123, 42, 0.6);
-    pointer-events: none;
-}
-
-#upload-song-container #cover-placeholder span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-}
-
-#upload-song-container #cover-picture img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-}
-
-#upload-song-container button[type="submit"] {
-    width: 100%;
-    padding: 0.85rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #fff;
-    background: linear-gradient(135deg, #e07b2a, #c95f0e);
-    border: none;
-    border-radius: 0.6rem;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(224, 123, 42, 0.35);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-    margin-top: auto;
-}
-
-#upload-song-container button[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(224, 123, 42, 0.5);
-}
-
-#upload-song-container button[type="submit"]:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(224, 123, 42, 0.3);
 }
 
 #upload-song-container .datepicker-container {
@@ -299,4 +415,52 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+#upload-song-container button[type="submit"] {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(224, 123, 42, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    margin-top: auto;
+}
+
+#upload-song-container button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(224, 123, 42, 0.5);
+}
+
+#upload-song-container button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(224, 123, 42, 0.3);
+}
+
+#upload-song-container .multi-select-back {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #e07b2a;
+    cursor: pointer;
+    border-bottom: 1px solid var(--upload-song-input-border);
+    margin-bottom: 0.3rem;
+}
+
+#upload-song-container .tag-role {
+    margin-left: auto;
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: rgba(224, 123, 42, 0.1);
+    border-radius: 1rem;
+    padding: 2px 8px;
+    text-transform: capitalize;
 }

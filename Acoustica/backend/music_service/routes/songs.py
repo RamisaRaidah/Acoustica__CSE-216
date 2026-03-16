@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, json, jsonify, request
 import logging
 import sys
 from flask_jwt_extended import jwt_required
@@ -17,16 +17,17 @@ songs_bp = Blueprint("songs", __name__)
 def health():
     return jsonify("Song is alive!!!")
 
+### upload_song_route ###
 @songs_bp.post("/api/music/songs")
 @jwt_required()
 def upload_song_route():
     title = request.form.get('song_title')
     album = request.form.get('album_id')
-    collaborators = request.form.get('collaborators').split(',')
+    collaborators = json.loads(request.form.get('collaborators'))
     language = request.form.get('language')
-    genres = request.form.get('genres').split(',')
-    moods = request.form.get('moods').split(',')
-    instruments = request.form.get('instruments').split(',')
+    genres = request.form.getlist('genres')
+    moods = request.form.getlist('moods')
+    instruments = request.form.getlist('instruments')
     release_date = request.form.get('release_date')
     song_file = request.files.get('song_audio')
     lyrics = request.files.get('lyrics')
@@ -35,6 +36,7 @@ def upload_song_route():
     result, status = songs.upload_song(title, album, collaborators, language, genres, moods, instruments, release_date, song_file, lyrics, copyright_certificate)
     return jsonify(result), status
 
+### get_song_details_route ###
 @songs_bp.get("/api/music/songs/<song_id>")
 @jwt_required()
 def get_song_details_route(song_id):

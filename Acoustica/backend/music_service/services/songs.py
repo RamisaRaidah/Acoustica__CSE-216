@@ -114,7 +114,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 # Uploading song other metadata in db
                 for collaborator in collaborators:
                     artist, role = collaborator.split(':')
-                    cursor.execute("INSERT INTO song_artist (song_id, artist_id, role) VALUES (%s, %s, %s)", (song_id, artist, role))
+                    cursor.execute("INSERT INTO song_artist (song_id, artist_id, role) VALUES (%s, %s, %s)", (song_id, artist, role.lower()))
 
                 for genre in genres:
                     cursor.execute("INSERT INTO song_genre (song_id, genre_id) VALUES (%s, %s)", (song_id, genre))
@@ -145,6 +145,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
     
     return {"message": "song uploaded successfully"}, 201
 
+### get_song_datails ###
 def get_song_details(song_id):
     command = "SELECT * FROM song WHERE song_id=%s"
     result = execute_sql(command, (song_id,), fetch_one=True)
