@@ -1,0 +1,16 @@
+Card number:  4242 4242 4242 4242
+Expiry:       Any future date (e.g. 12/26)
+CVC:          Any 3 digits (e.g. 123)
+ZIP:          Any 5 digits (e.g. 12345)
+
+# Card declined
+4000 0000 0000 0002
+
+# Insufficient funds
+4000 0000 0000 9995
+
+# Requires authentication (3D Secure)
+4000 0025 0000 3155
+
+# Expired card
+4000 0000 0000 0069

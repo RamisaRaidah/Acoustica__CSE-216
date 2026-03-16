@@ -6,7 +6,11 @@ import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
 import Plans from '@/pages/subscriptions/Plans.tsx';
-import PlanDetails from '@/pages/subscriptions/PlanDetails_';
+import PlanDetails from '@/pages/subscriptions/PlanDetails';
+import Checkout from '@/pages/subscriptions/Checkout';
+import CheckoutSuccess from '@/pages/subscriptions/CheckoutSuccess';
+import CancelSubscription from '@/pages/subscriptions/CancelSubscription';
+import CancelSuccess from '@/pages/subscriptions/CancelSuccess';
 
 
 import Dashboard from '@/pages/user/Dashboard';
@@ -59,9 +63,13 @@ function App() {
           <Route path="/sign-out" element={<SignOut />} />
           <Route path="/plans" element={<Plans/>}/>
           <Route path="/plan-details/:plan_id" element={<PlanDetails/>}/>
+          <Route path="/checkout/:plan_id" element={<Checkout />} />
+          <Route path="/checkout/success" element={<CheckoutSuccess />} />
           <Route path="/music/playlists" element={<Playlists />} />
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
+          <Route path="/cancel-subscription" element={<CancelSubscription />} />
+          <Route path="/cancel/success" element={<CancelSuccess />} />
         </Route>
 
          {/*
