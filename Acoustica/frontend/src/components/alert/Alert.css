@@ -86,6 +86,10 @@
     padding: 0.8rem 1.2rem;
 }
 
+.alert-actions.two-buttons {
+    justify-content: space-between;
+}
+
 .alert-ok {
     padding: 0.5rem 1.8rem;
     font-size: 0.9rem;
@@ -105,5 +109,27 @@
 }
 
 .alert-ok:active {
+    transform: translateY(0);
+}
+
+.alert-cancel {
+    padding: 0.5rem 1.8rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 3px 10px rgba(224, 123, 42, 0.3);
+}
+
+.alert-cancel:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(224, 123, 42, 0.45);
+}
+
+.alert-cancel:active {
     transform: translateY(0);
 }

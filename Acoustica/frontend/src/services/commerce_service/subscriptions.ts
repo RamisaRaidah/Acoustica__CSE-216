@@ -59,3 +59,30 @@ export async function cancelSubscription(subscription_id: number) {
         method: 'DELETE'
     });
 }
+
+export async function setAutoRenewal(subscription_id: number, mode: 'on' | 'off') {
+    return api.request(`/api/subscriptions/${subscription_id}/auto-renewal`, {
+        method: 'PATCH',
+        body: JSON.stringify({ auto_renewal: mode })
+    });
+}
+
+export async function getMyFamily() {
+    return api.request('/api/subscriptions/my-family');
+}
+
+export async function searchUserByEmail(email: string) {
+    return api.request(`/api/subscriptions/search-user?email=${encodeURIComponent(email)}`);
+}
+
+export async function addFamilyMember(user2_id: number) {
+    return api.request(`/api/subscriptions/add-members/${user2_id}`, {
+        method: 'POST'
+    });
+}
+
+export async function leaveFamily() {
+    return api.request('/api/subscriptions/leave-family', {
+        method: 'DELETE'
+    });
+}

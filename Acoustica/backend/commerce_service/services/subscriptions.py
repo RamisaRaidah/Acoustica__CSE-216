@@ -266,7 +266,12 @@ def leave_family(user_id):
                 f_id=family["family_id"]
                 owner_id=family["parent_account_id"]
 
-                if owner_id==user_id:
+                logging.info("Can't leave if owner")
+                logging.info(f"Owner id: {owner_id}")
+                logging.info(f"User id: {user_id}")
+
+                if int(owner_id) == int(user_id):
+                    logging.info("Returning error because owner tried to leave family")
                     return {"error":"Family owner cannot leave the family without deleting subscription for all"},403
 
                 cursor.execute(
@@ -276,7 +281,7 @@ def leave_family(user_id):
                         AND member_id=%s
                     """,(f_id,user_id)
                 )
-
+                logging.info('We just deleted the family member')
                 cursor.execute(
                     """
                     UPDATE listener 
@@ -284,6 +289,7 @@ def leave_family(user_id):
                     WHERE listener_id = %s
                     """,(user_id,)
                 )
+                logging.info("And he has now free subscription")
 
         return {"message": "Successfully left family"}, 200
     except Exception as e:
@@ -294,28 +300,53 @@ def leave_family(user_id):
 
 
 def my_family(user_id):
-    sql="""
-            SELECT f.family_id
-            FROM family_member fm
-            JOIN family f ON f.family_id=fm.family_id
-            JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
-            WHERE fm.member_id=%s 
-            AND s.end_date>=CURRENT_DATE 
-            AND s.is_active=true
-        """
-    
-    family=execute_sql(sql,(user_id,),fetch_one=True)
+    sql = """
+        SELECT f.family_id, f.parent_account_id
+        FROM family_member fm
+        JOIN family f ON f.family_id = fm.family_id
+        JOIN plan_subscription s ON s.subscription_id = f.subscription_id
+        WHERE fm.member_id = %s
+        AND s.end_date >= CURRENT_DATE
+        AND s.is_active = true
+    """
+    family = execute_sql(sql, (user_id,), fetch_one=True)
     if not family:
-        return {"error": "No family found"},404
-    f_id=family["family_id"]
+        return {"error": "No family found"}, 404
 
-    sql2="""
-            SELECT family_id, member_id
-            FROM family_member
-            WHERE family_id=%s
-        """
-    result=execute_sql(sql2,(f_id,),fetch_all=True)
-    return [dict(r) for r in result], 200
+    f_id = family["family_id"]
+    owner_id = family["parent_account_id"]
+
+    sql2 = """
+        SELECT 
+            fm.member_id,
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.profile_picture,
+            CASE WHEN fm.member_id = f.parent_account_id THEN true ELSE false END as is_owner
+        FROM family_member fm
+        JOIN family f ON f.family_id = fm.family_id
+        JOIN users u ON u.user_id = fm.member_id
+        WHERE fm.family_id = %s
+    """
+    members = execute_sql(sql2, (f_id,), fetch_all=True)
+
+    plan_sql = """
+        SELECT p.max_members
+        FROM family f
+        JOIN plan_subscription s ON s.subscription_id = f.subscription_id
+        JOIN plan p ON p.plan_id = s.plan_id
+        WHERE f.family_id = %s
+    """
+    plan = execute_sql(plan_sql, (f_id,), fetch_one=True)
+
+    return {
+        "family_id": f_id,
+        "owner_id": int(owner_id),
+        "is_owner": int(user_id) == int(owner_id),
+        "max_members": plan["max_members"] if plan else 6,
+        "members": [dict(m) for m in members]
+    }, 200
 
 def add_members(user_id,user2_id):
     connection=get_db_connection()
@@ -388,5 +419,19 @@ def add_members(user_id,user2_id):
             return {"error":"New member addition failed"},500
     finally:
         release_connection(connection)
+
+def search_user_by_email(email):
+    result = execute_sql(
+        """
+        SELECT u.user_id, u.first_name, u.last_name, u.email
+        FROM users u
+        JOIN listener l ON l.listener_id = u.user_id
+        WHERE u.email = %s
+        """,
+        (email,), fetch_one=True
+    )
+    if not result:
+        return {"error": "User not found"}, 404
+    return dict(result), 200
 
 ### Helper functions ###

@@ -11,6 +11,8 @@ import Checkout from '@/pages/subscriptions/Checkout';
 import CheckoutSuccess from '@/pages/subscriptions/CheckoutSuccess';
 import CancelSubscription from '@/pages/subscriptions/CancelSubscription';
 import CancelSuccess from '@/pages/subscriptions/CancelSuccess';
+import SubscriptionDetails from '@/pages/subscriptions/SubscriptionDetails';
+import FamilyManagement from '@/pages/subscriptions/FamilyManagement';
 
 
 import Dashboard from '@/pages/user/Dashboard';
@@ -75,6 +77,8 @@ function App() {
           <Route path="/music/upload-song" element={<UploadSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />
+          <Route path="/subscription-details" element={<SubscriptionDetails />} />
+          <Route path="/myFamily" element={<FamilyManagement />} />
         </Route>
 
          {/*

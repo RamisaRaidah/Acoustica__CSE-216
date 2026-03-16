@@ -88,7 +88,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_create_family_on_subscribe
+CREATE TRIGGER create_family_on_subscribe
 AFTER INSERT ON plan_subscription
 FOR EACH ROW
 EXECUTE FUNCTION create_family_on_subscribe();

@@ -167,7 +167,7 @@ function Checkout() {
             <h2>You're already a Premium member!</h2>
             <p>You already have an active subscription running.</p>
             <div className="checkout-already-actions">
-                <button className="checkout-submit" onClick={() => navigate('/subscriptions')}>
+                <button className="checkout-submit" onClick={() => navigate('/subscription-details')}>
                     View My Subscription
                 </button>
                 <button className="checkout-secondary" onClick={() => navigate('/dashboard')}>

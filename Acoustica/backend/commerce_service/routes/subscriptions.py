@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 import logging
 import sys
 
@@ -71,3 +71,12 @@ def add_members_route(user2_id):
     user_id=get_jwt_identity()
     result, status=subscriptions.add_members(user_id,user2_id)
     return jsonify(result),status
+
+@subscriptions_bp.get("/api/subscriptions/search-user")
+@jwt_required()
+def search_user_route():
+    email = request.args.get("email")
+    if not email:
+        return jsonify({"error": "email is required"}), 400
+    result, status = subscriptions.search_user_by_email(email)
+    return jsonify(result), status
