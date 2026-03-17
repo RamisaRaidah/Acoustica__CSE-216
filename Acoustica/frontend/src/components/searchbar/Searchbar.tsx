@@ -1,40 +1,41 @@
-import '@/components/searchbar/Searchbar.css'
 import api from "@/services/api";
 import { useEffect, useRef, useState } from "react";
-import { useMusic } from '@/contexts/MusicContext';
 
 interface SearchbarProps {
+    prompt: string;
     song?: boolean;
     album?: boolean;
     artist?: boolean;
+    onSongSelect?: (song: SongType) => void;
 }
 
-interface SongType {
+export interface SongType {
     song_id: number;
     album_id: number;
     title: string;
+    album_name: string;
     artist_name: string;
+    length: number;
 }
 
-interface AlbumType {
+export interface AlbumType {
     album_id: number;
     title: string;
     artist_name: string;
 }
 
-interface ArtistType {
+export interface ArtistType {
     artist_id: number;
     artist_name: string;
 }
 
-export default function Searchbar({ song = false, album = false, artist = false} : SearchbarProps) {
+export default function Searchbar({ prompt, song = false, album = false, artist = false, onSongSelect }: SearchbarProps) {
     const [queryParam, setQueryParam] = useState<string>("");
     const [songs, setSongs] = useState<SongType[] | null>(null);
     const [albums, setAlbums] = useState<AlbumType[] | null>(null);
     const [artists, setArtists] = useState<ArtistType[] | null>(null);
     const [searchDropdownOpen, setSearchDropdownOpen] = useState<boolean>(false);
     const seachWrapperRef = useRef<HTMLDivElement>(null);
-    const { playSong } = useMusic();
 
     useEffect(() => {
         if (!queryParam) {
@@ -84,10 +85,10 @@ export default function Searchbar({ song = false, album = false, artist = false}
     return (
         <div className="searchbar">
             <div ref={seachWrapperRef} className="search_wrapper">
-                <input 
-                    type="text" 
-                    placeholder="Explore. Discover. Repeat." 
-                    className="search_bar" 
+                <input
+                    type="text"
+                    placeholder={prompt}
+                    className="search_bar"
                     onChange={(e) => {
                         setQueryParam(e.target.value.trim());
                         console.log(e);
@@ -103,12 +104,8 @@ export default function Searchbar({ song = false, album = false, artist = false}
                                     <div
                                         className="search_item"
                                         key={song.song_id}
-                                        data-song-id={song.song_id}
-                                        data-album-id={song.album_id}
-                                        data-title={song.title}
-                                        data-artist_name={song.artist_name}
                                         onClick={() => {
-                                            playSong({ song_id: song.song_id, album_id: song.album_id, title: song.title, artist_name: song.artist_name, progress: 0, playing: true });
+                                            onSongSelect?.(song);
                                             setSearchDropdownOpen(false);
                                         }}
                                     >
@@ -128,9 +125,6 @@ export default function Searchbar({ song = false, album = false, artist = false}
                                     <div
                                         className="search_item"
                                         key={album.album_id}
-                                        data-album-id={album.album_id}
-                                        data-title={album.title}
-                                        data-artist_name={album.artist_name}
                                         onClick={() => {
                                             alert(album.title);
                                             setSearchDropdownOpen(false);
@@ -152,8 +146,6 @@ export default function Searchbar({ song = false, album = false, artist = false}
                                     <div
                                         className="search_item"
                                         key={artist.artist_id}
-                                        data-artist_id={artist.artist_id}
-                                        data-artist_name={artist.artist_name}
                                         onClick={() => {
                                             alert(artist.artist_name);
                                             setSearchDropdownOpen(false);
@@ -166,7 +158,7 @@ export default function Searchbar({ song = false, album = false, artist = false}
                         </div>
                     )}
                 </div>
-            </div> 
+            </div>
         </div>
     );
 }

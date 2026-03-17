@@ -16,7 +16,6 @@ def get_profile():
     return ("get_profile")
 
 ### add_stream_history ###
-
 def add_stream_history(segments):
     if not segments:
         return {"error": "no data"}, 400
@@ -24,6 +23,7 @@ def add_stream_history(segments):
     listener_id = get_jwt_identity()
     values = []
     placeholders = []
+    played_songs = []
 
     for segment in segments:
         song_id = segment.get('song_id')
@@ -34,12 +34,25 @@ def add_stream_history(segments):
         placeholders.append("(%s, %s, %s, %s, %s)")
         values.extend([listener_id, song_id, datetime, duration, progress])
 
-    command = f"""
+        if duration >= 30:
+            played_songs.append(song_id)
+
+    command1 = f"""
         INSERT INTO song_stream_history (listener_id, song_id, date_time, duration, progress)
         VALUES {', '.join(placeholders)}
     """
 
-    execute_sql(command, values)
+    command2 = """
+        UPDATE song 
+        SET play_count = play_count + 1
+        WHERE song_id IN %s
+    """
+
+    result = execute_sql(command1, values)
+
+    if played_songs and result:
+        execute_sql(command2, (tuple(played_songs),))
+
     return {"message": "inserted"}, 200
 
 def get_stream_history():

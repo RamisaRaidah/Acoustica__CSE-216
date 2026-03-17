@@ -20,6 +20,7 @@ import Playlists from '@/pages/music/playlist/playlists/Playlists';
 import Artists from '@/pages/user/artist/artists/Artists';
 import CreateAlbum from '@/pages/music/album/create_album/CreateAlbum';
 import UploadSong from '@/pages/music/song/upload_song/UploadSong';
+import CreatePlaylist from '@/pages/music/playlist/create_playlist/CreatePlaylist';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -35,7 +36,6 @@ import MusicPlayer from '@/components/music_player/MusicPlayer';
 import Scrollbar from '@/components/scrollbar/Scrollbar';
 import { useScroll } from '@/contexts/ScrollContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
 
 function App() {
   const scrollRef = useScroll();
@@ -45,7 +45,7 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        <Route path='/' element={<Navigate to={'/dashboard'} replace />}/>
+        <Route path='/' element={<Navigate to={'/dashboard'} replace />} />
 
         <Route path="/sign-in" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
         <Route path="/sign-up" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
@@ -57,8 +57,8 @@ function App() {
               <Sidebar />
               <Topbar />
               <Scrollbar />
-              {user?.user_type === "listener" && <MusicPlayer />}
-              <div id="content" ref={scrollRef} style={{ height : user?.user_type === "listener" ? "77vh" : "89vh"}}>
+              {/* {user?.user_type === "listener" && <MusicPlayer />} */}
+              <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
                 <Outlet />
               </div>
             </div>
@@ -67,13 +67,14 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
-          <Route path="/plans" element={<Plans/>}/>
-          <Route path="/plan-details/:plan_id" element={<PlanDetails/>}/>
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/plan-details/:plan_id" element={<PlanDetails />} />
           <Route path="/checkout/:plan_id" element={<Checkout />} />
           <Route path="/checkout/success" element={<CheckoutSuccess />} />
           <Route path="/music/playlists" element={<Playlists />} />
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
+          <Route path="/music/create-playlist" element={<CreatePlaylist />} />
           <Route path="/music/upload-song" element={<UploadSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />
@@ -81,7 +82,7 @@ function App() {
           <Route path="/myFamily" element={<FamilyManagement />} />
         </Route>
 
-         {/*
+        {/*
         <Route 
           path="/myProfile" 
           element={
@@ -128,7 +129,7 @@ function App() {
         
         
         */}
-      </Routes>  
+      </Routes>
     </BrowserRouter>
   );
 }

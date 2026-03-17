@@ -7,12 +7,14 @@ import Searchbar from '@/components/searchbar/Searchbar';
 import shop_button_img from "@/assets/images/Topbar_Buttons/Shop_Button.png";
 import explore_button_img from "@/assets/images/Topbar_Buttons/Explore_Button.png";
 import notification_button_img from "@/assets/images/Topbar_Buttons/Notification_Button.png";
+import { useMusic } from '@/contexts/MusicContext';
 
 export default function ListenerTopbar() {
     const { theme, toggleTheme } = useTheme();
     const { profile_picture } = useAuth();
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const profileWrapperRef = useRef<HTMLDivElement>(null);
+    const { playSong } = useMusic();
 
     useEffect(() => {
         function handleClick(e: MouseEvent) {
@@ -37,7 +39,7 @@ export default function ListenerTopbar() {
                 <Link to="#" className="shop_button"><img src={shop_button_img} className="icon" />Shop</Link>
             </div>
             <div className="topbar_center">
-                <Searchbar song album artist />
+                <Searchbar prompt='Explore. Discover. Repeat.' song album artist onSongSelect={(song) => playSong({ song_id: song.song_id, album_id: song.album_id, title: song.title, artist_name: song.artist_name, progress: 0, playing: true })} />
             </div>
             <div className="topbar_right">
                 <Link to="#" className="explore_button"><img src={explore_button_img} className="icon" />Explore</Link>

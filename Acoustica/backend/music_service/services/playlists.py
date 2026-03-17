@@ -13,7 +13,7 @@ logging.basicConfig(
 )
 
 ### create_playlist ###
-def create_playlist(title, description, visibility, cover_picture):
+def create_playlist(title, description, visibility, cover_picture, songs):
     if not title or not visibility:
         return {"error": "missing required fields"}, 400
     
@@ -60,6 +60,22 @@ def create_playlist(title, description, visibility, cover_picture):
                         SET cover_picture = %s
                         WHERE playlist_id = %s
                         """, (f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}", playlist_id)
+                    )
+
+                # Uploading to playlist-song table
+
+                if songs:
+                    placeholders = []
+                    values = []
+
+                    for song in songs:
+                        placeholders.append('(%s, %s)')
+                        values.extend([playlist_id, song])
+
+                    cursor.execute(f"""
+                        INSERT INTO playlist_song (playlist_id, song_id)
+                        VALUES {', '.join(placeholders)}
+                        """, values
                     )
 
                 connection.commit()

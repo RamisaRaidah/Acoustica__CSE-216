@@ -139,7 +139,7 @@ def execute_sql(sql_command, param = None, fetch_one = False, fetch_all = False)
                 elif fetch_all:
                     result = cursor.fetchall()
                 else:
-                    result = None
+                    result = True
                 return result
     except Exception as e:
         logging.error(f"Execution failed: {e}")

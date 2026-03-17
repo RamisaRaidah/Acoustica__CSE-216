@@ -15,7 +15,7 @@ def search_song(seed):
     param = (f"%{seed}%",)
 
     songs_query = """
-        SELECT song_id, s.album_id, s.title, (first_name || ' ' || last_name) artist_name
+        SELECT song_id, s.album_id, s.title, a.title album_name, (first_name || ' ' || last_name) artist_name, length
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
         WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
         LIMIT 5

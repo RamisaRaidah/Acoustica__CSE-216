@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, json, jsonify, request
 import logging
 import sys
 from flask_jwt_extended import jwt_required
@@ -17,6 +17,7 @@ playlists_bp = Blueprint("playlists", __name__)
 def health():
     return jsonify("playlists")
 
+### create_playlist_route ###
 @playlists_bp.post("/api/music/playlists")
 @jwt_required()
 def create_playlist_route():
@@ -24,8 +25,9 @@ def create_playlist_route():
     description = request.form.get('description')
     visibility = request.form.get('visibility')
     cover_picture = request.files.get('cover_picture')
+    songs = json.loads(request.form.get('songs') or '[]')
 
-    result, status = playlists.create_playlist(title, description, visibility, cover_picture)
+    result, status = playlists.create_playlist(title, description, visibility, cover_picture, songs)
     return jsonify(result), status
 
 @playlists_bp.get("/api/music/playlists/<playlist_id>")
