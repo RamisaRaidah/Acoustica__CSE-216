@@ -7,8 +7,7 @@ import {
     addFamilyMember,
     leaveFamily
 } from '@/services/commerce_service/subscriptions';
-import '@/pages/subscriptions/FamilyManagement.css';
-import { useAuth } from '@/contexts/AuthContext';
+import '@/pages/subscriptions/family/FamilyManagement.css';
 import family_img from '@/assets/images/commerce/Family_Plan.png'
 
 interface FamilyMember {

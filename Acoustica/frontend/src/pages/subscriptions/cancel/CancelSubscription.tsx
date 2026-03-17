@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSubscriptionDetails, cancelSubscription } from '@/services/commerce_service/subscriptions';
-import '@/pages/subscriptions/CancelSubscription.css';
+import '@/pages/subscriptions/cancel/CancelSubscription.css';
 
 function CancelSubscription() {
     const navigate = useNavigate();

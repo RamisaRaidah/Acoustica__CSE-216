@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSubscriptionDetails, setAutoRenewal } from '@/services/commerce_service/subscriptions';
-import '@/pages/subscriptions/SubscriptionDetails.css';
+import '@/pages/subscriptions/subscriptions-details/SubscriptionDetails.css';
 
 interface SubscriptionDetailsResponse {
     subscription_id: number;

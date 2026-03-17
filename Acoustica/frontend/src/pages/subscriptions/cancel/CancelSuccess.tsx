@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import '@/pages/subscriptions/CancelSubscription.css';
+import '@/pages/subscriptions/cancel/CancelSubscription.css';
 
 function CancelSuccess() {
     const navigate = useNavigate();

@@ -5,14 +5,14 @@ import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
 import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
-import Plans from '@/pages/subscriptions/Plans.tsx';
-import PlanDetails from '@/pages/subscriptions/PlanDetails';
-import Checkout from '@/pages/subscriptions/Checkout';
-import CheckoutSuccess from '@/pages/subscriptions/CheckoutSuccess';
-import CancelSubscription from '@/pages/subscriptions/CancelSubscription';
-import CancelSuccess from '@/pages/subscriptions/CancelSuccess';
-import SubscriptionDetails from '@/pages/subscriptions/SubscriptionDetails';
-import FamilyManagement from '@/pages/subscriptions/FamilyManagement';
+import Plans from '@/pages/subscriptions/plans/Plans';
+import PlanDetails from '@/pages/subscriptions/plans/PlanDetails';
+import Checkout from '@/pages/subscriptions/checkout/Checkout';
+import CheckoutSuccess from '@/pages/subscriptions/checkout/CheckoutSuccess';
+import CancelSubscription from '@/pages/subscriptions/cancel/CancelSubscription';
+import CancelSuccess from '@/pages/subscriptions/cancel/CancelSuccess';
+import SubscriptionDetails from '@/pages/subscriptions/subscriptions-details/SubscriptionDetails';
+import FamilyManagement from '@/pages/subscriptions/family/FamilyManagement';
 
 
 import Dashboard from '@/pages/user/Dashboard';
