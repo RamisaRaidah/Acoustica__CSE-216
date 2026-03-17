@@ -15,12 +15,12 @@ logging.basicConfig(
 ### create_playlist ###
 def create_playlist(title, description, visibility, cover_picture, songs):
     if not title or not visibility:
-        return {"error": "missing required fields"}, 400
+        return {"error": "Missing required fields!"}, 500
     
     connection = get_db_connection()
 
     if connection is None:
-        return {"error": "database connection failed"}, 500
+        return {"error": "Failed to create the playlist!"}, 500
     
     playlist_id = None
     cover_picture_ext = None
@@ -28,6 +28,14 @@ def create_playlist(title, description, visibility, cover_picture, songs):
     try:
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("""
+                    SELECT 1 FROM playlist 
+                    WHERE LOWER(REPLACE(title, ' ', '')) = %s AND creator_id = %s
+                """, (title.lower().replace(' ', ''), get_jwt_identity()))
+
+                if cursor.fetchone():
+                    return {"error": "Playlist with this title exists!"}, 400
+
                 # Uploading to db
                 cursor.execute("""
                     INSERT INTO playlist (title, creator_id, description, cover_picture, visibility)
@@ -84,12 +92,12 @@ def create_playlist(title, description, visibility, cover_picture, songs):
         connection.rollback()
         if cover_picture:
             storage.delete_file_from_storage(f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}")
-        return {"error": "playlist creation failed"}, 500
+        return {"error": "Failed to create the playlist!"}, 500
     
     finally:
         release_connection(connection)
     
-    return {"message": "playlist created successfully"}, 201
+    return {"message": "The playlist is created successfully!"}, 201
 
 def get_playlist_details(playlist_id):
     return (f"get_playlist_details {playlist_id}")

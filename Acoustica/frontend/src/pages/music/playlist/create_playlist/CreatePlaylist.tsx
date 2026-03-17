@@ -9,7 +9,6 @@ import default_cover from '@/assets/images/deco/Default_Cover_Picture.png';
 export default function CreatePlaylist() {
     const formRef = useRef<HTMLFormElement>(null);
     const [creating, setCreating] = useState<boolean>(false);
-    const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
     const [title, setTitle] = useState<string>('');
     const [cover_picture, setCoverPicture] = useState<string>('');
@@ -24,6 +23,12 @@ export default function CreatePlaylist() {
         { label: "Private", value: "private" },
         { label: "Public", value: "public" }
     ];
+
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    function showAlert(message: string) {
+        setAlertMessage(null);
+        setTimeout(() => setAlertMessage(message), 10);
+    }
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
@@ -60,13 +65,18 @@ export default function CreatePlaylist() {
         try {
             setCreating(true);
             const response = await createPlaylist(formData);
-            if (response) setAlertMessage("The playlist is created successfully!");
-        } catch (err) {
-            console.log('ERROR', err);
-            setAlertMessage("Failed to create the playlist!");
-        } finally {
-            setCreating(false);
-            resetForm();
+            if (response) {
+                resetForm();
+                showAlert("The playlist is created successfully!"); 
+            }
+        } 
+        catch (err) {
+            const message = err instanceof Error ? err.message : "Failed to create the playlist!";
+            console.log('ERROR: ', message);
+            showAlert(message);
+        } 
+        finally {
+            setCreating(false);  
         }
     }
 
