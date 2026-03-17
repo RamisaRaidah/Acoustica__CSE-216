@@ -434,4 +434,19 @@ def search_user_by_email(email):
         return {"error": "User not found"}, 404
     return dict(result), 200
 
+def get_listener_type(user_id):
+    result=execute_sql(
+        """
+            SELECT listener_type
+            FROM listener
+            WHERE listener_id=%s
+        """,
+        (user_id,),fetch_one=True
+    )
+
+    if not result:
+        return {"error":"User is not a listener"},403
+    
+    return {"listener_type": result["listener_type"]}, 200
+
 ### Helper functions ###

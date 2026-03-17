@@ -103,3 +103,7 @@ export async function leaveFamily() {
         method: 'DELETE'
     });
 }
+
+export async function getListenerType(){
+    return api.request('/api/subscriptions/listener-type')
+}

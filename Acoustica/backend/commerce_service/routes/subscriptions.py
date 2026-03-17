@@ -80,3 +80,10 @@ def search_user_route():
         return jsonify({"error": "email is required"}), 400
     result, status = subscriptions.search_user_by_email(email)
     return jsonify(result), status
+
+@subscriptions_bp.get("/api/subscriptions/listener-type")
+@jwt_required()
+def get_listener_type_route():
+    user_id=get_jwt_identity()
+    result, status=subscriptions.get_listener_type(user_id)
+    return jsonify(result),status

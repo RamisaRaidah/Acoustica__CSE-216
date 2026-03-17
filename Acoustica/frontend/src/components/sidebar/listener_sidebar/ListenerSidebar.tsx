@@ -12,10 +12,26 @@ import community_button_img from '@/assets/images/Sidebar_Buttons/Community_Butt
 import subscription_button_img from '@/assets/images/Sidebar_Buttons/Subscription_Button.png';
 import report_button_img from '@/assets/images/Sidebar_Buttons/Report_Button.png';
 import settings_button_img from '@/assets/images/Sidebar_Buttons/Settings_Button.png';
+import { getListenerType } from '@/services/commerce_service/subscriptions';
+import { useEffect, useState } from 'react';
 
 export default function ListenerSidebar() {
     const { theme, toggleTheme } = useTheme();
+    const [listener_type, setListenerType]=useState<'free'|'premium'>('free');
 
+    useEffect(() => {
+    const fetchListenerType = async () => {
+        try {
+                const response = await getListenerType();
+                setListenerType(response["listener_type"]);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchListenerType();
+    }, []);
+    
     return (
         <div className="sidebar">
             <div className="app_info">
@@ -29,7 +45,12 @@ export default function ListenerSidebar() {
                 <Link to="/music/playlists" className="playlist_button"><img src={playlist_button_img} className="icon" />Playlists</Link>
                 <Link to="/artists" className="artist_button"><img src={artist_button_img} className="icon" />Artists</Link>
                 <Link to="#" className="community_button"><img src={community_button_img} className="icon" />Community</Link>
-                <Link to="/plans" className="subscription_button"><img src={subscription_button_img} className="icon" />Subscriptions</Link>
+                <Link 
+                    to={listener_type=="free"?"/plans":"/subscription-details"} 
+                    className="subscription_button">
+                    <img src={subscription_button_img} 
+                    className="icon" />Subscriptions
+                </Link>
             </div>
 
             <div className="sidebar_navigation_bottom">
