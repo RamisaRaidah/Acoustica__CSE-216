@@ -1,7 +1,7 @@
 import { getPlanDetails, GetPlanDetailsResponse } from "@/services/commerce_service/subscriptions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "@/pages/subscriptions/Plans.css"
+import "@/pages/subscriptions/plans/Plans.css"
 import person from "@/assets/images/commerce/Individual_Plan.png"
 import family from "@/assets/images/commerce/Family_Plan.png"
 

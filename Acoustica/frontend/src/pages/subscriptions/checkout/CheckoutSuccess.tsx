@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import '@/pages/subscriptions/Checkout.css';
+import '@/pages/subscriptions/checkout/Checkout.css';
 
 function CheckoutSuccess() {
     const navigate = useNavigate();

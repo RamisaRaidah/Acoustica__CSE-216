@@ -29,6 +29,23 @@ interface CreatePaymentIntentResponse {
     plan_type: string;
 }
 
+export interface FamilyMember {
+    member_id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    profile_picture: string | null;
+    is_owner: boolean;
+}
+
+export interface FamilyData {
+    family_id: number;
+    owner_id: number;
+    is_owner: boolean;
+    max_members: number;
+    members: FamilyMember[];
+}
+
 export async function getPlanDetails():Promise<GetPlanDetailsResponse[]>{
     return api.request<GetPlanDetailsResponse[]>('/api/subscriptions/plans');
 }
@@ -85,4 +102,8 @@ export async function leaveFamily() {
     return api.request('/api/subscriptions/leave-family', {
         method: 'DELETE'
     });
+}
+
+export async function getListenerType(){
+    return api.request('/api/subscriptions/listener-type')
 }

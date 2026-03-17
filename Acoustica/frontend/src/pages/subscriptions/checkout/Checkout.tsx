@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { getPlanDetails, createPaymentIntent, GetPlanDetailsResponse } from '@/services/commerce_service/subscriptions';
-import '@/pages/subscriptions/Checkout.css';
+import '@/pages/subscriptions/checkout/Checkout.css';
 import { useTheme } from '@/contexts/ThemeContext';
 
 // ===== INNER FORM =====
