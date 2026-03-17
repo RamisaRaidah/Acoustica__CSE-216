@@ -33,10 +33,10 @@ body {
   top: 10vh;
   left: 20vw;
   width: 78vw;
-  padding: 2vw;
+  padding: 2vw 1vw;
   box-sizing: border-box;
   border-radius: 0.5vw;
-  background: var(--content-bg);
+  background: transparent;
   overflow-y: scroll;
 }
 

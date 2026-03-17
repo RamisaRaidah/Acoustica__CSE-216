@@ -99,14 +99,41 @@ def create_playlist(title, description, visibility, cover_picture, songs):
     
     return {"message": "The playlist is created successfully!"}, 201
 
+### get_playlist_details ###
 def get_playlist_details(playlist_id):
-    return (f"get_playlist_details {playlist_id}")
+    command = """
+        SELECT asset_id, title, description, creation_date, cover_picture, visibility, view_count 
+        FROM playlist 
+        WHERE playlist_id = %s
+    """
+
+    result = execute_sql(command, (playlist_id,), fetch_one = True)
+
+    if result:
+        return {'asset_id': result['asset_id'], 'title': result['title'], 'description': result['description'], 'creation_date': result['creation_date'], 'cover_picture_url': storage.generate_signed_url(result['cover_picture']), 'visibility': result['visibility'], 'view_count': result['view_count']}, 200
+    else:
+        return {"error": "Couldn't fetch data!"}, 500
 
 def edit_playlist(playlist_id):
     return (f"edit_playlist {playlist_id}")
 
 def delete_playlist(playlist_id):
     return (f"delete_playlist {playlist_id}")
+
+### get_playlist_songs ###
+def get_playlist_songs(playlist_id):
+    command = """
+        SELECT s.song_id, s.album_id, s.title, a.title album_name, (u.first_name || ' ' || u.last_name) artist_name, s.length
+        FROM playlist_song p JOIN song s ON (p.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
+        WHERE playlist_id = %s
+    """
+
+    result = execute_sql(command, (playlist_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "Couldn't load data!"}, 500
 
 def add_song_to_playlist(playlist_id,song_id):
     return (f"add_song_to_playlist {playlist_id} {song_id}")
@@ -127,11 +154,15 @@ def get_my_playlists():
     """
 
     result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
-    playlists = []
-    for r in result:
-        playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
 
-    return playlists, 200
+    if result:
+        playlists = []
+        for r in result:
+            playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
+
+        return playlists, 200
+    else:
+        return {"error": "Couldn't fetch data!"}, 500
         
 
 ### Helper functions ###

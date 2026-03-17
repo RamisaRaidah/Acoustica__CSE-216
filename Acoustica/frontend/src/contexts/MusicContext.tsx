@@ -3,7 +3,7 @@ import { getSongAudio } from "@/services/music_service/songs";
 import { getAlbumCoverPicture } from "@/services/music_service/albums";
 import { getLastListening } from "@/services/user_service/users";
 
-interface Song {
+export interface Song {
     song_id: number;
     album_id: number;
     title: string;

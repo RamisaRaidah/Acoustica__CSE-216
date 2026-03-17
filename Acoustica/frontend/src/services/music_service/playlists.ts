@@ -16,3 +16,31 @@ export interface GetMyPlaylistsResponse {
 export async function getMyPlaylists(): Promise<GetMyPlaylistsResponse[]> {
     return api.request('/api/music/playlists/me');
 }
+
+export interface GetPlaylistDatailsResponse {
+    playlist_id: number;
+    asset_id: number;
+    title: string;
+    description: string;
+    creation_date: string;
+    cover_picture_url: string;
+    visibility: string;
+    view_count: number;
+}
+
+export async function getPlaylistDatails(playlistId: number): Promise<GetPlaylistDatailsResponse> {
+    return api.request(`/api/music/playlists/${playlistId}`);
+}
+
+export interface GetPlaylistSongsResponse {
+    song_id: number;
+    album_id: number;
+    title: string;
+    album_name: string;
+    artist_name: string;
+    length: number;
+}
+
+export async function getPlaylistSongs(playlistId: number): Promise<GetPlaylistSongsResponse[]> {
+    return api.request(`/api/music/playlists/${playlistId}/songs`);
+}

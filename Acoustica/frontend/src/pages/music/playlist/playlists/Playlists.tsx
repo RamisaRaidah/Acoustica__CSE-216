@@ -1,12 +1,13 @@
 import "@/pages/music/playlist/playlists/Playlists.css"
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMyPlaylists, GetMyPlaylistsResponse } from "@/services/music_service/playlists";
 
 export default function Playlists() {
     const [playlists, setPlaylists] = useState<GetMyPlaylistsResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function loadPlaylists() {
@@ -40,7 +41,7 @@ export default function Playlists() {
                                 <div className="playlist-card-cover">
                                     <img src={playlist.cover_picture_url} />
                                 </div>
-                                <div className="playlist-card-info">
+                                <div className="playlist-card-info" onClick={() => navigate(`/music/playlists/${playlist.playlist_id}`)}>
                                     <p className="playlist-card-title">{playlist.title}</p>
                                 </div>
                             </div>

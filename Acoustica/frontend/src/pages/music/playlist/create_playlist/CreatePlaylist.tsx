@@ -119,7 +119,6 @@ export default function CreatePlaylist() {
                             type="text"
                             name="playlist_title"
                             placeholder="Enter playlist title"
-                            required
                             onChange={e => setTitle(e.target.value)}
                         />
                     </div>
@@ -215,7 +214,7 @@ export default function CreatePlaylist() {
                                         </div>
                                     )}
 
-                                    <input type="hidden" name="visibility" value={privacy} required />
+                                    <input type="hidden" name="visibility" value={privacy} />
                                 </div>
                             </div>
 
