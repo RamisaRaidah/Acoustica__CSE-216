@@ -5,27 +5,12 @@ import {
     getMyFamily,
     searchUserByEmail,
     addFamilyMember,
-    leaveFamily
+    leaveFamily,
+    FamilyData
 } from '@/services/commerce_service/subscriptions';
 import '@/pages/subscriptions/family/FamilyManagement.css';
 import family_img from '@/assets/images/commerce/Family_Plan.png'
 
-interface FamilyMember {
-    member_id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    profile_picture: string | null;
-    is_owner: boolean;
-}
-
-interface FamilyData {
-    family_id: number;
-    owner_id: number;
-    is_owner: boolean;
-    max_members: number;
-    members: FamilyMember[];
-}
 
 interface SearchResult {
     user_id: number;
