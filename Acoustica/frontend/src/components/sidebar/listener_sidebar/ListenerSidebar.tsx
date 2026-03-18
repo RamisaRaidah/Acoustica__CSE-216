@@ -12,25 +12,14 @@ import community_button_img from '@/assets/images/Sidebar_Buttons/Community_Butt
 import subscription_button_img from '@/assets/images/Sidebar_Buttons/Subscription_Button.png';
 import report_button_img from '@/assets/images/Sidebar_Buttons/Report_Button.png';
 import settings_button_img from '@/assets/images/Sidebar_Buttons/Settings_Button.png';
-import { getListenerType } from '@/services/commerce_service/subscriptions';
-import { useEffect, useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ListenerSidebar() {
     const { theme, toggleTheme } = useTheme();
-    const [listener_type, setListenerType]=useState<'free'|'premium'>('free');
+    const { user } = useAuth();
+    const listenerType = user?.listener_type ?? 'free';
 
-    useEffect(() => {
-    const fetchListenerType = async () => {
-        try {
-                const response = await getListenerType();
-                setListenerType(response["listener_type"]);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        fetchListenerType();
-    }, []);
+    console.log(listenerType);
     
     return (
         <div className="sidebar">
@@ -46,7 +35,7 @@ export default function ListenerSidebar() {
                 <Link to="/artists" className="artist_button"><img src={artist_button_img} className="icon" />Artists</Link>
                 <Link to="#" className="community_button"><img src={community_button_img} className="icon" />Community</Link>
                 <Link 
-                    to={listener_type=="free"?"/plans":"/subscription-details"} 
+                    to={listenerType=="free"?"/plans":"/subscription-details"} 
                     className="subscription_button">
                     <img src={subscription_button_img} 
                     className="icon" />Subscriptions

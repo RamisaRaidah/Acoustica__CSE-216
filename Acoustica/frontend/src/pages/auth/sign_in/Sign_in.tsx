@@ -35,7 +35,8 @@ function SignIn() {
                 email: email,
                 token: response.token,
                 user_type: response.user_type,
-                onboarding_done: response.onboarding_done
+                onboarding_done: response.onboarding_done,
+                listener_type: response.listener_type ?? undefined
               });
 
             const chosenTheme = response.theme || 'light';

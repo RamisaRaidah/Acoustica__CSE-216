@@ -6,7 +6,8 @@ interface SignInResponse{
     user_id: number;
     user_type: 'listener' | 'artist' | 'admin';
     theme: string;
-    onboarding_done: boolean;
+    onboarding_done: boolean,
+    listener_type: "free" | "premium" | undefined;
 }
 
 interface SignUpResponse{

@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import Searchbar from '@/components/searchbar/Searchbar';
 import shop_button_img from "@/assets/images/Topbar_Buttons/Shop_Button.png";
 import explore_button_img from "@/assets/images/Topbar_Buttons/Explore_Button.png";
-import notification_button_img from "@/assets/images/Topbar_Buttons/Notification_Button.png";
 import { useMusic } from '@/contexts/MusicContext';
+import Notifications from '@/components/notifications/Notifications';
 
 export default function ListenerTopbar() {
     const { theme, toggleTheme } = useTheme();
@@ -44,7 +44,7 @@ export default function ListenerTopbar() {
             <div className="topbar_right">
                 <Link to="#" className="explore_button"><img src={explore_button_img} className="icon" />Explore</Link>
                 <button className="toggle_button" onClick={toggleTheme}>Theme</button>
-                <Link to="#" className="notification_button"><img src={notification_button_img} className="icon" /></Link>
+                <Notifications/>
                 <div ref={profileWrapperRef} className="profile_wrapper">
                     <div className="profile_picture" onClick={(e) => {
                         e.preventDefault();

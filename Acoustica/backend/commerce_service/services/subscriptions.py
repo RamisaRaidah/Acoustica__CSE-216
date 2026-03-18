@@ -4,6 +4,7 @@ from db import execute_sql,get_db_connection,release_connection
 import logging
 import sys
 from flask import request
+from user_service.services.notifications import create_notification
 
 logging.basicConfig(
     level = logging.INFO,
@@ -106,6 +107,11 @@ def subscribe(user_id, plan_id, auto_renewal, payment_method, amount):
                     """,
                     (user_id,)
                 )
+
+                                
+        create_notification(user_id,
+                                    f"""Your {plan['plan_type']} plan is now active! Enjoy premium access for the next {plan['plan_validity']} days"""
+                                    )
 
         return {
             "message": "Subscription successful",
@@ -358,14 +364,14 @@ def add_members(user_id,user2_id):
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute("""
-                                SELECT f.family_id, COUNT(fm.member_id) AS members,s.plan_id
+                                SELECT f.family_id, COUNT(fm.member_id) AS members,s.plan_id,f.family_name
                                 FROM family_member fm
                                 JOIN family f ON f.family_id=fm.family_id
                                 JOIN plan_subscription s ON s.subscription_id=f.subscription_id 
                                 WHERE f.parent_account_id=%s 
                                 AND s.end_date>=CURRENT_DATE 
                                 AND s.is_active=true
-                                GROUP BY f.family_id, s.plan_id
+                                GROUP BY f.family_id, f.family_name, s.plan_id
                             """,(user_id,))
                 
     
@@ -375,9 +381,10 @@ def add_members(user_id,user2_id):
                 f_id=family["family_id"]
                 cnt=family["members"]
                 p_id=family["plan_id"]
+                family_name=family["family_name"]
 
                 cursor.execute("""
-                                    SELECT max_members
+                                    SELECT max_members,plan_validity
                                     FROM plan
                                     WHERE plan_id=%s
                                 """,(p_id,))
@@ -413,6 +420,9 @@ def add_members(user_id,user2_id):
                                 INSERT INTO family_member (family_id,member_id)
                                 VALUES( %s, %s)
                                 """,(f_id,user2_id))
+                
+        create_notification(int(user2_id),
+                        f"You have been added to {family_name} family! You now enjoy {plan['plan_validity']} days of premium access.")      
         return {"message": "Member added successfully"}, 200
     except Exception as e:
             logging.error(f"Member was not added {e}")

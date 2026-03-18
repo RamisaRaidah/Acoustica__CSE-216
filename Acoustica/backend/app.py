@@ -8,7 +8,7 @@ import os
 import sys
 
 
-from user_service.routes import auth, users, listeners, artists, admins
+from user_service.routes import auth, users, listeners, artists, admins, notifications
 from music_service.routes import songs, albums, playlists
 from commerce_service.routes import subscriptions, transactions, shop
 from social_service.routes import activities, posts, social
@@ -62,6 +62,7 @@ app.register_blueprint(subscriptions.subscriptions_bp)
 app.register_blueprint(transactions.transactions_bp)
 app.register_blueprint(users.users_bp)
 app.register_blueprint(storage.storage_bp)
+app.register_blueprint(notifications.notifications_bp)
 
 app.register_blueprint(test_shanon.test_shanon_bp)
 app.register_blueprint(test_arana.test_arana_bp)

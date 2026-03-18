@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSubscriptionDetails, cancelSubscription } from '@/services/commerce_service/subscriptions';
 import '@/pages/subscriptions/cancel/CancelSubscription.css';
+import { useAuth } from '@/contexts/AuthContext';
 
 function CancelSubscription() {
     const navigate = useNavigate();
@@ -10,6 +11,8 @@ function CancelSubscription() {
     const [cancelling, setCancelling] = useState(false);
     const [error, setError] = useState('');
     const [confirmed, setConfirmed] = useState(false);
+
+    const {updateUser}=useAuth();
 
     useEffect(() => {
         const load = async () => {
@@ -34,6 +37,7 @@ function CancelSubscription() {
         setError('');
         try {
             await cancelSubscription(subscription.subscription_id);
+            updateUser({"listener_type":"free"});
             navigate('/cancel/success');
         } catch (err) {
             setError('Failed to cancel subscription. Please try again.');

@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { getPlanDetails, createPaymentIntent, GetPlanDetailsResponse } from '@/services/commerce_service/subscriptions';
+import { getPlanDetails, createPaymentIntent, GetPlanDetailsResponse, getSubscriptionDetails } from '@/services/commerce_service/subscriptions';
 import '@/pages/subscriptions/checkout/Checkout.css';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 // ===== INNER FORM =====
 function CheckoutForm({ plan, clientSecret, onSuccess }: {
@@ -133,6 +134,8 @@ function Checkout() {
     const [error, setError] = useState('');
     const [alreadySubscribed, setAlreadySubscribed] = useState(false);
 
+    const {updateUser}=useAuth();
+
     useEffect(() => {
         const init = async () => {
             try {
@@ -190,7 +193,25 @@ function Checkout() {
                 <CheckoutForm
                     plan={plan}
                     clientSecret={clientSecret}
-                    onSuccess={() => navigate('/checkout/success')}
+                    onSuccess={async () => {
+                        
+                        
+                        let attempts = 0;
+                        while (attempts < 10) {
+                            try {
+                                await getSubscriptionDetails();
+                                updateUser({ listener_type: 'premium' });
+                                navigate('/checkout/success');
+                                return;
+                            } catch {
+                                attempts++;
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+                            }
+                        }
+                        
+                        setError('Payment was successful but subscription setup is taking longer than expected. Please check your subscription page in a moment.');
+                        setLoading(false);
+                    }}
                 />
             </Elements>
         </div>

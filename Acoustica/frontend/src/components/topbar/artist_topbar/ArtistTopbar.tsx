@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Searchbar from '@/components/searchbar/Searchbar';
 import shop_button_img from "@/assets/images/Topbar_Buttons/Shop_Button.png";
 import wallet_button_img from "@/assets/images/Topbar_Buttons/Wallet_Button.png";
-import notification_button_img from "@/assets/images/Topbar_Buttons/Notification_Button.png";
+import Notifications from '@/components/notifications/Notifications';
 
 export default function ArtistTopbar() {
     const { theme, toggleTheme } = useTheme();
@@ -34,12 +34,12 @@ export default function ArtistTopbar() {
                 <Link to="#" className="shop_button"><img src={shop_button_img} className="icon" />Shop</Link>
             </div>
             <div className="topbar_center">
-                <Searchbar song album artist />
+                <Searchbar prompt="Search..." song album artist />
             </div>
             <div className="topbar_right">
                 <Link to="#" className="wallet_button"><img src={wallet_button_img} className="icon" />Wallet</Link>
                 <button className="toggle_button" onClick={toggleTheme}>Theme</button>
-                <Link to="#" className="notification_button"><img src={notification_button_img} className="icon" /></Link>
+                <Notifications/>
                 <div ref={profileWrapperRef} className="profile_wrapper">
                     <div className="profile_picture" onClick={(e) => {
                         e.preventDefault();

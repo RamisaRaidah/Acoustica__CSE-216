@@ -247,6 +247,7 @@ function Onboarding(){
                             value={phone_number}
                             onChange={(e:ChangeEvent<HTMLInputElement>)=>setPhoneNumber(e.target.value)} 
                             placeholder="e.g. +1234567890" 
+                            required
                         />
                     </div>
 
@@ -273,6 +274,7 @@ function Onboarding(){
                             name="date_of_birth"
                             value={date_of_birth}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => setDateOfBirth(e.target.value)}
+                            required
                         />
                     </div>
 
@@ -283,6 +285,7 @@ function Onboarding(){
                             name="theme"
                             value={themeForm}
                             onChange={(e: ChangeEvent<HTMLSelectElement>) => setTheme(e.target.value as 'light'|'dark')}
+                            required
                         >
                             <option value="light">Light</option>
                             <option value="dark">Dark</option>
@@ -300,6 +303,7 @@ function Onboarding(){
                                 value={stage_name}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setStageName(e.target.value)}
                                 placeholder="Your artist name"
+                                required
                             />
                         </div>
 
@@ -312,6 +316,7 @@ function Onboarding(){
                                 value={bank_account}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setBankAccount(e.target.value)}
                                 placeholder="Your bank account number"
+                                required
                             />
                         </div>
                         </>

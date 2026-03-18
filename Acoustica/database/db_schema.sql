@@ -383,7 +383,8 @@ CREATE TABLE IF NOT EXISTS "notification" (
   notification_id SERIAL CONSTRAINT pk_notification PRIMARY KEY,
   user_id INT CONSTRAINT fk_notification_user_id REFERENCES "users"(user_id) ON DELETE CASCADE,
   text TEXT,
-  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_read BOOLEAN DEFAULT FALSE
 );
 
 

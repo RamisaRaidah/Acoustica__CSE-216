@@ -5,6 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { MusicProvider } from '@/contexts/MusicContext';
 import { ScrollProvider } from '@/contexts/ScrollContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 import '@/styles/global.css';
 import '@/styles/variable.css';
 
@@ -14,13 +15,15 @@ if (!root) throw new Error('Root not found');
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <AuthProvider>
-      <ThemeProvider>
-        <MusicProvider>
-          <ScrollProvider>
-            <App />
-          </ScrollProvider>
-        </MusicProvider>
-      </ThemeProvider>
+      <NotificationProvider>
+        <ThemeProvider>
+          <MusicProvider>
+            <ScrollProvider>
+              <App />
+            </ScrollProvider>
+          </MusicProvider>
+        </ThemeProvider>
+      </NotificationProvider>
     </AuthProvider>
   </React.StrictMode>
 );

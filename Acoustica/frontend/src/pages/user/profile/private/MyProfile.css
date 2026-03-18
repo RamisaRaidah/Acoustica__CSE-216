@@ -18,15 +18,6 @@ html.dark {
     --border-color: rgba(255,255,255,0.15);
     --card-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
-.profile-page {
-    background: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding-top: 12vh;
-    padding-left: 22vw;
-    padding-bottom: 14vh;
-    padding-right: 2rem;
-}
 
 
 /* ---- Header ---- */
@@ -226,3 +217,25 @@ html.dark {
 }
 
 
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.loading::after {
+    content: '';
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(200, 98, 42, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}

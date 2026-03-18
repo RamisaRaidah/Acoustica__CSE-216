@@ -7,6 +7,7 @@ interface User {
     user_type: "listener" | "artist" | "admin";
     onboarding_done: boolean;
     token: string;
+    listener_type?: 'free' | 'premium';
 }
 
 interface AuthContextType {

@@ -96,6 +96,15 @@ def sign_in(email, password):
     user = result[0]
     if not check_password(password, user["password"]):
         return {"error": "Invalid email or password"}, 401
+    
+    listener_type = None
+    if user["user_type"] == "listener":
+        listener = execute_sql(
+            "SELECT listener_type FROM listener WHERE listener_id=%s",
+            (user["user_id"],), fetch_one=True
+        )
+        if listener:
+            listener_type = listener["listener_type"]
 
     access_token = create_access_token(
         identity=str(user["user_id"]), 
@@ -110,7 +119,8 @@ def sign_in(email, password):
                 "user_id": user["user_id"], 
                 "user_type": user["user_type"],
                 "theme": user["theme"],
-                "onboarding_done": user["onboarding_done"] 
+                "onboarding_done": user["onboarding_done"],
+                "listener_type": listener_type
             },  200
 
 ###################################################### sign_out #############################################################
