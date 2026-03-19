@@ -43,10 +43,29 @@ def get_song_details_route(song_id):
     result, status = songs.get_song_details(song_id)
     return jsonify(result),status
 
+### edit_song_route ###
 @songs_bp.put("/api/music/songs/<song_id>")
 @jwt_required()
 def edit_song_route(song_id):
-    return jsonify(f"edit_song {song_id}")
+    title = request.form.get('song_title')
+    album = request.form.get('album_id')
+    added_collaborators = json.loads(request.form.get('added_collaborators'))
+    deleted_collaborators = json.loads(request.form.get('deleted_collaborators'))
+    language = request.form.get('language')
+    added_genres = request.form.getlist('added_genres')
+    deleted_genres = request.form.getlist('deleted_genres')
+    added_moods = request.form.getlist('added_moods')
+    deleted_moods = request.form.getlist('deleted_moods')
+    added_instruments = request.form.getlist('added_instruments')
+    deleted_instruments = request.form.getlist('deleted_instruments')
+    release_date = request.form.get('release_date')
+    lyrics = request.files.get('lyrics')
+    copyright_certificate = request.files.get('copyright_certificate')
+    lyrics_action = request.form.get('lyrics_action')
+    copyright_certificate_action = request.form.get('copyright_certificate_action')
+
+    result, status = songs.edit_song(song_id, title, album, added_collaborators, deleted_collaborators, language, added_genres, deleted_genres, added_moods, deleted_moods, added_instruments, deleted_instruments, release_date, lyrics, copyright_certificate, lyrics_action, copyright_certificate_action)
+    return jsonify(result), status
 
 ### delete_song_route ###
 @songs_bp.delete("/api/music/songs/<song_id>")

@@ -27,8 +27,9 @@ def create_album_route():
     release_date = request.form.get('release_date')
     cover_picture = request.files.get('cover_picture')
     copyright_certificate = request.files.get('copyright_certificate')
+    visibility = request.form.get('visibility')
 
-    result, status = albums.create_album(title, description, release_date, cover_picture, copyright_certificate)
+    result, status = albums.create_album(title, description, release_date, cover_picture, copyright_certificate, visibility)
     return jsonify(result), status
 
 ### get_albums_route ###
@@ -59,16 +60,35 @@ def get_my_albums_route():
     result, status = albums.get_my_albums()
     return jsonify(result), status
 
+### get_album_songs_route ###
+@albums_bp.get("/api/music/albums/<album_id>/songs")
+@jwt_required()
+def get_album_songs_route(album_id):
+    result, status = albums.get_album_songs(album_id)
+    return jsonify(result), status
+
+### edit_album_route ###
 @albums_bp.put("/api/music/albums/<album_id>")
 @jwt_required()
 def edit_album_route(album_id):
-    result, status = albums.get_album_details(album_id)
+    title = request.form.get('album_title')
+    description = request.form.get('description')
+    release_date = request.form.get('release_date')
+    cover_picture = request.files.get('cover_picture')
+    copyright_certificate = request.files.get('copyright_certificate')
+    visibility = request.form.get('visibility')
+    cover_action = request.form.get('cover_action')
+    copyright_certificate_action = request.form.get('copyright_certificate_action')
+
+    result, status = albums.edit_album(album_id, title, description, release_date, cover_picture, copyright_certificate, visibility, cover_action, copyright_certificate_action)
     return jsonify(result), status
 
+### delete_album_route ###
 @albums_bp.delete("/api/music/albums/<album_id>")
 @jwt_required()
 def delete_album_route(album_id):
-    return jsonify(f"delete_album {album_id}")
+    result, status = albums.delete_album(album_id)
+    return jsonify(result), status
 
 @albums_bp.post("/api/music/albums/<album_id>/songs/<song_id>")
 @jwt_required()

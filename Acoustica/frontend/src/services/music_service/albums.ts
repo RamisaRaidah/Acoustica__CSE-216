@@ -18,10 +18,10 @@ export async function getAlbums(): Promise<GetAlbumsResponse[]> {
 
 export interface GetAlbumDetailsResponse {
     album_id: number;
-    asset_id: number;
     title: string;
     description: string;
     owner_id: number;
+    owner_name: string;
     release_date: string;
     visibility: string;
 }
@@ -46,3 +46,31 @@ export interface GetMyAlbumsResponse {
 export async function getMyAlbums(): Promise<GetMyAlbumsResponse[]> {
     return api.request('/api/music/albums/me');
 }
+
+export interface GetAlbumSongsResponse {
+    song_id: number;
+    album_id: number;
+    title: string;
+    album_name: string;
+    artist_name: string;
+    length: number;
+    play_count: number;
+}
+
+export async function getAlbumSongs(albumId: number): Promise<GetAlbumSongsResponse[]> {
+    return api.request(`/api/music/albums/${albumId}/songs`);
+}
+
+export async function deleteAlbum(albumId: number) {
+    return api.request(`/api/music/albums/${albumId}`, {
+        method: 'DELETE'
+    })
+}
+
+export async function editAlbum(albumId: number, formData: FormData) {
+    return api.request(`/api/music/albums/${albumId}`, {
+        method: 'PUT',
+        body: formData
+    })
+}
+

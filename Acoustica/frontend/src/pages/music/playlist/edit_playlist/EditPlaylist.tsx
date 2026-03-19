@@ -1,6 +1,6 @@
 import '@/pages/music/playlist/edit_playlist/EditPlaylist.css';
 import { useState, useRef, useEffect } from "react";
-import { getPlaylistDatails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
+import { getPlaylistDetails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
 import Alert from "@/components/alert/TwoButtonAlert";
 import Searchbar, { SongType } from "@/components/searchbar/Searchbar";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
@@ -33,7 +33,7 @@ export default function EditPlaylist() {
     ];
 
     useEffect(() => {
-        getPlaylistDatails(playlistId).then(info => {
+        getPlaylistDetails(playlistId).then(info => {
             setTitle(info.title);
             setDescription(info.description);
             setCoverPicture(info.cover_picture_url);
@@ -79,11 +79,11 @@ export default function EditPlaylist() {
         formData.append('deleted_songs', JSON.stringify(deletedSongId));
         formData.append('cover_action', coverAction);
 
-        if (formData.get('playlist_title')?.toString().trim() === '') {
-            setAlertMessage('Please select a title!');
+        if (!formData.get('playlist_title')?.toString().trim()) {
+            setAlertMessage('Please enter a title!');
             return;
         }
-        else if (formData.get('visibility')?.toString().trim() === '') {
+        else if (!formData.get('visibility')?.toString().trim()) {
             setAlertMessage('Please select visibility!');
             return;
         }

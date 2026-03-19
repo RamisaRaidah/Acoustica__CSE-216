@@ -1,12 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
 :root {
-    --create-album-input-bg: rgba(0, 0, 0, 0.06);
-    --create-album-input-border: rgba(0, 0, 0, 0.15);
+    --create-album-input-bg: rgba(0, 0, 0, 0.04);
+    --create-album-input-border: rgba(0, 0, 0, 0.12);
+
+    /* orange accent system */
+    --create-album-orange: #e07b2a;
+    --create-album-orange-deep: #c95f0e;
+    --create-album-orange-glow: rgba(224, 123, 42, 0.18);
+
+    /* text */
+    --create-album-text: #1a1109;
+    --create-album-subtext: rgba(26, 17, 9, 0.55);
+    --create-album-surface: #ffffff;
 }
 
 .dark {
-    --create-album-input-bg: rgba(255, 255, 255, 0.08);
+    --create-album-input-bg: rgba(255, 255, 255, 0.06);
     --create-album-input-border: rgba(255, 255, 255, 0.1);
+    --create-album-text: #f0e8dc;
+    --create-album-subtext: rgba(240, 232, 220, 0.5);
+    --create-album-surface: #1c1410;
 }
+
+/* ── CONTAINER ── */
 
 #create-album-container {
     display: block;
@@ -14,7 +31,11 @@
     overflow-y: visible;
     width: 100%;
     box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--create-album-text);
 }
+
+/* ── HEADER ── */
 
 #create-album-header {
     display: flex;
@@ -23,13 +44,29 @@
     margin-bottom: 5vh;
 }
 
+/* H1 — Playfair Display with orange underline accent */
 #create-album-container h1 {
     margin: 0;
-    font-size: 2vw;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--text-color);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.2vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--create-album-text);
+    position: relative;
+    display: inline-block;
 }
+
+#create-album-container h1::after {
+    content: '';
+    display: block;
+    width: 3.4vw;
+    height: 0.4vh;
+    background: linear-gradient(90deg, var(--create-album-orange), transparent);
+    border-radius: 2px;
+    margin-top: 0.8vh;
+}
+
+/* ── FORM LAYOUT ── */
 
 #create-album-container #create-album-form {
     display: flex;
@@ -40,7 +77,7 @@
 #create-album-container #create-album-form-left {
     display: flex;
     flex-direction: column;
-    gap: 1.5vw;
+    gap: 1.4rem;
     width: 45%;
 }
 
@@ -51,47 +88,72 @@
     width: 35%;
 }
 
+#create-album-container #create-album-form-left-middle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#create-album-container #release-date-container {
+    width: 45%;
+}
+
+#create-album-container #visibility-container {
+    width: 45%;
+}
+
+/* ── FORM GROUPS ── */
+
 #create-album-container .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5vw;
+    gap: 0.5vh;
 }
 
+/* Labels — uppercase micro-caps, spaced, muted */
 #create-album-container .form-group label {
-    font-size: 0.95rem;
+    font-size: clamp(0.62rem, 0.72vw, 0.82rem);
     font-weight: 600;
-    color: var(--text-color);
-    letter-spacing: 0.01em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--create-album-subtext);
 }
 
+/* Text & date inputs */
 #create-album-container .form-group input[type="text"],
 #create-album-container .form-group input[type="date"] {
     width: 100%;
     box-sizing: border-box;
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
-    color: var(--text-color);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--create-album-text);
     background: var(--create-album-input-bg);
     border: 1.5px solid var(--create-album-input-border);
     border-radius: 0.5rem;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 #create-album-container .form-group input[type="text"]:focus,
 #create-album-container .form-group input[type="date"]:focus {
-    border-color: #e07b2a;
-    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
+    border-color: var(--create-album-orange);
+    background: var(--create-album-orange-glow);
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.12);
 }
 
 #create-album-container .form-group input[type="text"]::placeholder {
-    color: var(--text-muted);
-    opacity: 0.6;
+    color: var(--create-album-subtext);
+    font-style: italic;
 }
 
 #create-album-container .form-group input[type="file"] {
     display: none;
 }
+
+/* ── FILE INPUT WRAPPER ── */
 
 #create-album-container .file-input-wrapper {
     display: flex;
@@ -101,24 +163,27 @@
     box-sizing: border-box;
     padding: 0.65rem 1rem;
     background: var(--create-album-input-bg);
-    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    border: 1.5px dashed rgba(224, 123, 42, 0.35);
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 #create-album-container .file-input-wrapper:hover {
-    border-color: #e07b2a;
-    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+    border-color: var(--create-album-orange);
+    box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.1), 0 8px 24px rgba(224, 123, 42, 0.12);
 }
 
 #create-album-container .file-input-wrapper .file-btn {
     flex-shrink: 0;
     padding: 0.35rem 0.9rem;
-    font-size: 0.82rem;
-    font-weight: 600;
+    font-size: clamp(0.62rem, 0.72vw, 0.82rem);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: #fff;
-    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    background: linear-gradient(135deg, #e07b2a 0%, #c95f0e 100%);
     border-radius: 0.35rem;
     white-space: nowrap;
     user-select: none;
@@ -126,31 +191,35 @@
 
 #create-album-container .file-input-wrapper .file-name {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--create-album-subtext);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    opacity: 0.7;
+    font-style: italic;
 }
+
+/* ── COVER PICTURE ── */
 
 #create-album-container #cover-picture {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 0.7rem;
+    border-radius: 0.8rem;
     overflow: hidden;
     background: var(--create-album-input-bg);
-    border: 1.5px dashed rgba(224, 123, 42, 0.4);
+    border: 2px dashed rgba(224, 123, 42, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: relative;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
 }
 
 #create-album-container #cover-picture:hover {
-    border-color: #e07b2a;
-    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+    border-color: var(--create-album-orange);
+    box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.1), 0 8px 24px rgba(224, 123, 42, 0.12);
+    transform: scale(1.01);
 }
 
 #create-album-container #cover-picture input[type="file"] {
@@ -162,15 +231,22 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    color: rgba(224, 123, 42, 0.6);
+    gap: 0.5vh;
+    color: rgba(224, 123, 42, 0.55);
     pointer-events: none;
+    transition: color 0.2s;
+}
+
+#create-album-container #cover-picture:hover #cover-placeholder {
+    color: var(--create-album-orange);
 }
 
 #create-album-container #cover-placeholder span {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
+    font-size: clamp(0.62rem, 0.72vw, 0.82rem);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 #create-album-container #cover-picture img {
@@ -182,31 +258,53 @@
     display: none;
 }
 
+/* ── SUBMIT BUTTON — with shimmer overlay ── */
+
 #create-album-container button[type="submit"] {
     width: 100%;
-    padding: 0.85rem 1.5rem;
-    font-size: 1rem;
+    padding: 1.1vh 1.2vw;
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.72rem, 0.82vw, 0.95rem);
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: #fff;
-    background: linear-gradient(135deg, #e07b2a, #c95f0e);
+    background: linear-gradient(135deg, #e07b2a 0%, #c95f0e 100%);
     border: none;
-    border-radius: 0.6rem;
+    border-radius: 0.5rem;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(224, 123, 42, 0.35);
+    box-shadow: 0 4px 18px rgba(224, 123, 42, 0.38);
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    position: relative;
+    overflow: hidden;
     margin-top: auto;
+}
+
+/* shimmer overlay on hover */
+#create-album-container button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
 #create-album-container button[type="submit"]:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(224, 123, 42, 0.5);
+    box-shadow: 0 8px 24px rgba(224, 123, 42, 0.5);
+}
+
+#create-album-container button[type="submit"]:hover::before {
+    opacity: 1;
 }
 
 #create-album-container button[type="submit"]:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(224, 123, 42, 0.3);
+    box-shadow: 0 3px 10px rgba(224, 123, 42, 0.3);
 }
+
+/* ── DATE PICKER ── */
 
 #create-album-container .datepicker-container {
     position: relative;
@@ -221,28 +319,30 @@
     gap: 0.6rem;
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
-    color: var(--text-color);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--create-album-text);
     background: var(--create-album-input-bg);
     border: 1.5px solid var(--create-album-input-border);
     border-radius: 0.5rem;
     cursor: pointer;
     user-select: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 #create-album-container .datepicker-trigger.placeholder span {
-    color: var(--text-muted);
-    opacity: 0.6;
+    color: var(--create-album-subtext);
+    font-style: italic;
 }
 
 #create-album-container .datepicker-trigger.active,
 #create-album-container .datepicker-trigger:hover {
-    border-color: #e07b2a;
-    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
+    border-color: var(--create-album-orange);
+    background: var(--create-album-orange-glow);
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.12);
 }
 
 #create-album-container .datepicker-trigger svg:first-child {
-    color: #e07b2a;
+    color: var(--create-album-orange);
     flex-shrink: 0;
 }
 
@@ -252,8 +352,8 @@
 
 #create-album-container .datepicker-chevron {
     flex-shrink: 0;
-    color: var(--text-muted);
-    transition: transform 0.2s ease;
+    color: var(--create-album-subtext);
+    transition: transform 0.25s ease;
 }
 
 #create-album-container .datepicker-chevron.rotated {
@@ -265,21 +365,23 @@
     top: calc(100% + 0.5rem);
     left: 0;
     width: 100%;
-    background: var(--sidebar-color);
+    background: var(--create-album-surface);
     border: 1.5px solid var(--create-album-input-border);
-    border-radius: 0.7rem;
+    border-radius: 0.5rem;
     padding: 1rem;
     box-sizing: border-box;
-    box-shadow: 0 8px 24px var(--shadow);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
     z-index: 100;
-    animation: dp-fade-in 0.15s ease;
+    animation: dp-fade-in 0.16s ease;
 }
 
 #create-album-container .datepicker-weekdays span {
     text-align: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-color);
+    font-size: clamp(0.58rem, 0.65vw, 0.75rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--create-album-subtext);
     padding: 0.2rem 0;
 }
 
@@ -293,4 +395,86 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ── VISIBILITY DROPDOWN ── */
+
+#create-album-container #visibility-dropdown {
+    position: relative;
+}
+
+#create-album-container #visibility-selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--create-album-input-bg);
+    border: 1.5px solid var(--create-album-input-border);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--create-album-text);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    user-select: none;
+}
+
+#create-album-container #visibility-selected:hover {
+    border-color: var(--create-album-orange);
+    background: var(--create-album-orange-glow);
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+#create-album-container #visibility-selected svg {
+    transition: transform 0.25s ease;
+    color: var(--create-album-subtext);
+    flex-shrink: 0;
+}
+
+#create-album-container #visibility-selected svg.rotate {
+    transform: rotate(180deg);
+}
+
+#create-album-container #visibility-options {
+    position: absolute;
+    top: calc(100% + 0.8vh);
+    width: 100%;
+    background: var(--create-album-surface);
+    border: 1.5px solid var(--create-album-input-border);
+    border-radius: 0.5rem;
+    z-index: 50;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    animation: dropIn 0.18s ease;
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#create-album-container .visibility-option {
+    padding: 0.8vh 0.8vw;
+    cursor: pointer;
+    font-size: clamp(0.78rem, 0.88vw, 1rem);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--create-album-text);
+    transition: background 0.15s;
+}
+
+#create-album-container .visibility-option:hover {
+    background: rgba(224, 123, 42, 0.08);
+}
+
+#create-album-container .visibility-option.active {
+    background: rgba(224, 123, 42, 0.15);
+    font-weight: 600;
+    color: var(--create-album-orange-deep);
 }

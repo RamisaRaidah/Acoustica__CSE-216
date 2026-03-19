@@ -57,11 +57,11 @@ export default function CreatePlaylist() {
         const formData = new FormData(formRef.current);
         formData.append('songs', JSON.stringify(selectedSongId));
         
-        if (formData.get('playlist_title')?.toString().trim() === '') {
-            setAlertMessage('Please select a title!');
+        if (!formData.get('playlist_title')?.toString().trim()) {
+            setAlertMessage('Please enter a title!');
             return;
         }
-        else if (formData.get('visibility')?.toString().trim() === '') {
+        else if (!formData.get('visibility')?.toString().trim()) {
             setAlertMessage('Please select visibility!');
             return;
         }

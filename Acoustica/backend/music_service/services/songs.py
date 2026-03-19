@@ -42,7 +42,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 # Uploading to db
-                cursor.execute("SELECT title FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s", (title.lower().replace(' ', ''),))
+                cursor.execute("SELECT 1 FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s", (title.lower().replace(' ', ''),))
                 
                 if cursor.fetchone():
                     return {"error": "exists"}, 500
@@ -129,21 +129,19 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 
     except Exception as e:
         connection.rollback()
-        if str(e) == 'song already exists':
-            return {"error": "song already exists"}, 500
         if song_id:
             storage.delete_file_from_storage(f"Docs/Copyright_Certificates/song{song_id}.pdf")
             storage.delete_file_from_storage(f"Songs/song{song_id}.mp3")
         if lyrics:
             storage.delete_file_from_storage(f"Docs/Lyrics/song{song_id}.txt")
-        return {"error": "song upload failed"}, 500
+        return {"error": "failed"}, 500
     
     finally:
         release_connection(connection)
 
     logging.info(title)
     
-    return {"message": "song uploaded successfully"}, 201
+    return {"message": "successful"}, 201
 
 ### get_song_datails ###
 def get_song_details(song_id):
@@ -155,12 +153,150 @@ def get_song_details(song_id):
     
     return {""}
 
-def edit_song(song_id):
-    return (f"edit_song {song_id}")
+### edit_song ###
+def edit_song(song_id, title, album, added_collaborators, deleted_collaborators, language, added_genres, deleted_genres, added_moods, deleted_moods, added_instruments, deleted_instruments, release_date, lyrics, copyright_certificate, lyrics_action, copyright_certificate_action):
+    if not title or not album or not language or not release_date or not copyright_certificate:
+        return {"error": "missing data"}, 400
+    
+    connection = get_db_connection()
 
+    if connection is None:
+        return {"error": "database connection failed"}, 500
+
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                # Uploading to db
+                cursor.execute("SELECT 1 FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s AND song_id != %s", (title.lower().replace(' ', ''), song_id))
+                
+                if cursor.fetchone():
+                    return {"error": "exists"}, 500
+                
+                cursor.execute("""
+                    UPDATE song
+                    SET title = %s, album_id = %s, language_id = %s, release_date = %s
+                    WHERE song_id = %s
+                """, (title, album, language, release_date, song_id)
+                )
+                
+                # Uploading to cloud
+                if copyright_certificate_action == 'replace' and copyright_certificate:
+                    cursor.execute("SELECT copyright_certificate FROM song WHERE song_id = %s", (song_id,))
+                    cc = cursor.fetchone()['copyright_certificate']
+                    if cc:
+                        storage.delete_file_from_storage(cc)
+
+                    copyright_certificate_path = f"Docs/Copyright_Certificates/song{song_id}.pdf"
+                    success = storage.upload_file_to_storage(
+                        copyright_certificate.stream,
+                        copyright_certificate_path,
+                        copyright_certificate.mimetype
+                    )
+
+                    if not success:
+                        raise Exception()
+                
+                if lyrics_action == 'replace' and lyrics:
+                    cursor.execute("SELECT lyrics FROM song WHERE song_id = %s", (song_id,))
+                    cc = cursor.fetchone()['lyrics']
+                    if cc:
+                        storage.delete_file_from_storage(cc)
+
+                    lyrics_path = f"Docs/Lyrics/song{song_id}.txt"
+                    success = storage.upload_file_to_storage(
+                        lyrics.stream,
+                        lyrics_path,
+                        lyrics.mimetype
+                    )
+
+                    if not success:
+                        raise Exception()
+                    
+                elif lyrics_action == 'replace' and not lyrics:
+                    cursor.execute("SELECT lyrics FROM song WHERE song_id = %s", (song_id,))
+                    lyrics_prev = cursor.fetchone()['lyrics']
+                    if lyrics_prev:
+                        storage.delete_file_from_storage(lyrics_prev)
+
+                    cursor.execute("""
+                        UPDATE song
+                        SET lyrics = NULL
+                        WHERE song_id = %s
+                        """, (song_id,)
+                    )
+                    
+                # Uploading song other metadata in db
+                for collaborator in added_collaborators:
+                    artist, role = collaborator.split(':')
+                    cursor.execute("INSERT INTO song_artist (song_id, artist_id, role) VALUES (%s, %s, %s)", (song_id, artist, role.lower()))
+
+                for collaborator in deleted_collaborators:
+                    artist, role = collaborator.split(':')
+                    cursor.execute("DELETE FROM song_artist WHERE song_id = %s AND artist_id = %s", (song_id, artist))
+
+                for genre in added_genres:
+                    cursor.execute("INSERT INTO song_genre (song_id, genre_id) VALUES (%s, %s)", (song_id, genre))
+
+                for genre in deleted_genres:
+                    cursor.execute("DELETE FROM song_genre WHERE song_id = %s AND genre_id = %s", (song_id, genre))
+
+                for mood in added_moods:
+                    cursor.execute("INSERT INTO song_mood (song_id, mood_id) VALUES (%s, %s)", (song_id, mood))
+
+                for mood in deleted_moods:
+                    cursor.execute("DELETE FROM song_mood WHERE song_id = %s AND mood_id = %s", (song_id, mood))
+
+                for instrument in added_instruments:
+                    cursor.execute("INSERT INTO song_instrument (song_id, instrument_id) VALUES (%s, %s)", (song_id, instrument))
+
+                for instrument in deleted_instruments:
+                    cursor.execute("DELETE FROM song_instrument WHERE song_id = %s AND instrument_id = %s", (song_id, instrument))
+                
+                connection.commit()
+                
+    except Exception as e:
+        connection.rollback()
+        if copyright_certificate_action == 'replace' and copyright_certificate:
+            storage.delete_file_from_storage(f"Docs/Copyright_Certificates/song{song_id}.pdf")
+        if lyrics_action == 'replace' and lyrics:
+            storage.delete_file_from_storage(f"Docs/Lyrics/song{song_id}.txt")
+        return {"error": "failed"}, 500
+    
+    finally:
+        release_connection(connection)
+
+    return {"message": "successful"}, 201
+
+### delete_song ###
 def delete_song(song_id):
-    return (f"delete_song {song_id}")
+    connection = get_db_connection()
 
+    if connection is None:
+        return {"error": "couldn't connect to db"}, 500
+    
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("SELECT asset_id FROM song WHERE song_id = %s", (song_id,))
+                
+                result = cursor.fetchone()
+                asset_id = result['asset_id']
+
+                if not asset_id:
+                    raise Exception()
+                
+                cursor.execute("DELETE FROM asset WHERE asset_id = %s", (asset_id,))
+
+    except Exception as e:
+        connection.rollback()
+        return {"error": "failed"}
+    
+    finally:
+        release_connection(connection)
+
+    return {"message": "successful"}, 201
+
+### get_song_audio ###
 def get_song_audio(song_id):
     result = execute_sql(
         "SELECT song_audio FROM song WHERE song_id = %s", (song_id,), 

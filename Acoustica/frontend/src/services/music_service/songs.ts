@@ -14,3 +14,15 @@ export interface GetSongAudioRespose {
 export async function getSongAudio(songId: number): Promise<GetSongAudioRespose> {
     return api.request(`/api/music/songs/${songId}/audio`);  
 }
+
+export async function updateSong(songId: number) {
+    return api.request(`/api/music/songs/${songId}`, {
+        method: 'PUT'
+    })
+}
+
+export async function deleteSong(songId: number) {
+    return api.request(`/api/music/songs/${songId}`, {
+        method: 'DELETE'
+    })
+}

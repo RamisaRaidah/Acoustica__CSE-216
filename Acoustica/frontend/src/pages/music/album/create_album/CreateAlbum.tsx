@@ -1,18 +1,37 @@
 import "@/pages/music/album/create_album/CreateAlbum.css"
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createAlbum } from "@/services/music_service/albums";
 import { DatePicker, DatePickerHandle } from "@/components/date_picker/DatePicker";
-import Alert from "@/components/alert/Alert";
+import Alert from "@/components/alert/TwoButtonAlert";
 
 export default function CreateAlbum() {
     const formRef = useRef<HTMLFormElement>(null);
     const datePickerRef = useRef<DatePickerHandle>(null);
     const [creating, setCreating] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const [privacy, setPrivacy] = useState<string>('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const visibilityOptions = [
+        { label: "Private", value: "private" },
+        { label: "Public", value: "public" }
+    ];
+
+    useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            const dropdown = document.getElementById("visibility-dropdown");
+            if (dropdown && !dropdown.contains(e.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     function resetForm() {
         formRef.current?.reset();
         datePickerRef.current?.reset();
+        setPrivacy('');
 
         const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
         const placeholder = document.getElementById("cover-placeholder");
@@ -30,26 +49,45 @@ export default function CreateAlbum() {
 
         const formData = new FormData(formRef.current);
 
+        if (!formData.get('album_title')?.toString().trim()) {
+            setAlertMessage('Please enter a title!');
+            return;
+        }
+        else if (!formData.get('release_date')?.toString().trim()) {
+            setAlertMessage('Please enter the release date!');
+            return;
+        }
+        else if (!formData.get('visibility')?.toString().trim()) {
+            setAlertMessage('Please select visibility!');
+            return;
+        }
+        else if (!(formData.get('copyright_certificate') as File).name) {
+            setAlertMessage('Please provide copyright certificate!');
+            return;
+        }
+        
         try {
             setCreating(true);
             const response = await createAlbum(formData);
             if (response) {
+                resetForm();
                 setAlertMessage("The album is created successfully!");
             }
         }
         catch(err) {
+            const message = err instanceof Error ? err.message : 'Failed to create the album';
             console.log('ERROR', err);
-            setAlertMessage("Failed to create the album!");
+            if (message == 'exists') setAlertMessage('An album with the same title exists!');
+            else setAlertMessage("Failed to create the album!");
         }
         finally {
             setCreating(false);
-            resetForm();
         }
     }
 
     return (
         <div id="create-album-container">
-            {alertMessage && <Alert message={alertMessage} />}
+            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => setAlertMessage(null)}/>}
 
             <div id="create-album-header">
                 <h1>Create Album</h1>
@@ -64,7 +102,6 @@ export default function CreateAlbum() {
                             type="text"
                             name="album_title"
                             placeholder="Enter album title"
-                            required
                         />
                     </div>
 
@@ -76,9 +113,56 @@ export default function CreateAlbum() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label>Release Date<span style={{ color: "#e07b2a" }}>*</span></label>
-                        <DatePicker ref={datePickerRef} name="release_date" required />
+                    <div id="create-album-form-left-middle">
+                        <div className="form-group" id="release-date-container">
+                            <label>Release Date<span style={{ color: "#e07b2a" }}>*</span></label>
+                            <DatePicker ref={datePickerRef} name="release_date" />
+                        </div>
+
+                        <div className="form-group" id="visibility-container">
+                            <label>Visibility <span style={{ color: "#e07b2a" }}>*</span></label>
+                            <div id="visibility-dropdown">
+                                <div
+                                    id="visibility-selected"
+                                    onClick={() => setIsDropdownOpen(prev => !prev)}
+                                >
+                                    <span>
+                                        {visibilityOptions.find(v => v.value === privacy)?.label || "Select visibility"}
+                                    </span>
+                                    <svg
+                                        className={isDropdownOpen ? "rotate" : ""}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                    >
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </div>
+
+                                {isDropdownOpen && (
+                                    <div id="visibility-options">
+                                        {visibilityOptions.map(option => (
+                                            <div
+                                                key={option.value}
+                                                className={`visibility-option ${privacy === option.value ? "active" : ""}`}
+                                                onClick={() => {
+                                                    setPrivacy(option.value);
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                            >
+                                                {option.label}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <input type="hidden" name="visibility" value={privacy} />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -90,7 +174,6 @@ export default function CreateAlbum() {
                                 type="file"
                                 name="copyright_certificate"
                                 accept=".pdf"
-                                required
                                 onChange={e => {
                                     const el = document.getElementById("cert-name");
                                     if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";

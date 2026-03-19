@@ -17,7 +17,7 @@ export async function getMyPlaylists(): Promise<GetMyPlaylistsResponse[]> {
     return api.request('/api/music/playlists/me');
 }
 
-export interface GetPlaylistDatailsResponse {
+export interface GetPlaylistDetailsResponse {
     playlist_id: number;
     asset_id: number;
     title: string;
@@ -28,7 +28,7 @@ export interface GetPlaylistDatailsResponse {
     view_count: number;
 }
 
-export async function getPlaylistDatails(playlistId: number): Promise<GetPlaylistDatailsResponse> {
+export async function getPlaylistDetails(playlistId: number): Promise<GetPlaylistDetailsResponse> {
     return api.request(`/api/music/playlists/${playlistId}`);
 }
 

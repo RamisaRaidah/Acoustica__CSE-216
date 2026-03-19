@@ -23,6 +23,7 @@ import UploadSong from '@/pages/music/song/upload_song/UploadSong';
 import CreatePlaylist from '@/pages/music/playlist/create_playlist/CreatePlaylist';
 import PlaylistProfile from '@/pages/music/playlist/playlist_profile/PlaylistProfile';
 import EditPlaylist from '@/pages/music/playlist/edit_playlist/EditPlaylist';
+import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -78,6 +79,8 @@ function App() {
           <Route path="/music/playlists/:playlist_id/edit" element={<EditPlaylist />} />
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
+          <Route path="/music/albums/:album_id" element={<AlbumProfile />} />
+          <Route path="/music/albums/:album_id/edit" element={<CreateAlbum />} />
           <Route path="/music/create-playlist" element={<CreatePlaylist />} />
           <Route path="/music/upload-song" element={<UploadSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />

@@ -5,7 +5,7 @@ import { getLanguages, Language, getGenres, Genre, getMoods, Mood, getInstrument
 import { uploadSong } from '@/services/music_service/songs';
 import { useEffect, useState, useRef } from 'react';
 import { DatePicker, DatePickerHandle } from '@/components/date_picker/DatePicker';
-import Alert from '@/components/alert/Alert';
+import Alert from '@/components/alert/TwoButtonAlert';
 import { useNavigate } from 'react-router-dom';
 
 interface Collaborator {
@@ -161,24 +161,66 @@ export default function UploadSong() {
         formData.append('collaborators', JSON.stringify(
             selectedCollaborators.map(c => `${c.artist_id}:${c.role}`)
         ));
+
+        if (!formData.get('song_title')?.toString().trim()) {
+            setAlertMessage('Please enter a title!');
+            return;
+        }
+        else if (!formData.get('album_id')?.toString().trim()) {
+            setAlertMessage('Please select an album!');
+            return;
+        }
+        else if (!formData.get('language')?.toString().trim()) {
+            setAlertMessage('Please select a language!');
+            return;
+        }
+        else if (formData.getAll('genres').length === 0) {
+            setAlertMessage('Please select atleast one genre!');
+            return;
+        }
+        else if (formData.getAll('moods').length === 0) {
+            setAlertMessage('Please select atleast one mood!');
+            return;
+        }
+        else if (formData.getAll('instruments').length === 0) {
+            setAlertMessage('Please select atleast one instrument!');
+            return;
+        }
+        else if (!formData.get('release_date')?.toString().trim()) {
+            setAlertMessage('Please enter the release date!');
+            return;
+        }
+        else if (!(formData.get('song_audio') as File).name) {
+            setAlertMessage('Please select the audio file!');
+            return;
+        }
+        else if (!(formData.get('copyright_certificate') as File).name) {
+            setAlertMessage('Please provide copyright certificate!');
+            return;
+        }
+
         try {
             setUploading(true);
             const response = await uploadSong(formData);
-            if (response) setAlertMessage('The song is uploaded successfully!');
+            if (response) {
+                resetForm();
+                setAlertMessage('The song is uploaded successfully!');
+            }
         }
         catch (err) {
-            console.log('ERROR', err);
-            setAlertMessage('Failed to upload the song!');
+            const message = err instanceof Error ? err.message : 'Failed to upload the song!';
+            console.log('ERROR:', message);
+            if (message === 'exists') setAlertMessage('A song with the same title exists!');
+            else setAlertMessage('Failed to upload the song!');
         }
         finally {
             setUploading(false);
-            resetForm();
         }
     }
 
     return (
         <div id='upload-song-container'>
-            {alertMessage && <Alert message={alertMessage} />}
+            {alertMessage && <Alert message={alertMessage} type='alert' onConfirm={() => setAlertMessage(null)} />}
 
             <div id="create-album-header">
                 <h1>Upload Song</h1>
@@ -192,12 +234,12 @@ export default function UploadSong() {
 
                         <div className='form-group'>
                             <label>Song Title<span style={{ color: "#e07b2a" }}>*</span></label>
-                            <input type='text' name='song_title' placeholder='Enter song title' required />
+                            <input type='text' name='song_title' placeholder='Enter song title' />
                         </div>
 
                         <div className='form-group'>
                             <label>Album<span style={{ color: "#e07b2a" }}>*</span></label>
-                            <select name='album_id' required defaultValue=''>
+                            <select name='album_id' defaultValue=''>
                                 <option value='' disabled>Select an album</option>
                                 {albums.map(album => (
                                     <option key={album.album_id} value={album.album_id}>{album.title}</option>
@@ -257,7 +299,7 @@ export default function UploadSong() {
 
                         <div className='form-group'>
                             <label>Language<span style={{ color: "#e07b2a" }}>*</span></label>
-                            <select name='language' required defaultValue=''>
+                            <select name='language' defaultValue=''>
                                 <option value='' disabled>Select language</option>
                                 {languages.map(language => (
                                     <option key={language.language_id} value={language.language_id}>{language.language_name}</option>
@@ -391,7 +433,7 @@ export default function UploadSong() {
 
                     <div className="form-group">
                         <label>Release Date<span style={{ color: "#e07b2a" }}>*</span></label>
-                        <DatePicker ref={datePickerRef} name="release_date" required />
+                        <DatePicker ref={datePickerRef} name="release_date" />
                     </div>
 
                     <div className="form-group">
@@ -399,7 +441,7 @@ export default function UploadSong() {
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
                             <span className="file-name" id="song-file-name">No file chosen</span>
-                            <input type="file" name="song_audio" accept=".mp3, .wav" required
+                            <input type="file" name="song_audio" accept=".mp3, .wav"
                                 onChange={e => {
                                     const el = document.getElementById("song-file-name");
                                     if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";
@@ -427,7 +469,7 @@ export default function UploadSong() {
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
                             <span className="file-name" id="cc-file-name">No file chosen</span>
-                            <input type="file" name="copyright_certificate" accept=".pdf" required
+                            <input type="file" name="copyright_certificate" accept=".pdf"
                                 onChange={e => {
                                     const el = document.getElementById("cc-file-name");
                                     if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";

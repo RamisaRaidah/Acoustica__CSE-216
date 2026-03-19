@@ -1,47 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
-    --playlist-profile-input-bg: rgba(0, 0, 0, 0.04);
-    --playlist-profile-input-border: rgba(0, 0, 0, 0.12);
-    --playlist-profile-surface: #ffffff;
-    --playlist-profile-text: #1a1109;
-    --playlist-profile-subtext: rgba(26, 17, 9, 0.55);
-    --playlist-profile-orange: #e07b2a;
-    --playlist-profile-orange-deep: #c95f0e;
-    --playlist-profile-orange-glow: rgba(224, 123, 42, 0.18);
-    --playlist-profile-row-hover: rgba(224, 123, 42, 0.06);
+    --album-profile-input-bg: rgba(0, 0, 0, 0.04);
+    --album-profile-input-border: rgba(0, 0, 0, 0.12);
+    --album-profile-surface: #ffffff;
+    --album-profile-text: #1a1109;
+    --album-profile-subtext: rgba(26, 17, 9, 0.55);
+    --album-profile-orange: #e07b2a;
+    --album-profile-orange-deep: #c95f0e;
+    --album-profile-orange-glow: rgba(224, 123, 42, 0.18);
+    --album-profile-row-hover: rgba(224, 123, 42, 0.06);
 
-    --playlist-profile-card-bottom-bg: #fff5e2;
-    --playlist-profile-card-bottom-border: rgba(255, 255, 255, 0.07);
-    --playlist-profile-card-bottom-text: #111111;
-    --playlist-profile-card-bottom-subtext: rgba(26, 17, 9, 0.55);
-    --playlist-profile-card-bottom-row-hover: rgba(224, 123, 42, 0.1);
-    --playlist-profile-card-bottom-divider: rgba(0, 0, 0, 0.08);
+    --album-profile-card-bottom-bg: #fff5e2;
+    --album-profile-card-bottom-border: rgba(255, 255, 255, 0.07);
+    --album-profile-card-bottom-text: #111111;
+    --album-profile-card-bottom-subtext: rgba(26, 17, 9, 0.55);
+    --album-profile-card-bottom-row-hover: rgba(224, 123, 42, 0.1);
+    --album-profile-card-bottom-divider: rgba(0, 0, 0, 0.08);
 }
 
 .dark {
-    --playlist-profile-input-bg: rgba(255, 255, 255, 0.06);
-    --playlist-profile-input-border: rgba(255, 255, 255, 0.1);
-    --playlist-profile-surface: #1c1410;
-    --playlist-profile-text: #f0e8dc;
-    --playlist-profile-subtext: rgba(240, 232, 220, 0.5);
-    --playlist-profile-row-hover: rgba(224, 123, 42, 0.08);
-    --playlist-profile-card-bottom-bg: #0d0d0d;
-    --playlist-profile-card-bottom-subtext: rgba(240, 232, 220, 0.45);
-    --playlist-profile-card-bottom-text: #f0e8dc;
-    --playlist-profile-card-bottom-divider: rgba(255, 255, 255, 0.06);
+    --album-profile-input-bg: rgba(255, 255, 255, 0.06);
+    --album-profile-input-border: rgba(255, 255, 255, 0.1);
+    --album-profile-surface: #1c1410;
+    --album-profile-text: #f0e8dc;
+    --album-profile-subtext: rgba(240, 232, 220, 0.5);
+    --album-profile-row-hover: rgba(224, 123, 42, 0.08);
+    --album-profile-card-bottom-bg: #0d0d0d;
+    --album-profile-card-bottom-subtext: rgba(240, 232, 220, 0.45);
+    --album-profile-card-bottom-text: #f0e8dc;
+    --album-profile-card-bottom-divider: rgba(255, 255, 255, 0.06);
 }
 
-#playlist-profile-container {
+#album-profile-container {
     display: block;
     position: relative;
     width: 100%;
     box-sizing: border-box;
     font-family: 'DM Sans', sans-serif;
-    color: var(--playlist-profile-text);
+    color: var(--album-profile-text);
 }
 
-#playlist-profile-container #playlist-card {
+#album-profile-container #album-card {
     width: 100%;
     border-radius: 0.5rem;
     overflow: visible;
@@ -50,12 +50,12 @@
 
 /* ── HEAD SECTION ── */
 
-#playlist-profile-container #playlist-card-top {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: auto auto;
-    column-gap: clamp(1rem, 1.6vw, 2rem);
-    row-gap: clamp(0.4rem, 0.6vh, 0.8rem);
+#album-profile-container #album-card-top {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    /* ← both children same height */
+    gap: clamp(1rem, 1.6vw, 2rem);
     padding: clamp(1.4rem, 2vh, 2rem) clamp(1.2rem, 1.4vw, 2rem) clamp(1.2rem, 1.8vh, 1.8rem);
     background: linear-gradient(145deg,
             #a03000 0%,
@@ -68,7 +68,7 @@
     overflow: hidden;
 }
 
-#playlist-profile-container #playlist-card-top::before {
+#album-profile-container #album-card-top::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -78,10 +78,12 @@
     pointer-events: none;
 }
 
-#playlist-profile-container #card-cover-picture {
+#album-profile-container #card-cover-picture {
     grid-row: 1 / 3;
-    width: 10vw;
-    height: 10vw;
+    width: clamp(80px, 8vw, 130px);
+    height: 100%;
+    align-self: stretch;
+    min-height: 0;
     border-radius: 0.7rem;
     overflow: hidden;
     flex-shrink: 0;
@@ -91,26 +93,25 @@
         inset 0 0 0 1px rgba(255, 255, 255, 0.15);
     position: relative;
     z-index: 1;
-    align-self: center;
 }
 
-#playlist-profile-container #card-cover-picture img {
+#album-profile-container #card-cover-picture img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-#playlist-profile-container #card-info {
+#album-profile-container #card-info {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    align-self: center;
     position: relative;
     z-index: 1;
+    justify-content: center;
 }
 
-#playlist-profile-container #playlist-label {
+#album-profile-container #album-label {
     margin: 0;
     font-size: clamp(0.68rem, 0.72vw, 0.82rem);
     font-weight: 700;
@@ -119,7 +120,7 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-#playlist-profile-container #playlist-title {
+#album-profile-container #album-title {
     margin: 0;
     font-family: 'Playfair Display', serif;
     font-size: 4vw;
@@ -130,7 +131,7 @@
     word-break: break-word;
 }
 
-#playlist-profile-container #playlist-description {
+#album-profile-container #album-description {
     margin: 0;
     font-size: clamp(0.68rem, 0.72vw, 0.82rem);
     font-weight: 700;
@@ -142,7 +143,7 @@
     white-space: normal;
 }
 
-#playlist-profile-container #playlist-meta {
+#album-profile-container #album-meta {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -152,12 +153,12 @@
     margin-top: 0.3rem;
 }
 
-#playlist-profile-container #playlist-meta span:nth-child(even) {
+#album-profile-container #album-meta span:nth-child(even) {
     opacity: 0.4;
     font-size: 0.6rem;
 }
 
-#playlist-profile-container #playlist-view-count {
+#album-profile-container #album-view-count {
     display: flex;
     align-items: center;
     gap: 0.35rem;
@@ -169,12 +170,12 @@
     margin-top: 0.15rem;
 }
 
-#playlist-profile-container #playlist-view-count svg {
+#album-profile-container #album-view-count svg {
     opacity: 0.7;
 }
 
 /* Play button — top right corner */
-#playlist-profile-container #play-playlist-btn {
+#album-profile-container #play-album-btn {
     position: absolute;
     top: clamp(1rem, 1.8vh, 1.6rem);
     right: clamp(1rem, 1.2vw, 1.8rem);
@@ -195,26 +196,26 @@
     overflow: hidden;
 }
 
-#playlist-profile-container #play-playlist-btn img {
+#album-profile-container #play-album-btn img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-#playlist-profile-container #play-playlist-btn:hover {
+#album-profile-container #play-album-btn:hover {
     background: #fff;
     transform: scale(1.08);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-#playlist-profile-container #play-playlist-btn:active {
+#album-profile-container #play-album-btn:active {
     transform: scale(1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Edit button — bottom right corner of head */
-#playlist-profile-container #edit-playlist-btn {
+#album-profile-container #edit-album-btn {
     position: absolute;
     bottom: clamp(1rem, 1.8vh, 1.6rem);
     right: clamp(1rem, 1.2vw, 1.8rem);
@@ -238,56 +239,56 @@
     transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-#playlist-profile-container #edit-playlist-btn:hover {
+#album-profile-container #edit-album-btn:hover {
     background: rgba(255, 255, 255, 1);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-#playlist-profile-container #edit-playlist-btn:active {
+#album-profile-container #edit-album-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ── SONG LIST SECTION ── */
 
-#playlist-profile-container #playlist-card-bottom {
-    background: var(--playlist-profile-card-bottom-bg);
+#album-profile-container #album-card-bottom {
+    background: var(--album-profile-card-bottom-bg);
     padding: 0.6rem 0 0.9rem;
     border-radius: 0 0 0.5rem 0.5rem;
 }
 
-#playlist-profile-container #playlist-card-header {
+#album-profile-container #album-card-header {
     display: grid;
     grid-template-columns: 36px 1.2fr 1.2fr 58px 32px;
     align-items: center;
     padding: 0 0.75rem 0.55rem;
-    border-bottom: 1px solid var(--playlist-profile-card-bottom-divider);
+    border-bottom: 1px solid var(--album-profile-card-bottom-divider);
     margin-bottom: 0.2rem;
 }
 
-#playlist-profile-container #playlist-card-header>div {
+#album-profile-container #album-card-header>div {
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--playlist-profile-subtext);
+    color: var(--album-profile-subtext);
 }
 
-#playlist-profile-container #playlist-card-header>div:first-child {
+#album-profile-container #album-card-header>div:first-child {
     text-align: center;
 }
 
-#playlist-profile-container #playlist-card-header>div:nth-child(4) {
+#album-profile-container #album-card-header>div:nth-child(4) {
     text-align: right;
 }
 
-#playlist-profile-container #playlist-card-header>div:nth-child(5) {
+#album-profile-container #album-card-header>div:nth-child(5) {
     text-align: center;
 }
 
 /* Delete button — below the card */
-#playlist-profile-container #delete-playlist-wrapper {
+#album-profile-container #delete-album-wrapper {
     display: flex;
     justify-content: flex-end;
     padding: 1rem 0 0;
@@ -295,7 +296,7 @@
     border-top: none;
 }
 
-#playlist-profile-container #delete-playlist-btn {
+#album-profile-container #delete-album-btn {
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -313,19 +314,19 @@
     transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-#playlist-profile-container #delete-playlist-btn:hover {
+#album-profile-container #delete-album-btn:hover {
     background: rgba(255, 60, 60, 0.15);
     border-color: rgba(255, 60, 60, 0.4);
     transform: translateY(-2px);
     box-shadow: 0 4px 14px rgba(255, 60, 60, 0.18);
 }
 
-#playlist-profile-container #delete-playlist-btn:active {
+#album-profile-container #delete-album-btn:active {
     transform: translateY(0);
     box-shadow: none;
 }
 
-#playlist-profile-container #song-cards {
+#album-profile-container #song-cards {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -336,24 +337,24 @@
     scrollbar-color: rgba(224, 123, 42, 0.3) transparent;
 }
 
-#playlist-profile-container #song-cards::-webkit-scrollbar {
+#album-profile-container #song-cards::-webkit-scrollbar {
     width: 3px;
 }
 
-#playlist-profile-container #song-cards::-webkit-scrollbar-track {
+#album-profile-container #song-cards::-webkit-scrollbar-track {
     background: transparent;
 }
 
-#playlist-profile-container #song-cards::-webkit-scrollbar-thumb {
+#album-profile-container #song-cards::-webkit-scrollbar-thumb {
     background: rgba(224, 123, 42, 0.3);
     border-radius: 2px;
 }
 
-#playlist-profile-container #song-cards::-webkit-scrollbar-thumb:hover {
+#album-profile-container #song-cards::-webkit-scrollbar-thumb:hover {
     background: rgba(224, 123, 42, 0.55);
 }
 
-#playlist-profile-container .playlist-row {
+#album-profile-container .album-row {
     display: grid;
     grid-template-columns: 36px 1.2fr 1.2fr 58px 32px;
     align-items: center;
@@ -367,81 +368,81 @@
     flex-shrink: 0;
 }
 
-#playlist-profile-container .playlist-row+.playlist-row {
-    border-top: 1px solid var(--playlist-profile-card-bottom-divider);
+#album-profile-container .album-row+.album-row {
+    border-top: 1px solid var(--album-profile-card-bottom-divider);
 }
 
-#playlist-profile-container .playlist-row:hover {
-    background: var(--playlist-profile-card-bottom-row-hover);
+#album-profile-container .album-row:hover {
+    background: var(--album-profile-card-bottom-row-hover);
     transform: translateX(3px);
 }
 
-#playlist-profile-container .col-index {
+#album-profile-container .col-index {
     text-align: center;
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--playlist-profile-card-bottom-subtext);
+    color: var(--album-profile-card-bottom-subtext);
     transition: color 0.2s;
 }
 
-#playlist-profile-container .playlist-row:hover .col-index {
-    color: var(--playlist-profile-orange);
+#album-profile-container .album-row:hover .col-index {
+    color: var(--album-profile-orange);
 }
 
-#playlist-profile-container .col-title {
+#album-profile-container .col-title {
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
     overflow: hidden;
 }
 
-#playlist-profile-container .song-title {
+#album-profile-container .song-title {
     margin: 0;
     font-size: 0.88rem;
     font-weight: 600;
-    color: var(--playlist-profile-card-bottom-text);
+    color: var(--album-profile-card-bottom-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.2s;
 }
 
-#playlist-profile-container .playlist-row:hover .song-title {
+#album-profile-container .album-row:hover .song-title {
     color: #f5a054;
 }
 
-#playlist-profile-container .song-artist {
+#album-profile-container .song-artist {
     margin: 0;
     font-size: 0.72rem;
-    color: var(--playlist-profile-card-bottom-subtext);
+    color: var(--album-profile-card-bottom-subtext);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-#playlist-profile-container .col-album {
+#album-profile-container .col-album {
     font-size: 0.8rem;
-    color: var(--playlist-profile-card-bottom-subtext);
+    color: var(--album-profile-card-bottom-subtext);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-#playlist-profile-container .col-time {
+#album-profile-container .col-time {
     font-size: 0.78rem;
     font-weight: 500;
-    color: var(--playlist-profile-card-bottom-subtext);
+    color: var(--album-profile-card-bottom-subtext);
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
 
-#playlist-profile-container .col-action {
+#album-profile-container .col-action {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#playlist-profile-container .col-action span {
+#album-profile-container .col-action span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -449,30 +450,30 @@
     height: 22px;
     border-radius: 50%;
     font-size: 0.75rem;
-    color: var(--playlist-profile-card-bottom-subtext);
+    color: var(--album-profile-card-bottom-subtext);
     opacity: 0;
     transform: scale(0.7);
     transition: all 0.18s ease;
     cursor: pointer;
 }
 
-#playlist-profile-container .playlist-row:hover .col-action span {
+#album-profile-container .album-row:hover .col-action span {
     opacity: 1;
     transform: scale(1);
 }
 
-#playlist-profile-container .col-action span:hover {
+#album-profile-container .col-action span:hover {
     background: rgba(255, 60, 60, 0.15);
     color: #ff5555;
     opacity: 1;
 }
 
-#playlist-profile-container #song-cards:empty::after {
+#album-profile-container #song-cards:empty::after {
     content: 'No songs added yet';
     display: block;
     text-align: center;
     padding: 1.5rem 0;
     font-size: 0.82rem;
-    color: var(--playlist-profile-card-bottom-subtext);
+    color: var(--album-profile-card-bottom-subtext);
     font-style: italic;
 }

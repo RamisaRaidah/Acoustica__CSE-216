@@ -129,8 +129,8 @@ def edit_playlist(playlist_id, title, description, visibility, cover_picture, ad
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute("""
                     SELECT 1 FROM playlist 
-                    WHERE LOWER(REPLACE(title, ' ', '')) = %s AND creator_id = %s
-                """, (title.lower().replace(' ', ''), get_jwt_identity()))
+                    WHERE LOWER(REPLACE(title, ' ', '')) = %s AND creator_id = %s AND playlist_id != %s
+                """, (title.lower().replace(' ', ''), get_jwt_identity(), playlist_id))
 
                 if cursor.fetchone():
                     return {"error": "exists"}, 400
@@ -205,7 +205,7 @@ def edit_playlist(playlist_id, title, description, visibility, cover_picture, ad
 
     except Exception as e:
         connection.rollback()
-        if cover_action == 'replace':
+        if cover_action == 'replace' and cover_picture:
             storage.delete_file_from_storage(f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}")
         return {"error": "failed"}, 500
     
