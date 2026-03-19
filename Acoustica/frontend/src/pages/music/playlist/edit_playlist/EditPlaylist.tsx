@@ -138,10 +138,6 @@ export default function EditPlaylist() {
             >
                 <div id="create-playlist-form-left">
 
-                    <div id="create-playlist-header">
-                        <h1>Create playlist</h1>
-                    </div>
-
                     <div className="form-group">
                         <label>Playlist Title <span style={{ color: "#e07b2a" }}>*</span></label>
                         <input

@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+:root {
+    --playlists-text-color: #1a1a1a;
+}
+
+.dark {
+    --playlists-text-color: #f0e8dc;
+}
+
 /* ===== LOADING STATE ===== */
 #playlist-container .loading {
     text-align: center;
