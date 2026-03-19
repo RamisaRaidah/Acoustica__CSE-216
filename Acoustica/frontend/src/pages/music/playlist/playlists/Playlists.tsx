@@ -2,6 +2,7 @@ import "@/pages/music/playlist/playlists/Playlists.css"
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMyPlaylists, GetMyPlaylistsResponse } from "@/services/music_service/playlists";
+import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 
 export default function Playlists() {
     const [playlists, setPlaylists] = useState<GetMyPlaylistsResponse[]>([]);
@@ -39,7 +40,7 @@ export default function Playlists() {
                         playlists.map(playlist => (
                             <div className="playlist-card" key={playlist.playlist_id}>
                                 <div className="playlist-card-cover">
-                                    <img src={playlist.cover_picture_url} />
+                                    <img src={playlist.cover_picture_url || default_cover} />
                                 </div>
                                 <div className="playlist-card-info" onClick={() => navigate(`/music/playlists/${playlist.playlist_id}`)}>
                                     <p className="playlist-card-title">{playlist.title}</p>

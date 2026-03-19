@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPlaylist } from "@/services/music_service/playlists";
 import Alert from "@/components/alert/TwoButtonAlert";
 import Searchbar, { SongType } from "@/components/searchbar/Searchbar";
-import default_cover from '@/assets/images/deco/Default_Cover_Picture.png';
+import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 
 export default function CreatePlaylist() {
     const formRef = useRef<HTMLFormElement>(null);

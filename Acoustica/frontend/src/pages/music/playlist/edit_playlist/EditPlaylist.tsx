@@ -1,9 +1,9 @@
 import '@/pages/music/playlist/edit_playlist/EditPlaylist.css';
 import { useState, useRef, useEffect } from "react";
-import { createPlaylist, getPlaylistDatails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
+import { getPlaylistDatails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
 import Alert from "@/components/alert/TwoButtonAlert";
 import Searchbar, { SongType } from "@/components/searchbar/Searchbar";
-import default_cover from '@/assets/images/deco/Default_Cover_Picture.png';
+import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function EditPlaylist() {
