@@ -14,11 +14,8 @@ logging.basicConfig(
 
 ### create_playlist ###
 def create_playlist(title, description, visibility, cover_picture, songs):
-    if not title:
-        return {"error": "title missing"}, 500
-    
-    if not visibility:
-        return {"error": "visibilty missing"}, 500
+    if not title or not visibility:
+        return {"error": "missing data"}, 500
     
     connection = get_db_connection()
 
@@ -117,11 +114,8 @@ def get_playlist_details(playlist_id):
 
 ### edit_playlist ###
 def edit_playlist(playlist_id, title, description, visibility, cover_picture, added_songs, deleted_songs, cover_action):
-    if not title:
-        return {"error": "title missing"}, 500
-    
-    if not visibility:
-        return {"error": "visibilty missing"}, 500
+    if not title or not visibility:
+        return {"error": "missing data"}, 500
     
     connection = get_db_connection()
 
@@ -133,6 +127,14 @@ def edit_playlist(playlist_id, title, description, visibility, cover_picture, ad
     try:
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("""
+                    SELECT 1 FROM playlist 
+                    WHERE LOWER(REPLACE(title, ' ', '')) = %s AND creator_id = %s
+                """, (title.lower().replace(' ', ''), get_jwt_identity()))
+
+                if cursor.fetchone():
+                    return {"error": "exists"}, 400
+                
                 # Updating db                
                 cursor.execute("""
                     UPDATE playlist 
@@ -217,7 +219,7 @@ def delete_playlist(playlist_id):
     connection = get_db_connection()
 
     if connection is None:
-        return {"error": "Internal error occurred!"}, 500
+        return {"error": "couldn't connect to db"}, 500
     
     try:
         with connection:
@@ -238,12 +240,12 @@ def delete_playlist(playlist_id):
 
     except Exception as e:
         connection.rollback()
-        return {"error": "Failed to delete the playlist!"}
+        return {"error": "failed"}
     
     finally:
         release_connection(connection)
 
-    return {"message": "The playlist is deleted successfully!"}, 201
+    return {"message": "successful"}, 201
 
 ### get_playlist_songs ###
 def get_playlist_songs(playlist_id):

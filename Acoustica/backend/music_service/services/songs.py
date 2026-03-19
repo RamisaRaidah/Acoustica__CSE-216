@@ -18,7 +18,7 @@ logging.basicConfig(
 ### upload_song ###
 def upload_song(title, album, collaborators, language, genres, moods, instruments, release_date, song_file, lyrics, copyright_certificate):
     if not title or not album or not language or not genres or not moods or not instruments or not release_date or not song_file or not copyright_certificate:
-        return {"error": "Missing file or title"}, 400
+        return {"error": "missing data"}, 400
     
     connection = get_db_connection()
 
@@ -45,7 +45,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 cursor.execute("SELECT title FROM song WHERE LOWER(REPLACE(title, ' ', '')) = %s", (title.lower().replace(' ', ''),))
                 
                 if cursor.fetchone():
-                    raise Exception('song already exists')
+                    return {"error": "exists"}, 500
                 
                 cursor.execute("""
                     INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
@@ -130,7 +130,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
     except Exception as e:
         connection.rollback()
         if str(e) == 'song already exists':
-            return {"error": "song already exists"}, 409
+            return {"error": "song already exists"}, 500
         if song_id:
             storage.delete_file_from_storage(f"Docs/Copyright_Certificates/song{song_id}.pdf")
             storage.delete_file_from_storage(f"Songs/song{song_id}.mp3")

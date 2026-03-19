@@ -48,10 +48,12 @@ def get_song_details_route(song_id):
 def edit_song_route(song_id):
     return jsonify(f"edit_song {song_id}")
 
+### delete_song_route ###
 @songs_bp.delete("/api/music/songs/<song_id>")
 @jwt_required()
 def delete_song_route(song_id):
-    return jsonify(f"delete_song {song_id}")
+    result, status = songs.delete_song(song_id)
+    return jsonify(result), status
 
 @songs_bp.get("/api/music/songs/<song_id>/audio")
 @jwt_required()

@@ -78,6 +78,16 @@ export default function EditPlaylist() {
         formData.append('added_songs', JSON.stringify(addedSongId));
         formData.append('deleted_songs', JSON.stringify(deletedSongId));
         formData.append('cover_action', coverAction);
+
+        if (formData.get('playlist_title')?.toString().trim() === '') {
+            setAlertMessage('Please select a title!');
+            return;
+        }
+        else if (formData.get('visibility')?.toString().trim() === '') {
+            setAlertMessage('Please select visibility!');
+            return;
+        }
+
         try {
             setUpdating(true);
             const response = await editPlaylist(playlistId, formData);
@@ -89,8 +99,7 @@ export default function EditPlaylist() {
         catch (err) {
             const message = err instanceof Error ? err.message : "Failed to update the playlist!";
             console.log('ERROR: ', message);
-            if (message === 'title missing') setAlertMessage('Please select a title!');
-            else if (message === 'visibility missing') setAlertMessage('Please select visibility!');
+            if (message === 'exists') setAlertMessage('A playlist with the same title exists!');
             else setAlertMessage('Failed to update the playlist!');
         }
         finally {

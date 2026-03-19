@@ -49,7 +49,7 @@ export default function PlaylistProfile() {
         catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to delete the playlist';
             console.log('ERROR: ', message);
-            setAlertMessage(message);
+            setAlertMessage('Failed to delete the playlist');
         }
     }
 

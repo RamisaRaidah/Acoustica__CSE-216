@@ -56,6 +56,16 @@ export default function CreatePlaylist() {
 
         const formData = new FormData(formRef.current);
         formData.append('songs', JSON.stringify(selectedSongId));
+        
+        if (formData.get('playlist_title')?.toString().trim() === '') {
+            setAlertMessage('Please select a title!');
+            return;
+        }
+        else if (formData.get('visibility')?.toString().trim() === '') {
+            setAlertMessage('Please select visibility!');
+            return;
+        }
+
         try {
             setCreating(true);
             const response = await createPlaylist(formData);
@@ -67,8 +77,7 @@ export default function CreatePlaylist() {
         catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to create the playlist!';
             console.log('ERROR: ', message);
-            if (message === 'title missing') setAlertMessage('Please select a title!');
-            else if (message === 'visibility missing') setAlertMessage('Please select visibility!');
+            if (message === 'exists') setAlertMessage('A playlist with the same title exists!');
             else setAlertMessage('Failed to create the playlist!');
         } 
         finally {
