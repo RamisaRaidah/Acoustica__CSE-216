@@ -17,7 +17,7 @@ logging.basicConfig(
 
 ### upload_song ###
 def upload_song(title, album, collaborators, language, genres, moods, instruments, release_date, song_file, lyrics, copyright_certificate):
-    if not title or not album or not collaborators or not language or not genres or not moods or not instruments or not release_date or not song_file or not copyright_certificate:
+    if not title or not album or not language or not genres or not moods or not instruments or not release_date or not song_file or not copyright_certificate:
         return {"error": "Missing file or title"}, 400
     
     connection = get_db_connection()

@@ -36,6 +36,7 @@ body {
   padding: 2vw 1vw;
   box-sizing: border-box;
   border-radius: 0.5vw;
+  /* background: white; */
   background: transparent;
   overflow-y: scroll;
 }

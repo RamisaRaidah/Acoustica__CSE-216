@@ -21,7 +21,8 @@ import Artists from '@/pages/user/artist/artists/Artists';
 import CreateAlbum from '@/pages/music/album/create_album/CreateAlbum';
 import UploadSong from '@/pages/music/song/upload_song/UploadSong';
 import CreatePlaylist from '@/pages/music/playlist/create_playlist/CreatePlaylist';
-import PlaylistProfile from './pages/music/playlist/playlist_profile/PlaylistProfile';
+import PlaylistProfile from '@/pages/music/playlist/playlist_profile/PlaylistProfile';
+import EditPlaylist from '@/pages/music/playlist/edit_playlist/EditPlaylist';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -74,6 +75,7 @@ function App() {
           <Route path="/checkout/success" element={<CheckoutSuccess />} />
           <Route path="/music/playlists" element={<Playlists />} />
           <Route path="/music/playlists/:playlist_id" element={<PlaylistProfile />} />
+          <Route path="/music/playlists/:playlist_id/edit" element={<EditPlaylist />} />
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
           <Route path="/music/create-playlist" element={<CreatePlaylist />} />

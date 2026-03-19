@@ -14,13 +14,16 @@ logging.basicConfig(
 
 ### create_playlist ###
 def create_playlist(title, description, visibility, cover_picture, songs):
-    if not title or not visibility:
-        return {"error": "Missing required fields!"}, 500
+    if not title:
+        return {"error": "title missing"}, 500
+    
+    if not visibility:
+        return {"error": "visibilty missing"}, 500
     
     connection = get_db_connection()
 
     if connection is None:
-        return {"error": "Failed to create the playlist!"}, 500
+        return {"error": "couldn't connect to db"}, 500
     
     playlist_id = None
     cover_picture_ext = None
@@ -34,7 +37,7 @@ def create_playlist(title, description, visibility, cover_picture, songs):
                 """, (title.lower().replace(' ', ''), get_jwt_identity()))
 
                 if cursor.fetchone():
-                    return {"error": "Playlist with this title exists!"}, 400
+                    return {"error": "exists"}, 400
 
                 # Uploading to db
                 cursor.execute("""
@@ -86,18 +89,16 @@ def create_playlist(title, description, visibility, cover_picture, songs):
                         """, values
                     )
 
-                connection.commit()
-                
     except Exception as e:
         connection.rollback()
         if cover_picture:
             storage.delete_file_from_storage(f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}")
-        return {"error": "Failed to create the playlist!"}, 500
+        return {"error": "failed"}, 500
     
     finally:
         release_connection(connection)
     
-    return {"message": "The playlist is created successfully!"}, 201
+    return {"message": "successful"}, 201
 
 ### get_playlist_details ###
 def get_playlist_details(playlist_id):
@@ -114,11 +115,135 @@ def get_playlist_details(playlist_id):
     else:
         return {"error": "Couldn't fetch data!"}, 500
 
-def edit_playlist(playlist_id):
-    return (f"edit_playlist {playlist_id}")
+### edit_playlist ###
+def edit_playlist(playlist_id, title, description, visibility, cover_picture, added_songs, deleted_songs, cover_action):
+    if not title:
+        return {"error": "title missing"}, 500
+    
+    if not visibility:
+        return {"error": "visibilty missing"}, 500
+    
+    connection = get_db_connection()
 
+    if connection is None:
+        return {"error": "couldn't connect to db"}, 500
+    
+    cover_picture_ext = None
+    
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                # Updating db                
+                cursor.execute("""
+                    UPDATE playlist 
+                    SET title = %s, description = %s, visibility = %s
+                    WHERE playlist_id = %s
+                """, (title, description, visibility, playlist_id)
+                )
+                
+                # Uploading to cloud
+                if cover_action == 'replace' and cover_picture:
+                    cursor.execute("SELECT cover_picture FROM playlist WHERE playlist_id = %s", (playlist_id,))
+                    cp = cursor.fetchone()['cover_picture']
+                    if cp:
+                        storage.delete_file_from_storage(cp)
+
+                    cover_picture_ext = storage.get_file_extension(cover_picture)
+                    cover_picture_path = f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}"
+                    success = storage.upload_file_to_storage(
+                        cover_picture.stream,
+                        cover_picture_path,
+                        cover_picture.mimetype
+                    )
+
+                    if not success:
+                        raise Exception()
+                    
+                    cursor.execute("""
+                        UPDATE playlist
+                        SET cover_picture = %s
+                        WHERE playlist_id = %s
+                        """, (f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}", playlist_id)
+                    )
+                    
+                elif cover_action == 'replace' and not cover_picture:
+                    cursor.execute("SELECT cover_picture FROM playlist WHERE playlist_id = %s", (playlist_id,))
+                    cp = cursor.fetchone()['cover_picture']
+                    if cp:
+                        storage.delete_file_from_storage(cp)
+
+                    cursor.execute("""
+                        UPDATE playlist
+                        SET cover_picture = NULL
+                        WHERE playlist_id = %s
+                        """, (playlist_id,)
+                    )
+                    
+                # Uploading to playlist-song table
+                if added_songs:
+                    placeholders = []
+                    values = []
+
+                    for song in added_songs:
+                        placeholders.append('(%s, %s)')
+                        values.extend([playlist_id, song])
+
+                    cursor.execute(f"""
+                        INSERT INTO playlist_song (playlist_id, song_id)
+                        VALUES {', '.join(placeholders)}
+                        """, values
+                    )
+
+                if deleted_songs:
+                    placeholders = ', '.join(['%s'] * len(deleted_songs))
+                    cursor.execute(
+                        f"DELETE FROM playlist_song WHERE playlist_id = %s AND song_id IN ({placeholders})",
+                        [playlist_id] + deleted_songs
+                    )
+
+    except Exception as e:
+        connection.rollback()
+        if cover_action == 'replace':
+            storage.delete_file_from_storage(f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}")
+        return {"error": "failed"}, 500
+    
+    finally:
+        release_connection(connection)
+    
+    return {"message": "successful"}, 201
+
+### delete_playlist ###
 def delete_playlist(playlist_id):
-    return (f"delete_playlist {playlist_id}")
+    connection = get_db_connection()
+
+    if connection is None:
+        return {"error": "Internal error occurred!"}, 500
+    
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute("SELECT asset_id, cover_picture FROM playlist WHERE playlist_id = %s", (playlist_id,))
+                
+                result = cursor.fetchone()
+                asset_id = result['asset_id']
+                cover_picture = result['cover_picture']
+
+                if not asset_id:
+                    raise Exception()
+                
+                cursor.execute("DELETE FROM asset WHERE asset_id = %s", (asset_id,))
+
+                if cover_picture:
+                    storage.delete_file_from_storage(cover_picture)
+
+    except Exception as e:
+        connection.rollback()
+        return {"error": "Failed to delete the playlist!"}
+    
+    finally:
+        release_connection(connection)
+
+    return {"message": "The playlist is deleted successfully!"}, 201
 
 ### get_playlist_songs ###
 def get_playlist_songs(playlist_id):

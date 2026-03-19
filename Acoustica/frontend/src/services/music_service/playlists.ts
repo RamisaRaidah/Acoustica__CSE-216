@@ -44,3 +44,16 @@ export interface GetPlaylistSongsResponse {
 export async function getPlaylistSongs(playlistId: number): Promise<GetPlaylistSongsResponse[]> {
     return api.request(`/api/music/playlists/${playlistId}/songs`);
 }
+
+export async function deletePlaylist(playlistId: number) {
+    return api.request(`/api/music/playlists/${playlistId}`, {
+        method: 'DELETE'
+    })
+}
+
+export async function editPlaylist(playlistId: number, formData: FormData) {
+    return api.request(`/api/music/playlists/${playlistId}`, {
+        method: 'PUT',
+        body: formData
+    })
+}

@@ -1,28 +1,46 @@
-import "@/pages/music/playlist/create_playlist/CreatePlaylist.css"
+import '@/pages/music/playlist/edit_playlist/EditPlaylist.css';
 import { useState, useRef, useEffect } from "react";
-import { createPlaylist } from "@/services/music_service/playlists";
+import { createPlaylist, getPlaylistDatails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
 import Alert from "@/components/alert/TwoButtonAlert";
 import Searchbar, { SongType } from "@/components/searchbar/Searchbar";
 import default_cover from '@/assets/images/deco/Default_Cover_Picture.png';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export default function CreatePlaylist() {
+export default function EditPlaylist() {
+    const navigate = useNavigate();
+    const { playlist_id } = useParams<{ playlist_id: string }>();
+    const playlistId = Number(playlist_id);
     const formRef = useRef<HTMLFormElement>(null);
-    const [creating, setCreating] = useState<boolean>(false);
+    const [updating, setUpdating] = useState<boolean>(false);
 
     const [title, setTitle] = useState<string>('');
-    const [cover_picture, setCoverPicture] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [cover_picture, setCoverPicture] = useState<string | null>(null);
     const [privacy, setPrivacy] = useState<string>('');
     const [selectedSongs, setSelectedSongs] = useState<SongType[]>([]);
     const [selectedSongId, setSelectedSongId] = useState<number[]>([]);
+    const [addedSongId, setAddedSongId] = useState<number[]>([]);
+    const [deletedSongId, setDeletedSongId] = useState<number[]>([]);
     const [duration, setDuration] = useState<number>(0);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const [confirmation, setConfirmation] = useState<boolean>(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [coverAction, setCoverAction] = useState<'keep' | 'replace'>('keep');
 
     const visibilityOptions = [
         { label: "Private", value: "private" },
         { label: "Public", value: "public" }
     ];
 
+    useEffect(() => {
+        getPlaylistDatails(playlistId).then(info => {
+            setTitle(info.title);
+            setDescription(info.description);
+            setCoverPicture(info.cover_picture_url);
+            setPrivacy(info.visibility);
+        })
+        getPlaylistSongs(playlistId).then(setSelectedSongs);
+    }, []);
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {
@@ -38,10 +56,13 @@ export default function CreatePlaylist() {
     function resetForm() {
         formRef.current?.reset();
         setTitle('');
-        setCoverPicture('');
+        setDescription('');
+        setCoverPicture(null);
         setPrivacy('');
         setSelectedSongs([]);
         setSelectedSongId([]);
+        setAddedSongId([]);
+        setDeletedSongId([]);
         setDuration(0);
 
         const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
@@ -50,29 +71,30 @@ export default function CreatePlaylist() {
         if (placeholder) placeholder.style.display = "flex";
     }
 
-    async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault();
+    async function handleSubmit() {
         if (!formRef.current) return;
 
         const formData = new FormData(formRef.current);
-        formData.append('songs', JSON.stringify(selectedSongId));
+        formData.append('added_songs', JSON.stringify(addedSongId));
+        formData.append('deleted_songs', JSON.stringify(deletedSongId));
+        formData.append('cover_action', coverAction);
         try {
-            setCreating(true);
-            const response = await createPlaylist(formData);
+            setUpdating(true);
+            const response = await editPlaylist(playlistId, formData);
             if (response) {
                 resetForm();
-                setAlertMessage("The playlist is created successfully!"); 
+                setAlertMessage("The playlist is updated successfully!");
             }
-        } 
+        }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Failed to create the playlist!';
+            const message = err instanceof Error ? err.message : "Failed to update the playlist!";
             console.log('ERROR: ', message);
             if (message === 'title missing') setAlertMessage('Please select a title!');
             else if (message === 'visibility missing') setAlertMessage('Please select visibility!');
-            else setAlertMessage('Failed to create the playlist!');
-        } 
+            else setAlertMessage('Failed to update the playlist!');
+        }
         finally {
-            setCreating(false);  
+            setUpdating(false);
         }
     }
 
@@ -80,7 +102,16 @@ export default function CreatePlaylist() {
         if (!selectedSongs.some(x => x.song_id === song.song_id)) {
             setSelectedSongs([...selectedSongs, song]);
             setSelectedSongId([...selectedSongId, song.song_id]);
+            setAddedSongId([...addedSongId, song.song_id]);
+            setDeletedSongId(deletedSongId.filter(s => s !== song.song_id));
         }
+    }
+
+    function handleDeleteSong(song: SongType) {
+        setSelectedSongs(selectedSongs.filter(s => s.song_id !== song.song_id));
+        setSelectedSongId(selectedSongId.filter(s => s !== song.song_id));
+        setDeletedSongId([...deletedSongId, song.song_id]);
+        setAddedSongId(addedSongId.filter(s => s !== song.song_id));
     }
 
     useEffect(() => {
@@ -95,13 +126,14 @@ export default function CreatePlaylist() {
 
     return (
         <div id="create-playlist-container">
-            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => setAlertMessage(null)}/>}
+            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => { setAlertMessage(null); if (alertMessage === "The playlist is updated successfully!") navigate(`/music/playlists/${playlistId}`) }} />}
+            {confirmation && <Alert message='Are you sure to apply the changes?' type='confirm' onConfirm={() => { setConfirmation(false); handleSubmit() }} onCancel={() => setConfirmation(false)}/>}
 
             <form
                 ref={formRef}
                 id="create-playlist-form"
                 encType="multipart/form-data"
-                onSubmit={handleSubmit}
+                onSubmit={(e) => { e.preventDefault(); setConfirmation(true) }}
                 autoComplete="off"
             >
                 <div id="create-playlist-form-left">
@@ -109,13 +141,14 @@ export default function CreatePlaylist() {
                     <div id="create-playlist-header">
                         <h1>Create playlist</h1>
                     </div>
-                    
+
                     <div className="form-group">
                         <label>Playlist Title <span style={{ color: "#e07b2a" }}>*</span></label>
                         <input
                             type="text"
                             name="playlist_title"
                             placeholder="Enter playlist title"
+                            value={title}
                             onChange={e => setTitle(e.target.value)}
                         />
                     </div>
@@ -126,6 +159,8 @@ export default function CreatePlaylist() {
                             type="text"
                             name="description"
                             placeholder="Playlist description…"
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
                         />
                     </div>
 
@@ -137,8 +172,8 @@ export default function CreatePlaylist() {
                                 id="cover-picture"
                                 onClick={() => document.getElementById("cover-input")?.click()}
                             >
-                                <img id="cover-preview" src={cover_picture} />
-                                <div id="cover-placeholder">
+                                <img id="cover-preview" src={cover_picture ?? ''} style={{display: cover_picture ? "block" : "none"}} />
+                                <div id="cover-placeholder" style={{display: cover_picture ? "none" : "flex"}}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                         <line x1="12" y1="5" x2="12" y2="19" />
                                         <line x1="5" y1="12" x2="19" y2="12" />
@@ -154,12 +189,14 @@ export default function CreatePlaylist() {
                                         const file = e.target.files?.[0];
                                         const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
                                         const placeholder = document.getElementById("cover-placeholder");
+                                        setCoverAction('replace');
                                         if (imgEl && file) {
                                             setCoverPicture(URL.createObjectURL(file));
                                             imgEl.style.display = "block";
                                             if (placeholder) placeholder.style.display = "none";
-                                        } else if (imgEl) {
-                                            setCoverPicture('');
+                                        } 
+                                        else if (imgEl) {
+                                            setCoverPicture(null);
                                             imgEl.style.display = "none";
                                             if (placeholder) placeholder.style.display = "flex";
                                         }
@@ -218,11 +255,11 @@ export default function CreatePlaylist() {
                             <button
                                 type="submit"
                                 style={{
-                                    opacity: creating ? 0.5 : 1,
-                                    pointerEvents: creating ? "none" : "auto"
+                                    opacity: updating ? 0.5 : 1,
+                                    pointerEvents: updating ? "none" : "auto"
                                 }}
                             >
-                                {creating ? "Creating…" : "Create Playlist"}
+                                {updating ? "Updating…" : "Update Playlist"}
                             </button>
 
                         </div>
@@ -243,7 +280,7 @@ export default function CreatePlaylist() {
                                 <div id="playlist-meta">
                                     <span>{privacy || ""}</span>
                                     {
-                                        selectedSongs.length > 0 && 
+                                        selectedSongs.length > 0 &&
                                         <>
                                             <span>•</span>
                                             <span>{selectedSongs.length} {selectedSongs.length > 1 ? "songs" : "song"}</span>
@@ -290,10 +327,7 @@ export default function CreatePlaylist() {
 
                                         <div className="col-action">
                                             <span
-                                                onClick={() => {
-                                                    setSelectedSongs(selectedSongs.filter(s => s.song_id !== song.song_id));
-                                                    setSelectedSongId(selectedSongId.filter(s => s !== song.song_id));
-                                                }}
+                                                onClick={() => handleDeleteSong(song)}
                                                 title="Remove"
                                             >
                                                 ✕

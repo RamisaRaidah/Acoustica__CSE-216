@@ -37,15 +37,27 @@ def get_playlist_details_route(playlist_id):
     result, status = playlists.get_playlist_details(playlist_id)
     return jsonify(result), status
 
+### edit_playlist_route ###
 @playlists_bp.put("/api/music/playlists/<playlist_id>")
 @jwt_required()
 def edit_playlist_route(playlist_id):
-    return jsonify(f"edit_playlist {playlist_id}")
+    title = request.form.get('playlist_title')
+    description = request.form.get('description')
+    visibility = request.form.get('visibility')
+    cover_picture = request.files.get('cover_picture')
+    added_songs = json.loads(request.form.get('added_songs') or '[]')
+    deleted_songs = json.loads(request.form.get('deleted_songs') or '[]')
+    cover_action = request.form.get('cover_action', 'keep')
 
+    result, status = playlists.edit_playlist(playlist_id, title, description, visibility, cover_picture, added_songs, deleted_songs, cover_action)
+    return jsonify(result), status
+
+### delete_playlist_route ###
 @playlists_bp.delete("/api/music/playlists/<playlist_id>")
 @jwt_required()
 def delete_playlist_route(playlist_id):
-    return jsonify(f"delete_playlist {playlist_id}")
+    result, status = playlists.delete_playlist(playlist_id)
+    return jsonify(result), status
 
 ### get_playlist_songs_route ###
 @playlists_bp.get("/api/music/playlists/<playlist_id>/songs")
