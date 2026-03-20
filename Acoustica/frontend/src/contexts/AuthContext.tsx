@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { getProfilePicture } from "@/services/user_service/auth";
 
 interface User {
-    user_id: string;
+    user_id: number;
     email: string;
     user_type: "listener" | "artist" | "admin";
     onboarding_done: boolean;

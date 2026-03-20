@@ -15,7 +15,7 @@ export default function Artists() {
             }
             catch(err) {
                 console.log("ERROR: ", err);
-                setError("Failed to load artists.");
+                setError("Failed to load artists!");
             }
             finally {
                 setLoading(false);

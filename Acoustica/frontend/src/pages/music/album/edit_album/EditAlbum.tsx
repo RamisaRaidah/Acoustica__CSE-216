@@ -1,16 +1,29 @@
 import "@/pages/music/album/create_album/CreateAlbum.css"
 import { useState, useRef, useEffect } from "react";
-import { createAlbum } from "@/services/music_service/albums";
+import { editAlbum } from "@/services/music_service/albums";
 import { DatePicker, DatePickerHandle } from "@/components/date_picker/DatePicker";
+import { getAlbumDetails, getAlbumCoverPicture } from "@/services/music_service/albums";
 import Alert from "@/components/alert/TwoButtonAlert";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateAlbum() {
+export default function EditAlbum() {
+    const { album_id } = useParams<{ album_id: string }>();
+    const albumId = Number(album_id);
     const formRef = useRef<HTMLFormElement>(null);
     const datePickerRef = useRef<DatePickerHandle>(null);
-    const [creating, setCreating] = useState<boolean>(false);
+    const [updating, setUpdating] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const [confirmation, setConfirmation] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [release_date, setReleaseDate] = useState<string>()
     const [privacy, setPrivacy] = useState<string>('');
+    const [copyright_certificate, setCopyrightCertificate] = useState<string>('')
+    const [cover_picture, setCoverPicture] = useState<string>('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [coverAction, setCoverAction] = useState<'keep' | 'replace'>('keep');
+    const [copyrightCertificateAction, setCopyrightCertificateAction] = useState<'keep' | 'replace'>('keep');
+    const navigate = useNavigate();
 
     const visibilityOptions = [
         { label: "Private", value: "private" },
@@ -28,10 +41,26 @@ export default function CreateAlbum() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    useEffect(() => {
+        getAlbumDetails(albumId).then(info => {
+            setTitle(info.title);
+            setDescription(info.description);
+            setPrivacy(info.visibility);
+            setCopyrightCertificate(`${info.title}_copyright_certificate.pdf`);
+            const d = new Date(info.release_date);
+            const formattedDate = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+            setReleaseDate(formattedDate);
+        });
+        getAlbumCoverPicture(albumId).then(res => setCoverPicture(res.cover_picture_url));
+    }, []);
+
     function resetForm() {
         formRef.current?.reset();
         datePickerRef.current?.reset();
+        setTitle('');
+        setDescription('');
         setPrivacy('');
+        setReleaseDate('');
 
         const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
         const placeholder = document.getElementById("cover-placeholder");
@@ -42,12 +71,12 @@ export default function CreateAlbum() {
         if (certName) certName.textContent = "No file chosen";
     }
 
-    async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-        e.preventDefault();
-
+    async function handleSubmit() {
         if(!formRef.current) return;
 
         const formData = new FormData(formRef.current);
+        formData.append('cover_action', coverAction);
+        formData.append('copyright_certificate_action', copyrightCertificateAction);
 
         if (!formData.get('album_title')?.toString().trim()) {
             setAlertMessage('Please enter a title!');
@@ -61,39 +90,36 @@ export default function CreateAlbum() {
             setAlertMessage('Please select visibility!');
             return;
         }
-        else if (!(formData.get('copyright_certificate') as File).name) {
-            setAlertMessage('Please provide copyright certificate!');
-            return;
-        }
-        
+
         try {
-            setCreating(true);
-            const response = await createAlbum(formData);
+            setUpdating(true);
+            const response = await editAlbum(albumId, formData);
             if (response) {
                 resetForm();
-                setAlertMessage("The album is created successfully!");
+                setAlertMessage("The album is updated successfully!");
             }
         }
         catch(err) {
-            const message = err instanceof Error ? err.message : 'Failed to create the album';
+            const message = err instanceof Error ? err.message : 'Failed to update the album';
             console.log('ERROR', err);
             if (message == 'exists') setAlertMessage('An album with the same title exists!');
-            else setAlertMessage("Failed to create the album!");
+            else setAlertMessage("Failed to update the album!");
         }
         finally {
-            setCreating(false);
+            setUpdating(false);
         }
     }
 
     return (
         <div id="create-album-container">
-            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => setAlertMessage(null)}/>}
-
+            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => { setAlertMessage(null); if (alertMessage === "The album is updated successfully!") navigate(`/music/albums/${albumId}`) }} />}
+            {confirmation && <Alert message='Are you sure to apply the changes?' type='confirm' onConfirm={() => { setConfirmation(false); handleSubmit() }} onCancel={() => setConfirmation(false)}/>}
+            
             <div id="create-album-header">
-                <h1>Create Album</h1>
+                <h1>Update Album</h1>
             </div>
 
-            <form ref={formRef} id="create-album-form" encType="multipart/form-data" onSubmit={handleSubmit} autoComplete="off">
+            <form ref={formRef} id="create-album-form" encType="multipart/form-data" onSubmit={(e) => { e.preventDefault(); setConfirmation(true); }} autoComplete="off">
 
                 <div id="create-album-form-left">
                     <div className="form-group">
@@ -102,6 +128,8 @@ export default function CreateAlbum() {
                             type="text"
                             name="album_title"
                             placeholder="Enter album title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
                         />
                     </div>
 
@@ -111,13 +139,15 @@ export default function CreateAlbum() {
                             type="text"
                             name="description"
                             placeholder="Album description…"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
 
                     <div id="create-album-form-left-middle">
                         <div className="form-group" id="release-date-container">
                             <label>Release Date<span style={{ color: "#e07b2a" }}>*</span></label>
-                            <DatePicker ref={datePickerRef} name="release_date" />
+                            <DatePicker ref={datePickerRef} name="release_date" initialValue={release_date}/>
                         </div>
 
                         <div className="form-group" id="visibility-container">
@@ -170,14 +200,14 @@ export default function CreateAlbum() {
                         <label>Copyright Certificate<span style={{ color: "#e07b2a" }}>*</span></label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
-                            <span className="file-name" id="cert-name">No file chosen</span>
+                            <span className="file-name" id="cert-name">{copyright_certificate}</span>
                             <input
                                 type="file"
                                 name="copyright_certificate"
                                 accept=".pdf"
-                                onChange={e => {
-                                    const el = document.getElementById("cert-name");
-                                    if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";
+                                onChange={(e) => {
+                                    setCopyrightCertificateAction('replace');
+                                    setCopyrightCertificate(e.target.files?.[0]?.name ?? "No file chosen");
                                 }}
                             />
                         </label>
@@ -188,7 +218,7 @@ export default function CreateAlbum() {
                     <div className="form-group">
                         <label>Cover Picture</label>
                         <div id="cover-picture" onClick={() => document.getElementById("cover-input")?.click()}>
-                            <img id="cover-preview" src="" alt="Cover preview" />
+                            <img id="cover-preview" src={cover_picture ?? ''} style={{ display: cover_picture ? "block" : "none" }} />
                             <div id="cover-placeholder">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <line x1="12" y1="5" x2="12" y2="19" />
@@ -205,7 +235,7 @@ export default function CreateAlbum() {
                                     const file = e.target.files?.[0];
                                     const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
                                     const placeholder = document.getElementById("cover-placeholder");
-
+                                    setCoverAction('replace');
                                     if (imgEl && file) {
                                         imgEl.src = URL.createObjectURL(file);
                                         imgEl.style.display = "block";
@@ -220,8 +250,8 @@ export default function CreateAlbum() {
                         </div>
                     </div>
 
-                    <button type="submit" style={{ opacity: creating ? 0.4 : 1, pointerEvents: creating ? "none" : "auto" }}>
-                        {creating ? "Creating..." : "Create Album"}
+                    <button type="submit" style={{ opacity: updating ? 0.4 : 1, pointerEvents: updating ? "none" : "auto" }}>
+                        {updating ? "Updating..." : "Update Album"}
                     </button>
                 </div>
             </form>

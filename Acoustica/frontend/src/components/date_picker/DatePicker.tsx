@@ -5,6 +5,7 @@ interface DatePickerProps {
     name: string;
     required?: boolean;
     placeholder?: string;
+    initialValue?: string;
 }
 
 export interface DatePickerHandle {
@@ -18,9 +19,17 @@ function getDaysInMonth(month: number, year: number) {
     return new Date(year, month + 1, 0).getDate();
 }
 
+function parseLocalDate(val: string) {
+    if (!val || !val.includes("-")) return null;
+    const [y, m, d] = val.split("-").map(Number);
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    return new Date(y, m - 1, d);
+}
+
 export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
-    ({ name, required, placeholder = "Select a date" }, ref) => {
+    ({ name, required, placeholder = "Select a date", initialValue }, ref) => {
         const today = new Date();
+
         const [viewMonth, setViewMonth] = useState(today.getMonth());
         const [viewYear, setViewYear] = useState(today.getFullYear());
         const [selected, setSelected] = useState<string>("");
@@ -34,9 +43,18 @@ export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
 
         useImperativeHandle(ref, () => ({
             reset() {
-                setSelected("");
-                setViewMonth(today.getMonth());
-                setViewYear(today.getFullYear());
+                if (initialValue) {
+                    const d = parseLocalDate(initialValue);
+                    if (d) {
+                        setSelected(initialValue);
+                        setViewMonth(d.getMonth());
+                        setViewYear(d.getFullYear());
+                    }
+                } else {
+                    setSelected("");
+                    setViewMonth(today.getMonth());
+                    setViewYear(today.getFullYear());
+                }
                 setOpen(false);
                 setMode("day");
             }
@@ -52,6 +70,23 @@ export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
             document.addEventListener("mousedown", handleClickOutside);
             return () => document.removeEventListener("mousedown", handleClickOutside);
         }, []);
+
+        useEffect(() => {
+            if (initialValue === undefined) return;
+
+            if (initialValue === "") {
+                setSelected("");
+                setViewMonth(today.getMonth());
+                setViewYear(today.getFullYear());
+                return;
+            }
+
+            const d = parseLocalDate(initialValue);
+            if (!d) return;
+            setSelected(initialValue);
+            setViewMonth(d.getMonth());
+            setViewYear(d.getFullYear());
+        }, [initialValue]);
 
         function selectDay(day: number) {
             const mm = String(viewMonth + 1).padStart(2, "0");
@@ -73,13 +108,15 @@ export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
 
         function formatDisplay() {
             if (!selected) return placeholder;
-            const d = new Date(selected);
+            const d = parseLocalDate(selected);
+            if (!d) return placeholder;
             return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
         }
 
         const isSelected = (day: number) => {
             if (!selected) return false;
-            const d = new Date(selected);
+            const d = parseLocalDate(selected);
+            if (!d) return false;
             return d.getDate() === day && d.getMonth() === viewMonth && d.getFullYear() === viewYear;
         };
 

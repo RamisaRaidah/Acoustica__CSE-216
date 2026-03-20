@@ -1,0 +1,480 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --edit-album-input-bg: rgba(0, 0, 0, 0.04);
+    --edit-album-input-border: rgba(0, 0, 0, 0.12);
+
+    /* orange accent system */
+    --edit-album-orange: #e07b2a;
+    --edit-album-orange-deep: #c95f0e;
+    --edit-album-orange-glow: rgba(224, 123, 42, 0.18);
+
+    /* text */
+    --edit-album-text: #1a1109;
+    --edit-album-subtext: rgba(26, 17, 9, 0.55);
+    --edit-album-surface: #ffffff;
+}
+
+.dark {
+    --edit-album-input-bg: rgba(255, 255, 255, 0.06);
+    --edit-album-input-border: rgba(255, 255, 255, 0.1);
+    --edit-album-text: #f0e8dc;
+    --edit-album-subtext: rgba(240, 232, 220, 0.5);
+    --edit-album-surface: #1c1410;
+}
+
+/* ── CONTAINER ── */
+
+#edit-album-container {
+    display: block;
+    position: relative;
+    overflow-y: visible;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--edit-album-text);
+}
+
+/* ── HEADER ── */
+
+#edit-album-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5vh;
+}
+
+/* H1 — Playfair Display with orange underline accent */
+#edit-album-container h1 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.2vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--edit-album-text);
+    position: relative;
+    display: inline-block;
+}
+
+#edit-album-container h1::after {
+    content: '';
+    display: block;
+    width: 3.4vw;
+    height: 0.4vh;
+    background: linear-gradient(90deg, var(--edit-album-orange), transparent);
+    border-radius: 2px;
+    margin-top: 0.8vh;
+}
+
+/* ── FORM LAYOUT ── */
+
+#edit-album-container #edit-album-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#edit-album-container #edit-album-form-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    width: 45%;
+}
+
+#edit-album-container #edit-album-form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    width: 35%;
+}
+
+#edit-album-container #edit-album-form-left-middle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#edit-album-container #release-date-container {
+    width: 45%;
+}
+
+#edit-album-container #visibility-container {
+    width: 45%;
+}
+
+/* ── FORM GROUPS ── */
+
+#edit-album-container .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vh;
+}
+
+/* Labels — uppercase micro-caps, spaced, muted */
+#edit-album-container .form-group label {
+    font-size: clamp(0.62rem, 0.72vw, 0.82rem);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--edit-album-subtext);
+}
+
+/* Text & date inputs */
+#edit-album-container .form-group input[type="text"],
+#edit-album-container .form-group input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--edit-album-text);
+    background: var(--edit-album-input-bg);
+    border: 1.5px solid var(--edit-album-input-border);
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+#edit-album-container .form-group input[type="text"]:focus,
+#edit-album-container .form-group input[type="date"]:focus {
+    border-color: var(--edit-album-orange);
+    background: var(--edit-album-orange-glow);
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.12);
+}
+
+#edit-album-container .form-group input[type="text"]::placeholder {
+    color: var(--edit-album-subtext);
+    font-style: italic;
+}
+
+#edit-album-container .form-group input[type="file"] {
+    display: none;
+}
+
+/* ── FILE INPUT WRAPPER ── */
+
+#edit-album-container .file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 1rem;
+    background: var(--edit-album-input-bg);
+    border: 1.5px dashed rgba(224, 123, 42, 0.35);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+#edit-album-container .file-input-wrapper:hover {
+    border-color: var(--edit-album-orange);
+    box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.1), 0 8px 24px rgba(224, 123, 42, 0.12);
+}
+
+#edit-album-container .file-input-wrapper .file-btn {
+    flex-shrink: 0;
+    padding: 0.35rem 0.9rem;
+    font-size: clamp(0.62rem, 0.72vw, 0.82rem);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a 0%, #c95f0e 100%);
+    border-radius: 0.35rem;
+    white-space: nowrap;
+    user-select: none;
+}
+
+#edit-album-container .file-input-wrapper .file-name {
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--edit-album-subtext);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-style: italic;
+}
+
+/* ── COVER PICTURE ── */
+
+#edit-album-container #cover-picture {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    background: var(--edit-album-input-bg);
+    border: 2px dashed rgba(224, 123, 42, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+#edit-album-container #cover-picture:hover {
+    border-color: var(--edit-album-orange);
+    box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.1), 0 8px 24px rgba(224, 123, 42, 0.12);
+    transform: scale(1.01);
+}
+
+#edit-album-container #cover-picture input[type="file"] {
+    display: none;
+}
+
+#edit-album-container #cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5vh;
+    color: rgba(224, 123, 42, 0.55);
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+#edit-album-container #cover-picture:hover #cover-placeholder {
+    color: var(--edit-album-orange);
+}
+
+#edit-album-container #cover-placeholder span {
+    font-size: clamp(0.62rem, 0.72vw, 0.82rem);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+#edit-album-container #cover-picture img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+/* ── SUBMIT BUTTON — with shimmer overlay ── */
+
+#edit-album-container button[type="submit"] {
+    width: 100%;
+    padding: 1.1vh 1.2vw;
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.72rem, 0.82vw, 0.95rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, #e07b2a 0%, #c95f0e 100%);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(224, 123, 42, 0.38);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    margin-top: auto;
+}
+
+/* shimmer overlay on hover */
+#edit-album-container button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+#edit-album-container button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(224, 123, 42, 0.5);
+}
+
+#edit-album-container button[type="submit"]:hover::before {
+    opacity: 1;
+}
+
+#edit-album-container button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(224, 123, 42, 0.3);
+}
+
+/* ── DATE PICKER ── */
+
+#edit-album-container .datepicker-container {
+    position: relative;
+    width: 100%;
+}
+
+#edit-album-container .datepicker-trigger {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--edit-album-text);
+    background: var(--edit-album-input-bg);
+    border: 1.5px solid var(--edit-album-input-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+#edit-album-container .datepicker-trigger.placeholder span {
+    color: var(--edit-album-subtext);
+    font-style: italic;
+}
+
+#edit-album-container .datepicker-trigger.active,
+#edit-album-container .datepicker-trigger:hover {
+    border-color: var(--edit-album-orange);
+    background: var(--edit-album-orange-glow);
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.12);
+}
+
+#edit-album-container .datepicker-trigger svg:first-child {
+    color: var(--edit-album-orange);
+    flex-shrink: 0;
+}
+
+#edit-album-container .datepicker-trigger span {
+    flex: 1;
+}
+
+#edit-album-container .datepicker-chevron {
+    flex-shrink: 0;
+    color: var(--edit-album-subtext);
+    transition: transform 0.25s ease;
+}
+
+#edit-album-container .datepicker-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+#edit-album-container .datepicker-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    width: 100%;
+    background: var(--edit-album-surface);
+    border: 1.5px solid var(--edit-album-input-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    z-index: 100;
+    animation: dp-fade-in 0.16s ease;
+}
+
+#edit-album-container .datepicker-weekdays span {
+    text-align: center;
+    font-size: clamp(0.58rem, 0.65vw, 0.75rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--edit-album-subtext);
+    padding: 0.2rem 0;
+}
+
+@keyframes dp-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── VISIBILITY DROPDOWN ── */
+
+#edit-album-container #visibility-dropdown {
+    position: relative;
+}
+
+#edit-album-container #visibility-selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--edit-album-input-bg);
+    border: 1.5px solid var(--edit-album-input-border);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--edit-album-text);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    user-select: none;
+}
+
+#edit-album-container #visibility-selected:hover {
+    border-color: var(--edit-album-orange);
+    background: var(--edit-album-orange-glow);
+    box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
+}
+
+#edit-album-container #visibility-selected svg {
+    transition: transform 0.25s ease;
+    color: var(--edit-album-subtext);
+    flex-shrink: 0;
+}
+
+#edit-album-container #visibility-selected svg.rotate {
+    transform: rotate(180deg);
+}
+
+#edit-album-container #visibility-options {
+    position: absolute;
+    top: calc(100% + 0.8vh);
+    width: 100%;
+    background: var(--edit-album-surface);
+    border: 1.5px solid var(--edit-album-input-border);
+    border-radius: 0.5rem;
+    z-index: 50;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    animation: dropIn 0.18s ease;
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#edit-album-container .visibility-option {
+    padding: 0.8vh 0.8vw;
+    cursor: pointer;
+    font-size: clamp(0.78rem, 0.88vw, 1rem);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--edit-album-text);
+    transition: background 0.15s;
+}
+
+#edit-album-container .visibility-option:hover {
+    background: rgba(224, 123, 42, 0.08);
+}
+
+#edit-album-container .visibility-option.active {
+    background: rgba(224, 123, 42, 0.15);
+    font-weight: 600;
+    color: var(--edit-album-orange-deep);
+}

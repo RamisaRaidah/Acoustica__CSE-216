@@ -134,18 +134,22 @@ export default function EditPlaylist() {
     const secs = duration % 60;
 
     return (
-        <div id="create-playlist-container">
+        <div id="edit-playlist-container">
             {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => { setAlertMessage(null); if (alertMessage === "The playlist is updated successfully!") navigate(`/music/playlists/${playlistId}`) }} />}
             {confirmation && <Alert message='Are you sure to apply the changes?' type='confirm' onConfirm={() => { setConfirmation(false); handleSubmit() }} onCancel={() => setConfirmation(false)}/>}
 
             <form
                 ref={formRef}
-                id="create-playlist-form"
+                id="edit-playlist-form"
                 encType="multipart/form-data"
                 onSubmit={(e) => { e.preventDefault(); setConfirmation(true) }}
                 autoComplete="off"
             >
-                <div id="create-playlist-form-left">
+                <div id="edit-playlist-form-left">
+
+                    <div id="edit-playlist-header">
+                        <h1>Update Playlist</h1>
+                    </div>
 
                     <div className="form-group">
                         <label>Playlist Title <span style={{ color: "#e07b2a" }}>*</span></label>
@@ -169,7 +173,7 @@ export default function EditPlaylist() {
                         />
                     </div>
 
-                    <div id="create-playlist-form-left-bottom">
+                    <div id="edit-playlist-form-left-bottom">
 
                         <div className="form-group" id="cover-picture-container">
                             <label>Cover Picture</label>
@@ -210,7 +214,7 @@ export default function EditPlaylist() {
                             </div>
                         </div>
 
-                        <div id="create-playlist-form-left-bottom-right">
+                        <div id="edit-playlist-form-left-bottom-right">
 
                             <div className="form-group">
                                 <label>Visibility <span style={{ color: "#e07b2a" }}>*</span></label>
@@ -271,7 +275,7 @@ export default function EditPlaylist() {
                     </div>
                 </div>
 
-                <div id="create-playlist-form-right">
+                <div id="edit-playlist-form-right">
                     <div id="playlist-card">
 
                         <div id="playlist-card-top">

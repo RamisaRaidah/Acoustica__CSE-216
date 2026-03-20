@@ -15,8 +15,8 @@ def search_song(seed):
     param = (f"%{seed}%",)
 
     songs_query = """
-        SELECT song_id, s.album_id, s.title, a.title album_name, (first_name || ' ' || last_name) artist_name, length
-        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
+        SELECT song_id, s.album_id, s.title, a.title album_name, stage_name artist_name, length
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
         LIMIT 5
     """
@@ -32,8 +32,8 @@ def search_album(seed):
     param = (f"%{seed}%",)
 
     albums_query = """
-        SELECT album_id, title, (first_name || ' ' || last_name) artist_name
-        FROM album a JOIN users u ON (a.owner_id = u.user_id)
+        SELECT album_id, title, stage_name artist_name
+        FROM album a JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
         LIMIT 5
     """
@@ -49,9 +49,9 @@ def search_artist(seed):
     param = (f"%{seed}%",)
 
     artists_query = """
-        SELECT user_id artist_id, (first_name || ' ' || last_name) artist_name
-        FROM users
-        WHERE user_type = 'artist' AND LOWER(REPLACE((first_name || last_name), ' ', '')) LIKE %s
+        SELECT artist_id, stage_name artist_name
+        FROM artist a JOIN users u ON (a.artist_id = u.user_id)
+        WHERE LOWER(REPLACE(stage_name, ' ', '')) LIKE %s
         LIMIT 5
     """
 

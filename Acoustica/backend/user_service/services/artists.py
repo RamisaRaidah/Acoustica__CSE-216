@@ -18,7 +18,7 @@ def get_profile():
 ### get_artists ###
 def get_artists():
     command = """
-        SELECT artist_id, (first_name || ' ' || last_name) name, profile_picture
+        SELECT artist_id, stage_name artist_name, profile_picture
         FROM artist a JOIN users u ON (a.artist_id = u.user_id) 
     """
 

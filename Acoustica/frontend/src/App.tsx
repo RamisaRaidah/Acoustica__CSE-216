@@ -24,6 +24,8 @@ import CreatePlaylist from '@/pages/music/playlist/create_playlist/CreatePlaylis
 import PlaylistProfile from '@/pages/music/playlist/playlist_profile/PlaylistProfile';
 import EditPlaylist from '@/pages/music/playlist/edit_playlist/EditPlaylist';
 import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
+import EditAlbum from '@/pages/music/album/edit_album/EditAlbum';
+import EditSong from '@/pages/music/song/edit_song/EditSong';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -80,9 +82,11 @@ function App() {
           <Route path="/artists" element={<Artists />} />
           <Route path="/music/create-album" element={<CreateAlbum />} />
           <Route path="/music/albums/:album_id" element={<AlbumProfile />} />
-          <Route path="/music/albums/:album_id/edit" element={<CreateAlbum />} />
+          <Route path="/music/albums/:album_id/edit" element={<EditAlbum />} />
           <Route path="/music/create-playlist" element={<CreatePlaylist />} />
           <Route path="/music/upload-song" element={<UploadSong />} />
+          <Route path="/music/songs/:song_id" element={<UploadSong />} />
+          <Route path="/music/songs/:song_id/edit" element={<EditSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />
           <Route path="/subscription-details" element={<SubscriptionDetails />} />

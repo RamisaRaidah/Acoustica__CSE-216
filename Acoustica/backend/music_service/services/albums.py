@@ -112,7 +112,7 @@ def get_album_details(album_id):
     album_id = int(album_id)
 
     result = execute_sql("""
-        SELECT album_id, title, description, owner_id, stage_name owner_name, release_date, visibility 
+        SELECT album_id, title, description, owner_id, stage_name owner_name, release_date, visibility, copyright_certificate 
         FROM album a JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE album_id = %s
         """, (album_id,),
@@ -120,6 +120,7 @@ def get_album_details(album_id):
     )
     
     if result:
+        result['copyright_certificate'] = storage.generate_signed_url(result['copyright_certificate'])
         return result, 200
     else:
         return {"error": "coudn't fetch data"}, 500
@@ -173,7 +174,7 @@ def get_album_songs(album_id):
     
 ### edit_album ###        
 def edit_album(album_id, title, description, release_date, cover_picture, copyright_certificate, visibility, cover_action, copyright_certificate_action):
-    if not title or not release_date or not copyright_certificate or not visibility:
+    if not title or not release_date or not visibility:
         return {"error": "missing data"}, 500
     
     connection = get_db_connection()
@@ -204,10 +205,10 @@ def edit_album(album_id, title, description, release_date, cover_picture, copyri
                 
                 # Uploading to cloud
                 if cover_action == 'replace' and cover_picture:
-                    cursor.execute("SELECT cover_picture FROM album WHERE album_id = %s", (album_id,))
-                    cp = cursor.fetchone()['cover_picture']
-                    if cp:
-                        storage.delete_file_from_storage(cp)
+                    # cursor.execute("SELECT cover_picture FROM album WHERE album_id = %s", (album_id,))
+                    # cp = cursor.fetchone()['cover_picture']
+                    # if cp:
+                    #     storage.delete_file_from_storage(cp)
 
                     cover_picture_ext = storage.get_file_extension(cover_picture)
                     cover_picture_path = f"Images/Cover_Pictures/album{album_id}.{cover_picture_ext}"
@@ -241,10 +242,10 @@ def edit_album(album_id, title, description, release_date, cover_picture, copyri
                     )
 
                 if copyright_certificate_action == 'replace' and copyright_certificate:
-                    cursor.execute("SELECT copyright_certificate FROM album WHERE album_id = %s", (album_id,))
-                    cc = cursor.fetchone()['copyright_certificate']
-                    if cc:
-                        storage.delete_file_from_storage(cc)
+                    # cursor.execute("SELECT copyright_certificate FROM album WHERE album_id = %s", (album_id,))
+                    # cc = cursor.fetchone()['copyright_certificate']
+                    # if cc:
+                    #     storage.delete_file_from_storage(cc)
 
                     copyright_certificate_path = f"Docs/Copyright_Certificates/album{album_id}.pdf"
                     success = storage.upload_file_to_storage(

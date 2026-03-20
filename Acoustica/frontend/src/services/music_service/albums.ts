@@ -24,6 +24,7 @@ export interface GetAlbumDetailsResponse {
     owner_name: string;
     release_date: string;
     visibility: string;
+    copyright_certificate: string;
 }
 
 export async function getAlbumDetails(albumId: number): Promise<GetAlbumDetailsResponse> {

@@ -1,75 +1,75 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
-    --update-playlist-input-bg: rgba(0, 0, 0, 0.04);
-    --update-playlist-input-border: rgba(0, 0, 0, 0.12);
-    --update-playlist-surface: #ffffff;
-    --update-playlist-text: #1a1109;
-    --update-playlist-subtext: rgba(26, 17, 9, 0.55);
-    --update-playlist-orange: #e07b2a;
-    --update-playlist-orange-deep: #c95f0e;
-    --update-playlist-orange-glow: rgba(224, 123, 42, 0.18);
-    --update-playlist-row-hover: rgba(224, 123, 42, 0.06);
+    --edit-playlist-input-bg: rgba(0, 0, 0, 0.04);
+    --edit-playlist-input-border: rgba(0, 0, 0, 0.12);
+    --edit-playlist-surface: #ffffff;
+    --edit-playlist-text: #1a1109;
+    --edit-playlist-subtext: rgba(26, 17, 9, 0.55);
+    --edit-playlist-orange: #e07b2a;
+    --edit-playlist-orange-deep: #c95f0e;
+    --edit-playlist-orange-glow: rgba(224, 123, 42, 0.18);
+    --edit-playlist-row-hover: rgba(224, 123, 42, 0.06);
 
-    --update-playlist-card-bottom-bg: #fff5e2;
-    --update-playlist-card-bottom-border: rgba(255, 255, 255, 0.07);
-    --update-playlist-card-bottom-text: #111111;
-    --update-playlist-card-bottom-subtext: rgba(26, 17, 9, 0.55);
-    --update-playlist-card-bottom-row-hover: rgba(224, 123, 42, 0.1);
-    --update-playlist-card-bottom-divider: rgba(0, 0, 0, 0.08);
+    --edit-playlist-card-bottom-bg: #fff5e2;
+    --edit-playlist-card-bottom-border: rgba(255, 255, 255, 0.07);
+    --edit-playlist-card-bottom-text: #111111;
+    --edit-playlist-card-bottom-subtext: rgba(26, 17, 9, 0.55);
+    --edit-playlist-card-bottom-row-hover: rgba(224, 123, 42, 0.1);
+    --edit-playlist-card-bottom-divider: rgba(0, 0, 0, 0.08);
 }
 
 .dark {
-    --update-playlist-input-bg: rgba(255, 255, 255, 0.06);
-    --update-playlist-input-border: rgba(255, 255, 255, 0.1);
-    --update-playlist-surface: #1c1410;
-    --update-playlist-text: #f0e8dc;
-    --update-playlist-subtext: rgba(240, 232, 220, 0.5);
-    --update-playlist-row-hover: rgba(224, 123, 42, 0.08);
-    --update-playlist-card-bottom-bg: #0d0d0d;
-    --update-playlist-card-bottom-subtext: rgba(240, 232, 220, 0.45);
-    --update-playlist-card-bottom-text: #f0e8dc;
-    --update-playlist-card-bottom-divider: rgba(255, 255, 255, 0.06);
+    --edit-playlist-input-bg: rgba(255, 255, 255, 0.06);
+    --edit-playlist-input-border: rgba(255, 255, 255, 0.1);
+    --edit-playlist-surface: #1c1410;
+    --edit-playlist-text: #f0e8dc;
+    --edit-playlist-subtext: rgba(240, 232, 220, 0.5);
+    --edit-playlist-row-hover: rgba(224, 123, 42, 0.08);
+    --edit-playlist-card-bottom-bg: #0d0d0d;
+    --edit-playlist-card-bottom-subtext: rgba(240, 232, 220, 0.45);
+    --edit-playlist-card-bottom-text: #f0e8dc;
+    --edit-playlist-card-bottom-divider: rgba(255, 255, 255, 0.06);
 }
 
-#update-playlist-container {
+#edit-playlist-container {
     display: block;
     position: relative;
     width: 100%;
     box-sizing: border-box;
     font-family: 'DM Sans', sans-serif;
-    color: var(--update-playlist-text);
+    color: var(--edit-playlist-text);
 }
 
-#update-playlist-header {
+#edit-playlist-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 3vh;
 }
 
-#update-playlist-container h1 {
+#edit-playlist-container h1 {
     margin: 0;
     font-family: 'Playfair Display', serif;
     font-size: clamp(1.6rem, 2.2vw, 2.8rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: var(--update-playlist-text);
+    color: var(--edit-playlist-text);
     position: relative;
     display: inline-block;
 }
 
-#update-playlist-container h1::after {
+#edit-playlist-container h1::after {
     content: '';
     display: block;
     width: 3.4vw;
     height: 0.4vh;
-    background: linear-gradient(90deg, var(--update-playlist-orange), transparent);
+    background: linear-gradient(90deg, var(--edit-playlist-orange), transparent);
     border-radius: 2px;
     margin-top: 0.8vh;
 }
 
-#update-playlist-container #update-playlist-form {
+#edit-playlist-container #edit-playlist-form {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -78,7 +78,7 @@
     /* top-aligned, not stretched */
 }
 
-#update-playlist-container #update-playlist-form-left {
+#edit-playlist-container #edit-playlist-form-left {
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
@@ -87,7 +87,7 @@
     /* pins button to bottom */
 }
 
-#update-playlist-container #update-playlist-form-right {
+#edit-playlist-container #edit-playlist-form-right {
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -95,21 +95,21 @@
     /* no height or flex constraints — grows naturally with content */
 }
 
-#update-playlist-container #update-playlist-form-left-bottom {
+#edit-playlist-container #edit-playlist-form-left-bottom {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     /* remove flex: 1 */
 }
 
-#update-playlist-container #cover-picture-container {
+#edit-playlist-container #cover-picture-container {
     width: 40%;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
 }
 
-#update-playlist-container #update-playlist-form-left-bottom-right {
+#edit-playlist-container #edit-playlist-form-left-bottom-right {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -118,53 +118,53 @@
     box-sizing: border-box;
 }
 
-#update-playlist-container .form-group {
+#edit-playlist-container .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5vh;
 }
 
-#update-playlist-container .form-group label {
+#edit-playlist-container .form-group label {
     font-size: clamp(0.62rem, 0.72vw, 0.82rem);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--update-playlist-subtext);
+    color: var(--edit-playlist-subtext);
 }
 
-#update-playlist-container .form-group input[type="text"] {
+#edit-playlist-container .form-group input[type="text"] {
     width: 100%;
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
     font-family: 'DM Sans', sans-serif;
     font-weight: 400;
-    color: var(--update-playlist-text);
-    background: var(--update-playlist-input-bg);
-    border: 1.5px solid var(--update-playlist-input-border);
+    color: var(--edit-playlist-text);
+    background: var(--edit-playlist-input-bg);
+    border: 1.5px solid var(--edit-playlist-input-border);
     border-radius: 0.5rem;
     outline: none;
     box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-#update-playlist-container .form-group input[type="text"]:focus {
-    border-color: var(--update-playlist-orange);
-    background: var(--update-playlist-orange-glow);
+#edit-playlist-container .form-group input[type="text"]:focus {
+    border-color: var(--edit-playlist-orange);
+    background: var(--edit-playlist-orange-glow);
     box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.12);
 }
 
-#update-playlist-container .form-group input[type="text"]::placeholder {
-    color: var(--update-playlist-subtext);
+#edit-playlist-container .form-group input[type="text"]::placeholder {
+    color: var(--edit-playlist-subtext);
     font-style: italic;
 }
 
-#update-playlist-container #cover-picture {
+#edit-playlist-container #cover-picture {
     width: 100%;
     aspect-ratio: 1 / 1;
     /* restore aspect ratio instead of flex: 1 */
     border-radius: 0.8rem;
     overflow: hidden;
-    background: var(--update-playlist-input-bg);
+    background: var(--edit-playlist-input-bg);
     border: 2px dashed rgba(224, 123, 42, 0.35);
     display: flex;
     align-items: center;
@@ -174,21 +174,21 @@
     transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
 }
 
-#update-playlist-container #cover-picture:hover {
-    border-color: var(--update-playlist-orange);
+#edit-playlist-container #cover-picture:hover {
+    border-color: var(--edit-playlist-orange);
     box-shadow: 0 0 0 4px rgba(224, 123, 42, 0.1), 0 8px 24px rgba(224, 123, 42, 0.12);
     transform: scale(1.01);
 }
 
-#update-playlist-container #cover-picture input[type="file"] {
+#edit-playlist-container #cover-picture input[type="file"] {
     display: none;
 }
 
-#update-playlist-container #cover-preview {
+#edit-playlist-container #cover-preview {
     z-index: 25;
 }
 
-#update-playlist-container #cover-placeholder {
+#edit-playlist-container #cover-placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -200,18 +200,18 @@
     z-index: 20;
 }
 
-#update-playlist-container #cover-picture:hover #cover-placeholder {
-    color: var(--update-playlist-orange);
+#edit-playlist-container #cover-picture:hover #cover-placeholder {
+    color: var(--edit-playlist-orange);
 }
 
-#update-playlist-container #cover-placeholder span {
+#edit-playlist-container #cover-placeholder span {
     font-size: clamp(0.62rem, 0.72vw, 0.82rem);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
 }
 
-#update-playlist-container #cover-picture img {
+#edit-playlist-container #cover-picture img {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -220,7 +220,7 @@
     display: none;
 }
 
-#update-playlist-container button[type="submit"] {
+#edit-playlist-container button[type="submit"] {
     width: 100%;
     padding: 1.1vh 1.2vw;
     font-family: 'DM Sans', sans-serif;
@@ -239,7 +239,7 @@
     overflow: hidden;
 }
 
-#update-playlist-container button[type="submit"]::before {
+#edit-playlist-container button[type="submit"]::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -248,61 +248,61 @@
     transition: opacity 0.2s;
 }
 
-#update-playlist-container button[type="submit"]:hover {
+#edit-playlist-container button[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(224, 123, 42, 0.5);
 }
 
-#update-playlist-container button[type="submit"]:hover::before {
+#edit-playlist-container button[type="submit"]:hover::before {
     opacity: 1;
 }
 
-#update-playlist-container button[type="submit"]:active {
+#edit-playlist-container button[type="submit"]:active {
     transform: translateY(0);
     box-shadow: 0 3px 10px rgba(224, 123, 42, 0.3);
 }
 
-#update-playlist-container #visibility-dropdown {
+#edit-playlist-container #visibility-dropdown {
     position: relative;
 }
 
-#update-playlist-container #visibility-selected {
+#edit-playlist-container #visibility-selected {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    background: var(--update-playlist-input-bg);
-    border: 1.5px solid var(--update-playlist-input-border);
+    background: var(--edit-playlist-input-bg);
+    border: 1.5px solid var(--edit-playlist-input-border);
     cursor: pointer;
     font-size: 0.95rem;
     font-family: 'DM Sans', sans-serif;
-    color: var(--update-playlist-text);
+    color: var(--edit-playlist-text);
     transition: border-color 0.2s, box-shadow 0.2s;
     user-select: none;
 }
 
-#update-playlist-container #visibility-selected:hover {
-    border-color: var(--update-playlist-orange);
+#edit-playlist-container #visibility-selected:hover {
+    border-color: var(--edit-playlist-orange);
     box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.1);
 }
 
-#update-playlist-container #visibility-selected svg {
+#edit-playlist-container #visibility-selected svg {
     transition: transform 0.25s ease;
-    color: var(--update-playlist-subtext);
+    color: var(--edit-playlist-subtext);
     flex-shrink: 0;
 }
 
-#update-playlist-container #visibility-selected svg.rotate {
+#edit-playlist-container #visibility-selected svg.rotate {
     transform: rotate(180deg);
 }
 
-#update-playlist-container #visibility-options {
+#edit-playlist-container #visibility-options {
     position: absolute;
     top: calc(100% + 0.8vh);
     width: 100%;
-    background: var(--update-playlist-surface);
-    border: 1.5px solid var(--update-playlist-input-border);
+    background: var(--edit-playlist-surface);
+    border: 1.5px solid var(--edit-playlist-input-border);
     border-radius: 0.5rem;
     z-index: 50;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
@@ -322,37 +322,37 @@
     }
 }
 
-#update-playlist-container .visibility-option {
+#edit-playlist-container .visibility-option {
     padding: 0.8vh 0.8vw;
     cursor: pointer;
     font-size: clamp(0.78rem, 0.88vw, 1rem);
     font-family: 'DM Sans', sans-serif;
-    color: var(--update-playlist-text);
+    color: var(--edit-playlist-text);
     transition: background 0.15s;
 }
 
-#update-playlist-container .visibility-option:hover {
+#edit-playlist-container .visibility-option:hover {
     background: rgba(224, 123, 42, 0.08);
 }
 
-#update-playlist-container .visibility-option.active {
+#edit-playlist-container .visibility-option.active {
     background: rgba(224, 123, 42, 0.15);
     font-weight: 600;
-    color: var(--update-playlist-orange-deep);
+    color: var(--edit-playlist-orange-deep);
 }
 
 /* ── PLAYLIST CARD ── */
 
-#update-playlist-container #playlist-card {
+#edit-playlist-container #playlist-card {
     width: 100%;
     border-radius: 1rem;
     overflow: visible;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    background: var(--update-playlist-card-bottom-bg);
+    background: var(--edit-playlist-card-bottom-bg);
     /* no flex: 1 — natural height */
 }
 
-#update-playlist-container #playlist-card-top {
+#edit-playlist-container #playlist-card-top {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto;
@@ -367,7 +367,7 @@
     overflow: visible;
 }
 
-#update-playlist-container #playlist-card-top::before {
+#edit-playlist-container #playlist-card-top::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -378,7 +378,7 @@
     border-radius: 1rem 1rem 0 0;
 }
 
-#update-playlist-container #card-cover-picture {
+#edit-playlist-container #card-cover-picture {
     grid-row: 1 / 3;
     width: clamp(70px, 7.8vw, 120px);
     height: clamp(70px, 7.8vw, 120px);
@@ -394,14 +394,14 @@
     align-self: center;
 }
 
-#update-playlist-container #card-cover-picture img {
+#edit-playlist-container #card-cover-picture img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-#update-playlist-container #card-info {
+#edit-playlist-container #card-info {
     display: flex;
     flex-direction: column;
     gap: 0.3vh;
@@ -411,7 +411,7 @@
     min-width: 0;
 }
 
-#update-playlist-container #playlist-label {
+#edit-playlist-container #playlist-label {
     margin: 0;
     font-size: clamp(0.58rem, 0.65vw, 0.75rem);
     font-weight: 700;
@@ -420,7 +420,7 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-#update-playlist-container #playlist-title {
+#edit-playlist-container #playlist-title {
     margin: 0;
     font-family: 'Playfair Display', serif;
     font-size: clamp(1rem, 1.5vw, 1.75rem);
@@ -434,7 +434,7 @@
     text-overflow: ellipsis;
 }
 
-#update-playlist-container #playlist-meta {
+#edit-playlist-container #playlist-meta {
     display: flex;
     align-items: center;
     gap: 0.35vw;
@@ -443,14 +443,14 @@
     color: rgba(255, 255, 255, 0.75);
 }
 
-#update-playlist-container #playlist-meta span:nth-child(even) {
+#edit-playlist-container #playlist-meta span:nth-child(even) {
     opacity: 0.4;
     font-size: 0.6rem;
 }
 
 /* ── SEARCH BAR ── */
 
-#update-playlist-container #search-song {
+#edit-playlist-container #search-song {
     grid-column: 1 / 3;
     position: relative;
     z-index: 2;
@@ -458,13 +458,13 @@
     box-sizing: border-box;
 }
 
-#update-playlist-container #search-song .searchbar {
+#edit-playlist-container #search-song .searchbar {
     display: flex;
     width: 100%;
     min-width: 0;
 }
 
-#update-playlist-container #search-song .search_wrapper {
+#edit-playlist-container #search-song .search_wrapper {
     position: relative;
     width: 100%;
     min-width: 0;
@@ -472,7 +472,7 @@
     align-items: center;
 }
 
-#update-playlist-container #search-song .search_wrapper::before {
+#edit-playlist-container #search-song .search_wrapper::before {
     content: '';
     position: absolute;
     left: 0.8em;
@@ -486,11 +486,11 @@
     transition: background-image 0.2s;
 }
 
-#update-playlist-container #search-song .search_wrapper:focus-within::before {
+#edit-playlist-container #search-song .search_wrapper:focus-within::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='rgba(224,123,42,0.85)' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
 }
 
-#update-playlist-container #search-song .search_bar {
+#edit-playlist-container #search-song .search_bar {
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
@@ -507,18 +507,18 @@
     transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
-#update-playlist-container #search-song .search_bar::placeholder {
+#edit-playlist-container #search-song .search_bar::placeholder {
     color: rgba(255, 255, 255, 0.35);
     font-style: italic;
 }
 
-#update-playlist-container #search-song .search_bar:focus {
+#edit-playlist-container #search-song .search_bar:focus {
     border-color: rgba(224, 123, 42, 0.65);
     box-shadow: 0 0 0 3px rgba(224, 123, 42, 0.15);
     background: rgba(0, 0, 0, 0.4);
 }
 
-#update-playlist-container #search-song .search_dropdown {
+#edit-playlist-container #search-song .search_dropdown {
     position: absolute;
     top: calc(100% + 0.45em);
     left: 0;
@@ -537,7 +537,7 @@
         0 0 0 1px rgba(224, 123, 42, 0.07);
 }
 
-#update-playlist-container #search-song .search_dropdown.active {
+#edit-playlist-container #search-song .search_dropdown.active {
     display: block;
     animation: sb_dropIn 0.16s ease;
 }
@@ -556,44 +556,44 @@
 
 /* ── SONG LIST ── */
 
-#update-playlist-container #playlist-card-bottom {
-    background: var(--update-playlist-card-bottom-bg);
+#edit-playlist-container #playlist-card-bottom {
+    background: var(--edit-playlist-card-bottom-bg);
     padding: 0.6vh 0 0.9vh;
     border-radius: 0 0 1vw 1vw;
 }
 
-#update-playlist-container #playlist-card-header {
+#edit-playlist-container #playlist-card-header {
     display: grid;
     grid-template-columns: 2.8vw 1.4fr 1.4fr 4.5vw 2.5vw;
     align-items: center;
     padding: 0 0.75vw 0.6vh;
-    border-bottom: 1px solid var(--update-playlist-card-bottom-divider);
+    border-bottom: 1px solid var(--edit-playlist-card-bottom-divider);
     margin-bottom: 0.2vh;
 }
 
-#update-playlist-container #playlist-card-header>div {
+#edit-playlist-container #playlist-card-header>div {
     font-size: clamp(0.58rem, 0.65vw, 0.75rem);
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--update-playlist-subtext);
+    color: var(--edit-playlist-subtext);
 }
 
-#update-playlist-container #playlist-card-header>div:first-child {
+#edit-playlist-container #playlist-card-header>div:first-child {
     text-align: center;
 }
 
-#update-playlist-container #playlist-card-header>div:nth-child(4) {
+#edit-playlist-container #playlist-card-header>div:nth-child(4) {
     text-align: right;
 }
 
-#update-playlist-container #playlist-card-header>div:nth-child(5) {
+#edit-playlist-container #playlist-card-header>div:nth-child(5) {
     text-align: center;
 }
 
 /* ── SCROLLABLE SONG ROWS ── */
 
-#update-playlist-container #song-cards {
+#edit-playlist-container #song-cards {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -604,24 +604,24 @@
     scrollbar-color: rgba(224, 123, 42, 0.3) transparent;
 }
 
-#update-playlist-container #song-cards::-webkit-scrollbar {
+#edit-playlist-container #song-cards::-webkit-scrollbar {
     width: 3px;
 }
 
-#update-playlist-container #song-cards::-webkit-scrollbar-track {
+#edit-playlist-container #song-cards::-webkit-scrollbar-track {
     background: transparent;
 }
 
-#update-playlist-container #song-cards::-webkit-scrollbar-thumb {
+#edit-playlist-container #song-cards::-webkit-scrollbar-thumb {
     background: rgba(224, 123, 42, 0.3);
     border-radius: 2px;
 }
 
-#update-playlist-container #song-cards::-webkit-scrollbar-thumb:hover {
+#edit-playlist-container #song-cards::-webkit-scrollbar-thumb:hover {
     background: rgba(224, 123, 42, 0.55);
 }
 
-#update-playlist-container .playlist-row {
+#edit-playlist-container .playlist-row {
     display: grid;
     grid-template-columns: 2.8vw 1.4fr 1.4fr 4.5vw 2.5vw;
     align-items: center;
@@ -635,81 +635,81 @@
     flex-shrink: 0;
 }
 
-#update-playlist-container .playlist-row+.playlist-row {
-    border-top: 1px solid var(--update-playlist-card-bottom-divider);
+#edit-playlist-container .playlist-row+.playlist-row {
+    border-top: 1px solid var(--edit-playlist-card-bottom-divider);
 }
 
-#update-playlist-container .playlist-row:hover {
-    background: var(--update-playlist-card-bottom-row-hover);
+#edit-playlist-container .playlist-row:hover {
+    background: var(--edit-playlist-card-bottom-row-hover);
     transform: translateX(3px);
 }
 
-#update-playlist-container .col-index {
+#edit-playlist-container .col-index {
     text-align: center;
     font-size: clamp(0.65rem, 0.72vw, 0.82rem);
     font-weight: 500;
-    color: var(--update-playlist-card-bottom-subtext);
+    color: var(--edit-playlist-card-bottom-subtext);
     transition: color 0.2s;
 }
 
-#update-playlist-container .playlist-row:hover .col-index {
-    color: var(--update-playlist-orange);
+#edit-playlist-container .playlist-row:hover .col-index {
+    color: var(--edit-playlist-orange);
 }
 
-#update-playlist-container .col-title {
+#edit-playlist-container .col-title {
     display: flex;
     flex-direction: column;
     gap: 0.15vh;
     overflow: hidden;
 }
 
-#update-playlist-container .song-title {
+#edit-playlist-container .song-title {
     margin: 0;
     font-size: clamp(0.78rem, 0.85vw, 0.98rem);
     font-weight: 600;
-    color: var(--update-playlist-card-bottom-text);
+    color: var(--edit-playlist-card-bottom-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.2s;
 }
 
-#update-playlist-container .playlist-row:hover .song-title {
+#edit-playlist-container .playlist-row:hover .song-title {
     color: #f5a054;
 }
 
-#update-playlist-container .song-artist {
+#edit-playlist-container .song-artist {
     margin: 0;
     font-size: clamp(0.62rem, 0.68vw, 0.78rem);
-    color: var(--update-playlist-card-bottom-subtext);
+    color: var(--edit-playlist-card-bottom-subtext);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-#update-playlist-container .col-album {
+#edit-playlist-container .col-album {
     font-size: clamp(0.68rem, 0.75vw, 0.88rem);
-    color: var(--update-playlist-card-bottom-subtext);
+    color: var(--edit-playlist-card-bottom-subtext);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-#update-playlist-container .col-time {
+#edit-playlist-container .col-time {
     font-size: clamp(0.65rem, 0.72vw, 0.82rem);
     font-weight: 500;
-    color: var(--update-playlist-card-bottom-subtext);
+    color: var(--edit-playlist-card-bottom-subtext);
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
 
-#update-playlist-container .col-action {
+#edit-playlist-container .col-action {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#update-playlist-container .col-action span {
+#edit-playlist-container .col-action span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -719,39 +719,39 @@
     min-height: 18px;
     border-radius: 50%;
     font-size: clamp(0.6rem, 0.68vw, 0.78rem);
-    color: var(--update-playlist-card-bottom-subtext);
+    color: var(--edit-playlist-card-bottom-subtext);
     opacity: 0;
     transform: scale(0.7);
     transition: all 0.18s ease;
     cursor: pointer;
 }
 
-#update-playlist-container .playlist-row:hover .col-action span {
+#edit-playlist-container .playlist-row:hover .col-action span {
     opacity: 1;
     transform: scale(1);
 }
 
-#update-playlist-container .col-action span:hover {
+#edit-playlist-container .col-action span:hover {
     background: rgba(255, 60, 60, 0.15);
     color: #ff5555;
     opacity: 1;
 }
 
-#update-playlist-container #song-cards:empty::after {
+#edit-playlist-container #song-cards:empty::after {
     content: 'No songs added yet';
     display: block;
     text-align: center;
     padding: 2vh 0;
     font-size: clamp(0.72rem, 0.8vw, 0.92rem);
-    color: var(--update-playlist-card-bottom-subtext);
+    color: var(--edit-playlist-card-bottom-subtext);
     font-style: italic;
 }
 
 /* ── SEARCH RESULT HEADERS ── */
 
-#update-playlist-container .song_result_header,
-#update-playlist-container .album_result_header,
-#update-playlist-container .artist_result_header {
+#edit-playlist-container .song_result_header,
+#edit-playlist-container .album_result_header,
+#edit-playlist-container .artist_result_header {
     padding: 0.7em 1em 0.25em;
     font-size: 0.65rem;
     font-weight: 700;
@@ -760,13 +760,13 @@
     color: rgba(255, 255, 255, 0.28);
 }
 
-#update-playlist-container .album_result_header,
-#update-playlist-container .artist_result_header {
+#edit-playlist-container .album_result_header,
+#edit-playlist-container .artist_result_header {
     margin-top: 0.35em;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-#update-playlist-container .search_item {
+#edit-playlist-container .search_item {
     display: flex;
     flex-direction: column;
     padding: 0.5em 1em;
@@ -776,11 +776,11 @@
     transition: background 0.14s ease;
 }
 
-#update-playlist-container .search_item:hover {
+#edit-playlist-container .search_item:hover {
     background: rgba(224, 123, 42, 0.1);
 }
 
-#update-playlist-container .search_item_title {
+#edit-playlist-container .search_item_title {
     display: block;
     font-size: 0.88rem;
     font-weight: 500;
@@ -789,11 +789,11 @@
     transition: color 0.14s ease;
 }
 
-#update-playlist-container .search_item:hover .search_item_title {
+#edit-playlist-container .search_item:hover .search_item_title {
     color: #f5a054;
 }
 
-#update-playlist-container .search_item_artist_name {
+#edit-playlist-container .search_item_artist_name {
     display: block;
     font-size: 0.73rem;
     font-weight: 400;

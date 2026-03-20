@@ -1,12 +1,12 @@
-import '@/pages/music/song/upload_song/UploadSong.css';
+import '@/pages/music/song/updat_song/UpdatSong.css';
 import { getMyAlbums, GetMyAlbumsResponse } from '@/services/music_service/albums';
 import { getArtists, GetArtistsResponse } from '@/services/user_service/artists';
 import { getLanguages, Language, getGenres, Genre, getMoods, Mood, getInstruments, Instrument } from '@/services/analytics_service/analytics';
-import { uploadSong } from '@/services/music_service/songs';
+import { updateSong } from '@/services/music_service/songs';
 import { useEffect, useState, useRef } from 'react';
 import { DatePicker, DatePickerHandle } from '@/components/date_picker/DatePicker';
 import Alert from '@/components/alert/TwoButtonAlert';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface Collaborator {
     artist_id: number;
@@ -15,7 +15,9 @@ interface Collaborator {
     role: string;
 }
 
-export default function UploadSong() {
+export default function EditSong() {
+    const { song_id } = useParams<{ song_id: string }>();
+    const songId = Number(song_id);
     const [albums, setAlbums] = useState<GetMyAlbumsResponse[]>([]);
     const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
     const [pendingArtist, setPendingArtist] = useState<GetArtistsResponse | null>(null);
@@ -29,7 +31,7 @@ export default function UploadSong() {
     const [selectedInstruments, setSelectedInstruments] = useState<Instrument[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [uploading, setUploading] = useState<boolean>(false);
+    const [updating, setUpdating] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
     const datePickerRef = useRef<DatePickerHandle>(null);
@@ -62,7 +64,7 @@ export default function UploadSong() {
     }
 
     useEffect(() => {
-        async function loadData() {
+        function loadData() {
             try {
                 getMyAlbums().then(setAlbums);
                 getArtists().then(setArtists);
@@ -70,10 +72,12 @@ export default function UploadSong() {
                 getGenres().then(setGenres);
                 getMoods().then(setMoods);
                 getInstruments().then(setInstruments);
-            } catch (err) {
+            } 
+            catch (err) {
                 console.log('Error:', err);
                 setError('Failed to load!');
-            } finally {
+            } 
+            finally {
                 setLoading(false);
                 resetForm();
             }
@@ -190,47 +194,39 @@ export default function UploadSong() {
             setAlertMessage('Please enter the release date!');
             return;
         }
-        else if (!(formData.get('song_audio') as File).name) {
-            setAlertMessage('Please select the audio file!');
-            return;
-        }
-        else if (!(formData.get('copyright_certificate') as File).name) {
-            setAlertMessage('Please provide copyright certificate!');
-            return;
-        }
 
         try {
-            setUploading(true);
-            const response = await uploadSong(formData);
+            setUpdating(true);
+            const response = await updateSong(songId, formData);
             if (response) {
                 resetForm();
-                setAlertMessage('The song is uploaded successfully!');
+                setAlertMessage('The song is updated successfully!');
             }
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Failed to upload the song!';
+            const message = err instanceof Error ? err.message : 'Failed to update the song!';
             console.log('ERROR:', message);
             if (message === 'exists') setAlertMessage('A song with the same title exists!');
-            else setAlertMessage('Failed to upload the song!');
+            else setAlertMessage('Failed to update the song!');
         }
         finally {
-            setUploading(false);
+            setUpdating(false);
         }
     }
 
     return (
-        <div id='upload-song-container'>
+        <div id='update-song-container'>
             {alertMessage && <Alert message={alertMessage} type='alert' onConfirm={() => setAlertMessage(null)} />}
 
             <div id="create-album-header">
-                <h1>Upload Song</h1>
+                <h1>Update Song</h1>
             </div>
 
-            <form ref={formRef} id='upload-song-form' encType='multipart/form-data' onSubmit={handleSubmit} autoComplete='off'>
+            <form ref={formRef} id='update-song-form' encType='multipart/form-data' onSubmit={handleSubmit} autoComplete='off'>
 
-                <div id='upload-song-form-left'>
+                <div id='update-song-form-left'>
 
-                    <div id='upload-song-form-left-top'>
+                    <div id='update-song-form-left-top'>
 
                         <div className='form-group'>
                             <label>Song Title<span style={{ color: "#e07b2a" }}>*</span></label>
@@ -250,7 +246,7 @@ export default function UploadSong() {
 
                     </div>
 
-                    <div id='upload-song-form-left-middle'>
+                    <div id='update-song-form-left-middle'>
 
                         <div className='form-group'>
                             <label>Collaborators</label>
@@ -309,7 +305,7 @@ export default function UploadSong() {
 
                     </div>
 
-                    <div id='upload-song-form-left-bottom'>
+                    <div id='update-song-form-left-bottom'>
 
                         <div className='form-group'>
                             <label>Genre</label>
@@ -429,7 +425,7 @@ export default function UploadSong() {
 
                 </div>
 
-                <div id='upload-song-form-right'>
+                <div id='update-song-form-right'>
 
                     <div className="form-group">
                         <label>Release Date<span style={{ color: "#e07b2a" }}>*</span></label>
@@ -478,8 +474,8 @@ export default function UploadSong() {
                         </label>
                     </div>
 
-                    <button type='submit' style={{ opacity: uploading ? 0.4 : 1, pointerEvents: uploading ? "none" : "auto" }}>
-                        {uploading ? "Uploading..." : "Upload song"}
+                    <button type='submit' style={{ opacity: updating ? 0.4 : 1, pointerEvents: updating ? "none" : "auto" }}>
+                        {updating ? "Updating..." : "Update song"}
                     </button>
 
                 </div>
