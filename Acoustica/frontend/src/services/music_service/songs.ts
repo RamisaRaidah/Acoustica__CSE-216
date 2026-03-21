@@ -77,3 +77,9 @@ export async function deleteSong(songId: number) {
         method: 'DELETE'
     })
 }
+
+export async function likeSong(songId: number) {
+    return api.request(`/api/music/songs/${songId}/like`, {
+        method: 'PUT'
+    })
+}

@@ -2,6 +2,7 @@ import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { addStreamHistory } from "@/services/user_service/users";
+import { likeSong } from "@/services/music_service/songs";
 import play_previous_button from '@/assets/images/Musicbar_Buttons/Play_Previous_Button.png';
 import play_button from '@/assets/images/Musicbar_Buttons/Play_Button.png';
 import pause_button from '@/assets/images/Musicbar_Buttons/Pause_Button.png';
@@ -260,7 +261,7 @@ export default function MusicPlayer() {
 
             <div className="music_control2" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
                 <img src={lyrics_button} className="lyrics_button" />
-                <img src={like_button} className="like_button" />
+                <img src={like_button} className="like_button" onClick={() => { if (song) likeSong(song.song_id) }}/>
                 <img src={full_screen_button} className="full_screen_button" />
             </div>
         </div>

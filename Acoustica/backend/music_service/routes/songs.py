@@ -122,3 +122,10 @@ def edit_song_route(song_id):
 def delete_song_route(song_id):
     result, status = songs.delete_song(song_id)
     return jsonify(result), status
+
+### like_song_route ###
+@songs_bp.put("/api/music/songs/<song_id>/like")
+@jwt_required()
+def like_song_route(song_id):
+    result, status = songs.like_song(song_id)
+    return jsonify(result), status

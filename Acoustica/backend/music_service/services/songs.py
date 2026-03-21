@@ -6,6 +6,7 @@ from psycopg2.extras import RealDictCursor
 import logging
 import sys
 from mutagen import File
+from flask_jwt_extended import get_jwt_identity
 
 from storage_service.services import storage
 
@@ -422,6 +423,28 @@ def delete_song(song_id):
         release_connection(connection)
 
     return {"message": "successful"}, 201
+
+def like_song(song_id):
+    result = execute_sql(
+        "SELECT 1 FROM liked_song WHERE listener_id = %s AND song_id = %s",
+        (get_jwt_identity(), song_id),
+        fetch_one=True
+    )
+
+    if result is None:
+        success = execute_sql(
+            "INSERT INTO liked_song (listener_id, song_id) VALUES (%s, %s)",
+            (get_jwt_identity(), song_id)
+        )
+    else:
+        success = execute_sql(
+            "DELETE FROM liked_song WHERE listener_id = %s AND song_id = %s",
+            (get_jwt_identity(), song_id)
+        )
+
+    if success is not None:
+        return {'message': 'successful'}, 200
+    return {'error': 'failed'}, 500
 
 ### Helper functions ###
 
