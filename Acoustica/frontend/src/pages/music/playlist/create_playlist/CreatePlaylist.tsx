@@ -2,7 +2,7 @@ import "@/pages/music/playlist/create_playlist/CreatePlaylist.css"
 import { useState, useRef, useEffect } from "react";
 import { createPlaylist } from "@/services/music_service/playlists";
 import Alert from "@/components/alert/TwoButtonAlert";
-import Searchbar, { SongType } from "@/components/searchbar/Searchbar";
+import Searchbar, { SongInfo } from "@/components/searchbar/Searchbar";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 
 export default function CreatePlaylist() {
@@ -12,7 +12,7 @@ export default function CreatePlaylist() {
     const [title, setTitle] = useState<string>('');
     const [cover_picture, setCoverPicture] = useState<string>('');
     const [privacy, setPrivacy] = useState<string>('');
-    const [selectedSongs, setSelectedSongs] = useState<SongType[]>([]);
+    const [selectedSongs, setSelectedSongs] = useState<SongInfo[]>([]);
     const [selectedSongId, setSelectedSongId] = useState<number[]>([]);
     const [duration, setDuration] = useState<number>(0);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -85,7 +85,7 @@ export default function CreatePlaylist() {
         }
     }
 
-    function handleAddSong(song: SongType) {
+    function handleAddSong(song: SongInfo) {
         if (!selectedSongs.some(x => x.song_id === song.song_id)) {
             setSelectedSongs([...selectedSongs, song]);
             setSelectedSongId([...selectedSongId, song.song_id]);

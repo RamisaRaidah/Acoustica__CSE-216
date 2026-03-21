@@ -1,11 +1,11 @@
 import api from '@/services/api';
 
-export interface GetArtistsResponse {
+export interface Artist {
     artist_id: number;
     artist_name: string;
     profile_picture_url: string;
 }
 
-export async function getArtists(): Promise<GetArtistsResponse[]> {
+export async function getArtists(): Promise<Artist[]> {
     return api.request('/api/artists');
 }

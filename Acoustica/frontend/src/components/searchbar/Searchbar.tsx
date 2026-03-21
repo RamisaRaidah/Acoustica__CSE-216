@@ -6,34 +6,34 @@ interface SearchbarProps {
     song?: boolean;
     album?: boolean;
     artist?: boolean;
-    onSongSelect?: (song: SongType) => void;
+    onSongSelect?: (song: SongInfo) => void;
 }
 
-export interface SongType {
+export interface SongInfo {
     song_id: number;
-    album_id: number;
     title: string;
+    album_id: number;
     album_name: string;
     artist_name: string;
     length: number;
 }
 
-export interface AlbumType {
+export interface AlbumInfo {
     album_id: number;
     title: string;
     artist_name: string;
 }
 
-export interface ArtistType {
+export interface ArtistInfo {
     artist_id: number;
     artist_name: string;
 }
 
 export default function Searchbar({ prompt, song = false, album = false, artist = false, onSongSelect }: SearchbarProps) {
     const [queryParam, setQueryParam] = useState<string>("");
-    const [songs, setSongs] = useState<SongType[] | null>(null);
-    const [albums, setAlbums] = useState<AlbumType[] | null>(null);
-    const [artists, setArtists] = useState<ArtistType[] | null>(null);
+    const [songs, setSongs] = useState<SongInfo[] | null>(null);
+    const [albums, setAlbums] = useState<AlbumInfo[] | null>(null);
+    const [artists, setArtists] = useState<ArtistInfo[] | null>(null);
     const [searchDropdownOpen, setSearchDropdownOpen] = useState<boolean>(false);
     const seachWrapperRef = useRef<HTMLDivElement>(null);
 

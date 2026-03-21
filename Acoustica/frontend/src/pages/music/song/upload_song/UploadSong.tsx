@@ -1,6 +1,6 @@
 import '@/pages/music/song/upload_song/UploadSong.css';
 import { getMyAlbums, GetMyAlbumsResponse } from '@/services/music_service/albums';
-import { getArtists, GetArtistsResponse } from '@/services/user_service/artists';
+import { getArtists, Artist } from '@/services/user_service/artists';
 import { getLanguages, Language, getGenres, Genre, getMoods, Mood, getInstruments, Instrument } from '@/services/analytics_service/analytics';
 import { Collaborator } from '@/services/music_service/songs';
 import { uploadSong } from '@/services/music_service/songs';
@@ -11,8 +11,8 @@ import { useNavigate } from 'react-router-dom';
 
 export default function UploadSong() {
     const [albums, setAlbums] = useState<GetMyAlbumsResponse[]>([]);
-    const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
-    const [pendingArtist, setPendingArtist] = useState<GetArtistsResponse | null>(null);
+    const [artists, setArtists] = useState<Artist[]>([]);
+    const [pendingArtist, setPendingArtist] = useState<Artist | null>(null);
     const [selectedCollaborators, setSelectedCollaborators] = useState<Collaborator[]>([]);
     const [languages, setLanguages] = useState<Language[]>([]);
     const [genres, setGenres] = useState<Genre[]>([]);
@@ -94,7 +94,7 @@ export default function UploadSong() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    function handleSelectArtist(artist: GetArtistsResponse) {
+    function handleSelectArtist(artist: Artist) {
         setPendingArtist(artist);
     }
 
@@ -196,6 +196,10 @@ export default function UploadSong() {
             setAlertMessage('Please provide copyright certificate!');
             return;
         }
+        else if (selectedCollaborators.filter(x => x.role === 'Vocalist').length === 0 || selectedCollaborators.filter(x => x.role === 'Lyricist').length === 0 || selectedCollaborators.filter(x => x.role === 'Composer').length === 0) {
+            setAlertMessage('Please select atleast one collaborator from each role!');
+            return;
+        }
 
         try {
             setUploading(true);
@@ -263,9 +267,7 @@ export default function UploadSong() {
                                 {collabDropdownOpen && (
                                     <div className='multi-select-dropdown'>
                                         {pendingArtist === null
-                                            ? artists
-                                                .filter(a => !selectedCollaborators.some(c => c.artist_id === a.artist_id))
-                                                .map(a => (
+                                            ? artists.map(a => (
                                                     <div key={a.artist_id} className='multi-select-option' onClick={() => handleSelectArtist(a)}>
                                                         {a.artist_name}
                                                     </div>
@@ -274,11 +276,16 @@ export default function UploadSong() {
                                                 <div className='multi-select-back' onClick={() => setPendingArtist(null)}>
                                                     ← {pendingArtist.artist_name}
                                                 </div>
-                                                {['Vocalist', 'Lyricist', 'Composer'].map(role => (
-                                                    <div key={role} className='multi-select-option' onClick={() => handleSelectRole(role)}>
-                                                        {role}
-                                                    </div>
-                                                ))}
+                                                {['Vocalist', 'Lyricist', 'Composer']
+                                                    .filter(role => !selectedCollaborators.some(
+                                                        c => c.artist_id === pendingArtist.artist_id && c.role.toLowerCase() === role.toLowerCase()
+                                                    ))
+                                                    .map(role => (
+                                                        <div key={role} className='multi-select-option' onClick={() => handleSelectRole(role)}>
+                                                            {role}
+                                                        </div>
+                                                    )
+                                                )}
                                             </>
                                         }
                                     </div>

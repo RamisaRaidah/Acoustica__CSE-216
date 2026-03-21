@@ -2,7 +2,7 @@ import '@/pages/music/playlist/edit_playlist/EditPlaylist.css';
 import { useState, useRef, useEffect } from "react";
 import { getPlaylistDetails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
 import Alert from "@/components/alert/TwoButtonAlert";
-import Searchbar, { SongType } from "@/components/searchbar/Searchbar";
+import Searchbar, { SongInfo } from "@/components/searchbar/Searchbar";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ export default function EditPlaylist() {
     const [description, setDescription] = useState<string>('');
     const [cover_picture, setCoverPicture] = useState<string | null>(null);
     const [privacy, setPrivacy] = useState<string>('');
-    const [selectedSongs, setSelectedSongs] = useState<SongType[]>([]);
+    const [selectedSongs, setSelectedSongs] = useState<SongInfo[]>([]);
     const [selectedSongId, setSelectedSongId] = useState<number[]>([]);
     const [addedSongId, setAddedSongId] = useState<number[]>([]);
     const [deletedSongId, setDeletedSongId] = useState<number[]>([]);
@@ -107,7 +107,7 @@ export default function EditPlaylist() {
         }
     }
 
-    function handleAddSong(song: SongType) {
+    function handleAddSong(song: SongInfo) {
         if (!selectedSongs.some(x => x.song_id === song.song_id)) {
             setSelectedSongs([...selectedSongs, song]);
             setSelectedSongId([...selectedSongId, song.song_id]);
@@ -116,7 +116,7 @@ export default function EditPlaylist() {
         }
     }
 
-    function handleDeleteSong(song: SongType) {
+    function handleDeleteSong(song: SongInfo) {
         setSelectedSongs(selectedSongs.filter(s => s.song_id !== song.song_id));
         setSelectedSongId(selectedSongId.filter(s => s !== song.song_id));
         setDeletedSongId([...deletedSongId, song.song_id]);

@@ -1,6 +1,6 @@
 import '@/pages/music/song/edit_song/EditSong.css';
 import { getMyAlbums, GetMyAlbumsResponse } from '@/services/music_service/albums';
-import { getArtists, GetArtistsResponse } from '@/services/user_service/artists';
+import { getArtists, Artist } from '@/services/user_service/artists';
 import { getLanguages, Language, getGenres, Genre, getMoods, Mood, getInstruments, Instrument } from '@/services/analytics_service/analytics';
 import { getSongMetadata, getSongCollaborators, Collaborator, getSongGenres, getSongMoods, getSongInstruments, getSongLyrics } from '@/services/music_service/songs';
 import { updateSong } from '@/services/music_service/songs';
@@ -17,8 +17,8 @@ export default function EditSong() {
     const [language_id, setLanguageId] = useState<string>('');
     const [release_date, setReleaseDate] = useState<string>('');
     const [albums, setAlbums] = useState<GetMyAlbumsResponse[]>([]);
-    const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
-    const [pendingArtist, setPendingArtist] = useState<GetArtistsResponse | null>(null);
+    const [artists, setArtists] = useState<Artist[]>([]);
+    const [pendingArtist, setPendingArtist] = useState<Artist | null>(null);
     const [selectedCollaborators, setSelectedCollaborators] = useState<Collaborator[]>([]);
     const [addedCollaborators, setAddedCollaborators] = useState<Collaborator[]>([]);
     const [deletedCollaborators, setDeletedCollaborators] = useState<Collaborator[]>([]);
@@ -143,7 +143,7 @@ export default function EditSong() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    function handleSelectArtist(artist: GetArtistsResponse) {
+    function handleSelectArtist(artist: Artist) {
         setPendingArtist(artist);
     }
 
@@ -265,6 +265,10 @@ export default function EditSong() {
         }
         else if (!formData.get('release_date')?.toString().trim()) {
             setAlertMessage('Please enter the release date!');
+            return;
+        }
+        else if (selectedCollaborators.filter(x => x.role === 'Vocalist').length === 0 || selectedCollaborators.filter(x => x.role === 'Lyricist').length === 0 || selectedCollaborators.filter(x => x.role === 'Composer').length === 0) {
+            setAlertMessage('Please select atleast one collaborator from each role!');
             return;
         }
 
