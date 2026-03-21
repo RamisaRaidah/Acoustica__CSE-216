@@ -478,3 +478,24 @@
     font-weight: 600;
     color: var(--edit-album-orange-deep);
 }
+
+#edit-album-container .file-input-wrapper .tag-remove-btn {
+    margin-left: auto;
+    padding: 0;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--edit-album-subtext);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s ease, color 0.15s ease;
+    display: flex;
+    align-items: center;
+}
+
+#edit-album-container .file-input-wrapper .tag-remove-btn:hover {
+    opacity: 1;
+    color: var(--edit-album-orange);
+}

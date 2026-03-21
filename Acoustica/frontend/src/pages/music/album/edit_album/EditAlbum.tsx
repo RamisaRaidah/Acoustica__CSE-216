@@ -23,6 +23,7 @@ export default function EditAlbum() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [coverAction, setCoverAction] = useState<'keep' | 'replace'>('keep');
     const [copyrightCertificateAction, setCopyrightCertificateAction] = useState<'keep' | 'replace'>('keep');
+    const ccInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
     const visibilityOptions = [
@@ -46,7 +47,7 @@ export default function EditAlbum() {
             setTitle(info.title);
             setDescription(info.description);
             setPrivacy(info.visibility);
-            setCopyrightCertificate(`${info.title}_copyright_certificate.pdf`);
+            setCopyrightCertificate(`${info.title.toLowerCase().replace(' ', '_')}_copyright_certificate.pdf`);
             const d = new Date(info.release_date);
             const formattedDate = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
             setReleaseDate(formattedDate);
@@ -61,14 +62,13 @@ export default function EditAlbum() {
         setDescription('');
         setPrivacy('');
         setReleaseDate('');
+        setCopyrightCertificate('No file chosen'); 
+        setCopyrightCertificateAction('keep');
 
         const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
         const placeholder = document.getElementById("cover-placeholder");
         if (imgEl) { imgEl.src = ""; imgEl.style.display = "none"; }
         if (placeholder) placeholder.style.display = "flex";
-
-        const certName = document.getElementById("cert-name");
-        if (certName) certName.textContent = "No file chosen";
     }
 
     async function handleSubmit() {
@@ -200,14 +200,23 @@ export default function EditAlbum() {
                         <label>Copyright Certificate<span style={{ color: "#e07b2a" }}>*</span></label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
-                            <span className="file-name" id="cert-name">{copyright_certificate}</span>
+                            <span className="file-name">{copyright_certificate}</span>
+                            {copyright_certificate && copyright_certificate !== 'No file chosen' && (
+                                <button type='button' className='tag-remove-btn' onClick={(e) => {
+                                    e.preventDefault();
+                                    setCopyrightCertificate('No file chosen');
+                                    setCopyrightCertificateAction('keep'); 
+                                    if (ccInputRef.current) ccInputRef.current.value = '';
+                                }}>×</button>
+                            )}
                             <input
+                                ref={ccInputRef}
                                 type="file"
                                 name="copyright_certificate"
                                 accept=".pdf"
                                 onChange={(e) => {
                                     setCopyrightCertificateAction('replace');
-                                    setCopyrightCertificate(e.target.files?.[0]?.name ?? "No file chosen");
+                                    setCopyrightCertificate(e.target.files?.[0]?.name ?? 'No file chosen');
                                 }}
                             />
                         </label>

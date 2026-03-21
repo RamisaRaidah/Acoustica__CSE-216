@@ -30,7 +30,7 @@ def get_artists():
         else:
             profile_picture_url = "Images/Profile_Pictures/Default_pfp.png"
 
-        artists.append({'artist_id': r['artist_id'], 'artist_name': r['name'], 'profile_picture_url': storage.generate_signed_url(profile_picture_url)})
+        artists.append({'artist_id': r['artist_id'], 'artist_name': r['artist_name'], 'profile_picture_url': storage.generate_signed_url(profile_picture_url)})
 
     return artists, 200  
 

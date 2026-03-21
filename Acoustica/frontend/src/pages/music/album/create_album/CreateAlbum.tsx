@@ -12,6 +12,9 @@ export default function CreateAlbum() {
     const [privacy, setPrivacy] = useState<string>('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+    const [ccFileName, setCcFileName] = useState<string>('No file chosen');
+    const ccInputRef = useRef<HTMLInputElement>(null);
+
     const visibilityOptions = [
         { label: "Private", value: "private" },
         { label: "Public", value: "public" }
@@ -32,14 +35,12 @@ export default function CreateAlbum() {
         formRef.current?.reset();
         datePickerRef.current?.reset();
         setPrivacy('');
+        setCcFileName('No file chosen'); 
 
         const imgEl = document.getElementById("cover-preview") as HTMLImageElement;
         const placeholder = document.getElementById("cover-placeholder");
         if (imgEl) { imgEl.src = ""; imgEl.style.display = "none"; }
         if (placeholder) placeholder.style.display = "flex";
-
-        const certName = document.getElementById("cert-name");
-        if (certName) certName.textContent = "No file chosen";
     }
 
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -170,15 +171,20 @@ export default function CreateAlbum() {
                         <label>Copyright Certificate<span style={{ color: "#e07b2a" }}>*</span></label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
-                            <span className="file-name" id="cert-name">No file chosen</span>
+                            <span className="file-name">{ccFileName}</span>
+                            {ccFileName !== 'No file chosen' && (
+                                <button type='button' className='tag-remove-btn' onClick={(e) => {
+                                    e.preventDefault();
+                                    setCcFileName('No file chosen');
+                                    if (ccInputRef.current) ccInputRef.current.value = '';
+                                }}>×</button>
+                            )}
                             <input
+                                ref={ccInputRef}
                                 type="file"
                                 name="copyright_certificate"
                                 accept=".pdf"
-                                onChange={e => {
-                                    const el = document.getElementById("cert-name");
-                                    if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";
-                                }}
+                                onChange={e => setCcFileName(e.target.files?.[0]?.name ?? 'No file chosen')}
                             />
                         </label>
                     </div>

@@ -2,18 +2,12 @@ import '@/pages/music/song/upload_song/UploadSong.css';
 import { getMyAlbums, GetMyAlbumsResponse } from '@/services/music_service/albums';
 import { getArtists, GetArtistsResponse } from '@/services/user_service/artists';
 import { getLanguages, Language, getGenres, Genre, getMoods, Mood, getInstruments, Instrument } from '@/services/analytics_service/analytics';
+import { Collaborator } from '@/services/music_service/songs';
 import { uploadSong } from '@/services/music_service/songs';
 import { useEffect, useState, useRef } from 'react';
 import { DatePicker, DatePickerHandle } from '@/components/date_picker/DatePicker';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useNavigate } from 'react-router-dom';
-
-interface Collaborator {
-    artist_id: number;
-    artist_name: string;
-    profile_picture_url: string;
-    role: string;
-}
 
 export default function UploadSong() {
     const [albums, setAlbums] = useState<GetMyAlbumsResponse[]>([]);
@@ -40,6 +34,14 @@ export default function UploadSong() {
     const [moodDropdownOpen, setMoodDropdownOpen] = useState(false);
     const [instrumentDropdownOpen, setInstrumentDropdownOpen] = useState(false);
 
+    const [songFileName, setSongFileName] = useState<string>('No file chosen');
+    const [lyricsFileName, setLyricsFileName] = useState<string>('No file chosen');
+    const [ccFileName, setCcFileName] = useState<string>('No file chosen');
+
+    const songInputRef = useRef<HTMLInputElement>(null);
+    const lyricsInputRef = useRef<HTMLInputElement>(null);
+    const ccInputRef = useRef<HTMLInputElement>(null);
+
     const collabRef = useRef<HTMLDivElement>(null);
     const genreRef = useRef<HTMLDivElement>(null);
     const moodRef = useRef<HTMLDivElement>(null);
@@ -52,13 +54,9 @@ export default function UploadSong() {
         setSelectedMoods([]);
         setSelectedInstruments([]);
         setSelectedCollaborators([]);
-
-        const songFileName = document.getElementById("song-file-name");
-        const lyricsFileName = document.getElementById("lyrics-file-name");
-        const ccFileName = document.getElementById("cc-file-name");
-        if (songFileName) songFileName.textContent = "No file chosen";
-        if (lyricsFileName) lyricsFileName.textContent = "No file chosen";
-        if (ccFileName) ccFileName.textContent = "No file chosen";
+        setSongFileName('No file chosen');
+        setLyricsFileName('No file chosen');
+        setCcFileName('No file chosen');
     }
 
     useEffect(() => {
@@ -70,12 +68,13 @@ export default function UploadSong() {
                 getGenres().then(setGenres);
                 getMoods().then(setMoods);
                 getInstruments().then(setInstruments);
-            } catch (err) {
+            } 
+            catch (err) {
                 console.log('Error:', err);
                 setError('Failed to load!');
-            } finally {
+            } 
+            finally {
                 setLoading(false);
-                resetForm();
             }
         }
         loadData();
@@ -104,15 +103,14 @@ export default function UploadSong() {
         setSelectedCollaborators(prev => [...prev, {
             artist_id: pendingArtist.artist_id,
             artist_name: pendingArtist.artist_name,
-            profile_picture_url: pendingArtist.profile_picture_url,
             role,
         }]);
         setPendingArtist(null);
         setCollabDropdownOpen(false);
     }
 
-    function removeCollaborator(id: number) {
-        setSelectedCollaborators(prev => prev.filter(x => x.artist_id !== id));
+    function removeCollaborator(c: Collaborator) {
+        setSelectedCollaborators(prev => prev.filter(x => !(x.artist_id === c.artist_id && x.role === c.role)));
     }
 
     function addGenre(id: number) {
@@ -291,7 +289,7 @@ export default function UploadSong() {
                                     <div key={c.artist_id} className='selected-tag'>
                                         <span>{c.artist_name}</span>
                                         <span className='tag-role'>{c.role}</span>
-                                        <button type='button' className='tag-remove-btn' onClick={() => removeCollaborator(c.artist_id)}>×</button>
+                                        <button type='button' className='tag-remove-btn' onClick={() => removeCollaborator(c)}>×</button>
                                     </div>
                                 ))}
                             </div>
@@ -440,12 +438,16 @@ export default function UploadSong() {
                         <label>Song audio<span style={{ color: "#e07b2a" }}>*</span></label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
-                            <span className="file-name" id="song-file-name">No file chosen</span>
-                            <input type="file" name="song_audio" accept=".mp3, .wav"
-                                onChange={e => {
-                                    const el = document.getElementById("song-file-name");
-                                    if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";
-                                }}
+                            <span className="file-name">{songFileName}</span>
+                            {songFileName !== 'No file chosen' && (
+                                <button type='button' className='tag-remove-btn' onClick={(e) => {
+                                    e.preventDefault();
+                                    setSongFileName('No file chosen');
+                                    if (songInputRef.current) songInputRef.current.value = '';
+                                }}>×</button>
+                            )}
+                            <input ref={songInputRef} type="file" name="song_audio" accept=".mp3, .wav"
+                                onChange={e => setSongFileName(e.target.files?.[0]?.name ?? 'No file chosen')}
                             />
                         </label>
                     </div>
@@ -454,12 +456,16 @@ export default function UploadSong() {
                         <label>Lyrics</label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
-                            <span className="file-name" id="lyrics-file-name">No file chosen</span>
-                            <input type="file" name="lyrics" accept=".txt"
-                                onChange={e => {
-                                    const el = document.getElementById("lyrics-file-name");
-                                    if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";
-                                }}
+                            <span className="file-name">{lyricsFileName}</span>
+                            {lyricsFileName !== 'No file chosen' && (
+                                <button type='button' className='tag-remove-btn' onClick={(e) => {
+                                    e.preventDefault();
+                                    setLyricsFileName('No file chosen');
+                                    if (lyricsInputRef.current) lyricsInputRef.current.value = '';
+                                }}>×</button>
+                            )}
+                            <input ref={lyricsInputRef} type="file" name="lyrics" accept=".txt"
+                                onChange={e => setLyricsFileName(e.target.files?.[0]?.name ?? 'No file chosen')}
                             />
                         </label>
                     </div>
@@ -468,12 +474,16 @@ export default function UploadSong() {
                         <label>Copyright Certificate<span style={{ color: "#e07b2a" }}>*</span></label>
                         <label className="file-input-wrapper">
                             <span className="file-btn">+</span>
-                            <span className="file-name" id="cc-file-name">No file chosen</span>
-                            <input type="file" name="copyright_certificate" accept=".pdf"
-                                onChange={e => {
-                                    const el = document.getElementById("cc-file-name");
-                                    if (el) el.textContent = e.target.files?.[0]?.name ?? "No file chosen";
-                                }}
+                            <span className="file-name">{ccFileName}</span>
+                            {ccFileName !== 'No file chosen' && (
+                                <button type='button' className='tag-remove-btn' onClick={(e) => {
+                                    e.preventDefault();
+                                    setCcFileName('No file chosen');
+                                    if (ccInputRef.current) ccInputRef.current.value = '';
+                                }}>×</button>
+                            )}
+                            <input ref={ccInputRef} type="file" name="copyright_certificate" accept=".pdf"
+                                onChange={e => setCcFileName(e.target.files?.[0]?.name ?? 'No file chosen')}
                             />
                         </label>
                     </div>

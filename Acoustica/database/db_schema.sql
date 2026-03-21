@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS "song_artist" (
   song_id INT CONSTRAINT fk_song_artist_song_id REFERENCES song(song_id) ON DELETE CASCADE,
   artist_id INT CONSTRAINT fk_song_artist_artist_id REFERENCES artist(artist_id) ON DELETE CASCADE,
   "role" song_artist_role_enum,
-  CONSTRAINT pk_song_artist PRIMARY KEY (song_id, artist_id)
+  CONSTRAINT pk_song_artist PRIMARY KEY (song_id, artist_id, role)
 );
 
 CREATE TABLE IF NOT EXISTS "song_genre" (

@@ -51,7 +51,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                     INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING song_id
-                    """, (title, album, language, length, release_date, 'null', 'null', 'private', 'null')
+                    """, (title, album, language, length, release_date, 'null', None, 'private', 'null')
                 )
                 song_id = cursor.fetchone()["song_id"]
 
@@ -144,18 +144,138 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
     return {"message": "successful"}, 201
 
 ### get_song_datails ###
-def get_song_details(song_id):
-    command = "SELECT * FROM song WHERE song_id=%s"
-    result = execute_sql(command, (song_id,), fetch_one=True)
+def get_song_metadata(song_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE song_id=%s
+    """
+    result = execute_sql(command, (song_id,), fetch_one = True)
 
     if not result:
-        return {"error": "coudn't find song"}, 401
+        return {"error": "coudn't fetch data"}, 500
     
-    return {""}
+    return result, 200
+
+### get_song_audio ###
+def get_song_audio(song_id):
+    result = execute_sql(
+        "SELECT song_audio FROM song WHERE song_id = %s", (song_id,), 
+        fetch_one = True
+    )
+
+    if result:
+        signed_url = storage.generate_signed_url(result['song_audio'])
+        if signed_url:
+            return {"stream_url": signed_url}, 200
+    
+    return {"error": "failed to fetch data"}, 401
+
+### get_song_lyrics ###
+def get_song_lyrics(song_id):
+    result = execute_sql(
+        "SELECT lyrics FROM song WHERE song_id = %s", (song_id,), 
+        fetch_one = True
+    )
+
+    if result and result['lyrics']:
+        signed_url = storage.generate_signed_url(result['lyrics'])
+        if signed_url:
+            return {"lyrics": signed_url}, 200
+        else:
+            return {"error": "failed to fetch data"}, 401
+    else:
+        return {"lyrics": "no lyrics"}, 200
+
+### get_song_copyright_certificate ###
+def get_song_copyright_certificate(song_id):
+    result = execute_sql(
+        "SELECT copyright_certificate FROM song WHERE song_id = %s", (song_id,), 
+        fetch_one = True
+    )
+
+    if result:
+        signed_url = storage.generate_signed_url(result['copyright_certificate'])
+        if signed_url:
+            return {"copyright_certificate": signed_url}, 200
+    
+    return {"error": "failed to fetch data"}, 401
+
+### get_song_collaborators ###
+def get_song_collaborators(song_id):
+    command = """
+        SELECT s.artist_id, a.stage_name artist_name, s.role
+        FROM song_artist s JOIN artist a ON (s.artist_id = a.artist_id)
+        WHERE song_id = %s
+    """
+    result = execute_sql(command, (song_id,), fetch_all = True)
+
+    if result:
+        collaborators = []
+        for r in result:
+            collaborators.append({'artist_id': r['artist_id'], 'artist_name': r['artist_name'], 'role': r['role']})
+        
+        return collaborators, 200
+    
+    return {"error": "failed to fetch data"}, 401
+
+### get_song_genres ###
+def get_song_genres(song_id):
+    command = """
+        SELECT s.genre_id, g.genre_name
+        FROM song_genre s JOIN genre g ON (s.genre_id = g.genre_id)
+        WHERE song_id = %s
+    """
+    result = execute_sql(command, (song_id,), fetch_all = True)
+
+    if result:
+        genres = []
+        for r in result:
+            genres.append({'genre_id': r['genre_id'], 'genre_name': r['genre_name']})
+        
+        return genres, 200
+    
+    return {"error": "failed to fetch data"}, 401
+
+### get_song_moods ###
+def get_song_moods(song_id):
+    command = """
+        SELECT s.mood_id, m.mood_name
+        FROM song_mood s JOIN mood m ON (s.mood_id = m.mood_id)
+        WHERE song_id = %s
+    """
+    result = execute_sql(command, (song_id,), fetch_all = True)
+
+    if result:
+        moods = []
+        for r in result:
+            moods.append({'mood_id': r['mood_id'], 'mood_name': r['mood_name']})
+        
+        return moods, 200
+    
+    return {"error": "failed to fetch data"}, 401
+
+### get_song_instruments ###
+def get_song_instruments(song_id):
+    command = """
+        SELECT s.instrument_id, i.instrument_name
+        FROM song_instrument s JOIN instrument i ON (s.instrument_id = i.instrument_id)
+        WHERE song_id = %s
+    """
+    result = execute_sql(command, (song_id,), fetch_all = True)
+
+    if result:
+        instruments = []
+        for r in result:
+            instruments.append({'instrument_id': r['instrument_id'], 'instrument_name': r['instrument_name']})
+        
+        return instruments, 200
+    
+    return {"error": "failed to fetch data"}, 401
 
 ### edit_song ###
 def edit_song(song_id, title, album, added_collaborators, deleted_collaborators, language, added_genres, deleted_genres, added_moods, deleted_moods, added_instruments, deleted_instruments, release_date, lyrics, copyright_certificate, lyrics_action, copyright_certificate_action):
-    if not title or not album or not language or not release_date or not copyright_certificate:
+    if not title or not album or not language or not release_date:
         return {"error": "missing data"}, 400
     
     connection = get_db_connection()
@@ -212,6 +332,13 @@ def edit_song(song_id, title, album, added_collaborators, deleted_collaborators,
                     if not success:
                         raise Exception()
                     
+                    cursor.execute("""
+                        UPDATE song
+                        SET lyrics = %s
+                        WHERE song_id = %s
+                        """, (f"Docs/Lyrics/song{song_id}.txt", song_id,)
+                    )
+                    
                 elif lyrics_action == 'replace' and not lyrics:
                     cursor.execute("SELECT lyrics FROM song WHERE song_id = %s", (song_id,))
                     lyrics_prev = cursor.fetchone()['lyrics']
@@ -232,7 +359,7 @@ def edit_song(song_id, title, album, added_collaborators, deleted_collaborators,
 
                 for collaborator in deleted_collaborators:
                     artist, role = collaborator.split(':')
-                    cursor.execute("DELETE FROM song_artist WHERE song_id = %s AND artist_id = %s", (song_id, artist))
+                    cursor.execute("DELETE FROM song_artist WHERE song_id = %s AND artist_id = %s AND role = %s", (song_id, artist, role.lower()))
 
                 for genre in added_genres:
                     cursor.execute("INSERT INTO song_genre (song_id, genre_id) VALUES (%s, %s)", (song_id, genre))
@@ -295,23 +422,6 @@ def delete_song(song_id):
         release_connection(connection)
 
     return {"message": "successful"}, 201
-
-### get_song_audio ###
-def get_song_audio(song_id):
-    result = execute_sql(
-        "SELECT song_audio FROM song WHERE song_id = %s", (song_id,), 
-        fetch_one = True
-    )
-    if not result:
-        return {"error": "coudn't find song audio"}, 401
-    
-    song_path = result['song_audio']
-    logging.info(song_path)
-    song_signed_url = storage.generate_signed_url(song_path)
-    if not song_signed_url:
-        return {"error": "failed to generate signed url"}, 401
-    
-    return {"stream_url": song_signed_url}, 200
 
 ### Helper functions ###
 
