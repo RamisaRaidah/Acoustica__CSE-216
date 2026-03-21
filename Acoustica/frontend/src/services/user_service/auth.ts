@@ -55,8 +55,8 @@ Promise<SignOutResponse> {
     });
 }  
 
-export async function getProfilePicture() {
-    return api.request('/api/users/me/pfp');
+export async function getMyProfilePicture(): Promise<{profile_picture: string}> {
+    return api.request('/api/users/me/profile_picture');
 }
 
 export async function sendTheme(theme: string) {

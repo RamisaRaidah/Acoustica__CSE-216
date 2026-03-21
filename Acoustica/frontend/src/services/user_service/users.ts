@@ -46,3 +46,7 @@ export interface GetMyProfileResponse{
 export async function getMyProfile(): Promise<GetMyProfileResponse> {
     return api.request<GetMyProfileResponse>('/api/users/me');
 }
+
+export async function getProfilePicture(userId: number): Promise<{profile_picture: string}> {
+    return api.request(`/api/users/${userId}/profile_picture`);
+}

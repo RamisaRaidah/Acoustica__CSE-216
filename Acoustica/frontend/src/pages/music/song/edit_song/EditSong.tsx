@@ -92,7 +92,6 @@ export default function EditSong() {
             }
             finally {
                 setLoading(false);
-                resetForm();
             }
         }
         loadData();
@@ -267,7 +266,7 @@ export default function EditSong() {
             setAlertMessage('Please enter the release date!');
             return;
         }
-        else if (selectedCollaborators.filter(x => x.role === 'Vocalist').length === 0 || selectedCollaborators.filter(x => x.role === 'Lyricist').length === 0 || selectedCollaborators.filter(x => x.role === 'Composer').length === 0) {
+        else if (selectedCollaborators.filter(x => x.role === 'vocalist').length === 0 || selectedCollaborators.filter(x => x.role === 'lyricist').length === 0 || selectedCollaborators.filter(x => x.role === 'composer').length === 0) {
             setAlertMessage('Please select atleast one collaborator from each role!');
             return;
         }
@@ -290,6 +289,9 @@ export default function EditSong() {
             setUpdating(false);
         }
     }
+
+    if (loading) return <div className='loading'>Loading...</div>;
+    if (error) return <div className='error'>{error}</div>;
 
     return (
         <div id='edit-song-container'>

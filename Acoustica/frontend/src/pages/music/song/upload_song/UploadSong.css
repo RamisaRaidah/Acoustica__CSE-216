@@ -1,5 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+/* ===== LOADING STATE ===== */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+/* ===== ERROR STATE ===== */
+.error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ===== CONTENT ===== */
+
 :root {
     --upload-song-input-bg: rgba(0, 0, 0, 0.04);
     --upload-song-input-border: rgba(0, 0, 0, 0.12);

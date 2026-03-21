@@ -19,7 +19,7 @@ export interface SongInfo {
     release_date: string;
     visibility: string;
     play_count: number;
-    owner_id: string;
+    owner_id: number;
     owner_name: string;
 }
 

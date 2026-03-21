@@ -20,7 +20,7 @@ export default function AlbumProfile() {
     const [privacy, setPrivacy] = useState<string>('');
     const [songs, setSongs] = useState<GetAlbumSongsResponse[]>([]);
     const [duration, setDuration] = useState<number>(0);
-    const [deleteOn, setDeleteOn] = useState<boolean>(false);
+    const [confirmation, setConfirmation] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { user } = useAuth();
 
@@ -37,9 +37,7 @@ export default function AlbumProfile() {
         })
         getAlbumCoverPicture(albumId).then(res => setCoverPicture(res.cover_picture_url));
         getAlbumSongs(albumId).then(setSongs);
-        console.log("owner_id:", owner_id);
-        console.log("user_id:", user?.user_id);
-    }, [owner_id]);
+    }, []);
 
     useEffect(() => {
         let total = 0;
@@ -70,7 +68,7 @@ export default function AlbumProfile() {
     return (
         <div id='album-profile-container'>
             {alertMessage && <Alert message={alertMessage} onConfirm={() => { setAlertMessage(null); navigate('/music/discography'); }} />}
-            {deleteOn && <Alert message='All the included songs will be deleted. Are you sure to delete the album?' type='confirm' onConfirm={() => { setDeleteOn(false); handleDeleteAlbum(); }} onCancel={() => setDeleteOn(false)} />}
+            {confirmation && <Alert message='All the included songs will be deleted. Are you sure to delete the album?' type='confirm' onConfirm={() => { setConfirmation(false); handleDeleteAlbum(); }} onCancel={() => setConfirmation(false)} />}
 
             <div id="album-card">
 
@@ -108,7 +106,8 @@ export default function AlbumProfile() {
                         <img src={play_button} alt="Play" />
                     </button>}
 
-                    {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && <button id="edit-album-btn" onClick={() => navigate(`/music/albums/${albumId}/edit`)}>
+                    {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && 
+                    <button id="edit-album-btn" onClick={() => navigate(`/music/albums/${albumId}/edit`)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -148,8 +147,9 @@ export default function AlbumProfile() {
                 </div>
             </div>
 
-            {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && <div id="delete-album-wrapper">
-                <button id="delete-album-btn" onClick={() => setDeleteOn(true)}>
+            {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && 
+            <div id="delete-album-wrapper">
+                <button id="delete-album-btn" onClick={() => setConfirmation(true)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="3 6 5 6 21 6" />

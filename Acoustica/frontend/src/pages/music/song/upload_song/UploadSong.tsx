@@ -149,12 +149,10 @@ export default function UploadSong() {
         setSelectedInstruments(prev => prev.filter(x => x.instrument_id !== id));
     }
 
-    if (loading) return <div className='loading'>Loading...</div>;
-    if (error) return <div className='error'>{error}</div>;
-
     async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!formRef.current) return;
+
         const formData = new FormData(formRef.current);
         formData.append('collaborators', JSON.stringify(
             selectedCollaborators.map(c => `${c.artist_id}:${c.role}`)
@@ -219,6 +217,9 @@ export default function UploadSong() {
             setUploading(false);
         }
     }
+
+    if (loading) return <div className='loading'>Loading...</div>;
+    if (error) return <div className='error'>{error}</div>;
 
     return (
         <div id='upload-song-container'>
@@ -293,7 +294,7 @@ export default function UploadSong() {
                             </div>
                             <div className='selected-tags'>
                                 {selectedCollaborators.map(c => (
-                                    <div key={c.artist_id} className='selected-tag'>
+                                    <div key={`${c.artist_id}-${c.role}`} className='selected-tag'>
                                         <span>{c.artist_name}</span>
                                         <span className='tag-role'>{c.role}</span>
                                         <button type='button' className='tag-remove-btn' onClick={() => removeCollaborator(c)}>×</button>

@@ -39,10 +39,18 @@ def onboarding_route():
 
     return users.onboarding(user_id, user_type, data)
 
-@users_bp.get('/api/users/me/pfp')
+### get_my_profile_picture_route ###
+@users_bp.get('/api/users/me/profile_picture')
 @jwt_required()
-def get_pfp():
+def get_my_profile_picture_route():
     user_id = get_jwt_identity()
+    result, status = users.get_my_profile_picture(user_id)
+    return jsonify(result), status
+
+### get_profile_picture_route ###
+@users_bp.get('/api/users/<user_id>/profile_picture')
+@jwt_required()
+def get_profile_picture_route(user_id):
     result, status = users.get_profile_picture(user_id)
     return jsonify(result), status
 

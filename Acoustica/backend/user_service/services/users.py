@@ -186,7 +186,7 @@ def onboarding(user_id, user_type, data):
 
 
 ######################################### get_profile_picture ##################################################
-def get_profile_picture(user_id):
+def get_my_profile_picture(user_id):
     sql = """
         SELECT profile_picture
         FROM users
@@ -205,8 +205,19 @@ def get_profile_picture(user_id):
             expires_in=3600
         )
 
-    return {"profile_picture_url": url}, 200
+    return {"profile_picture": url}, 200
 
+### get_profile_picture ### 
+def get_profile_picture(user_id):
+    command = "SELECT profile_picture FROM users WHERE user_id = %s"
+    result = execute_sql(command, (user_id,), fetch_one = True)
+    if result:
+        if result['profile_picture']:
+            return {'profile_picture': storage.generate_signed_url(result['profile_picture'])}, 200
+        else:
+            return {'profile_picture': "null"}, 200
+    else:
+        return {'error': 'failed'}, 409
 
 def update_account():
     return ("update_account")

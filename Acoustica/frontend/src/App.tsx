@@ -26,6 +26,7 @@ import EditPlaylist from '@/pages/music/playlist/edit_playlist/EditPlaylist';
 import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
 import EditAlbum from '@/pages/music/album/edit_album/EditAlbum';
 import EditSong from '@/pages/music/song/edit_song/EditSong';
+import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 // import UploadSong from './pages/music/song/upload_song/upload_song';
 // import CreateAlbum from './pages/music/album/create_album/create_album';
 // import Playlist from './pages/music/playlist/playlist';
@@ -62,7 +63,7 @@ function App() {
               <Sidebar />
               <Topbar />
               <Scrollbar />
-              {/* {user?.user_type === "listener" && <MusicPlayer />} */}
+              {user?.user_type === "listener" && <MusicPlayer />}
               <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
                 <Outlet />
               </div>
@@ -85,7 +86,7 @@ function App() {
           <Route path="/music/albums/:album_id/edit" element={<EditAlbum />} />
           <Route path="/music/create-playlist" element={<CreatePlaylist />} />
           <Route path="/music/upload-song" element={<UploadSong />} />
-          <Route path="/music/songs/:song_id" element={<UploadSong />} />
+          <Route path="/music/songs/:song_id" element={<SongProfile />} />
           <Route path="/music/songs/:song_id/edit" element={<EditSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />

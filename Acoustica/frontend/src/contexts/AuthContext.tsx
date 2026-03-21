@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { getProfilePicture } from "@/services/user_service/auth";
+import { getMyProfilePicture } from "@/services/user_service/auth";
 
 interface User {
     user_id: number;
@@ -49,9 +49,9 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         async function fetchProfilePicture() {
-            const response = await getProfilePicture();
+            const response = await getMyProfilePicture();
             if(response){
-                setProfilePicture(response.profile_picture_url);
+                setProfilePicture(response.profile_picture);
             }else{
                 setProfilePicture(null);
             }
