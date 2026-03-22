@@ -27,6 +27,7 @@ def get_dashboard_route():
 def get_profile_route():
     return jsonify("get_profile")
 
+### add_stream_history_route ###
 @listeners_bp.post("/api/listeners/me/stream-history")
 @jwt_required()
 def add_stream_history_route():
@@ -40,6 +41,7 @@ def add_stream_history_route():
 def get_stream_history_route():
     return jsonify("get_stream_history")
 
+### get_last_listening_route ###
 @listeners_bp.get("/api/listeners/me/last-listening")
 @jwt_required()
 def get_last_listening_route():

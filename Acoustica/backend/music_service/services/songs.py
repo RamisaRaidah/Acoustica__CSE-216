@@ -446,6 +446,20 @@ def like_song(song_id):
         return {'message': 'successful'}, 200
     return {'error': 'failed'}, 500
 
+### is_liked ###
+def is_liked(song_id):
+    result = execute_sql(
+        "SELECT 1 FROM liked_song WHERE listener_id = %s AND song_id = %s",
+        (get_jwt_identity(), song_id),
+        fetch_one=True
+    )
+
+    if result is not None:
+        return True, 200
+    else:
+        return False, 200
+        
+
 ### Helper functions ###
 
 def compress_audio(file) -> io.BytesIO:

@@ -62,12 +62,13 @@ def get_stream_history():
 
 def get_last_listening():
     command = """
-        SELECT s.song_id, s.album_id, s.title, (first_name || ' ' || last_name) artist_name, progress
-        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
+        SELECT s.song_id, s.album_id, s.title, ar.artist_id, ar.stage_name artist_name, h.progress
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s
         ORDER BY song_stream_id DESC
         LIMIT 1
     """
-    result = execute_sql(command, fetch_one = True)
+    result = execute_sql(command, (get_jwt_identity(),), fetch_one = True)
 
     logging.info(result)
     
@@ -76,6 +77,7 @@ def get_last_listening():
             "song_id": -1,
             "album_id": -1,
             "title": None,
+            "artist_id": -1,
             "artist_name": None,
             "progress": 0
         }, 200

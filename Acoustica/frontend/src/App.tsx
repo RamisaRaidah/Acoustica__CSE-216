@@ -1,4 +1,8 @@
-import { BrowserRouter, Routes, Route, Outlet, useNavigate, Navigate } from 'react-router-dom';
+import { MusicProvider } from '@/contexts/MusicContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { useScroll } from '@/contexts/ScrollContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
 import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
@@ -13,8 +17,6 @@ import CancelSubscription from '@/pages/subscriptions/cancel/CancelSubscription'
 import CancelSuccess from '@/pages/subscriptions/cancel/CancelSuccess';
 import SubscriptionDetails from '@/pages/subscriptions/subscriptions-details/SubscriptionDetails';
 import FamilyManagement from '@/pages/subscriptions/family/FamilyManagement';
-
-
 import Dashboard from '@/pages/user/Dashboard';
 import Playlists from '@/pages/music/playlist/playlists/Playlists';
 import Artists from '@/pages/user/artist/artists/Artists';
@@ -27,21 +29,12 @@ import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
 import EditAlbum from '@/pages/music/album/edit_album/EditAlbum';
 import EditSong from '@/pages/music/song/edit_song/EditSong';
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
-// import UploadSong from './pages/music/song/upload_song/upload_song';
-// import CreateAlbum from './pages/music/album/create_album/create_album';
-// import Playlist from './pages/music/playlist/playlist';
-// import CreatePlaylist from './pages/music/playlist/create_playlist/create_playlist';
-// import PrivateProfile from './pages/profile/private/my_profile';
-// import Artists from './pages/user/artist/artists/artists';
-
 import ProtectedRoute from '@/components/routes/ProtectedRoute';
 import PublicOnlyRoute from '@/components/routes/PublicOnlyRoute';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Topbar from '@/components/topbar/Topbar';
 import MusicPlayer from '@/components/music_player/MusicPlayer';
 import Scrollbar from '@/components/scrollbar/Scrollbar';
-import { useScroll } from '@/contexts/ScrollContext';
-import { useAuth } from '@/contexts/AuthContext';
 
 function App() {
   const scrollRef = useScroll();
@@ -50,24 +43,26 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route path='/' element={<Navigate to={'/dashboard'} replace />} />
-
         <Route path="/sign-in" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
         <Route path="/sign-up" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute requireOnboarding={false}><Onboarding /></ProtectedRoute>} />
 
         <Route element={
           <ProtectedRoute>
-            <div className="app_layout">
-              <Sidebar />
-              <Topbar />
-              <Scrollbar />
-              {user?.user_type === "listener" && <MusicPlayer />}
-              <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
-                <Outlet />
-              </div>
-            </div>
+            <NotificationProvider>
+              <MusicProvider>
+                <div className="app_layout">
+                  <Sidebar />
+                  <Topbar />
+                  <Scrollbar />
+                  {user?.user_type === "listener" && <MusicPlayer />}
+                  <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
+                    <Outlet />
+                  </div>
+                </div>
+              </MusicProvider>
+            </NotificationProvider>
           </ProtectedRoute>
         }>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -93,54 +88,6 @@ function App() {
           <Route path="/subscription-details" element={<SubscriptionDetails />} />
           <Route path="/myFamily" element={<FamilyManagement />} />
         </Route>
-
-        {/*
-        <Route 
-          path="/myProfile" 
-          element={
-            <ProtectedRoute>
-              <PrivateProfile />
-            </ProtectedRoute>
-          } 
-        />
-
-        
-        <Route 
-          path="/music/upload-song" 
-          element={
-            <ProtectedRoute allowedRoles={['artist']}>
-              <UploadSong />
-            </ProtectedRoute>
-          } 
-        />
-
-        <Route 
-          path="/music/create-album" 
-          element={
-            <ProtectedRoute allowedRoles={['artist']}>
-              <CreateAlbum />
-            </ProtectedRoute>
-          } 
-        />
-
-        <Route 
-          path="/music/create-playlist" 
-          element={
-            <ProtectedRoute allowedRoles={['listener']}>
-              <CreatePlaylist />
-            </ProtectedRoute>
-          } 
-        />
-
-
-        
-       
-        
-        <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
-        
-        
-        
-        */}
       </Routes>
     </BrowserRouter>
   );

@@ -14,6 +14,7 @@ export interface SongInfo {
     title: string;
     album_id: number;
     album_name: string;
+    artist_id: number;
     artist_name: string;
     length: number;
 }

@@ -135,7 +135,7 @@ export default function SongProfile() {
                         <div id='song-profile-container-song-buttons'>
                             <button id='song-profile-container-like-btn' title='Like'>❤</button>
                             <button id='song-profile-container-add-btn' title='Add to playlist'>+</button>
-                            <button id='song-profile-container-play-btn' title='Play' onClick={() => { if (song) playSong({ song_id: song.song_id, album_id: song.album_id, title: song.title, artist_name: song.owner_name, progress: 0, playing: true }) }}>▶</button>
+                            <button id='song-profile-container-play-btn' title='Play' onClick={() => { if (song) playSong({ song_id: song.song_id, album_id: song.album_id, title: song.title, artist_id: song.owner_id, artist_name: song.owner_name, progress: 0, playing: true }) }}>▶</button>
                         </div>
                     </div>
                 </div>

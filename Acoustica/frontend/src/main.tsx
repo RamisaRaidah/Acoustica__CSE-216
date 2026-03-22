@@ -1,11 +1,9 @@
 import React from 'react';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ScrollProvider } from '@/contexts/ScrollContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import ReactDOM from 'react-dom/client';
 import App from '@/App';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { ThemeProvider } from '@/contexts/ThemeContext';
-import { MusicProvider } from '@/contexts/MusicContext';
-import { ScrollProvider } from '@/contexts/ScrollContext';
-import { NotificationProvider } from '@/contexts/NotificationContext';
 import '@/styles/global.css';
 import '@/styles/variable.css';
 
@@ -15,15 +13,11 @@ if (!root) throw new Error('Root not found');
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <AuthProvider>
-      <NotificationProvider>
-        <ThemeProvider>
-          <MusicProvider>
-            <ScrollProvider>
-              <App />
-            </ScrollProvider>
-          </MusicProvider>
-        </ThemeProvider>
-      </NotificationProvider>
+      <ThemeProvider>
+        <ScrollProvider>
+          <App />
+        </ScrollProvider>
+      </ThemeProvider>
     </AuthProvider>
   </React.StrictMode>
 );

@@ -10,9 +10,10 @@ import play_next_button from '@/assets/images/Musicbar_Buttons/Play_Next_Button.
 import lyrics_button from '@/assets/images/Musicbar_Buttons/Lyrics_Button.png';
 import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
+import { useNavigate } from "react-router-dom";
 
 export default function MusicPlayer() {
-    const { song, song_url, cover_picture_url, play_key } = useMusic();
+    const { song, song_url, cover_picture_url, play_key, liked, toggleLike } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
@@ -26,6 +27,7 @@ export default function MusicPlayer() {
     const [ready, setReady] = useState(false);
     const [songReady, setSongReady] = useState(false);
     const [coverPictureReady, setCoverPictureReady] = useState(false);
+    const navigate = useNavigate();    
 
     const formatTime = (seconds: number) => {
         if (!Number.isFinite(seconds)) return "0:00";
@@ -138,6 +140,7 @@ export default function MusicPlayer() {
                 song_id: song?.song_id,
                 album_id: song?.album_id,
                 title: song?.title,
+                artist_id: song?.artist_id,
                 artist_name: song?.artist_name,
                 progress: (audio.currentTime / audio.duration) * 100,
                 playing: isPlaying
@@ -226,8 +229,8 @@ export default function MusicPlayer() {
             />
 
             <div className="song_info">
-                <div className="song_name"><a href="#">{ready ? song?.title : ""}</a></div>
-                <div className="artist_name"><a href="#">{ready ? song?.artist_name : ""}</a></div>
+                <div id="song-name" onClick={() => navigate(`/music/songs/${song?.song_id}`)}>{ready ? song?.title : ""}</div>
+                <div id="artist-name" onClick={() => navigate(`/artists/${song?.artist_id}`)}>{ready ? song?.artist_name : ""}</div>
             </div>
 
             <div className="music_control1" >
@@ -261,7 +264,7 @@ export default function MusicPlayer() {
 
             <div className="music_control2" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
                 <img src={lyrics_button} className="lyrics_button" />
-                <img src={like_button} className="like_button" onClick={() => { if (song) likeSong(song.song_id) }}/>
+                <img src={like_button} className="like_button" onClick={() => { if (song) { toggleLike(); likeSong(song.song_id); } }} style={{ filter: liked ? 'invert(1) sepia(1) saturate(5) hue-rotate(300deg)' : "none"}}/>
                 <img src={full_screen_button} className="full_screen_button" />
             </div>
         </div>

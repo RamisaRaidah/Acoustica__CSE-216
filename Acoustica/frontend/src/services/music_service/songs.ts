@@ -83,3 +83,7 @@ export async function likeSong(songId: number) {
         method: 'PUT'
     })
 }
+
+export async function isLiked(songId: number): Promise<boolean> {
+    return api.request(`/api/music/songs/${songId}/liked`);
+}
