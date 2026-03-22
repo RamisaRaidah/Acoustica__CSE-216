@@ -1,4 +1,5 @@
 import api from '@/services/api';
+import { SongInfo } from '@/services/music_service/songs';
 
 export async function createPlaylist(formData: FormData) {
     return api.request('/api/music/playlists', {
@@ -32,16 +33,7 @@ export async function getPlaylistDetails(playlistId: number): Promise<GetPlaylis
     return api.request(`/api/music/playlists/${playlistId}`);
 }
 
-export interface GetPlaylistSongsResponse {
-    song_id: number;
-    album_id: number;
-    title: string;
-    album_name: string;
-    artist_name: string;
-    length: number;
-}
-
-export async function getPlaylistSongs(playlistId: number): Promise<GetPlaylistSongsResponse[]> {
+export async function getPlaylistSongs(playlistId: number): Promise<SongInfo[]> {
     return api.request(`/api/music/playlists/${playlistId}/songs`);
 }
 

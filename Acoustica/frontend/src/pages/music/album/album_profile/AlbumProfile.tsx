@@ -3,9 +3,11 @@ import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useEffect, useState } from 'react';
-import { getAlbumDetails, getAlbumCoverPicture, getAlbumSongs, GetAlbumSongsResponse, deleteAlbum } from '@/services/music_service/albums';
+import { getAlbumDetails, getAlbumCoverPicture, getAlbumSongs, deleteAlbum } from '@/services/music_service/albums';
+import { SongInfo } from '@/services/music_service/songs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useMusic } from '@/contexts/MusicContext';
 
 export default function AlbumProfile() {
     const navigate = useNavigate();
@@ -18,11 +20,13 @@ export default function AlbumProfile() {
     const [owner_name, setOwnerName] = useState<string>('');
     const [release_date, setReleaseDate] = useState<string>('');
     const [privacy, setPrivacy] = useState<string>('');
-    const [songs, setSongs] = useState<GetAlbumSongsResponse[]>([]);
+    const [songs, setSongs] = useState<SongInfo[]>([]);
+    const [song_ids, setSongIds] = useState<number[]>([]);
     const [duration, setDuration] = useState<number>(0);
     const [confirmation, setConfirmation] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { user } = useAuth();
+    const { createQueue } = useMusic();
 
     useEffect(() => {
         getAlbumDetails(albumId).then(info => {
@@ -36,7 +40,10 @@ export default function AlbumProfile() {
             }))
         })
         getAlbumCoverPicture(albumId).then(res => setCoverPicture(res.cover_picture_url));
-        getAlbumSongs(albumId).then(setSongs);
+        getAlbumSongs(albumId).then(songs => {
+            setSongs(songs);
+            setSongIds(songs.map(x => x.song_id));
+        });
     }, []);
 
     useEffect(() => {
@@ -102,19 +109,22 @@ export default function AlbumProfile() {
                         </div>
                     </div>
 
-                    {user?.user_type === 'listener' && <button id="play-album-btn">
-                        <img src={play_button} alt="Play" />
-                    </button>}
+                    {user?.user_type === 'listener' && 
+                        <button id="play-album-btn" onClick={() => createQueue(song_ids)}>
+                            <img src={play_button} alt="Play" />
+                        </button>
+                    }
 
                     {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && 
-                    <button id="edit-album-btn" onClick={() => navigate(`/music/albums/${albumId}/edit`)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                        Edit Album
-                    </button>}
+                        <button id="edit-album-btn" onClick={() => navigate(`/music/albums/${albumId}/edit`)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            Edit Album
+                        </button>
+                    }
                 </div>
 
                 <div id="album-card-bottom">
@@ -133,7 +143,7 @@ export default function AlbumProfile() {
 
                                 <div className="col-title">
                                     <p className="song-title">{song.title}</p>
-                                    <p className="song-artist">{song.artist_name}</p>
+                                    <p className="song-artist">{song.owner_name}</p>
                                 </div>
 
                                 <div className="col-album">{song.play_count}</div>

@@ -7,10 +7,6 @@ export function getUser() {
 
 interface GetLastListeningResponse {
     song_id: number,
-    album_id: number,
-    title: string,
-    artist_id: number;
-    artist_name: string,
     progress: number
 }
 

@@ -2,38 +2,47 @@ import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { addStreamHistory } from "@/services/user_service/users";
-import { likeSong } from "@/services/music_service/songs";
+import { SongInfo, getSongMetadata, likeSong } from "@/services/music_service/songs";
 import play_previous_button from '@/assets/images/Musicbar_Buttons/Play_Previous_Button.png';
 import play_button from '@/assets/images/Musicbar_Buttons/Play_Button.png';
 import pause_button from '@/assets/images/Musicbar_Buttons/Pause_Button.png';
 import play_next_button from '@/assets/images/Musicbar_Buttons/Play_Next_Button.png';
 import lyrics_button from '@/assets/images/Musicbar_Buttons/Lyrics_Button.png';
 import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
+import shuffle_button from '@/assets/images/Musicbar_Buttons/Shuffle_Button.png';
+import queue_button from '@/assets/images/Musicbar_Buttons/Queue_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
 import { useNavigate } from "react-router-dom";
 
 export default function MusicPlayer() {
-    const { song, song_url, cover_picture_url, play_key, liked, toggleLike } = useMusic();
+    const { song, song_play_status, song_url, cover_picture_url, play_key, playSong, liked, toggleLike, prev, next, queue, createQueue, shuffleQueue, playAtIndex } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
     const startTimeRef = useRef<number | null>(null);
 
-    const [isPlaying, setIsPlaying] = useState(song?.playing ?? false);
+    const [isPlaying, setIsPlaying] = useState(song_play_status?.playing ?? false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [progressWidth, setProgressWidth] = useState("0%");
     const [ready, setReady] = useState(false);
     const [songReady, setSongReady] = useState(false);
     const [coverPictureReady, setCoverPictureReady] = useState(false);
-    const navigate = useNavigate();    
+    const [queueOpen, setQueueOpen] = useState(false);
+    const navigate = useNavigate();
 
     const formatTime = (seconds: number) => {
         if (!Number.isFinite(seconds)) return "0:00";
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return mins + ":" + (secs < 10 ? "0" : "") + secs;
+    };
+
+    const formatSongLength = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
     const savePlayerState = useCallback((data: object) => {
@@ -100,7 +109,7 @@ export default function MusicPlayer() {
         const handleLoadedMetadata = () => {
             if (!Number.isFinite(audio.duration)) return;
 
-            const initialProgress = song?.progress ?? 0;
+            const initialProgress = song_play_status?.progress ?? 0;
             audio.currentTime = audio.duration * (initialProgress / 100);
             startTimeRef.current = audio.currentTime;
 
@@ -109,7 +118,7 @@ export default function MusicPlayer() {
             setProgressWidth(((audio.currentTime / audio.duration) * 100) + "%");
             setSongReady(true);
 
-            if (song?.playing) {
+            if (song_play_status?.playing) {
                 audio.play();
                 setIsPlaying(true);
                 startSegment();
@@ -118,7 +127,7 @@ export default function MusicPlayer() {
 
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         return () => audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    }, [song?.song_id, play_key, song?.progress, song?.playing, startSegment]);
+    }, [song?.song_id, play_key, song_play_status?.progress, song_play_status?.playing, startSegment]);
 
     useEffect(() => {
         if (cover_picture_url) setCoverPictureReady(true);
@@ -138,10 +147,6 @@ export default function MusicPlayer() {
             setProgressWidth(((audio.currentTime / audio.duration) * 100) + "%");
             savePlayerState({
                 song_id: song?.song_id,
-                album_id: song?.album_id,
-                title: song?.title,
-                artist_id: song?.artist_id,
-                artist_name: song?.artist_name,
                 progress: (audio.currentTime / audio.duration) * 100,
                 playing: isPlaying
             });
@@ -154,14 +159,14 @@ export default function MusicPlayer() {
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
-
         const handleEnded = () => {
             setIsPlaying(false);
             endSegment();
+            next();
         };
         audio.addEventListener('ended', handleEnded);
         return () => audio.removeEventListener('ended', handleEnded);
-    }, [endSegment]);
+    }, [endSegment, next]);
 
     const handlePlayPause = () => {
         const audio = audioRef.current;
@@ -179,9 +184,6 @@ export default function MusicPlayer() {
 
         savePlayerState({
             song_id: song?.song_id,
-            album_id: song?.album_id,
-            title: song?.title,
-            artist_name: song?.artist_name,
             progress: (audio.currentTime / audio.duration) * 100,
             playing: !isPlaying
         });
@@ -218,6 +220,10 @@ export default function MusicPlayer() {
         window.addEventListener('mouseup', onMouseUp);
     }, [updateTimeFromDrag]);
 
+    useEffect(() => {
+        createQueue([1, 3, 6, 7, 8, 9]);
+    }, []);
+
     return (
         <div className="music_player">
             <audio ref={audioRef} src={song_url ?? ""} className="audio" />
@@ -230,18 +236,18 @@ export default function MusicPlayer() {
 
             <div className="song_info">
                 <div id="song-name" onClick={() => navigate(`/music/songs/${song?.song_id}`)}>{ready ? song?.title : ""}</div>
-                <div id="artist-name" onClick={() => navigate(`/artists/${song?.artist_id}`)}>{ready ? song?.artist_name : ""}</div>
+                <div id="artist-name" onClick={() => navigate(`/artists/${song?.owner_id}`)}>{ready ? song?.owner_name : ""}</div>
             </div>
 
-            <div className="music_control1" >
+            <div className="music_control1">
                 <div className="music_control1_top" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
-                    <img src={play_previous_button} className="play_previous_button" />
+                    <img src={play_previous_button} className="play_previous_button" onClick={prev} />
                     <img
                         src={isPlaying ? pause_button : play_button}
                         className="play_pause_button"
                         onClick={handlePlayPause}
                     />
-                    <img src={play_next_button} className="play_next_button" />
+                    <img src={play_next_button} className="play_next_button" onClick={next} />
                 </div>
 
                 <div className="music_control1_bottom">
@@ -264,8 +270,52 @@ export default function MusicPlayer() {
 
             <div className="music_control2" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
                 <img src={lyrics_button} className="lyrics_button" />
-                <img src={like_button} className="like_button" onClick={() => { if (song) { toggleLike(); likeSong(song.song_id); } }} style={{ filter: liked ? 'invert(1) sepia(1) saturate(5) hue-rotate(300deg)' : "none"}}/>
+                <img
+                    src={like_button}
+                    className="like_button"
+                    onClick={() => { if (song) { toggleLike(); likeSong(song.song_id); } }}
+                    style={{ filter: liked ? 'invert(1) sepia(1) saturate(5) hue-rotate(300deg)' : "none" }}
+                />
+                <img
+                    src={queue_button}
+                    className={`queue_button${queueOpen ? ' queue_button--active' : ''}`}
+                    onClick={() => setQueueOpen(prev => !prev)}
+                />
+                <img src={shuffle_button} className="shuffle_button" onClick={shuffleQueue} />
                 <img src={full_screen_button} className="full_screen_button" />
+            </div>
+
+            {/* Queue Popup */}
+            <div className={`queue_popup${queueOpen ? ' queue_popup--open' : ''}`}>
+                <div className="queue_popup_header">
+                    <span className="queue_popup_title">Up next</span>
+                    <div className="queue_popup_header_right">
+                        <span className="queue_popup_count">{queue.length} songs</span>
+                        <button className="queue_popup_close" onClick={() => setQueueOpen(false)}>✕</button>
+                    </div>
+                </div>
+                <div className="queue_popup_divider" />
+                <div className="queue_popup_list">
+                    {queue.length === 0 ? (
+                        <div className="queue_empty">Your queue is empty</div>
+                    ) : queue.map((qSong, index) => (
+                        <div
+                            className="queue_item"
+                            key={qSong.song_id}
+                            onClick={() => {
+                                playAtIndex(index);
+                                setQueueOpen(false);
+                            }}
+                        >
+                            <div className="queue_item_index">{index + 1}</div>
+                            <div className="queue_item_info">
+                                <div className="queue_item_title">{qSong.title}</div>
+                                <div className="queue_item_artist">{qSong.owner_name}</div>
+                            </div>
+                            <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

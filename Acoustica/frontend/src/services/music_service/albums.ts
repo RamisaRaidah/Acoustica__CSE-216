@@ -1,4 +1,5 @@
 import api from '@/services/api';
+import { SongInfo } from '@/services/music_service/songs';
 
 export async function createAlbum(formData: FormData) {
     return api.request('/api/music/albums', {
@@ -48,17 +49,7 @@ export async function getMyAlbums(): Promise<GetMyAlbumsResponse[]> {
     return api.request('/api/music/albums/me');
 }
 
-export interface GetAlbumSongsResponse {
-    song_id: number;
-    album_id: number;
-    title: string;
-    album_name: string;
-    artist_name: string;
-    length: number;
-    play_count: number;
-}
-
-export async function getAlbumSongs(albumId: number): Promise<GetAlbumSongsResponse[]> {
+export async function getAlbumSongs(albumId: number): Promise<SongInfo[]> {
     return api.request(`/api/music/albums/${albumId}/songs`);
 }
 

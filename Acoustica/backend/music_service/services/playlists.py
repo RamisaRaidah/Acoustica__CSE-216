@@ -250,8 +250,8 @@ def delete_playlist(playlist_id):
 ### get_playlist_songs ###
 def get_playlist_songs(playlist_id):
     command = """
-        SELECT s.song_id, s.album_id, s.title, a.title album_name, (u.first_name || ' ' || u.last_name) artist_name, s.length
-        FROM playlist_song p JOIN song s ON (p.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN users u ON (a.owner_id = u.user_id)
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM playlist_song p JOIN song s ON (p.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE playlist_id = %s
     """
 

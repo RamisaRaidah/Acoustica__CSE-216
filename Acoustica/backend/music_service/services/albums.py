@@ -132,18 +132,13 @@ def get_album_cover_picture(album_id):
         fetch_one = True
     )
 
-    if not result:
-        return {"error": "coudn't fetch data"}, 500
-    
-    album_cover_picture_path = result["cover_picture"]
-    signed_url = storage.generate_signed_url(album_cover_picture_path)
-
-    logging.info(album_cover_picture_path)
-
-    if not signed_url:
-        return {"error": "coudn't generate signed url"}, 500
-    
-    return {"cover_picture_url": signed_url}, 200
+    if result:
+        if result["cover_picture"]:
+            signed_url = storage.generate_signed_url(result["cover_picture"])
+            if signed_url:
+                return {"cover_picture_url": signed_url}, 200
+            
+    return {"error": "coudn't fetch data"}, 500
 
 ### get_my_albums ### 
 def get_my_albums():
@@ -160,8 +155,8 @@ def get_my_albums():
 ### get_album_songs ###
 def get_album_songs(album_id):
     command = """
-        SELECT s.song_id, s.album_id, s.title, a.title album_name, stage_name artist_name, s.length, s.play_count
-        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE a.album_id = %s
     """
 

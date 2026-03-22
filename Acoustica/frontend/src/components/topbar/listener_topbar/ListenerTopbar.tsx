@@ -39,7 +39,7 @@ export default function ListenerTopbar() {
                 <Link to="#" className="shop_button"><img src={shop_button_img} className="icon" />Shop</Link>
             </div>
             <div className="topbar_center">
-                <Searchbar prompt='Explore. Discover. Repeat.' song album artist onSongSelect={(song) => playSong({ song_id: song.song_id, album_id: song.album_id, title: song.title, artist_id: song.artist_id, artist_name: song.artist_name, progress: 0, playing: true })} />
+                <Searchbar prompt='Explore. Discover. Repeat.' song album artist onSongSelect={(song) => playSong({ song_id: song.song_id, progress: 0, playing: true })} />
             </div>
             <div className="topbar_right">
                 <Link to="#" className="explore_button"><img src={explore_button_img} className="icon" />Explore</Link>

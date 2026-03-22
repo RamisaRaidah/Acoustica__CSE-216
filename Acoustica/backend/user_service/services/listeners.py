@@ -62,8 +62,8 @@ def get_stream_history():
 
 def get_last_listening():
     command = """
-        SELECT s.song_id, s.album_id, s.title, ar.artist_id, ar.stage_name artist_name, h.progress
-        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        SELECT s.song_id, h.progress
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id)
         WHERE listener_id = %s
         ORDER BY song_stream_id DESC
         LIMIT 1
@@ -75,10 +75,6 @@ def get_last_listening():
     if not result:
         return {
             "song_id": -1,
-            "album_id": -1,
-            "title": None,
-            "artist_id": -1,
-            "artist_name": None,
             "progress": 0
         }, 200
     

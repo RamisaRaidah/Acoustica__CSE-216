@@ -3,8 +3,10 @@ import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useEffect, useState } from 'react';
-import { getPlaylistDetails, getPlaylistSongs, GetPlaylistSongsResponse, deletePlaylist } from '@/services/music_service/playlists';
+import { SongInfo } from '@/services/music_service/songs';
+import { getPlaylistDetails, getPlaylistSongs, deletePlaylist } from '@/services/music_service/playlists';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useMusic } from '@/contexts/MusicContext';
 
 export default function PlaylistProfile() {
     const navigate = useNavigate();
@@ -14,11 +16,13 @@ export default function PlaylistProfile() {
     const [description, setDescription] = useState<string>('');
     const [cover_picture, setCoverPicture] = useState<string | null>(null);
     const [privacy, setPrivacy] = useState<string>('');
-    const [songs, setSongs] = useState<GetPlaylistSongsResponse[]>([]);
+    const [songs, setSongs] = useState<SongInfo[]>([]);
+    const [song_ids, setSongIds] = useState<number[]>([]);
     const [duration, setDuration] = useState<number>(0);
     const [view_count, setViewCount] = useState<number>(0);
     const [deleteOn, setDeleteOn] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const { createQueue } = useMusic();
 
     useEffect(() => {
         getPlaylistDetails(playlistId).then(info => {
@@ -28,7 +32,10 @@ export default function PlaylistProfile() {
             setPrivacy(info.visibility);
             setViewCount(info.view_count);
         })
-        getPlaylistSongs(playlistId).then(setSongs);
+        getPlaylistSongs(playlistId).then(songs => {
+            setSongs(songs);
+            setSongIds(songs.map(x => x.song_id));
+        });
     }, []);
 
     useEffect(() => {
@@ -98,7 +105,7 @@ export default function PlaylistProfile() {
                         </div>
                     </div>
 
-                    <button id="play-playlist-btn">
+                    <button id="play-playlist-btn" onClick={() => createQueue(song_ids)}>
                         <img src={play_button} alt="Play" />
                     </button>
 
@@ -128,10 +135,10 @@ export default function PlaylistProfile() {
 
                                 <div className="col-title">
                                     <p className="song-title">{song.title}</p>
-                                    <p className="song-artist">{song.artist_name}</p>
+                                    <p className="song-artist">{song.owner_name}</p>
                                 </div>
 
-                                <div className="col-album">{song.album_name}</div>
+                                <div className="col-album">{song.album_title}</div>
 
                                 <div className="col-time">
                                     {Math.floor(song.length / 60)}:{(song.length % 60).toString().padStart(2, "0")}
