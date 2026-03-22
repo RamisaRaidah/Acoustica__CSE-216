@@ -1,6 +1,6 @@
 import '@/pages/music/song/song_profile/SongProfile.css';
 import { useEffect, useState } from 'react';
-import { SongInfo, getSongMetadata, Collaborator, getSongCollaborators, getSongGenres, getSongMoods, getSongInstruments, deleteSong } from '@/services/music_service/songs';
+import { SongInfo, getSongMetadata, Collaborator, getSongCollaborators, getSongGenres, getSongMoods, getSongInstruments, deleteSong, likeSong, isLiked } from '@/services/music_service/songs';
 import { Genre, Mood, Instrument } from '@/services/analytics_service/analytics';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
 import { getProfilePicture } from '@/services/user_service/users';
@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useMusic } from '@/contexts/MusicContext';
+import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 
 export default function SongProfile() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -26,6 +27,7 @@ export default function SongProfile() {
     const [release_date, setReleaseDate] = useState<string>();
     const [showAllCollaborators, setShowAllCollaborators] = useState<boolean>(false);
     const [collaborator_pfps, setCollaboratorPfps] = useState<Record<number, string>>({});
+    const [liked, setLiked] = useState<boolean>();
     const [confirmation, setConfirmation] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { user } = useAuth();
@@ -58,6 +60,8 @@ export default function SongProfile() {
                         pfpMap[c.artist_id] = collaboratorPfpResults[i].profile_picture;
                     }
                 });
+
+                isLiked(songId).then(setLiked);
 
                 setSong(info);
                 setCoverPicture(albumCover.cover_picture_url);
@@ -133,7 +137,7 @@ export default function SongProfile() {
                             {formatLength(song?.length ?? 0)}
                         </div>
                         <div id='song-profile-container-song-buttons'>
-                            <button id='song-profile-container-like-btn' title='Like'>❤</button>
+                            <button id='song-profile-container-like-btn' title='Like' onClick={() => { likeSong(songId); setLiked(!liked) }}><img src={like_button} style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} /></button>
                             <button id='song-profile-container-add-btn' title='Add to playlist'>+</button>
                             <button id='song-profile-container-play-btn' title='Play' onClick={() => { if (song) playSong({ song_id: song.song_id, progress: 0, playing: true }) }}>▶</button>
                         </div>
