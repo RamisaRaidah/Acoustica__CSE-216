@@ -75,6 +75,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
         function handleClick(e: MouseEvent) {
             if (!seachWrapperRef.current?.contains(e.target as Node)) {
                 setSearchDropdownOpen(false);
+                setQueryParam('');
             }
         }
 
@@ -90,6 +91,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                     type="text"
                     placeholder={prompt}
                     className="search_bar"
+                    value={queryParam}
                     onChange={(e) => {
                         setQueryParam(e.target.value.trim());
                         console.log(e);
@@ -108,6 +110,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                         onClick={() => {
                                             onSongSelect?.(song);
                                             setSearchDropdownOpen(false);
+                                            setQueryParam('');
                                         }}
                                     >
                                         <span className="search_item_title">{song.title}</span>
@@ -129,6 +132,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                         onClick={() => {
                                             alert(album.title);
                                             setSearchDropdownOpen(false);
+                                            setQueryParam('');
                                         }}
                                     >
                                         <span className="search_item_title">{album.title}</span>
@@ -150,6 +154,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                         onClick={() => {
                                             alert(artist.artist_name);
                                             setSearchDropdownOpen(false);
+                                            setQueryParam('');
                                         }}
                                     >
                                         <span className="search_item_title">{artist.artist_name}</span>

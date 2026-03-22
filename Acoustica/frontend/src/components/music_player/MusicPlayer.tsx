@@ -274,7 +274,7 @@ export default function MusicPlayer() {
                     src={like_button}
                     className="like_button"
                     onClick={() => { if (song) { toggleLike(); likeSong(song.song_id); } }}
-                    style={{ filter: liked ? 'invert(1) sepia(1) saturate(5) hue-rotate(300deg)' : "none" }}
+                    style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }}
                 />
                 <img
                     src={queue_button}
@@ -285,7 +285,6 @@ export default function MusicPlayer() {
                 <img src={full_screen_button} className="full_screen_button" />
             </div>
 
-            {/* Queue Popup */}
             <div className={`queue_popup${queueOpen ? ' queue_popup--open' : ''}`}>
                 <div className="queue_popup_header">
                     <span className="queue_popup_title">Up next</span>
@@ -298,23 +297,40 @@ export default function MusicPlayer() {
                 <div className="queue_popup_list">
                     {queue.length === 0 ? (
                         <div className="queue_empty">Your queue is empty</div>
-                    ) : queue.map((qSong, index) => (
-                        <div
-                            className="queue_item"
-                            key={qSong.song_id}
-                            onClick={() => {
-                                playAtIndex(index);
-                                setQueueOpen(false);
-                            }}
-                        >
-                            <div className="queue_item_index">{index + 1}</div>
-                            <div className="queue_item_info">
-                                <div className="queue_item_title">{qSong.title}</div>
-                                <div className="queue_item_artist">{qSong.owner_name}</div>
-                            </div>
-                            <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
-                        </div>
-                    ))}
+                    ) : (
+                        <>
+                            {song && (
+                                <>
+                                    <div className="queue_section_header">Now playing</div>
+                                    <div className="queue_item queue_now_playing">
+                                        <div className="queue_item_index">▶</div>
+                                        <div className="queue_item_info">
+                                            <div className="queue_item_title">{song.title}</div>
+                                            <div className="queue_item_artist">{song.owner_name}</div>
+                                        </div>
+                                        <div className="queue_item_duration">{formatTime(duration)}</div>
+                                    </div>
+                                </>
+                            )}
+                            <div className="queue_section_header">Queue</div>
+                            {queue.map((qSong, index) => (
+                                <div
+                                    className="queue_item"
+                                    key={qSong.song_id}
+                                    onClick={() => {
+                                        playAtIndex(index);
+                                    }}
+                                >
+                                    <div className="queue_item_index">{index + 1}</div>
+                                    <div className="queue_item_info">
+                                        <div className="queue_item_title">{qSong.title}</div>
+                                        <div className="queue_item_artist">{qSong.owner_name}</div>
+                                    </div>
+                                    <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
+                                </div>
+                            ))}
+                        </>
+                    )}
                 </div>
             </div>
         </div>
