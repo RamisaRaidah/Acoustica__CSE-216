@@ -87,3 +87,10 @@ def set_playlist_visibility_route(playlist_id):
 def get_my_playlists_route():
     result, status = playlists.get_my_playlists()
     return jsonify(result), status
+
+### get_popular_public_playlists_route ###
+@playlists_bp.get("/api/music/playlists/popular_public_playlists")
+@jwt_required()
+def get_popular_public_playlists_route():
+    result, status = playlists.get_popular_public_playlists()
+    return jsonify(result), status

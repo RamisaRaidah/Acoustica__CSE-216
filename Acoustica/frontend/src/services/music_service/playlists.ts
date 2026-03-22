@@ -8,14 +8,18 @@ export async function createPlaylist(formData: FormData) {
     });
 }
 
-export interface GetMyPlaylistsResponse {
+export interface Playlist {
     playlist_id: number;
     title: string;
     cover_picture_url: string;
 }
 
-export async function getMyPlaylists(): Promise<GetMyPlaylistsResponse[]> {
+export async function getMyPlaylists(): Promise<Playlist[]> {
     return api.request('/api/music/playlists/me');
+}
+
+export async function getPopularPublicPlaylists(): Promise<Playlist[]> {
+    return api.request('/api/music/playlists/popular_public_playlists');
 }
 
 export interface GetPlaylistDetailsResponse {

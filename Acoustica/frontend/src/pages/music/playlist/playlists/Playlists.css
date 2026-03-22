@@ -45,6 +45,15 @@
     margin-right: 0.5rem;
 }
 
+/* ===== EMPTY STATE ===== */
+#playlist-container .empty-state {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    padding: 1.5rem 0 2rem;
+    margin: 0;
+}
+
 /* ===== CONTENT ===== */
 
 #playlist-container {
@@ -57,7 +66,7 @@
     color: var(--text-color);
 }
 
-#playlist-container #playlist-header {
+#playlist-container .playlist-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -87,9 +96,9 @@
 
 #playlist-container #create-playlist-button {
     display: inline-block;
-    padding: 0.85rem 1.5rem;
+    padding: 0.6rem 1.1rem;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
+    font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -128,7 +137,14 @@
     box-shadow: 0 3px 10px rgba(224, 123, 42, 0.3);
 }
 
-#playlist-container #playlist-grid {
+/* ===== SECTION WRAPPER ===== */
+#playlist-container .playlist-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== GRID ===== */
+#playlist-container .playlist-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     row-gap: 2vw;
@@ -188,6 +204,8 @@
     backdrop-filter: blur(3px);
     opacity: 0;
     transition: opacity 0.25s ease;
+    border-radius: inherit;
+    pointer-events: none;
 }
 
 #playlist-container .playlist-card:hover .playlist-card-cover::after {
@@ -215,4 +233,46 @@
 #playlist-container .playlist-card-title:hover {
     text-decoration: underline;
     color: #e07b2a;
+}
+
+/* ===== SEE ALL ROW ===== */
+#playlist-container .see-all-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.2vh;
+}
+
+#playlist-container .see-all-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #e07b2a;
+    padding: 0.3rem 0;
+    position: relative;
+    transition: color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.85;
+}
+
+#playlist-container .see-all-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 1.5px;
+    background: #e07b2a;
+    transition: width 0.25s ease;
+}
+
+#playlist-container .see-all-btn:hover {
+    opacity: 1;
+}
+
+#playlist-container .see-all-btn:hover::after {
+    width: 100%;
 }

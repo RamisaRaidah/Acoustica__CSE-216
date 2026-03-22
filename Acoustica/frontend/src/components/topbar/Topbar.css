@@ -110,7 +110,7 @@
     font-weight: 400;
     border-radius: 0;
     gap: 0;
-    transition: background 0.2s;
+    transition: background 0.12s;
 }
 
 .profile-dropdown-option:hover {

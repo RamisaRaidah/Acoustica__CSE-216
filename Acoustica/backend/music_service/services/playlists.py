@@ -272,7 +272,6 @@ def set_playlist_visibility(playlist_id):
     return (f"set_playlist_visibility {playlist_id}")
 
 ### get_my_playlists ###
-
 def get_my_playlists():
     command = """
         SELECT playlist_id, title, cover_picture
@@ -290,6 +289,28 @@ def get_my_playlists():
         return playlists, 200
     else:
         return {"error": "Couldn't fetch data!"}, 500
+    
+### get_popular_public_playlists ###
+def get_popular_public_playlists():
+    command = """
+        SELECT playlist_id, title, cover_picture
+        FROM playlist 
+        WHERE visibility = 'public'
+        ORDER BY view_count DESC
+        LIMIT 35
+    """
+
+    result = execute_sql(command, fetch_all = True)
+
+    if result:
+        playlists = []
+        for r in result:
+            playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
+
+        return playlists, 200
+            
+    else:
+        return {"error": "couldn't fetch data!"}, 500
         
 
 ### Helper functions ###

@@ -127,7 +127,7 @@
     justify-content: space-between;
     padding: 0.75em 1.5em;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.08s;   
     border-radius: 0.4em;
     margin: 0.06em 0.5em;
 }

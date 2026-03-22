@@ -21,7 +21,7 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
     if (!isOpen) return null;
 
     return createPortal(
-        <div className="settings_overlay" onClick={onClose}>
+        <div className="settings_overlay">
             <div className="settings_popup" onClick={e => e.stopPropagation()}>
                 <div className="settings_header">
                     <h2 className="settings_title">Settings</h2>
