@@ -1,0 +1,528 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ── Loading / Error ─────────────────────────────────────── */
+
+#explore-profile-container .loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+#explore-profile-container .loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+#explore-profile-container .error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+#explore-profile-container .error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ── Root container ──────────────────────────────────────── */
+
+#explore-profile-container {
+    display: block;
+    position: relative;
+    /* overflow must NOT be hidden — shadow needs room to breathe */
+    overflow: visible;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+}
+
+/* ── Two-column layout ───────────────────────────────────── */
+
+.explore-top-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3vw;
+    align-items: start;
+    width: 100%;
+    /* Must NOT be hidden so box-shadow on explore card isn't clipped */
+    overflow: visible;
+}
+
+/* ── Left column ─────────────────────────────────────────── */
+
+.explore-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: none !important;
+    border-left: none !important;
+    /* Small left padding so the box-shadow isn't clipped by parent edge */
+    overflow: visible;
+}
+
+/* ── Genre box ───────────────────────────────────────────── */
+
+.explore-explore-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 2.5;
+    border-radius: 1vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 1.2vw 1.4vw;
+    box-sizing: border-box;
+    margin-bottom: 2.5vh;
+    border: none !important;
+    outline: none;
+}
+
+.explore-explore-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 20%,
+            rgba(0, 0, 0, 0.3) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Kill any border leak from global rules */
+.explore-explore-box,
+.explore-explore-box * {
+    border-left: none !important;
+}
+
+.explore-explore-shine {
+    position: absolute;
+    top: -60%;
+    left: -60%;
+    width: 45%;
+    height: 200%;
+    background: linear-gradient(105deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.16) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.explore-explore-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.6rem, 0.7vw, 0.85rem);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+    position: relative;
+    z-index: 2;
+    margin-bottom: 0.3vw;
+}
+
+.explore-explore-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 2.8vw, 3.6rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    position: relative;
+    z-index: 2;
+    line-height: 1.05;
+}
+
+.explore-explore-play-btn {
+    position: absolute;
+    top: 1.1vw;
+    right: 1.1vw;
+    z-index: 4;
+    width: 2.4vw;
+    height: 2.4vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.85vw;
+    color: #fff;
+    transition: background 0.2s ease, transform 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.explore-explore-play-btn img {
+    width: 55%;
+    height: 55%;
+    object-fit: contain;
+    display: block;
+}
+
+.explore-explore-play-btn:hover {
+    background: rgba(255, 255, 255, 0.32);
+    transform: scale(1.08);
+}
+
+/* ── Section headers ─────────────────────────────────────── */
+
+.explore-section-header {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 1.6vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+    margin-bottom: 0.8vh;
+    position: relative;
+    display: inline-block;
+}
+
+.explore-section-header::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #e07b2a, transparent);
+    border-radius: 2px;
+    margin-top: 5px;
+}
+
+.explore-section-header--spaced {
+    margin-top: 0.8vh;
+}
+
+/* ── No songs message ────────────────────────────────────── */
+
+.explore-no-songs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 20vh;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 1.4vw, 1.8rem);
+    font-weight: 700;
+    color: var(--text-muted, #aaa);
+    letter-spacing: 0.02em;
+    opacity: 0.6;
+}
+
+/* ── Trending list ───────────────────────────────────────── */
+
+.explore-trending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2vh;
+}
+
+.explore-trending-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75vw;
+    padding: 0.45em 0.6em;
+    border-radius: 0.5em;
+    cursor: default;
+    transition: background 0.15s ease;
+    margin: 0.04em 0;
+}
+
+.explore-trending-item:hover {
+    background: rgba(200, 100, 30, 0.08);
+}
+
+.explore-trending-cover {
+    position: relative;
+    width: 2.5vw;
+    height: 2.5vw;
+    flex-shrink: 0;
+    border-radius: 0.35vw;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.explore-trending-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease, filter 0.25s ease;
+}
+
+.explore-trending-cover:hover img {
+    transform: scale(1.07);
+    filter: brightness(0.55) blur(1px);
+}
+
+.explore-trending-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65vw;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.explore-trending-cover:hover .explore-trending-play {
+    opacity: 1;
+}
+
+.explore-trending-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1vh;
+}
+
+.explore-trending-title {
+    display: block;
+    font-size: clamp(0.7rem, 0.82vw, 0.98rem);
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.explore-trending-title:hover {
+    color: #e07b2a !important;
+    text-decoration: underline;
+}
+
+.dark .explore-trending-title {
+    color: #ffeedd;
+}
+
+.explore-trending-artist {
+    display: block;
+    font-size: clamp(0.58rem, 0.68vw, 0.8rem);
+    color: #a05830;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.explore-trending-artist:hover {
+    color: #e07b2a !important;
+    text-decoration: underline;
+}
+
+.dark .explore-trending-artist {
+    color: rgba(255, 210, 150, 0.65);
+}
+
+.explore-trending-playcount {
+    font-size: clamp(0.52rem, 0.6vw, 0.72rem);
+    color: #a05830;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.dark .explore-trending-playcount {
+    color: rgba(255, 205, 140, 0.55);
+}
+
+/* ── Right column ────────────────────────────────────────── */
+
+.explore-right-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Song grid ───────────────────────────────────────────── */
+
+.explore-song-section {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 5 columns — keep in sync with POPULAR_SONGS_COLUMNS in GenreProfile.tsx */
+.explore-song-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.4vw 0.7vw;
+    width: 100%;
+}
+
+.explore-song-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    transition: transform 0.25s ease;
+}
+
+.explore-song-card:hover {
+    transform: translateY(-0.4vh);
+}
+
+.explore-song-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 0.88;
+    border-radius: 0.6vw;
+    overflow: hidden;
+    box-shadow: 0 0.3vh 1.1vh var(--shadow, rgba(0, 0, 0, 0.18));
+    transition: box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.explore-song-card:hover .explore-song-cover {
+    box-shadow: 0 0.6vh 1.8vh var(--shadow, rgba(0, 0, 0, 0.28));
+}
+
+.explore-song-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.explore-song-card:hover .explore-song-cover img {
+    transform: scale(1.07);
+}
+
+.explore-song-play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4vw;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.38);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.explore-song-cover:hover .explore-song-play-overlay {
+    opacity: 1;
+}
+
+.explore-song-title {
+    margin-top: 0.2vh;
+    margin-bottom: 0;
+    font-size: clamp(0.65rem, 0.8vw, 0.95rem);
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    color: var(--text-color);
+    padding: 0 0.2vw;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.explore-song-title:hover {
+    color: #e07b2a !important;
+    text-decoration: underline;
+}
+
+.explore-song-artist {
+    margin-top: 0.05vh;
+    font-size: clamp(0.58rem, 0.68vw, 0.8rem);
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    color: #a05830;
+    padding: 0 0.2vw;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.explore-song-artist:hover {
+    color: #e07b2a !important;
+    text-decoration: underline;
+}
+
+.dark .explore-song-artist {
+    color: rgba(255, 210, 150, 0.6);
+}
+
+/* ── See all ─────────────────────────────────────────────── */
+
+.explore-see-all-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.2vh;
+}
+
+.explore-see-all-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #e07b2a;
+    padding: 0.3rem 0;
+    position: relative;
+    transition: opacity 0.2s ease;
+    opacity: 0.82;
+}
+
+.explore-see-all-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 1.5px;
+    background: #e07b2a;
+    transition: width 0.25s ease;
+}
+
+.explore-see-all-btn:hover {
+    opacity: 1;
+}
+
+.explore-see-all-btn:hover::after {
+    width: 100%;
+}

@@ -248,9 +248,9 @@
     cursor: pointer;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.82rem;
+    text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 0.06em;
-    text-transform: uppercase;
     color: #e07b2a;
     padding: 0.3rem 0;
     position: relative;

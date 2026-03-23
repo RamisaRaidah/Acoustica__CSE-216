@@ -1,8 +1,15 @@
 import { MusicProvider } from '@/contexts/MusicContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
-import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useParams } from 'react-router-dom';
 import { useScroll } from '@/contexts/ScrollContext';
 import { useAuth } from '@/contexts/AuthContext';
+
+import ProtectedRoute from '@/components/routes/ProtectedRoute';
+import PublicOnlyRoute from '@/components/routes/PublicOnlyRoute';
+import Sidebar from '@/components/sidebar/Sidebar';
+import Topbar from '@/components/topbar/Topbar';
+import MusicPlayer from '@/components/music_player/MusicPlayer';
+import Scrollbar from '@/components/scrollbar/Scrollbar';
 
 import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
 import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
@@ -29,12 +36,8 @@ import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
 import EditAlbum from '@/pages/music/album/edit_album/EditAlbum';
 import EditSong from '@/pages/music/song/edit_song/EditSong';
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
-import ProtectedRoute from '@/components/routes/ProtectedRoute';
-import PublicOnlyRoute from '@/components/routes/PublicOnlyRoute';
-import Sidebar from '@/components/sidebar/Sidebar';
-import Topbar from '@/components/topbar/Topbar';
-import MusicPlayer from '@/components/music_player/MusicPlayer';
-import Scrollbar from '@/components/scrollbar/Scrollbar';
+import Explore from '@/pages/music/explore/Explore';
+import { GenreProfile, MoodProfile, LanguageProfile, InstrumentProfile } from '@/pages/music/explore/explore_profiles/ExploreProfiles';
 
 function App() {
   const scrollRef = useScroll();
@@ -87,6 +90,11 @@ function App() {
           <Route path="/cancel/success" element={<CancelSuccess />} />
           <Route path="/subscription-details" element={<SubscriptionDetails />} />
           <Route path="/myFamily" element={<FamilyManagement />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/explore/genres/:genre_name" element={<GenreProfile />} />
+          <Route path="/explore/moods/:mood_name" element={<MoodProfile />} />
+          <Route path="/explore/languages/:language_name" element={<LanguageProfile />} />
+          <Route path="/explore/instruments/:instrument_name" element={<InstrumentProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>

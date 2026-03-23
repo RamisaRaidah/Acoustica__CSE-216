@@ -326,7 +326,6 @@ INSERT INTO language (language_name) VALUES ('Uyghur');
 INSERT INTO language (language_name) VALUES ('Uzbek');
 INSERT INTO language (language_name) VALUES ('Vietnamese');
 INSERT INTO language (language_name) VALUES ('Welsh');
-INSERT INTO language (language_name) VALUES ('Wolof');
 INSERT INTO language (language_name) VALUES ('Xhosa');
 INSERT INTO language (language_name) VALUES ('Yiddish');
 INSERT INTO language (language_name) VALUES ('Yoruba');

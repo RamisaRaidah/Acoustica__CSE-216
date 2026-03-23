@@ -137,7 +137,7 @@ export default function SongProfile() {
                             {formatLength(song?.length ?? 0)}
                         </div>
                         <div id='song-profile-container-song-buttons'>
-                            <button id='song-profile-container-like-btn' title='Like' onClick={() => { likeSong(songId); setLiked(!liked) }}><img src={like_button} style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} /></button>
+                            <button id='song-profile-container-like-btn' title='Like' onClick={() => { likeSong(songId); setLiked(!liked) }}><img id='like-button' src={like_button} style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} /></button>
                             <button id='song-profile-container-add-btn' title='Add to playlist'>+</button>
                             <button id='song-profile-container-play-btn' title='Play' onClick={() => { if (song) playSong({ song_id: song.song_id, progress: 0, playing: true }) }}>▶</button>
                         </div>

@@ -2,6 +2,8 @@ from db import execute_sql
 import logging
 import sys
 
+from flask_jwt_extended import get_jwt_identity
+
 logging.basicConfig(
     level = logging.INFO,
     format = "%(asctime)s [%(levelname)s] %(message)s",
@@ -135,5 +137,209 @@ def get_instruments():
         return result, 200
     else:
         return {"error": "coudn't fetch data"}, 500
+    
+### get_genre_trending_songs_ ###
+def get_genre_trending_songs(genre_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song_genre g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE genre_id = %s
+        ORDER BY genre_id ASC
+        LIMIT 5
+    """
+
+    result = execute_sql(command, (genre_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_genre_popular_songs ###
+def get_genre_popular_songs(genre_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song_genre g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE genre_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 15
+    """
+
+    result = execute_sql(command, (genre_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_genre_my_songs ###
+def get_genre_my_songs(genre_id):
+    command = """
+        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN song_genre g ON (s.song_id = g.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s AND genre_id = %s
+        ORDER BY h.date_time DESC
+        LIMIT 10
+    """
+
+    result = execute_sql(command, (get_jwt_identity(), genre_id), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+    
+### get_mood_trending_songs_ ###
+def get_mood_trending_songs(mood_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song_mood g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE mood_id = %s
+        ORDER BY mood_id ASC
+        LIMIT 5
+    """
+
+    result = execute_sql(command, (mood_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_mood_popular_songs ###
+def get_mood_popular_songs(mood_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song_mood g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE mood_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 15
+    """
+
+    result = execute_sql(command, (mood_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_mood_my_songs ###
+def get_mood_my_songs(mood_id):
+    command = """
+        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN song_mood g ON (s.song_id = g.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s AND mood_id = %s
+        ORDER BY h.date_time DESC
+        LIMIT 10
+    """
+
+    result = execute_sql(command, (get_jwt_identity(), mood_id), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+    
+### get_language_trending_songs_ ###
+def get_language_trending_songs(language_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE l.language_id = %s
+        ORDER BY l.language_id ASC
+        LIMIT 5
+    """
+
+    result = execute_sql(command, (language_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_language_popular_songs ###
+def get_language_popular_songs(language_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE l.language_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 15
+    """
+
+    result = execute_sql(command, (language_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_language_my_songs ###
+def get_language_my_songs(language_id):
+    command = """
+        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s AND l.language_id = %s
+        ORDER BY h.date_time DESC
+        LIMIT 10
+    """
+
+    result = execute_sql(command, (get_jwt_identity(), language_id), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+    
+### get_instrument_trending_songs_ ###
+def get_instrument_trending_songs(instrument_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song_instrument g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE instrument_id = %s
+        ORDER BY instrument_id ASC
+        LIMIT 5
+    """
+
+    result = execute_sql(command, (instrument_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_instrument_popular_songs ###
+def get_instrument_popular_songs(instrument_id):
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song_instrument g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE instrument_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 15
+    """
+
+    result = execute_sql(command, (instrument_id,), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
+
+### get_instrument_my_songs ###
+def get_instrument_my_songs(instrument_id):
+    command = """
+        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
+        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN song_instrument g ON (s.song_id = g.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s AND instrument_id = %s
+        ORDER BY h.date_time DESC
+        LIMIT 10
+    """
+
+    result = execute_sql(command, (get_jwt_identity(), instrument_id), fetch_all = True)
+
+    if result is not None:
+        return result, 200
+    else:
+        return {"error": "couldn't load data!"}, 500
     
 ### Helper functions ###

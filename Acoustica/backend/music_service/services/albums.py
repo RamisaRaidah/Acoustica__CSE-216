@@ -137,6 +137,8 @@ def get_album_cover_picture(album_id):
             signed_url = storage.generate_signed_url(result["cover_picture"])
             if signed_url:
                 return {"cover_picture_url": signed_url}, 200
+        else:
+            return {"cover_picture_url": "null"}, 200
             
     return {"error": "coudn't fetch data"}, 500
 

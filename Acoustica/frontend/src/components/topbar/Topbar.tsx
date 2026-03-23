@@ -43,7 +43,7 @@ export default function ListenerTopbar() {
                 <Searchbar prompt={user?.user_type === 'listener' ? 'Explore. Discover. Repeat.' : 'Search...'} song album artist onSongSelect={(song) => playSong({ song_id: song.song_id, progress: 0, playing: true })} />
             </div>
             <div className="topbar_right">
-                {user?.user_type === 'listener' && <div className='topbar-button'><img src={explore_button_img} className="icon" />Explore</div>}
+                {user?.user_type === 'listener' && <div className='topbar-button' onClick={() => navigate('/explore')}><img src={explore_button_img} className="icon" />Explore</div>}
                 {user?.user_type === 'artist' && <div className='topbar-button'><img src={wallet_button_img} className="icon" />Wallet</div>}
                 <Notifications />
                 <div ref={profileWrapperRef} className="profile_wrapper">

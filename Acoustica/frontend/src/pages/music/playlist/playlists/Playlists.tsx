@@ -63,7 +63,8 @@ export default function Playlists() {
                 ]);
                 setMyPlaylists(my_playlists);
                 setPopularPublicPlaylists(popular_public_playlists);
-            } catch (e) {
+            } 
+            catch (e) {
                 console.log("ERROR: ", e);
                 setError("Failed to load playlists!");
             }
