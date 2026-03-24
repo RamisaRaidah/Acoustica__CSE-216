@@ -482,7 +482,7 @@ def is_liked(song_id):
     elif result is None:
         return False, 200
     else:
-    return True, 200
+        return True, 200
 
 def get_artist_songs(artist_id):
     songs_sql = """
