@@ -1,3 +1,4 @@
+from storage_service.services import storage
 from db import execute_sql
 import logging
 import sys
@@ -341,5 +342,61 @@ def get_instrument_my_songs(instrument_id):
         return result, 200
     else:
         return {"error": "couldn't load data!"}, 500
+
+def get_artist_stats(artist_id):
+    """Get statistics for artist charts"""
     
+    top_songs_sql = """
+        SELECT 
+            DISTINCT s.song_id,
+            s.title,
+            s.play_count,
+            al.cover_picture
+        FROM song s
+        JOIN song_artist sa ON sa.song_id = s.song_id
+        LEFT JOIN album al ON al.album_id = s.album_id
+        WHERE sa.artist_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 3
+    """
+    top_songs_result = execute_sql(top_songs_sql, (artist_id,), fetch_all=True)
+    
+    top_songs = []
+    for song in (top_songs_result or []):
+        song_data = dict(song)
+        song_data["cover_picture_url"] = storage.generate_signed_url(song_data["cover_picture"]) if song_data["cover_picture"] else None
+        del song_data["cover_picture"]
+        top_songs.append(song_data)
+    
+    monthly_listeners_sql = """
+        SELECT 
+            TO_CHAR(DATE_TRUNC('month', ssh.date_time), 'Mon') as month,
+            COUNT(DISTINCT ssh.listener_id) as listener_count
+        FROM song_stream_history ssh
+        JOIN song s ON s.song_id = ssh.song_id
+        JOIN song_artist sa ON sa.song_id = s.song_id
+        WHERE sa.artist_id = %s
+        AND ssh.date_time >= NOW() - INTERVAL '6 months'
+        GROUP BY DATE_TRUNC('month', ssh.date_time)
+        ORDER BY DATE_TRUNC('month', ssh.date_time)
+    """
+    monthly_result = execute_sql(monthly_listeners_sql, (artist_id,), fetch_all=True)
+    monthly_listeners = [dict(row) for row in (monthly_result or [])]
+    
+
+    total_plays_sql = """
+        SELECT SUM(s.play_count) as total_plays
+        FROM song s
+        JOIN song_artist sa ON sa.song_id = s.song_id
+        WHERE sa.artist_id = %s
+    """
+    total_result = execute_sql(total_plays_sql, (artist_id,), fetch_one=True)
+    total_plays = total_result["total_plays"] if total_result and total_result["total_plays"] else 0
+    
+    return {
+        "top_songs": top_songs,
+        "monthly_listeners": monthly_listeners,
+        "total_plays": int(total_plays)
+    }, 200
+
 ### Helper functions ###

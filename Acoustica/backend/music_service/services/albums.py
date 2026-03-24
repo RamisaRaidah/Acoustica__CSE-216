@@ -308,4 +308,31 @@ def add_song_to_album(album_id,song_id):
 def remove_song_from_album(album_id,song_id):
     return (f"remove_song_from_album {album_id} {song_id}")
 
+
+def get_artist_albums(artist_id):
+    albums_sql = """
+        SELECT 
+            al.album_id,
+            al.title,
+            al.cover_picture,
+            COALESCE(SUM(s.play_count), 0) as total_plays
+        FROM album al
+        LEFT JOIN song s ON s.album_id = al.album_id
+        WHERE al.owner_id = %s
+        GROUP BY al.album_id, al.title, al.cover_picture
+        ORDER BY total_plays DESC
+        LIMIT 50
+    """
+    albums_result = execute_sql(albums_sql, (artist_id,), fetch_all=True)
+    albums = []
+    for al in (albums_result or []):
+        album = dict(al)
+        del album["total_plays"]
+        album["cover_picture_url"] = storage.generate_signed_url(album["cover_picture"]) if album["cover_picture"] else None
+        del album["cover_picture"]
+        albums.append(album)
+
+    logging.info(f"Fetched {len(albums)} albums for artist {artist_id}")
+    return albums, 200
+
 ### Helper functions ###

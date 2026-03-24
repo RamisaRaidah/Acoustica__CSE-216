@@ -1,0 +1,342 @@
+/* ===== LOADING STATE ===== */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+/* ===== ERROR STATE ===== */
+container .error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ── Layout ── */
+
+.artist-profile-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 6rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+}
+
+/* ── Top two-column layout ── */
+
+.artist-top {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+}
+
+/* LEFT column */
+
+.artist-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.artist-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+    font-weight: 800;
+    margin: 0 0 0.4rem;
+    line-height: 1.1;
+    color: var(--text-color);
+    letter-spacing: -0.02em;
+}
+
+.artist-bio {
+    font-size: 0.95rem;
+    color: var(--text-muted, #666);
+    margin: 0 0 1.6rem;
+    line-height: 1.5;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.dark .artist-bio {
+    color: rgba(255, 210, 150, 0.65);
+}
+
+/* RIGHT column */
+
+.artist-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+    width: 180px;
+}
+
+.artist-profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.follow-button {
+    background: var(--accent, #e8651a);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 0.55rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: 100%;
+}
+
+.follow-button:hover {
+    opacity: 0.85;
+}
+
+.follow-button.following {
+    background: transparent;
+    border: 2px solid var(--accent, #e8651a);
+    color: var(--accent, #e8651a);
+}
+
+.artist-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.artist-meta span {
+    font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted, #666);
+}
+
+.dark .artist-meta span {
+    color: rgba(255, 210, 150, 0.65);
+}
+
+/* ── Sections: Songs / Albums ── */
+
+.artist-section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 1.6vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.section-header h2::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #e07b2a, transparent);
+    border-radius: 2px;
+    margin-top: 5px;
+}
+
+.section-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.see-all-btn {
+    background: none;
+    border: none;
+    color: #e07b2a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.3rem 0;
+    position: relative;
+    transition: opacity 0.2s ease;
+    opacity: 0.82;
+}
+
+.see-all-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 1.5px;
+    background: #e07b2a;
+    transition: width 0.25s ease;
+}
+
+.see-all-btn:hover {
+    opacity: 1;
+}
+
+.see-all-btn:hover::after {
+    width: 100%;
+}
+
+/* ── Media grid ── */
+
+.media-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.media-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    width: 110px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.media-card:hover {
+    transform: translateY(-3px);
+}
+
+.media-thumb {
+    width: 110px;
+    height: 110px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface-muted, #ddd);
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.25s ease;
+}
+
+.media-card:hover .media-thumb {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.media-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.media-card:hover .media-thumb img {
+    transform: scale(1.07);
+}
+
+.media-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    transition: color 0.15s ease;
+}
+
+.media-card:hover .media-label {
+    color: #e07b2a;
+}
+
+.dark .media-label {
+    color: #ffeedd;
+}
+
+/* ── Stats Chart Card ── */
+
+.artist-stats-chart {
+    background: var(--accent, #e8651a);
+    border-radius: 16px;
+    padding: 1.4rem 1.6rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem 1.5rem;
+}
+
+.song-stat-item:nth-child(3) {
+    grid-column: 1;
+}
+
+.song-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.song-cover {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.song-stat-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.play-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.play-bar {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+    max-width: 100%;
+}

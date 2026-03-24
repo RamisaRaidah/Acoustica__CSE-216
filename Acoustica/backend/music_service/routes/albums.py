@@ -99,3 +99,8 @@ def add_song_to_album_route(album_id,song_id):
 @jwt_required()
 def remove_song_from_album_route(album_id,song_id):
     return jsonify(f"remove_song_from_album {album_id} {song_id}")
+
+@albums_bp.get("/api/music/albums/artists/<int:artist_id>")
+def get_artist_albums_route(artist_id):
+    result, status = albums.get_artist_albums(artist_id)
+    return jsonify(result), status

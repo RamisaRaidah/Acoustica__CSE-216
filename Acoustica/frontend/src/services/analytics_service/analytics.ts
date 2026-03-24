@@ -42,6 +42,20 @@ export interface Instrument {
     instrument_name: string;
 }
 
+export interface ArtistStats {
+    top_songs: {
+        song_id: number;
+        title: string;
+        play_count: number;
+        cover_picture_url: string;
+    }[];
+    monthly_listeners: {
+        month: string;
+        listener_count: number;
+    }[];
+    total_plays: number;
+}
+
 export async function getInstruments(): Promise<Instrument[]> {
     return api.request('/api/analytics/instruments');
 }
@@ -92,4 +106,8 @@ export async function getInstrumentPopularSongs(instrumentId: number): Promise<S
 
 export async function getInstrumentMySongs(instrumentId: number): Promise<SongInfo[]> {
     return api.request(`/api/analytics/instrument_my_songs/${instrumentId}`);
+}
+
+export async function getArtistStats(artist_id: number): Promise<ArtistStats> {
+    return api.request<ArtistStats>(`/api/analytics/artists/${artist_id}/stats`);
 }

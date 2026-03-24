@@ -203,3 +203,9 @@ def get_instrument_popular_songs_route(instrument_id):
 def get_instrument_my_songs_route(instrument_id):
     result, status = analytics.get_instrument_my_songs(instrument_id)
     return jsonify(result), status
+
+@analytics_bp.get("/api/analytics/artists/<int:artist_id>/stats")
+@jwt_required()
+def get_artist_stats_route(artist_id):
+    result, status = analytics.get_artist_stats(artist_id)
+    return jsonify(result), status

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 import logging
 import sys
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required, verify_jwt_in_request
 
 from user_service.services import artists
 
@@ -31,4 +31,15 @@ def get_profile_route():
 @jwt_required()
 def get_artists_route():
     result, status = artists.get_artists()
+    return jsonify(result), status
+
+@artists_bp.get("/api/artists/<int:artist_id>")
+def get_artist_info_route(artist_id):
+    viewer_id = None
+    try:
+        verify_jwt_in_request(optional=True)
+        viewer_id = get_jwt_identity()
+    except Exception:
+        pass
+    result, status = artists.get_artist_info(artist_id, viewer_id)
     return jsonify(result), status

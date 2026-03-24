@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, SubmitEventHandler } from "react";
 import { useNavigate } from 'react-router-dom';
 import { signIn } from '@/services/user_service/auth';
-import { Typewriter } from "@/components/auth/Typewriter";
+import { Typewriter } from "@/components/user/auth/Typewriter";
 import { useAuth } from "@/contexts/AuthContext.tsx"
 import { useTheme } from "@/contexts/ThemeContext";
 import "@/pages/auth/Auth.css";

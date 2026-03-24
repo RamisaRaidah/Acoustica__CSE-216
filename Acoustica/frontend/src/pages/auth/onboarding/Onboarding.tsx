@@ -1,7 +1,7 @@
 import { ChangeEvent, SubmitEventHandler, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { onboarding } from "@/services/user_service/auth";
-import { Typewriter } from "@/components/auth/Typewriter";
+import { Typewriter } from "@/components/user/auth/Typewriter";
 import { getCountries, Country, getLanguages, Language } from "@/services/analytics_service/analytics";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";

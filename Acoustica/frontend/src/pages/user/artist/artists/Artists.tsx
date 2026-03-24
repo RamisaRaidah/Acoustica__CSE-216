@@ -1,12 +1,13 @@
 import "@/pages/user/artist/artists/Artists.css"
 import { useEffect, useState } from "react";
-import { getArtists, GetArtistsResponse } from "@/services/user_service/artists";
+import { getArtists, Artist } from "@/services/user_service/artists";
+import { useNavigate } from "react-router-dom";
 
 export default function Artists() {
-    const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
+    const [artists, setArtists] = useState<Artist[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
+    const navigate=useNavigate();
     useEffect(() => {
         async function loadArtists() {
             try {
@@ -37,13 +38,19 @@ export default function Artists() {
                 <div id="artist-grid">
                     {
                         artists.map(artist => (
-                            <div className="artist-card" key={artist.artist_id}>
+                            <div className="artist-card" 
+                            key={artist.artist_id}
+                            onClick={() => navigate(`/artists/${artist.artist_id}`)}
+                            >
                                 <div className="artist-card-cover">
-                                    <img src={artist.profile_picture_url} />
+                                    <img src={artist.profile_picture_url} 
+                                        alt={artist.artist_name}
+                                    />
                                 </div>
                                 <div className="artist-card-info">
                                     <p className="artist-card-title">{artist.artist_name}</p>
                                 </div>
+                              
                             </div>
                         ))
                     }

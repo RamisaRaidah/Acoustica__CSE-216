@@ -28,6 +28,12 @@ export interface GetAlbumDetailsResponse {
     copyright_certificate: string;
 }
 
+export interface GetArtistAlbumResponse {
+    album_id: number;
+    title: string;
+    cover_picture_url: string | null;
+}
+
 export async function getAlbumDetails(albumId: number): Promise<GetAlbumDetailsResponse> {
     return api.request(`/api/music/albums/${albumId}`);
 }
@@ -64,5 +70,9 @@ export async function editAlbum(albumId: number, formData: FormData) {
         method: 'PUT',
         body: formData
     })
+}
+
+export async function getArtistAlbums(artist_id: number): Promise<GetArtistAlbumResponse[]> {
+    return api.request(`/api/music/albums/artists/${artist_id}`)
 }
 

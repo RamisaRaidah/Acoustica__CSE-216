@@ -23,6 +23,13 @@ export interface SongInfo {
     owner_name: string;
 }
 
+export interface GetArtistSongResponse {
+    song_id: number;
+    title: string;
+    album_id: number | null;
+    cover_picture_url: string | null;
+}
+
 export async function getSongMetadata(songId: number): Promise<SongInfo> {
     return api.request(`/api/music/songs/${songId}/metadata`);
 }
@@ -86,4 +93,8 @@ export async function likeSong(songId: number) {
 
 export async function isLiked(songId: number): Promise<boolean> {
     return api.request(`/api/music/songs/${songId}/liked`);
+}
+
+export async function getArtistSongs(artist_id: number): Promise<GetArtistSongResponse[]> {
+    return api.request(`/api/music/songs/artists/${artist_id}`);
 }

@@ -458,6 +458,35 @@ def is_liked(song_id):
         return True, 200
     else:
         return False, 200
+    
+
+def get_artist_songs(artist_id):
+    songs_sql = """
+        SELECT 
+            DISTINCT s.song_id,
+            s.title,
+            s.play_count,
+            al.album_id,
+            al.cover_picture
+        FROM song s
+        LEFT JOIN album al ON al.album_id = s.album_id
+        WHERE al.owner_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 15
+    """
+    ##REMEMBER TO ADD AND s.visibility = 'public' WHEN WE DO IT
+    songs_result = execute_sql(songs_sql, (artist_id,), fetch_all=True)
+    songs = []
+    for s in (songs_result or []):
+        song = dict(s)
+        del song["play_count"]
+        song["cover_picture_url"] = storage.generate_signed_url(song["cover_picture"]) if song["cover_picture"] else None
+        del song["cover_picture"]
+        songs.append(song)
+
+
+    logging.info(f"Fetched {len(songs)} songs for artist {artist_id}")
+    return songs, 200
         
 
 ### Helper functions ###
