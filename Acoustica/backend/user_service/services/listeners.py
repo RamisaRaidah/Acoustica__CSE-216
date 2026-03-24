@@ -83,8 +83,60 @@ def get_last_listening():
 def add_liked_song(song_id):
     return (f"add_liked_song {song_id}")
 
+### get_liked_songs ###
 def get_liked_songs():
-    return ("get_liked_songs")
+    command = """
+        SELECT s.song_id, s.title, a.album_id, s.length, a.owner_id, ar.stage_name owner_name
+        FROM liked_song l JOIN song s ON (l.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s
+    """
+
+    result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+
+### get_liked_albums ###
+def get_liked_albums():
+    command = """
+        SELECT a.album_id, a.title, a.owner_id, ar.stage_name owner_name
+        FROM liked_album l JOIN album a ON (l.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        WHERE listener_id = %s
+    """
+
+    result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+
+### get_liked_playlists ###
+def get_liked_playlists():
+    command = """
+        SELECT p.playlist_id, p.title, p.cover_picture
+        FROM liked_playlist l JOIN playlist p ON (l.playlist_id = p.playlist_id)
+        WHERE listener_id = %s
+    """
+
+    result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        playlists = []
+        for r in result:
+            playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
+        
+        return playlists, 200
 
 def add_followed_artist(artist_id):
     return (f"add_followed_artist {artist_id}")

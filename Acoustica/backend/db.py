@@ -129,7 +129,7 @@ def execute_sql(sql_command, param = None, fetch_one = False, fetch_all = False)
     connection = get_db_connection()
     if connection is None:
         logging.error("Database connection failed")
-        return None
+        return False
     try:
         with connection:
             with connection.cursor(cursor_factory = RealDictCursor) as cursor:
@@ -138,12 +138,14 @@ def execute_sql(sql_command, param = None, fetch_one = False, fetch_all = False)
                     result = cursor.fetchone()
                 elif fetch_all:
                     result = cursor.fetchall()
+                    if result == []:
+                        result = None
                 else:
                     result = True
                 return result
     except Exception as e:
         logging.error(f"Execution failed: {e}")
-        return None
+        return False
     finally:
         release_connection(connection)
 

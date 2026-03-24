@@ -32,17 +32,18 @@ export default function SongProfile() {
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { playSong } = useMusic();
+    const { song: playingSong, playSong, liked: playingSongLiked, toggleLike } = useMusic();
 
     useEffect(() => {
         async function loadSongData(songId: number) {
             try {
-                const [info, collabs, genres, moods, instruments] = await Promise.all([
+                const [info, collabs, genres, moods, instruments, liked] = await Promise.all([
                     getSongMetadata(songId),
                     getSongCollaborators(songId),
                     getSongGenres(songId),
                     getSongMoods(songId),
                     getSongInstruments(songId),
+                    isLiked(songId)
                 ]);
 
                 const [albumCover, ownerPfp, ...collaboratorPfpResults] = await Promise.all([
@@ -60,9 +61,6 @@ export default function SongProfile() {
                         pfpMap[c.artist_id] = collaboratorPfpResults[i].profile_picture;
                     }
                 });
-
-                isLiked(songId).then(setLiked);
-
                 setSong(info);
                 setCoverPicture(albumCover.cover_picture_url);
                 if (ownerPfp.profile_picture !== "null") setOwnerProfilePicture(ownerPfp.profile_picture);
@@ -72,10 +70,11 @@ export default function SongProfile() {
                 setGenres(genres);
                 setMoods(moods);
                 setInstruments(instruments);
+                setLiked(liked);
             } 
             catch (err) {
                 console.log("ERROR:", err);
-                setError('Failed to load!');
+                setError('Failed to load data!');
             } 
             finally {
                 setLoading(false);
@@ -83,6 +82,10 @@ export default function SongProfile() {
         }
         loadSongData(songId);
     }, []);
+
+    useEffect(() => {
+        if (song_id === playingSong?.song_id) setLiked(playingSongLiked);
+    }, [playingSongLiked])
 
     async function handleDeleteSong() {
         try {
@@ -137,7 +140,7 @@ export default function SongProfile() {
                             {formatLength(song?.length ?? 0)}
                         </div>
                         <div id='song-profile-container-song-buttons'>
-                            <button id='song-profile-container-like-btn' title='Like' onClick={() => { likeSong(songId); setLiked(!liked) }}><img id='like-button' src={like_button} style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} /></button>
+                            <button id='song-profile-container-like-btn' title='Like' onClick={() => { likeSong(songId); setLiked(!liked); if (song_id === playingSong?.song_id) toggleLike(); }}><img id='like-button' src={like_button} style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} /></button>
                             <button id='song-profile-container-add-btn' title='Add to playlist'>+</button>
                             <button id='song-profile-container-play-btn' title='Play' onClick={() => { if (song) playSong({ song_id: song.song_id, progress: 0, playing: true }) }}>▶</button>
                         </div>

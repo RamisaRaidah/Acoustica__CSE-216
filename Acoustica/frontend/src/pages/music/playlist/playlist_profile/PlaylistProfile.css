@@ -1,5 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+/* ===== LOADING STATE ===== */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+/* ===== ERROR STATE ===== */
+.error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
 :root {
     --playlist-profile-input-bg: rgba(0, 0, 0, 0.04);
     --playlist-profile-input-border: rgba(0, 0, 0, 0.12);
@@ -157,6 +192,16 @@
     font-size: 0.6rem;
 }
 
+/* Wrap view count + like button together */
+#playlist-profile-container #playlist-view-count-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.15rem;
+    position: relative;
+    z-index: 1;
+}
+
 #playlist-profile-container #playlist-view-count {
     display: flex;
     align-items: center;
@@ -164,13 +209,43 @@
     font-size: clamp(0.72rem, 0.78vw, 0.88rem);
     font-weight: 500;
     color: rgba(255, 255, 255, 0.6);
-    position: relative;
-    z-index: 1;
-    margin-top: 0.15rem;
 }
 
 #playlist-profile-container #playlist-view-count svg {
     opacity: 0.7;
+}
+
+/* Like button */
+#playlist-profile-container #like-playlist-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0.15rem;
+    cursor: pointer;
+    color: rgba(255, 200, 140, 0.45);
+    transition: color 0.2s ease, transform 0.2s ease;
+    line-height: 0;
+}
+
+#playlist-profile-container #like-playlist-btn:hover {
+    color: rgba(255, 200, 140, 0.75);
+    transform: scale(1.15);
+}
+
+#playlist-profile-container #like-playlist-btn.liked {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+#playlist-profile-container #like-playlist-btn.liked:hover {
+    color: rgba(255, 255, 255, 0.85);
+    transform: scale(1.2);
+}
+
+#playlist-profile-container #like-playlist-btn:active {
+    transform: scale(0.95);
 }
 
 /* Play button — top right corner */

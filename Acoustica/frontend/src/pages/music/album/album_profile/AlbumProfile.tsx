@@ -3,47 +3,53 @@ import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useEffect, useState } from 'react';
-import { getAlbumDetails, getAlbumCoverPicture, getAlbumSongs, deleteAlbum } from '@/services/music_service/albums';
+import { Album, getAlbumDetails, getAlbumCoverPicture, getAlbumSongs, deleteAlbum, likeAlbum, isLiked } from '@/services/music_service/albums';
 import { SongInfo } from '@/services/music_service/songs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMusic } from '@/contexts/MusicContext';
 
 export default function AlbumProfile() {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
     const { album_id } = useParams<{ album_id: string }>();
     const albumId = Number(album_id);
-    const [title, setTitle] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
+    const [album, setAlbum] = useState<Album>();
     const [cover_picture, setCoverPicture] = useState<string | null>(null);
-    const [owner_id, setOwnerId] = useState<number>();
-    const [owner_name, setOwnerName] = useState<string>('');
-    const [release_date, setReleaseDate] = useState<string>('');
-    const [privacy, setPrivacy] = useState<string>('');
     const [songs, setSongs] = useState<SongInfo[]>([]);
     const [song_ids, setSongIds] = useState<number[]>([]);
     const [duration, setDuration] = useState<number>(0);
+    const [liked, setLiked] = useState<boolean>(false);
     const [confirmation, setConfirmation] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { user } = useAuth();
     const { createQueue } = useMusic();
 
     useEffect(() => {
-        getAlbumDetails(albumId).then(info => {
-            setTitle(info.title);
-            setDescription(info.description);
-            setPrivacy(info.visibility);
-            setOwnerId(info.owner_id);
-            setOwnerName(info.owner_name);
-            setReleaseDate(new Date(info.release_date).toLocaleDateString('en-GB', {
-                day: 'numeric', month: 'short', year: 'numeric'
-            }))
-        })
-        getAlbumCoverPicture(albumId).then(res => setCoverPicture(res.cover_picture_url));
-        getAlbumSongs(albumId).then(songs => {
-            setSongs(songs);
-            setSongIds(songs.map(x => x.song_id));
-        });
+        async function loadData() {
+            try {
+                const [album, cover_picture, songs, liked] = await Promise.all([
+                    getAlbumDetails(albumId),
+                    getAlbumCoverPicture(albumId),
+                    getAlbumSongs(albumId),
+                    isLiked(albumId)
+                ]);
+                setAlbum(album);
+                setCoverPicture(cover_picture.cover_picture_url);
+                setSongs(songs);
+                setSongIds(songs.map(x => x.song_id));
+                setLiked(liked);
+            }
+            catch (e) {
+                console.log("ERROR: ", e);
+                setError("Failed to load data!");
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        loadData();
     }, []);
 
     useEffect(() => {
@@ -72,6 +78,9 @@ export default function AlbumProfile() {
     const mins = Math.floor((duration % 3600) / 60);
     const secs = duration % 60;
 
+    if (loading) return <div className='loading'>Loading</div>;
+    if (error) return <div className='error'>{error}</div>;
+
     return (
         <div id='album-profile-container'>
             {alertMessage && <Alert message={alertMessage} onConfirm={() => { setAlertMessage(null); navigate('/music/discography'); }} />}
@@ -86,11 +95,11 @@ export default function AlbumProfile() {
 
                     <div id="card-info">
                         <p id="album-label">Album</p>
-                        <h2 id="album-title">{title || "Untitled"}</h2>
-                        <div id='album-description'>{description}</div>
+                        <h2 id="album-title">{album?.title || "Untitled"}</h2>
+                        <div id='album-description'>{album?.description}</div>
                         <div id="album-meta">
-                            {user?.user_type === 'listener' && <span>{owner_name}</span>}
-                            {user?.user_type === 'artist' && <span>{privacy}</span>}
+                            {user?.user_type === 'listener' && <span>{album?.owner_name}</span>}
+                            {user?.user_type === 'artist' && <span>{album?.visibility}</span>}
                             {songs.length > 0 &&
                                 <>
                                     <span>•</span>
@@ -104,18 +113,36 @@ export default function AlbumProfile() {
                                 </>
                             }
                         </div>
-                        <div id="album-release-date">
-                            {release_date}
+                        <div id="album-release-date-row">
+                            <div id="album-release-date">
+                                {   
+                                    new Date(album?.release_date || "").toLocaleDateString('en-GB', {
+                                        day: 'numeric', month: 'short', year: 'numeric'
+                                    })
+                                }
+                            </div>
+                            {
+                                user?.user_type === 'listener' &&
+                                <button id="like-album-btn" className={liked ? 'liked' : ''} onClick={() => { setLiked(prev => !prev); likeAlbum(albumId); }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2"
+                                        strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                </button>
+                            }
                         </div>
                     </div>
 
-                    {user?.user_type === 'listener' && 
+                    {
+                        user?.user_type === 'listener' && 
                         <button id="play-album-btn" onClick={() => createQueue(song_ids)}>
                             <img src={play_button} alt="Play" />
                         </button>
                     }
 
-                    {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && 
+                    {
+                        user?.user_type === 'artist' && Number(album?.owner_id) === Number(user.user_id) && 
                         <button id="edit-album-btn" onClick={() => navigate(`/music/albums/${albumId}/edit`)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -157,7 +184,7 @@ export default function AlbumProfile() {
                 </div>
             </div>
 
-            {user?.user_type === 'artist' && Number(owner_id) === Number(user.user_id) && 
+            {user?.user_type === 'artist' && Number(album?.owner_id) === Number(user.user_id) && 
             <div id="delete-album-wrapper">
                 <button id="delete-album-btn" onClick={() => setConfirmation(true)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"

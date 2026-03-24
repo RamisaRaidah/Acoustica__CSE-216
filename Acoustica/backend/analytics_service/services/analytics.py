@@ -17,7 +17,7 @@ def search_song(seed):
     param = (f"%{seed}%",)
 
     songs_query = """
-        SELECT song_id, s.album_id, s.title, a.title album_name, ar.artist_id, ar.stage_name artist_name, s.length
+        SELECT song_id, s.album_id, s.title, a.title album_name, ar.artist_id owner_id, ar.stage_name owner_name, s.length
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
         LIMIT 5
@@ -34,7 +34,7 @@ def search_album(seed):
     param = (f"%{seed}%",)
 
     albums_query = """
-        SELECT album_id, title, stage_name artist_name
+        SELECT album_id, title, stage_name owner_name
         FROM album a JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
         LIMIT 5
@@ -93,50 +93,65 @@ def get_countries():
         "SELECT country_id, country_name FROM country ORDER BY country_name",
         fetch_all=True
     )
-    if result:
-        return result, 200
-    else:
-        return {"error": "coudn't fetch data"}, 500
 
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+    
 def get_languages():
     result = execute_sql(
         "SELECT language_id, language_name FROM language ORDER BY language_name",
         fetch_all=True
     )
-    if result:
-        return result, 200
+    
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "coudn't fetch data"}, 500
+        return result, 200
 
 def get_genres():
     result = execute_sql(
         "SELECT genre_id, genre_name FROM genre ORDER BY genre_name",
         fetch_all=True
     )
-    if result:
-        return result, 200
+    
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "coudn't fetch data"}, 500
+        return result, 200
 
 def get_moods():
     result = execute_sql(
         "SELECT mood_id, mood_name FROM mood ORDER BY mood_name",
         fetch_all=True
     )
-    if result:
-        return result, 200
+    
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "coudn't fetch data"}, 500
+        return result, 200
 
 def get_instruments():
     result = execute_sql(
         "SELECT instrument_id, instrument_name FROM instrument ORDER BY instrument_name",
         fetch_all=True
     )
-    if result:
-        return result, 200
+    
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "coudn't fetch data"}, 500
+        return result, 200
     
 ### get_genre_trending_songs_ ###
 def get_genre_trending_songs(genre_id):
@@ -150,10 +165,12 @@ def get_genre_trending_songs(genre_id):
 
     result = execute_sql(command, (genre_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_genre_popular_songs ###
 def get_genre_popular_songs(genre_id):
@@ -167,10 +184,12 @@ def get_genre_popular_songs(genre_id):
 
     result = execute_sql(command, (genre_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_genre_my_songs ###
 def get_genre_my_songs(genre_id):
@@ -184,10 +203,12 @@ def get_genre_my_songs(genre_id):
 
     result = execute_sql(command, (get_jwt_identity(), genre_id), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
     
 ### get_mood_trending_songs_ ###
 def get_mood_trending_songs(mood_id):
@@ -201,10 +222,12 @@ def get_mood_trending_songs(mood_id):
 
     result = execute_sql(command, (mood_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_mood_popular_songs ###
 def get_mood_popular_songs(mood_id):
@@ -218,10 +241,12 @@ def get_mood_popular_songs(mood_id):
 
     result = execute_sql(command, (mood_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_mood_my_songs ###
 def get_mood_my_songs(mood_id):
@@ -235,10 +260,12 @@ def get_mood_my_songs(mood_id):
 
     result = execute_sql(command, (get_jwt_identity(), mood_id), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
     
 ### get_language_trending_songs_ ###
 def get_language_trending_songs(language_id):
@@ -252,10 +279,12 @@ def get_language_trending_songs(language_id):
 
     result = execute_sql(command, (language_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_language_popular_songs ###
 def get_language_popular_songs(language_id):
@@ -269,10 +298,12 @@ def get_language_popular_songs(language_id):
 
     result = execute_sql(command, (language_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_language_my_songs ###
 def get_language_my_songs(language_id):
@@ -286,10 +317,12 @@ def get_language_my_songs(language_id):
 
     result = execute_sql(command, (get_jwt_identity(), language_id), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
     
 ### get_instrument_trending_songs_ ###
 def get_instrument_trending_songs(instrument_id):
@@ -303,10 +336,12 @@ def get_instrument_trending_songs(instrument_id):
 
     result = execute_sql(command, (instrument_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_instrument_popular_songs ###
 def get_instrument_popular_songs(instrument_id):
@@ -320,10 +355,12 @@ def get_instrument_popular_songs(instrument_id):
 
     result = execute_sql(command, (instrument_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
 
 ### get_instrument_my_songs ###
 def get_instrument_my_songs(instrument_id):
@@ -337,9 +374,11 @@ def get_instrument_my_songs(instrument_id):
 
     result = execute_sql(command, (get_jwt_identity(), instrument_id), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
     
 ### Helper functions ###

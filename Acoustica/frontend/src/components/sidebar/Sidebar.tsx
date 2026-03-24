@@ -40,7 +40,7 @@ export default function Sidebar() {
                 {
                     user?.user_type === 'listener' && 
                     <>
-                        <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={library_button_img} className='icon' />Library</div>
+                        <div className='sidebar-button' onClick={() => navigate('/music/library')}><img src={library_button_img} className='icon' />Library</div>
                         <div className='sidebar-button' onClick={() => navigate('/music/playlists')}><img src={playlist_button_img} className='icon' />Playlists</div>
                         <div className='sidebar-button' onClick={() => navigate('/artists')}><img src={artist_button_img} className='icon' />Artists</div>
                         <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={community_button_img} className='icon' />Community</div>

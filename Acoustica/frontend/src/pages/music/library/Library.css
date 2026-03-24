@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
-/* ── Loading / Error ─────────────────────────────────────── */
-
-#explore-profile-container .loading {
+/* ===== LOADING STATE ===== */
+.loading {
     text-align: center;
     padding: 4rem;
     font-size: 1.2rem;
@@ -11,15 +10,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', sans-serif;
 }
 
-#explore-profile-container .loading::after {
+.loading::after {
     content: '...';
     animation: ellipsis 1.5s infinite;
 }
 
-#explore-profile-container .error {
+/* ===== ERROR STATE ===== */
+.error {
     text-align: center;
     padding: 4rem;
     font-size: 1.2rem;
@@ -28,10 +27,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', sans-serif;
 }
 
-#explore-profile-container .error::before {
+.error::before {
     content: '⚠️ ';
     font-size: 2rem;
     margin-right: 0.5rem;
@@ -39,10 +37,9 @@
 
 /* ── Root container ──────────────────────────────────────── */
 
-#explore-profile-container {
+#library-container {
     display: block;
     position: relative;
-    /* overflow must NOT be hidden — shadow needs room to breathe */
     overflow: visible;
     width: 100%;
     box-sizing: border-box;
@@ -52,31 +49,27 @@
 
 /* ── Two-column layout ───────────────────────────────────── */
 
-.explore-top-row {
+.lib-top-row {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 3vw;
     align-items: start;
     width: 100%;
-    /* Must NOT be hidden so box-shadow on explore card isn't clipped */
     overflow: visible;
 }
 
 /* ── Left column ─────────────────────────────────────────── */
 
-.explore-left-col {
+.lib-left-col {
     display: flex;
     flex-direction: column;
     gap: 0;
-    border: none !important;
-    border-left: none !important;
-    /* Small left padding so the box-shadow isn't clipped by parent edge */
     overflow: visible;
 }
 
-/* ── Genre box ───────────────────────────────────────────── */
+/* ── Hero box (Liked Songs) ──────────────────────────────── */
 
-.explore-explore-box {
+.lib-box {
     position: relative;
     width: 100%;
     aspect-ratio: 5 / 2.5;
@@ -89,28 +82,20 @@
     padding: 1.2vw 1.4vw;
     box-sizing: border-box;
     margin-bottom: 2.5vh;
-    border: none !important;
-    outline: none;
 }
 
-.explore-explore-box::after {
+.lib-box::after {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(to bottom,
             rgba(0, 0, 0, 0) 20%,
-            rgba(0, 0, 0, 0.3) 100%);
+            rgba(0, 0, 0, 0.32) 100%);
     pointer-events: none;
     z-index: 1;
 }
 
-/* Kill any border leak from global rules */
-.explore-explore-box,
-.explore-explore-box * {
-    border-left: none !important;
-}
-
-.explore-explore-shine {
+.lib-shine {
     position: absolute;
     top: -60%;
     left: -60%;
@@ -118,38 +103,49 @@
     height: 200%;
     background: linear-gradient(105deg,
             rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.16) 50%,
+            rgba(255, 255, 255, 0.14) 50%,
             rgba(255, 255, 255, 0) 100%);
     transform: skewX(-20deg);
     pointer-events: none;
     z-index: 3;
 }
 
-.explore-explore-label {
+.lib-label {
     font-family: 'DM Sans', sans-serif;
     font-size: clamp(0.6rem, 0.7vw, 0.85rem);
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.72);
     position: relative;
     z-index: 2;
-    margin-bottom: 0.3vw;
+    margin-bottom: 0.2vw;
 }
 
-.explore-explore-name {
+.lib-name {
     font-family: 'Playfair Display', serif;
     font-size: clamp(1.9rem, 2.8vw, 3.6rem);
     font-weight: 800;
     color: #fff;
     letter-spacing: -0.02em;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
     position: relative;
     z-index: 2;
     line-height: 1.05;
 }
 
-.explore-explore-play-btn {
+.lib-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(0.6rem, 0.72vw, 0.85rem);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.62);
+    position: relative;
+    z-index: 2;
+    margin-top: 0.25vw;
+    letter-spacing: 0.04em;
+}
+
+.lib-play-btn {
     position: absolute;
     top: 1.1vw;
     right: 1.1vw;
@@ -166,24 +162,17 @@
     font-size: 0.85vw;
     color: #fff;
     transition: background 0.2s ease, transform 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.explore-explore-play-btn img {
-    width: 55%;
-    height: 55%;
-    object-fit: contain;
-    display: block;
-}
-
-.explore-explore-play-btn:hover {
+.lib-play-btn:hover {
     background: rgba(255, 255, 255, 0.32);
     transform: scale(1.08);
 }
 
 /* ── Section headers ─────────────────────────────────────── */
 
-.explore-section-header {
+.lib-section-header {
     font-family: 'Playfair Display', serif;
     font-size: clamp(1.2rem, 1.6vw, 2rem);
     font-weight: 800;
@@ -194,7 +183,7 @@
     display: inline-block;
 }
 
-.explore-section-header::after {
+.lib-section-header::after {
     content: '';
     display: block;
     width: 40px;
@@ -204,13 +193,21 @@
     margin-top: 5px;
 }
 
-.explore-section-header--spaced {
-    margin-top: 0.8vh;
+.lib-section-header--spaced {
+    margin-top: 2.5vh;
 }
 
-/* ── No songs message ────────────────────────────────────── */
+/* ── Empty / no content ──────────────────────────────────── */
 
-.explore-no-songs {
+.lib-empty {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: 1rem 0;
+    margin: 0;
+}
+
+.lib-no-content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,15 +221,15 @@
     opacity: 0.6;
 }
 
-/* ── Trending list ───────────────────────────────────────── */
+/* ── Liked Songs list (trending-style) ───────────────────── */
 
-.explore-trending-list {
+.lib-trending-list {
     display: flex;
     flex-direction: column;
     gap: 0.2vh;
 }
 
-.explore-trending-item {
+.lib-trending-item {
     display: flex;
     align-items: center;
     gap: 0.75vw;
@@ -243,11 +240,11 @@
     margin: 0.04em 0;
 }
 
-.explore-trending-item:hover {
+.lib-trending-item:hover {
     background: rgba(200, 100, 30, 0.08);
 }
 
-.explore-trending-cover {
+.lib-trending-cover {
     position: relative;
     width: 2.5vw;
     height: 2.5vw;
@@ -258,7 +255,7 @@
     cursor: pointer;
 }
 
-.explore-trending-cover img {
+.lib-trending-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -266,12 +263,12 @@
     transition: transform 0.3s ease, filter 0.25s ease;
 }
 
-.explore-trending-cover:hover img {
+.lib-trending-cover:hover img {
     transform: scale(1.07);
     filter: brightness(0.55) blur(1px);
 }
 
-.explore-trending-play {
+.lib-trending-play {
     position: absolute;
     inset: 0;
     display: flex;
@@ -285,11 +282,11 @@
     pointer-events: none;
 }
 
-.explore-trending-cover:hover .explore-trending-play {
+.lib-trending-cover:hover .lib-trending-play {
     opacity: 1;
 }
 
-.explore-trending-info {
+.lib-trending-info {
     flex: 1;
     min-width: 0;
     display: flex;
@@ -297,7 +294,7 @@
     gap: 0.1vh;
 }
 
-.explore-trending-title {
+.lib-trending-title {
     display: block;
     font-size: clamp(0.7rem, 0.82vw, 0.98rem);
     font-weight: 600;
@@ -310,16 +307,16 @@
     transition: color 0.15s ease;
 }
 
-.explore-trending-title:hover {
+.lib-trending-title:hover {
     color: #e07b2a !important;
     text-decoration: underline;
 }
 
-.dark .explore-trending-title {
+.dark .lib-trending-title {
     color: #ffeedd;
 }
 
-.explore-trending-artist {
+.lib-trending-artist {
     display: block;
     font-size: clamp(0.58rem, 0.68vw, 0.8rem);
     color: #a05830;
@@ -331,16 +328,16 @@
     transition: color 0.15s ease;
 }
 
-.explore-trending-artist:hover {
+.lib-trending-artist:hover {
     color: #e07b2a !important;
     text-decoration: underline;
 }
 
-.dark .explore-trending-artist {
+.dark .lib-trending-artist {
     color: rgba(255, 210, 150, 0.65);
 }
 
-.explore-trending-playcount {
+.lib-trending-meta {
     font-size: clamp(0.52rem, 0.6vw, 0.72rem);
     color: #a05830;
     font-variant-numeric: tabular-nums;
@@ -350,33 +347,32 @@
     white-space: nowrap;
 }
 
-.dark .explore-trending-playcount {
+.dark .lib-trending-meta {
     color: rgba(255, 205, 140, 0.55);
 }
 
 /* ── Right column ────────────────────────────────────────── */
 
-.explore-right-col {
+.lib-right-col {
     display: flex;
     flex-direction: column;
 }
 
-/* ── Song grid ───────────────────────────────────────────── */
+/* ── Card grid (albums / playlists) ──────────────────────── */
 
-.explore-song-section {
+.lib-card-section {
     display: flex;
     flex-direction: column;
 }
 
-/* 5 columns — keep in sync with POPULAR_SONGS_COLUMNS in GenreProfile.tsx */
-.explore-song-grid {
+.lib-card-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 0.4vw 0.7vw;
     width: 100%;
 }
 
-.explore-song-card {
+.lib-card {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -384,11 +380,11 @@
     transition: transform 0.25s ease;
 }
 
-.explore-song-card:hover {
+.lib-card:hover {
     transform: translateY(-0.4vh);
 }
 
-.explore-song-cover {
+.lib-card-cover {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -399,24 +395,85 @@
     cursor: pointer;
 }
 
-.explore-song-card:hover .explore-song-cover {
+.lib-card:hover .lib-card-cover {
     box-shadow: 0 0.6vh 1.8vh var(--shadow, rgba(0, 0, 0, 0.28));
 }
 
-.explore-song-cover img {
+/* FIX: explicitly kill any orange border/outline on the cover image */
+.lib-card-cover>img:first-child {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.35s ease;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
-.explore-song-card:hover .explore-song-cover img {
+.lib-card:hover .lib-card-cover>img:first-child {
     transform: scale(1.07);
 }
 
-.explore-song-title {
-    margin-top: 0.2vh;
+/* ── Per-card play button ────────────────────────────────── */
+
+#library-container .lib-card-play-btn {
+    position: absolute;
+    /* FIX: use % so the button scales proportionally with the card */
+    bottom: 8%;
+    right: 8%;
+    z-index: 4;
+    /* FIX: 28% of card width — visually matches ExploreProfile at any card size */
+    width: 28%;
+    height: 28%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(224, 123, 42, 0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 50%;
+    cursor: pointer;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.8) translateY(4px);
+    transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    /* FIX: kill any inherited orange border */
+    border: none !important;
+    outline: none !important;
+}
+
+/* FIX: inner img — correct size, no pointer-events, no stray borders */
+#library-container .lib-card-play-btn img {
+    width: 55%;
+    height: 55%;
+    object-fit: contain;
+    display: block;
+    border: none !important;
+    outline: none !important;
+    border-radius: 0;
+    pointer-events: none;
+}
+
+#library-container .lib-card:hover .lib-card-play-btn {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+#library-container .lib-card-play-btn:hover {
+    background: rgba(224, 123, 42, 1);
+    transform: scale(1.1) translateY(0) !important;
+    box-shadow: 0 4px 16px rgba(224, 123, 42, 0.55);
+}
+
+#library-container .lib-card-play-btn:active {
+    transform: scale(0.95) translateY(0) !important;
+}
+
+/* ── Card text ───────────────────────────────────────────── */
+
+.lib-card-title {
+    margin-top: 0.4vh;
     margin-bottom: 0;
     font-size: clamp(0.65rem, 0.8vw, 0.95rem);
     font-weight: 600;
@@ -433,13 +490,14 @@
     transition: color 0.2s ease;
 }
 
-.explore-song-title:hover {
+.lib-card-title:hover {
     color: #e07b2a !important;
     text-decoration: underline;
 }
 
-.explore-song-artist {
+.lib-card-subtitle {
     margin-top: 0.05vh;
+    margin-bottom: 0;
     font-size: clamp(0.58rem, 0.68vw, 0.8rem);
     font-weight: 400;
     text-align: center;
@@ -451,28 +509,32 @@
     padding: 0 0.2vw;
     font-family: 'DM Sans', sans-serif;
     line-height: 1.2;
-    cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color 0.15s ease;
 }
 
-.explore-song-artist:hover {
+/* Clickable variant (artist name on albums) */
+.lib-card-subtitle--link {
+    cursor: pointer;
+}
+
+.lib-card-subtitle--link:hover {
     color: #e07b2a !important;
     text-decoration: underline;
 }
 
-.dark .explore-song-artist {
+.dark .lib-card-subtitle {
     color: rgba(255, 210, 150, 0.6);
 }
 
 /* ── See all ─────────────────────────────────────────────── */
 
-.explore-see-all-row {
+.lib-see-all-row {
     display: flex;
     justify-content: flex-end;
     margin-top: 0.2vh;
 }
 
-.explore-see-all-btn {
+.lib-see-all-btn {
     background: none;
     border: none;
     cursor: pointer;
@@ -488,7 +550,7 @@
     opacity: 0.82;
 }
 
-.explore-see-all-btn::after {
+.lib-see-all-btn::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -499,51 +561,10 @@
     transition: width 0.25s ease;
 }
 
-.explore-see-all-btn:hover {
+.lib-see-all-btn:hover {
     opacity: 1;
 }
 
-.explore-see-all-btn:hover::after {
+.lib-see-all-btn:hover::after {
     width: 100%;
-}
-
-#explore-profile-container .card-play-btn {
-    position: absolute;
-    bottom: 0.5vw;
-    right: 0.5vw;
-    z-index: 4;
-    width: 2.2vw;
-    height: 2.2vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(224, 123, 42, 0.92);
-    backdrop-filter: blur(6px);
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 0.7vw;
-    color: #fff;
-    opacity: 0;
-    transform: scale(0.8) translateY(4px);
-    transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
-}
-
-#explore-profile-container .card-play-btn img {
-    border-radius: 50%;
-}
-
-#explore-profile-container .explore-song-card:hover .card-play-btn {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-}
-
-#explore-profile-container .card-play-btn:hover {
-    background: rgba(224, 123, 42, 1);
-    transform: scale(1.1) translateY(0) !important;
-    box-shadow: 0 4px 16px rgba(224, 123, 42, 0.55);
-}
-
-#explore-profile-container .card-play-btn:active {
-    transform: scale(0.95) translateY(0) !important;
 }

@@ -5,8 +5,11 @@ import { DatePicker, DatePickerHandle } from "@/components/date_picker/DatePicke
 import { getAlbumDetails, getAlbumCoverPicture } from "@/services/music_service/albums";
 import Alert from "@/components/alert/TwoButtonAlert";
 import { useNavigate, useParams } from "react-router-dom";
+import { setEngine } from "crypto";
 
 export default function EditAlbum() {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const { album_id } = useParams<{ album_id: string }>();
     const albumId = Number(album_id);
     const formRef = useRef<HTMLFormElement>(null);
@@ -43,16 +46,30 @@ export default function EditAlbum() {
     }, []);
 
     useEffect(() => {
-        getAlbumDetails(albumId).then(info => {
-            setTitle(info.title);
-            setDescription(info.description);
-            setPrivacy(info.visibility);
-            setCopyrightCertificate(`${info.title.toLowerCase().replace(' ', '_')}_copyright_certificate.pdf`);
-            const d = new Date(info.release_date);
-            const formattedDate = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
-            setReleaseDate(formattedDate);
-        });
-        getAlbumCoverPicture(albumId).then(res => setCoverPicture(res.cover_picture_url));
+        async function loadData() {
+            try {
+                const [album, cover_picture] = await Promise.all([
+                    getAlbumDetails(albumId),
+                    getAlbumCoverPicture(albumId)
+                ]);
+                setTitle(album.title);
+                setDescription(album.description);
+                setPrivacy(album.visibility);
+                setCopyrightCertificate(`${album.title.toLowerCase().replace(' ', '_')}_copyright_certificate.pdf`);
+                const d = new Date(album.release_date);
+                const formattedDate = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+                setReleaseDate(formattedDate);
+                setCoverPicture(cover_picture.cover_picture_url);
+            }
+            catch (e) {
+                console.log('ERROR:', e);
+                setError('Failed to load data!');
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        loadData();
     }, []);
 
     function resetForm() {
@@ -109,6 +126,9 @@ export default function EditAlbum() {
             setUpdating(false);
         }
     }
+
+    if (loading) return <div className='loading'>Loading</div>;
+    if (error) return <div className='error'>{error}</div>;
 
     return (
         <div id="create-album-container">

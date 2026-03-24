@@ -1,9 +1,9 @@
 import "@/pages/user/artist/artists/Artists.css"
 import { useEffect, useState } from "react";
-import { getArtists, GetArtistsResponse } from "@/services/user_service/artists";
+import { getArtists, Artist } from "@/services/user_service/artists";
 
 export default function Artists() {
-    const [artists, setArtists] = useState<GetArtistsResponse[]>([]);
+    const [artists, setArtists] = useState<Artist[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 

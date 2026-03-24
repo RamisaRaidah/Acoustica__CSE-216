@@ -22,18 +22,18 @@ export async function getPopularPublicPlaylists(): Promise<Playlist[]> {
     return api.request('/api/music/playlists/popular_public_playlists');
 }
 
-export interface GetPlaylistDetailsResponse {
+export interface Playlist {
     playlist_id: number;
-    asset_id: number;
     title: string;
     description: string;
+    creator_id: number;
     creation_date: string;
     cover_picture_url: string;
     visibility: string;
     view_count: number;
 }
 
-export async function getPlaylistDetails(playlistId: number): Promise<GetPlaylistDetailsResponse> {
+export async function getPlaylistDetails(playlistId: number): Promise<Playlist> {
     return api.request(`/api/music/playlists/${playlistId}`);
 }
 
@@ -52,4 +52,14 @@ export async function editPlaylist(playlistId: number, formData: FormData) {
         method: 'PUT',
         body: formData
     })
+}
+
+export async function likePlaylist(playlistId: number) {
+    return api.request(`/api/music/playlists/${playlistId}/like`, {
+        method: 'PUT'
+    })
+}
+
+export async function isLiked(playlistId: number): Promise<boolean> {
+    return api.request(`/api/music/playlists/${playlistId}/liked`);
 }

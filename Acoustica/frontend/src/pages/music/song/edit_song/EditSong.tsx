@@ -79,53 +79,52 @@ export default function EditSong() {
     useEffect(() => {
         async function loadData() {
             try {
-                getMyAlbums().then(setAlbums);
-                getArtists().then(setArtists);
-                getLanguages().then(setLanguages);
-                getGenres().then(setGenres);
-                getMoods().then(setMoods);
-                getInstruments().then(setInstruments);
+                const [albums, artists, languages, genres, moods, instruments] = await Promise.all([
+                    getMyAlbums(),
+                    getArtists(),
+                    getLanguages(),
+                    getGenres(),
+                    getMoods(),
+                    getInstruments(),
+                ]);
+
+                const [song, song_collaborators, song_genres, song_moods, song_instruments, lyrics] = await Promise.all([
+                    getSongMetadata(songId),
+                    getSongCollaborators(songId),
+                    getSongGenres(songId),
+                    getSongMoods(songId),
+                    getSongInstruments(songId),
+                    getSongLyrics(songId)
+                ]);
+                
+                setAlbums(albums);
+                setArtists(artists);
+                setLanguages(languages);
+                setGenres(genres);
+                setMoods(moods);
+                setInstruments(instruments);
+                setTitle(song.title);
+                setAlbumId(String(song.album_id));
+                setLanguageId(String(song.language_id));
+                const d = new Date(song.release_date);
+                const formattedDate = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+                setReleaseDate(formattedDate);
+                setSelectedCollaborators(song_collaborators);
+                setSelectedGenres(song_genres);
+                setSelectedMoods(song_moods);
+                setSelectedInstruments(song_instruments);
+                setCopyrightCertificate(`${song.title.toLowerCase().replace(' ', '_')}_copyright_certificate.pdf`);
+                if (lyrics.lyrics !== "no lyrics") setLyrics(`${song.title.toLowerCase().replace(' ', '_')}_lyrics.txt`);
             }
             catch (err) {
                 console.log('Error:', err);
-                setError('Failed to load!');
+                setError('Failed to load data!');
             }
             finally {
                 setLoading(false);
             }
         }
         loadData();
-    }, []);
-
-    useEffect(() => {
-        async function loadSongData() {
-            try {
-                getSongMetadata(songId).then(info => {
-                    setTitle(info.title);
-                    setAlbumId(String(info.album_id));
-                    setLanguageId(String(info.language_id));
-                    const d = new Date(info.release_date);
-                    const formattedDate = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
-                    setReleaseDate(formattedDate);
-                    setCopyrightCertificate(`${info.title.toLowerCase().replace(' ', '_')}_copyright_certificate.pdf`);
-                    getSongLyrics(songId).then(res => {
-                        if (res.lyrics !== "no lyrics") setLyrics(`${info.title.toLowerCase().replace(' ', '_')}_lyrics.txt`);
-                    })
-                });
-                getSongCollaborators(songId).then(setSelectedCollaborators);
-                getSongGenres(songId).then(setSelectedGenres);
-                getSongMoods(songId).then(setSelectedMoods);
-                getSongInstruments(songId).then(setSelectedInstruments);
-            }
-            catch (err) {
-                console.log('Error:', err);
-                setError('Failed to load!');
-            }
-            finally {
-                setLoading(false);
-            }
-        }
-        loadSongData();
     }, []);
 
     useEffect(() => {
@@ -216,9 +215,6 @@ export default function EditSong() {
         setDeletedInstruments(prev => [...prev, id]);
         setAddedInstruments(addedInstruments.filter(x => x !== id));
     }
-
-    if (loading) return <div className='loading'>Loading...</div>;
-    if (error) return <div className='error'>{error}</div>;
 
     async function handleSubmit() {
         if (!formRef.current) return;

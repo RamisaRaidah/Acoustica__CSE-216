@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMyPlaylists, getPopularPublicPlaylists, getPlaylistSongs, Playlist } from "@/services/music_service/playlists";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
+import play_button from '@/assets/images/music/Play_Button.png';
 import { useMusic } from "@/contexts/MusicContext";
 
 const COLUMNS = 7;
@@ -24,13 +25,20 @@ function PlaylistSection({ playlists, onNavigate }: PlaylistSectionProps) {
             <div className="playlist-grid">
                 {visible.map(playlist => (
                     <div className="playlist-card" key={playlist.playlist_id}>
-                        <div className="playlist-card-cover">
-                            <img src={playlist.cover_picture_url || default_cover} alt={playlist.title} onClick={() => {
-                                getPlaylistSongs(playlist.playlist_id).then(songs => {
-                                    const song_ids = songs.map(song => song.song_id);
-                                    createQueue(song_ids);
-                                })
-                            }} />
+                        <div className="playlist-card-cover" onClick={() => onNavigate(playlist.playlist_id)}>
+                            <img src={playlist.cover_picture_url || default_cover} alt={playlist.title} />
+                            <div
+                                className="playlist-card-play-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    getPlaylistSongs(playlist.playlist_id).then(songs => {
+                                        const song_ids = songs.map(song => song.song_id);
+                                        createQueue(song_ids);
+                                    });
+                                }}
+                            >
+                                <img src={play_button} />
+                            </div>
                         </div>
                         <p className="playlist-card-title" onClick={() => onNavigate(playlist.playlist_id)}>{playlist.title}</p>
                     </div>
@@ -63,18 +71,20 @@ export default function Playlists() {
                 ]);
                 setMyPlaylists(my_playlists);
                 setPopularPublicPlaylists(popular_public_playlists);
-            } 
+            }
             catch (e) {
                 console.log("ERROR: ", e);
                 setError("Failed to load playlists!");
             }
-            setLoading(false);
+            finally {
+                setLoading(false);
+            }
         }
         loadPlaylists();
     }, []);
 
-    if (loading) return <div id="playlist-container"><div className="loading">Loading playlists</div></div>;
-    if (error) return <div id="playlist-container"><div className="error">{error}</div></div>;
+    if (loading) return <div className='loading'>Loading</div>;
+    if (error) return <div className='error'>{error}</div>;
 
     return (
         <div id="playlist-container">
@@ -84,7 +94,7 @@ export default function Playlists() {
             </div>
             {myPlaylists.length > 0
                 ? <PlaylistSection playlists={myPlaylists} onNavigate={(id) => navigate(`/music/playlists/${id}`)} />
-                : <p className="empty-state">You haven't created any playlists yet.</p>
+                : <p className="empty-state">You haven't created any playlist yet.</p>
             }
 
             <div className="playlist-header" style={{ marginTop: '4vh' }}>
@@ -92,7 +102,7 @@ export default function Playlists() {
             </div>
             {popularPublicPlaylists.length > 0
                 ? <PlaylistSection playlists={popularPublicPlaylists} onNavigate={(id) => navigate(`/music/playlists/${id}`)} />
-                : <p className="empty-state">No public playlists available.</p>
+                : <p className="empty-state">No public playlist available.</p>
             }
         </div>
     );

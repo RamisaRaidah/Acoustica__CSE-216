@@ -1,7 +1,6 @@
 import '@/components/topbar/Topbar.css';
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from '@/contexts/AuthContext';
-import { useMusic } from '@/contexts/MusicContext';
 import { useNavigate } from 'react-router-dom';
 import Searchbar from '@/components/searchbar/Searchbar';
 import Notifications from '@/components/notifications/Notifications';
@@ -15,7 +14,6 @@ export default function ListenerTopbar() {
     const { profile_picture } = useAuth();
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const profileWrapperRef = useRef<HTMLDivElement>(null);
-    const { playSong } = useMusic();
 
     useEffect(() => {
         function handleClick(e: MouseEvent) {
@@ -40,7 +38,7 @@ export default function ListenerTopbar() {
                 <div className='topbar-button'><img src={shop_button_img} className="icon" />Shop</div>
             </div>
             <div className="topbar_center">
-                <Searchbar prompt={user?.user_type === 'listener' ? 'Explore. Discover. Repeat.' : 'Search...'} song album artist onSongSelect={(song) => playSong({ song_id: song.song_id, progress: 0, playing: true })} />
+                <Searchbar prompt={user?.user_type === 'listener' ? 'Explore. Discover. Repeat.' : 'Search...'} song album artist />
             </div>
             <div className="topbar_right">
                 {user?.user_type === 'listener' && <div className='topbar-button' onClick={() => navigate('/explore')}><img src={explore_button_img} className="icon" />Explore</div>}

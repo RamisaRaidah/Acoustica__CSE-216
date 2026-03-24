@@ -105,7 +105,12 @@ def get_albums():
         fetch_all = True
     )
 
-    return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
 
 ### get_album_details ###
 def get_album_details(album_id):
@@ -118,12 +123,19 @@ def get_album_details(album_id):
         """, (album_id,),
         fetch_one = True
     )
-    
-    if result:
-        result['copyright_certificate'] = storage.generate_signed_url(result['copyright_certificate'])
-        return result, 200
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return None, 200
     else:
-        return {"error": "coudn't fetch data"}, 500
+        signed_url = storage.generate_signed_url(result["copyright_certificate"])
+        if signed_url:
+            result['copyright_certificate'] = signed_url
+        else:
+            result['copyright_certificate'] = "null"
+            
+        return result, 200
     
 ### get_album_cover_picture ###  
 def get_album_cover_picture(album_id):
@@ -132,15 +144,16 @@ def get_album_cover_picture(album_id):
         fetch_one = True
     )
 
-    if result:
-        if result["cover_picture"]:
-            signed_url = storage.generate_signed_url(result["cover_picture"])
-            if signed_url:
-                return {"cover_picture_url": signed_url}, 200
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None or result['cover_picture'] is None:
+        return {"cover_picture_url": "null"}, 200
+    else:
+        signed_url = storage.generate_signed_url(result["cover_picture"])
+        if signed_url:
+            return {"cover_picture_url": signed_url}, 200
         else:
             return {"cover_picture_url": "null"}, 200
-            
-    return {"error": "coudn't fetch data"}, 500
 
 ### get_my_albums ### 
 def get_my_albums():
@@ -149,10 +162,12 @@ def get_my_albums():
         fetch_all = True
     )
 
-    if result:
-        return result, 200
-    else:
+    if result is False:
         return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
 
 ### get_album_songs ###
 def get_album_songs(album_id):
@@ -164,10 +179,12 @@ def get_album_songs(album_id):
 
     result = execute_sql(command, (album_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "couldn't load data!"}, 500
+        return result, 200
     
 ### edit_album ###        
 def edit_album(album_id, title, description, release_date, cover_picture, copyright_certificate, visibility, cover_action, copyright_certificate_action):
@@ -301,6 +318,44 @@ def delete_album(album_id):
         release_connection(connection)
 
     return {"message": "successful"}, 201
+
+### like_album ###
+def like_album(album_id):
+    result = execute_sql(
+        "SELECT 1 FROM liked_album WHERE listener_id = %s AND album_id = %s",
+        (get_jwt_identity(), album_id),
+        fetch_one=True
+    )
+
+    if result is None:
+        success = execute_sql(
+            "INSERT INTO liked_album (listener_id, album_id) VALUES (%s, %s)",
+            (get_jwt_identity(), album_id)
+        )
+    else:
+        success = execute_sql(
+            "DELETE FROM liked_album WHERE listener_id = %s AND album_id = %s",
+            (get_jwt_identity(), album_id)
+        )
+
+    if success is not None:
+        return {'message': 'successful'}, 200
+    return {'error': 'failed'}, 500
+
+### is_liked ###
+def is_liked(album_id):
+    result = execute_sql(
+        "SELECT 1 FROM liked_album WHERE listener_id = %s AND album_id = %s",
+        (get_jwt_identity(), album_id),
+        fetch_one=True
+    )
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return False, 200
+    else:
+        return True, 200
 
 def add_song_to_album(album_id,song_id):
     return (f"add_song_to_album {album_id} {song_id}")

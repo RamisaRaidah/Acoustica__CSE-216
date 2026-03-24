@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { SongInfo } from '@/services/music_service/songs';
 import { useEffect, useState } from 'react';
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
+import play_button from '@/assets/images/music/Play_Button.png';
 import { useMusic } from '@/contexts/MusicContext';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
 
@@ -51,10 +52,18 @@ function SongGrid({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures
                     <div className="explore-song-card" key={song.song_id}>
                         <div
                             className="explore-song-cover"
-                            onClick={() => playSong({ song_id: song.song_id, playing: true, progress: 0 })}
+                            onClick={() => navigate(`/music/songs/${song.song_id}`)}
                         >
                             <img src={cover_pictures[song.album_id] || default_cover} alt={song.title} />
-                            <div className="explore-song-play-overlay">▶</div>
+                            <div
+                                className="card-play-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    playSong({ song_id: song.song_id, playing: true, progress: 0 });
+                                }}
+                            >
+                                <img src={play_button} />
+                            </div>
                         </div>
                         <p className="explore-song-title" onClick={() => navigate(`/music/songs/${song.song_id}`)}>
                             {song.title}

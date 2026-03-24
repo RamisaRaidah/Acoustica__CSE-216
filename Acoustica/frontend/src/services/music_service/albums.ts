@@ -17,7 +17,7 @@ export async function getAlbums(): Promise<GetAlbumsResponse[]> {
     return api.request('/api/music/albums/all');
 }
 
-export interface GetAlbumDetailsResponse {
+export interface Album {
     album_id: number;
     title: string;
     description: string;
@@ -28,7 +28,7 @@ export interface GetAlbumDetailsResponse {
     copyright_certificate: string;
 }
 
-export async function getAlbumDetails(albumId: number): Promise<GetAlbumDetailsResponse> {
+export async function getAlbumDetails(albumId: number): Promise<Album> {
     return api.request(`/api/music/albums/${albumId}`);
 }
 
@@ -66,3 +66,12 @@ export async function editAlbum(albumId: number, formData: FormData) {
     })
 }
 
+export async function likeAlbum(albumId: number) {
+    return api.request(`/api/music/albums/${albumId}/like`, {
+        method: 'PUT'
+    })
+}
+
+export async function isLiked(albumId: number): Promise<boolean> {
+    return api.request(`/api/music/albums/${albumId}/liked`);
+}

@@ -60,25 +60,33 @@ export default function UploadSong() {
     }
 
     useEffect(() => {
-        async function loadData() {
-            try {
-                getMyAlbums().then(setAlbums);
-                getArtists().then(setArtists);
-                getLanguages().then(setLanguages);
-                getGenres().then(setGenres);
-                getMoods().then(setMoods);
-                getInstruments().then(setInstruments);
-            } 
-            catch (err) {
-                console.log('Error:', err);
-                setError('Failed to load!');
-            } 
-            finally {
-                setLoading(false);
+            async function loadData() {
+                try {
+                    const [albums, artists, languages, genres, moods, instruments] = await Promise.all([
+                        getMyAlbums(),
+                        getArtists(),
+                        getLanguages(),
+                        getGenres(),
+                        getMoods(),
+                        getInstruments(),
+                    ]);
+                    setAlbums(albums);
+                    setArtists(artists);
+                    setLanguages(languages);
+                    setGenres(genres);
+                    setMoods(moods);
+                    setInstruments(instruments);
+                }
+                catch (err) {
+                    console.log('Error:', err);
+                    setError('Failed to load data!');
+                }
+                finally {
+                    setLoading(false);
+                }
             }
-        }
-        loadData();
-    }, []);
+            loadData();
+        }, []);
 
     useEffect(() => {
         function handleClickOutside(e: MouseEvent) {

@@ -1,5 +1,9 @@
 import api from "@/services/api";
 import { useEffect, useRef, useState } from "react";
+import { SongInfo } from "@/services/music_service/songs";
+import { Album } from "@/services/music_service/albums";
+import { useNavigate } from "react-router-dom";
+import { useMusic } from "@/contexts/MusicContext";
 
 interface SearchbarProps {
     prompt: string;
@@ -7,36 +11,23 @@ interface SearchbarProps {
     album?: boolean;
     artist?: boolean;
     onSongSelect?: (song: SongInfo) => void;
+    prevent_default?: boolean;
 }
 
-export interface SongInfo {
-    song_id: number;
-    title: string;
-    album_id: number;
-    album_name: string;
-    artist_id: number;
-    artist_name: string;
-    length: number;
-}
-
-export interface AlbumInfo {
-    album_id: number;
-    title: string;
-    artist_name: string;
-}
-
-export interface ArtistInfo {
+interface ArtistInfo {
     artist_id: number;
     artist_name: string;
 }
 
-export default function Searchbar({ prompt, song = false, album = false, artist = false, onSongSelect }: SearchbarProps) {
+export default function Searchbar({ prompt, song = false, album = false, artist = false, onSongSelect, prevent_default = false }: SearchbarProps) {
     const [queryParam, setQueryParam] = useState<string>("");
     const [songs, setSongs] = useState<SongInfo[] | null>(null);
-    const [albums, setAlbums] = useState<AlbumInfo[] | null>(null);
+    const [albums, setAlbums] = useState<Album[] | null>(null);
     const [artists, setArtists] = useState<ArtistInfo[] | null>(null);
     const [searchDropdownOpen, setSearchDropdownOpen] = useState<boolean>(false);
     const seachWrapperRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
+    const { playSong } = useMusic();
 
     useEffect(() => {
         if (!queryParam) {
@@ -84,6 +75,11 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
         return () => document.removeEventListener('click', handleClick);
     }, []);
 
+    const close = () => {
+        setSearchDropdownOpen(false);
+        setQueryParam('');
+    };
+
     return (
         <div className="searchbar">
             <div ref={seachWrapperRef} className="search_wrapper">
@@ -94,73 +90,126 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                     value={queryParam}
                     onChange={(e) => {
                         setQueryParam(e.target.value.trim());
-                        console.log(e);
                     }}
                 />
-                <div className={`search_dropdown ${searchDropdownOpen ? "active" : ""}`}
-                >
+                <div className={`search_dropdown ${searchDropdownOpen ? "active" : ""}`}>
+
                     {songs && (
                         <div className="song_result">
                             <div className="song_result_header">Songs</div>
-                            {
-                                songs.map((song) => (
-                                    <div
-                                        className="search_item"
-                                        key={song.song_id}
-                                        onClick={() => {
-                                            onSongSelect?.(song);
-                                            setSearchDropdownOpen(false);
-                                            setQueryParam('');
-                                        }}
-                                    >
-                                        <span className="search_item_title">{song.title}</span>
-                                        <span className="search_item_artist_name">{song.artist_name}</span>
+                            {songs.map((song) => (
+                                <div
+                                    className="search_item search_item_song"
+                                    key={song.song_id}
+                                    onClick={() => {
+                                        close();
+                                        onSongSelect?.(song);
+                                        if (!prevent_default) navigate(`/music/songs/${song.song_id}`);
+                                    }}
+                                >
+                                    {!prevent_default && (
+                                        <div
+                                            className="play_button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                playSong({ song_id: song.song_id, progress: 0, playing: true });
+                                                close();
+                                            }}
+                                        >
+                                            ▶
+                                        </div>
+                                    )}
+                                    <div className="search_item_text">
+                                        <span
+                                            className="search_item_title"
+                                            onClick={(e) => {
+                                                if (!prevent_default) {
+                                                    e.stopPropagation();
+                                                    navigate(`/music/songs/${song.song_id}`);
+                                                    close();
+                                                }
+                                            }}
+                                        >
+                                            {song.title}
+                                        </span>
+                                        <span
+                                            className="search_item_artist_name"
+                                            onClick={(e) => {
+                                                if (!prevent_default) {
+                                                    e.stopPropagation();
+                                                    navigate(`/artists/${song.owner_id}`);
+                                                    close();
+                                                }
+                                            }}
+                                        >
+                                            {song.owner_name}
+                                        </span>
                                     </div>
-                                ))
-                            }
+                                </div>
+                            ))}
                         </div>
                     )}
 
                     {albums && (
                         <div className="album_result">
                             <div className="album_result_header">Albums</div>
-                            {
-                                albums.map((album) => (
-                                    <div
-                                        className="search_item"
-                                        key={album.album_id}
-                                        onClick={() => {
-                                            alert(album.title);
-                                            setSearchDropdownOpen(false);
-                                            setQueryParam('');
-                                        }}
-                                    >
-                                        <span className="search_item_title">{album.title}</span>
-                                        <span className="search_item_artist_name">{album.artist_name}</span>
+                            {albums.map((album) => (
+                                <div
+                                    className="search_item"
+                                    key={album.album_id}
+                                    onClick={() => {
+                                        close();
+                                        navigate(`/music/albums/${album.album_id}`);
+                                    }}
+                                >
+                                    <div className="search_item_text">
+                                        <span
+                                            className="search_item_title"
+                                            onClick={(e) => {
+                                                if (!prevent_default) {
+                                                    e.stopPropagation();
+                                                    navigate(`/music/albums/${album.album_id}`);
+                                                    close();
+                                                }
+                                            }}
+                                        >
+                                            {album.title}
+                                        </span>
+                                        <span
+                                            className="search_item_artist_name"
+                                            onClick={(e) => {
+                                                if (!prevent_default) {
+                                                    e.stopPropagation();
+                                                    navigate(`/artists/${album.owner_id}`);
+                                                    close();
+                                                }
+                                            }}
+                                        >
+                                            {album.owner_name}
+                                        </span>
                                     </div>
-                                ))
-                            }
+                                </div>
+                            ))}
                         </div>
                     )}
 
                     {artists && (
                         <div className="artist_result">
                             <div className="artist_result_header">Artists</div>
-                            {
-                                artists.map((artist) => (
-                                    <div
-                                        className="search_item"
-                                        key={artist.artist_id}
-                                        onClick={() => {
-                                            alert(artist.artist_name);
-                                            setSearchDropdownOpen(false);
-                                            setQueryParam('');
-                                        }}
-                                    >
+                            {artists.map((artist) => (
+                                <div
+                                    className="search_item"
+                                    key={artist.artist_id}
+                                    onClick={() => {
+                                        close();
+                                        navigate(`/artists/${artist.artist_id}`);
+                                    }}
+                                >
+                                    <div className="search_item_text">
                                         <span className="search_item_title">{artist.artist_name}</span>
                                     </div>
-                                ))
-                            }
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

@@ -31,14 +31,14 @@ def create_playlist_route():
     return jsonify(result), status
 
 ### get_playlist_details_route ###
-@playlists_bp.get("/api/music/playlists/<playlist_id>")
+@playlists_bp.get("/api/music/playlists/<int:playlist_id>")
 @jwt_required()
 def get_playlist_details_route(playlist_id):
     result, status = playlists.get_playlist_details(playlist_id)
     return jsonify(result), status
 
 ### edit_playlist_route ###
-@playlists_bp.put("/api/music/playlists/<playlist_id>")
+@playlists_bp.put("/api/music/playlists/<int:playlist_id>")
 @jwt_required()
 def edit_playlist_route(playlist_id):
     title = request.form.get('playlist_title')
@@ -53,30 +53,30 @@ def edit_playlist_route(playlist_id):
     return jsonify(result), status
 
 ### delete_playlist_route ###
-@playlists_bp.delete("/api/music/playlists/<playlist_id>")
+@playlists_bp.delete("/api/music/playlists/<int:playlist_id>")
 @jwt_required()
 def delete_playlist_route(playlist_id):
     result, status = playlists.delete_playlist(playlist_id)
     return jsonify(result), status
 
 ### get_playlist_songs_route ###
-@playlists_bp.get("/api/music/playlists/<playlist_id>/songs")
+@playlists_bp.get("/api/music/playlists/<int:playlist_id>/songs")
 @jwt_required()
 def get_playlist_songs_route(playlist_id):
     result, status = playlists.get_playlist_songs(playlist_id)
     return jsonify(result), status
 
-@playlists_bp.post("/api/music/playlists/<playlist_id>/songs/<song_id>")
+@playlists_bp.post("/api/music/playlists/<int:playlist_id>/songs/<song_id>")
 @jwt_required()
 def add_song_to_playlist_route(playlist_id,song_id):
     return jsonify(f"add_song_to_playlist {playlist_id} {song_id}")
 
-@playlists_bp.delete("/api/music/playlists/<playlist_id>/songs/<song_id>")
+@playlists_bp.delete("/api/music/playlists/<int:playlist_id>/songs/<song_id>")
 @jwt_required()
 def remove_song_from_playlist_route(playlist_id,song_id):
     return jsonify(f"remove_song_from_playlist {playlist_id} {song_id}")
 
-@playlists_bp.patch("/api/music/playlists/<playlist_id>/visibility")
+@playlists_bp.patch("/api/music/playlists/<int:playlist_id>/visibility")
 @jwt_required()
 def set_playlist_visibility_route(playlist_id):
     return jsonify(f"set_playlist_visibility {playlist_id}")
@@ -93,4 +93,18 @@ def get_my_playlists_route():
 @jwt_required()
 def get_popular_public_playlists_route():
     result, status = playlists.get_popular_public_playlists()
+    return jsonify(result), status
+
+### like_playlist_route ###
+@playlists_bp.put("/api/music/playlists/<int:playlist_id>/like")
+@jwt_required()
+def like_playlist_route(playlist_id):
+    result, status = playlists.like_playlist(playlist_id)
+    return jsonify(result), status
+
+### is_liked_route ###
+@playlists_bp.get("/api/music/playlists/<int:playlist_id>/liked")
+@jwt_required()
+def is_liked_route(playlist_id):
+    result, status = playlists.is_liked(playlist_id)
     return jsonify(result), status
