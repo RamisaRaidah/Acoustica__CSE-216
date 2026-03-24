@@ -38,6 +38,7 @@ import EditSong from '@/pages/music/song/edit_song/EditSong';
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 import Explore from '@/pages/music/explore/Explore';
 import { GenreProfile, MoodProfile, LanguageProfile, InstrumentProfile } from '@/pages/music/explore/explore_profiles/ExploreProfiles';
+import Library from '@/pages/music/library/Library';
 import ArtistProfile from './pages/user/profile/public/ArtistProfile';
 
 function App() {
@@ -96,6 +97,7 @@ function App() {
           <Route path="/explore/moods/:mood_name" element={<MoodProfile />} />
           <Route path="/explore/languages/:language_name" element={<LanguageProfile />} />
           <Route path="/explore/instruments/:instrument_name" element={<InstrumentProfile />} />
+          <Route path="/music/library" element={<Library />} />
           <Route path="/artists/:artist_id" element={<ArtistProfile />} />
         </Route>
       </Routes>

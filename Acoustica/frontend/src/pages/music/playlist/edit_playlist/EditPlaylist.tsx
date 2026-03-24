@@ -1,12 +1,15 @@
 import '@/pages/music/playlist/edit_playlist/EditPlaylist.css';
 import { useState, useRef, useEffect } from "react";
 import { getPlaylistDetails, getPlaylistSongs, editPlaylist } from "@/services/music_service/playlists";
+import { SongInfo } from '@/services/music_service/songs';
 import Alert from "@/components/alert/TwoButtonAlert";
-import Searchbar, { SongInfo } from "@/components/searchbar/Searchbar";
+import Searchbar from "@/components/searchbar/Searchbar";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function EditPlaylist() {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const { playlist_id } = useParams<{ playlist_id: string }>();
     const playlistId = Number(playlist_id);
@@ -33,13 +36,28 @@ export default function EditPlaylist() {
     ];
 
     useEffect(() => {
-        getPlaylistDetails(playlistId).then(info => {
-            setTitle(info.title);
-            setDescription(info.description);
-            setCoverPicture(info.cover_picture_url);
-            setPrivacy(info.visibility);
-        })
-        getPlaylistSongs(playlistId).then(setSelectedSongs);
+        async function loadData() {
+            try {
+                const [playlist, songs] = await Promise.all([
+                    getPlaylistDetails(playlistId),
+                    getPlaylistSongs(playlistId)
+                ]);
+                setTitle(playlist.title);
+                setDescription(playlist.description);
+                setCoverPicture(playlist.cover_picture_url);
+                setPrivacy(playlist.visibility);
+                setSelectedSongs(songs);
+                setSelectedSongId(songs.map(x => x.song_id));
+            }
+            catch (err) {
+                console.log("ERROR:", err);
+                setError('Failed to load data!');
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        loadData();
     }, []);
 
     useEffect(() => {
@@ -132,6 +150,9 @@ export default function EditPlaylist() {
     const hrs = Math.floor(duration / 3600);
     const mins = Math.floor((duration % 3600) / 60);
     const secs = duration % 60;
+
+    if (loading) return <div className='loading'>Loading</div>;
+    if (error) return <div className='error'>{error}</div>;
 
     return (
         <div id="edit-playlist-container">
@@ -305,7 +326,7 @@ export default function EditPlaylist() {
                             </div>
 
                             <div id="search-song">
-                                <Searchbar prompt="Add songs…" song onSongSelect={handleAddSong} />
+                                <Searchbar prompt="Add songs…" song onSongSelect={handleAddSong} prevent_default />
                             </div>
                         </div>
 
@@ -325,10 +346,10 @@ export default function EditPlaylist() {
 
                                         <div className="col-title">
                                             <p className="song-title">{song.title}</p>
-                                            <p className="song-artist">{song.artist_name}</p>
+                                            <p className="song-artist">{song.owner_name}</p>
                                         </div>
 
-                                        <div className="col-album">{song.album_name}</div>
+                                        <div className="col-album">{song.album_title}</div>
 
                                         <div className="col-time">
                                             {Math.floor(song.length / 60)}:{(song.length % 60).toString().padStart(2, "0")}

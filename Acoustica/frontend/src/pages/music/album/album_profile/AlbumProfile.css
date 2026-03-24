@@ -157,11 +157,53 @@
     font-size: 0.6rem;
 }
 
+/* Wrap release date + like button together */
+#album-profile-container #album-release-date-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.3rem;
+    position: relative;
+    z-index: 1;
+}
+
 #album-profile-container #album-release-date {
     font-size: clamp(0.8rem, 0.85vw, 0.95rem);
     font-weight: 500;
     color: rgba(255, 255, 255, 0.75);
-    margin-top: 0.3rem;
+}
+
+/* Like button */
+#album-profile-container #like-album-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0.15rem;
+    cursor: pointer;
+    color: rgba(255, 200, 140, 0.45);
+    transition: color 0.2s ease, transform 0.2s ease;
+    line-height: 0;
+}
+
+#album-profile-container #like-album-btn:hover {
+    color: rgba(255, 200, 140, 0.75);
+    transform: scale(1.15);
+}
+
+#album-profile-container #like-album-btn.liked {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+#album-profile-container #like-album-btn.liked:hover {
+    color: rgba(255, 255, 255, 0.85);
+    transform: scale(1.2);
+}
+
+#album-profile-container #like-album-btn:active {
+    transform: scale(0.95);
 }
 
 /* Play button — top right corner */

@@ -1,8 +1,9 @@
 import "@/pages/music/playlist/create_playlist/CreatePlaylist.css"
 import { useState, useRef, useEffect } from "react";
 import { createPlaylist } from "@/services/music_service/playlists";
+import { SongInfo } from "@/services/music_service/songs";
 import Alert from "@/components/alert/TwoButtonAlert";
-import Searchbar, { SongInfo } from "@/components/searchbar/Searchbar";
+import Searchbar from "@/components/searchbar/Searchbar";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 
 export default function CreatePlaylist() {
@@ -268,7 +269,7 @@ export default function CreatePlaylist() {
                             </div>
 
                             <div id="search-song">
-                                <Searchbar prompt="Add songs…" song onSongSelect={handleAddSong} />
+                                <Searchbar prompt="Add songs…" song onSongSelect={handleAddSong} prevent_default />
                             </div>
                         </div>
 
@@ -288,10 +289,10 @@ export default function CreatePlaylist() {
 
                                         <div className="col-title">
                                             <p className="song-title">{song.title}</p>
-                                            <p className="song-artist">{song.artist_name}</p>
+                                            <p className="song-artist">{song.owner_name}</p>
                                         </div>
 
-                                        <div className="col-album">{song.album_name}</div>
+                                        <div className="col-album">{song.album_title}</div>
 
                                         <div className="col-time">
                                             {Math.floor(song.length / 60)}:{(song.length % 60).toString().padStart(2, "0")}

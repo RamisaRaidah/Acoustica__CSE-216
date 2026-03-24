@@ -100,17 +100,19 @@ def create_playlist(title, description, visibility, cover_picture, songs):
 ### get_playlist_details ###
 def get_playlist_details(playlist_id):
     command = """
-        SELECT asset_id, title, description, creation_date, cover_picture, visibility, view_count 
+        SELECT playlist_id, title, description, creator_id, creation_date, cover_picture, visibility, view_count 
         FROM playlist 
         WHERE playlist_id = %s
     """
 
     result = execute_sql(command, (playlist_id,), fetch_one = True)
 
-    if result:
-        return {'asset_id': result['asset_id'], 'title': result['title'], 'description': result['description'], 'creation_date': result['creation_date'], 'cover_picture_url': storage.generate_signed_url(result['cover_picture']), 'visibility': result['visibility'], 'view_count': result['view_count']}, 200
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return None, 200
     else:
-        return {"error": "Couldn't fetch data!"}, 500
+        return {'playlist_id': result['playlist_id'], 'title': result['title'], 'description': result['description'], 'creator_id': result['creator_id'], 'creation_date': result['creation_date'], 'cover_picture_url': storage.generate_signed_url(result['cover_picture']), 'visibility': result['visibility'], 'view_count': result['view_count']}, 200
 
 ### edit_playlist ###
 def edit_playlist(playlist_id, title, description, visibility, cover_picture, added_songs, deleted_songs, cover_action):
@@ -145,10 +147,10 @@ def edit_playlist(playlist_id, title, description, visibility, cover_picture, ad
                 
                 # Uploading to cloud
                 if cover_action == 'replace' and cover_picture:
-                    cursor.execute("SELECT cover_picture FROM playlist WHERE playlist_id = %s", (playlist_id,))
-                    cp = cursor.fetchone()['cover_picture']
-                    if cp:
-                        storage.delete_file_from_storage(cp)
+                    # cursor.execute("SELECT cover_picture FROM playlist WHERE playlist_id = %s", (playlist_id,))
+                    # cp = cursor.fetchone()['cover_picture']
+                    # if cp:
+                    #     storage.delete_file_from_storage(cp)
 
                     cover_picture_ext = storage.get_file_extension(cover_picture)
                     cover_picture_path = f"Images/Cover_Pictures/playlist{playlist_id}.{cover_picture_ext}"
@@ -257,10 +259,12 @@ def get_playlist_songs(playlist_id):
 
     result = execute_sql(command, (playlist_id,), fetch_all = True)
 
-    if result is not None:
-        return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
     else:
-        return {"error": "Couldn't load data!"}, 500
+        return result, 200
 
 def add_song_to_playlist(playlist_id,song_id):
     return (f"add_song_to_playlist {playlist_id} {song_id}")
@@ -281,15 +285,17 @@ def get_my_playlists():
 
     result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
         playlists = []
         for r in result:
             playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
-
+        
         return playlists, 200
-    else:
-        return {"error": "Couldn't fetch data!"}, 500
-    
+
 ### get_popular_public_playlists ###
 def get_popular_public_playlists():
     command = """
@@ -302,15 +308,55 @@ def get_popular_public_playlists():
 
     result = execute_sql(command, fetch_all = True)
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
         playlists = []
         for r in result:
             playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
-
-        return playlists, 200
-            
-    else:
-        return {"error": "couldn't fetch data!"}, 500
         
+        return playlists, 200
+
+### like_playlist ###
+def like_playlist(playlist_id):
+    result = execute_sql(
+        "SELECT 1 FROM liked_playlist WHERE listener_id = %s AND playlist_id = %s",
+        (get_jwt_identity(), playlist_id),
+        fetch_one=True
+    )
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        success = execute_sql(
+            "INSERT INTO liked_playlist (listener_id, playlist_id) VALUES (%s, %s)",
+            (get_jwt_identity(), playlist_id)
+        )
+    else:
+        success = execute_sql(
+            "DELETE FROM liked_playlist WHERE listener_id = %s AND playlist_id = %s",
+            (get_jwt_identity(), playlist_id)
+        )
+
+    if success is not None:
+        return {'message': 'successful'}, 200
+    return {'error': 'failed'}, 500
+
+### is_liked ###
+def is_liked(playlist_id):
+    result = execute_sql(
+        "SELECT 1 FROM liked_playlist WHERE listener_id = %s AND playlist_id = %s",
+        (get_jwt_identity(), playlist_id),
+        fetch_one=True
+    )
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return False, 200
+    else:
+        return True, 200
 
 ### Helper functions ###

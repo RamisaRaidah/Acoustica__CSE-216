@@ -53,10 +53,26 @@ def get_last_listening_route():
 def add_liked_song_route(song_id):
     return jsonify(f"add_liked_song {song_id}")
 
+### get_liked_songs_route ###
 @listeners_bp.get("/api/listeners/me/liked-songs")
 @jwt_required()
 def get_liked_songs_route():
-    return jsonify("get_liked_songs")
+    result, status = listeners.get_liked_songs()
+    return jsonify(result), status
+
+### get_liked_albums_route ###
+@listeners_bp.get("/api/listeners/me/liked-albums")
+@jwt_required()
+def get_liked_albums_route():
+    result, status = listeners.get_liked_albums()
+    return jsonify(result), status
+
+### get_liked_playlists_route ###
+@listeners_bp.get("/api/listeners/me/liked-playlists")
+@jwt_required()
+def get_liked_playlists_route():
+    result, status = listeners.get_liked_playlists()
+    return jsonify(result), status
 
 @listeners_bp.post("/api/listeners/me/followed-artists/<artist_id>")
 @jwt_required()

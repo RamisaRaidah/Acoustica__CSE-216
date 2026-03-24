@@ -153,10 +153,12 @@ def get_song_metadata(song_id):
     """
     result = execute_sql(command, (song_id,), fetch_one = True)
 
-    if not result:
-        return {"error": "coudn't fetch data"}, 500
-    
-    return result, 200
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return None, 200
+    else:
+        return result, 200
 
 ### get_song_audio ###
 def get_song_audio(song_id):
@@ -165,12 +167,16 @@ def get_song_audio(song_id):
         fetch_one = True
     )
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return None, 200
+    else:
         signed_url = storage.generate_signed_url(result['song_audio'])
         if signed_url:
             return {"stream_url": signed_url}, 200
-    
-    return {"error": "failed to fetch data"}, 401
+        else:
+            return {"stream_url": "null"}, 200
 
 ### get_song_lyrics ###
 def get_song_lyrics(song_id):
@@ -179,14 +185,16 @@ def get_song_lyrics(song_id):
         fetch_one = True
     )
 
-    if result and result['lyrics']:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return {"lyrics": "null"}, 200
+    else:
         signed_url = storage.generate_signed_url(result['lyrics'])
         if signed_url:
             return {"lyrics": signed_url}, 200
         else:
-            return {"error": "failed to fetch data"}, 401
-    else:
-        return {"lyrics": "no lyrics"}, 200
+            return {"lyrics": "null"}, 200
 
 ### get_song_copyright_certificate ###
 def get_song_copyright_certificate(song_id):
@@ -195,12 +203,16 @@ def get_song_copyright_certificate(song_id):
         fetch_one = True
     )
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return {"copyright_certificate": "null"}, 200
+    else:
         signed_url = storage.generate_signed_url(result['copyright_certificate'])
         if signed_url:
             return {"copyright_certificate": signed_url}, 200
-    
-    return {"error": "failed to fetch data"}, 401
+        else:
+            return {"copyright_certificate": "null"}, 200
 
 ### get_song_collaborators ###
 def get_song_collaborators(song_id):
@@ -211,14 +223,16 @@ def get_song_collaborators(song_id):
     """
     result = execute_sql(command, (song_id,), fetch_all = True)
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
         collaborators = []
         for r in result:
             collaborators.append({'artist_id': r['artist_id'], 'artist_name': r['artist_name'], 'role': r['role']})
         
         return collaborators, 200
-    
-    return {"error": "failed to fetch data"}, 401
 
 ### get_song_genres ###
 def get_song_genres(song_id):
@@ -229,14 +243,16 @@ def get_song_genres(song_id):
     """
     result = execute_sql(command, (song_id,), fetch_all = True)
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
         genres = []
         for r in result:
             genres.append({'genre_id': r['genre_id'], 'genre_name': r['genre_name']})
         
         return genres, 200
-    
-    return {"error": "failed to fetch data"}, 401
 
 ### get_song_moods ###
 def get_song_moods(song_id):
@@ -247,14 +263,16 @@ def get_song_moods(song_id):
     """
     result = execute_sql(command, (song_id,), fetch_all = True)
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
         moods = []
         for r in result:
             moods.append({'mood_id': r['mood_id'], 'mood_name': r['mood_name']})
         
         return moods, 200
-    
-    return {"error": "failed to fetch data"}, 401
 
 ### get_song_instruments ###
 def get_song_instruments(song_id):
@@ -265,14 +283,16 @@ def get_song_instruments(song_id):
     """
     result = execute_sql(command, (song_id,), fetch_all = True)
 
-    if result:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
         instruments = []
         for r in result:
             instruments.append({'instrument_id': r['instrument_id'], 'instrument_name': r['instrument_name']})
         
         return instruments, 200
-    
-    return {"error": "failed to fetch data"}, 401
 
 ### edit_song ###
 def edit_song(song_id, title, album, added_collaborators, deleted_collaborators, language, added_genres, deleted_genres, added_moods, deleted_moods, added_instruments, deleted_instruments, release_date, lyrics, copyright_certificate, lyrics_action, copyright_certificate_action):
@@ -424,6 +444,7 @@ def delete_song(song_id):
 
     return {"message": "successful"}, 201
 
+### like_song ###
 def like_song(song_id):
     result = execute_sql(
         "SELECT 1 FROM liked_song WHERE listener_id = %s AND song_id = %s",
@@ -431,7 +452,9 @@ def like_song(song_id):
         fetch_one=True
     )
 
-    if result is None:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
         success = execute_sql(
             "INSERT INTO liked_song (listener_id, song_id) VALUES (%s, %s)",
             (get_jwt_identity(), song_id)
@@ -454,11 +477,12 @@ def is_liked(song_id):
         fetch_one=True
     )
 
-    if result is not None:
-        return True, 200
-    else:
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
         return False, 200
-    
+    else:
+    return True, 200
 
 def get_artist_songs(artist_id):
     songs_sql = """

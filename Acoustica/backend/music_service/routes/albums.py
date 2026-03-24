@@ -100,6 +100,20 @@ def add_song_to_album_route(album_id,song_id):
 def remove_song_from_album_route(album_id,song_id):
     return jsonify(f"remove_song_from_album {album_id} {song_id}")
 
+### like_album_route ###
+@albums_bp.put("/api/music/albums/<album_id>/like")
+@jwt_required()
+def like_album_route(album_id):
+    result, status = albums.like_album(album_id)
+    return jsonify(result), status
+
+### is_liked_route ###
+@albums_bp.get("/api/music/albums/<album_id>/liked")
+@jwt_required()
+def is_liked_route(album_id):
+    result, status = albums.is_liked(album_id)
+    return jsonify(result), status
+
 @albums_bp.get("/api/music/albums/artists/<int:artist_id>")
 def get_artist_albums_route(artist_id):
     result, status = albums.get_artist_albums(artist_id)

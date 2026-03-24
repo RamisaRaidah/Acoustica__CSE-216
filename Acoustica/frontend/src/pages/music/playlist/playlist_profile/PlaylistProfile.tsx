@@ -4,38 +4,49 @@ import play_button from '@/assets/images/music/Play_Button.png';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useEffect, useState } from 'react';
 import { SongInfo } from '@/services/music_service/songs';
-import { getPlaylistDetails, getPlaylistSongs, deletePlaylist } from '@/services/music_service/playlists';
+import { Playlist, getPlaylistDetails, getPlaylistSongs, deletePlaylist, likePlaylist, isLiked } from '@/services/music_service/playlists';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMusic } from '@/contexts/MusicContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function PlaylistProfile() {
     const navigate = useNavigate();
     const { playlist_id } = useParams<{playlist_id: string}>();
     const playlistId = Number(playlist_id);
-    const [title, setTitle] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
-    const [cover_picture, setCoverPicture] = useState<string | null>(null);
-    const [privacy, setPrivacy] = useState<string>('');
+    const [playlist, setPlaylist] = useState<Playlist>();
     const [songs, setSongs] = useState<SongInfo[]>([]);
     const [song_ids, setSongIds] = useState<number[]>([]);
     const [duration, setDuration] = useState<number>(0);
-    const [view_count, setViewCount] = useState<number>(0);
+    const [liked, setLiked] = useState<boolean>(false);
     const [deleteOn, setDeleteOn] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { createQueue } = useMusic();
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        getPlaylistDetails(playlistId).then(info => {
-            setTitle(info.title);
-            setDescription(info.description);
-            setCoverPicture(info.cover_picture_url);
-            setPrivacy(info.visibility);
-            setViewCount(info.view_count);
-        })
-        getPlaylistSongs(playlistId).then(songs => {
-            setSongs(songs);
-            setSongIds(songs.map(x => x.song_id));
-        });
+        async function loadData() {
+            try {
+                const [playlist, songs, liked] = await Promise.all([
+                    getPlaylistDetails(playlistId),
+                    getPlaylistSongs(playlistId),
+                    isLiked(playlistId)
+                ]);
+                setPlaylist(playlist);
+                setSongs(songs);
+                setSongIds(songs.map(x => x.song_id));
+                setLiked(liked);
+            }
+            catch (e) {
+                console.log("ERROR: ", e);
+                setError("Failed to load data!");
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        loadData();
     }, []);
 
     useEffect(() => {
@@ -64,6 +75,9 @@ export default function PlaylistProfile() {
     const mins = Math.floor((duration % 3600) / 60);
     const secs = duration % 60;
 
+    if (loading) return <div className='loading'>Loading</div>;
+    if (error) return <div className='error'>{error}</div>;
+
     return (
         <div id='playlist-profile-container'>
             {alertMessage && <Alert message={alertMessage} onConfirm={() => { setAlertMessage(null); navigate('/music/playlists'); }} />}
@@ -73,15 +87,15 @@ export default function PlaylistProfile() {
 
                 <div id="playlist-card-top">
                     <div id="card-cover-picture">
-                        <img src={cover_picture || default_cover} alt="Playlist cover" />
+                        <img src={playlist?.cover_picture_url || default_cover} alt="Playlist cover" />
                     </div>
 
                     <div id="card-info">
                         <p id="playlist-label">Playlist</p>
-                        <h2 id="playlist-title">{title || "Untitled"}</h2>
-                        <div id='playlist-description'>{description}</div>
+                        <h2 id="playlist-title">{playlist?.title || "Untitled"}</h2>
+                        <div id='playlist-description'>{playlist?.description}</div>
                         <div id="playlist-meta">
-                            <span>{privacy}</span>
+                            <span>{playlist?.visibility}</span>
                             {songs.length > 0 &&
                                 <>
                                     <span>•</span>
@@ -95,13 +109,25 @@ export default function PlaylistProfile() {
                                 </>
                             }
                         </div>
-                        <div id="playlist-view-count">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            {view_count} {view_count === 1 ? "view" : "views"}
+                        <div id="playlist-view-count-row">
+                            <div id="playlist-view-count">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                                {playlist?.view_count} {playlist?.view_count === 1 ? "view" : "views"}
+                            </div>
+                            {
+                                Number(user?.user_id) !== Number(playlist?.creator_id) &&
+                                <button id="like-playlist-btn" className={liked ? 'liked' : ''} onClick={() => { setLiked(prev => !prev); likePlaylist(playlistId); }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                        fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2"
+                                        strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                </button>
+                            }
                         </div>
                     </div>
 
@@ -109,14 +135,17 @@ export default function PlaylistProfile() {
                         <img src={play_button} alt="Play" />
                     </button>
 
-                    <button id="edit-playlist-btn" onClick={() => navigate(`/music/playlists/${playlistId}/edit`)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                        Edit Playlist
-                    </button>
+                    {
+                        Number(user?.user_id) === Number(playlist?.creator_id) && 
+                        <button id="edit-playlist-btn" onClick={() => navigate(`/music/playlists/${playlistId}/edit`)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            Edit Playlist
+                        </button>
+                    }
                 </div>
 
                 <div id="playlist-card-bottom">
@@ -149,19 +178,22 @@ export default function PlaylistProfile() {
                 </div>
             </div>
 
-            <div id="delete-playlist-wrapper">
-                <button id="delete-playlist-btn" onClick={() => setDeleteOn(true)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6" />
-                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                        <path d="M10 11v6" />
-                        <path d="M14 11v6" />
-                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                    </svg>
-                    Delete Playlist
-                </button>
-            </div>
+            {
+                Number(user?.user_id) === Number(playlist?.creator_id) && 
+                <div id="delete-playlist-wrapper">
+                    <button id="delete-playlist-btn" onClick={() => setDeleteOn(true)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                        </svg>
+                        Delete Playlist
+                    </button>
+                </div>
+            }
         </div>
     );
 }
