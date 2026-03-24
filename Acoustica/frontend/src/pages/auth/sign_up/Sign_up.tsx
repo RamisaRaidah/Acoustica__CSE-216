@@ -46,7 +46,7 @@ function SignUp(){
                 console.log(signInResponse.onboarding_done);
                 if(signInResponse && signInResponse.token){
                     signin({
-                            user_id: signInResponse.user_id.toString(),
+                            user_id: signInResponse.user_id,
                             email: email,
                             token: signInResponse.token,
                             user_type: signInResponse.user_type,

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt, jwt_required, get_jwt_identity
 import logging
 import sys
 
@@ -40,3 +40,12 @@ def refresh_route():
     identity=get_jwt_identity()
     result,status=auth.refresh(identity)
     return jsonify(result),status
+
+@auth_bp.put("/api/auth/update-account")
+@jwt_required()
+def update_account_route():
+    user_id = get_jwt_identity()
+    user_type = get_jwt()["user_type"] 
+    data = request.form.to_dict()
+    result, status = auth.update_account(user_id, user_type, data)
+    return jsonify(result), status

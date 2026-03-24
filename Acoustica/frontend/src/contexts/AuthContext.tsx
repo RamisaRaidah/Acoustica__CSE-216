@@ -16,6 +16,7 @@ interface AuthContextType {
     signin: (user: User) => void;
     signout: () => void;
     updateUser: (updates: Partial<User>) => void;
+    refreshProfilePicture: () => Promise<void>; 
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -47,6 +48,15 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
         }
     }
 
+    async function refreshProfilePicture() {
+        const response = await getMyProfilePicture();
+        if (response) {
+            setProfilePicture(response.profile_picture);
+        } else {
+            setProfilePicture(null);
+        }
+    }
+
     useEffect(() => {
         async function fetchProfilePicture() {
             const response = await getMyProfilePicture();
@@ -60,7 +70,7 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
     }, [user]);
 
     return (
-        <AuthContext.Provider value={{ user, profile_picture, signin, signout, updateUser }}>
+        <AuthContext.Provider value={{ user, profile_picture, signin, signout, updateUser, refreshProfilePicture }}>
             {children}
         </AuthContext.Provider>
     );

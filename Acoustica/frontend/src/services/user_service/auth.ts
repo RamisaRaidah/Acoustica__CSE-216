@@ -24,6 +24,10 @@ interface OnboardingResponse{
     message: string;
 }
 
+interface UpdateAccountResponse {
+    message: string;
+}
+
 export async function signIn(email:string, password:string): 
 Promise<SignInResponse> {
     return api.request<SignInResponse>('/api/auth/sign-in',{
@@ -63,5 +67,13 @@ export async function sendTheme(theme: string) {
     api.request('/api/users/me/settings/theme', {
         method: 'PATCH',
         body: JSON.stringify({'theme': theme})
+    });
+}
+
+export async function updateAccount(formData: FormData):
+Promise<UpdateAccountResponse> {
+    return api.request<UpdateAccountResponse>('/api/auth/update-account', {
+        method: 'PUT',
+        body: formData
     });
 }

@@ -2,6 +2,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import "@/pages/user/settings/Settings.css";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 
 interface SettingsProps {
     isOpen: boolean;
@@ -13,7 +14,7 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
     const [darkMode, setDarkMode] = useState(false);
     const [notifications, setNotifications] = useState(true);
     const [email, setEmail] = useState(false);
-
+    const navigate=useNavigate();
     useEffect(() => {
         if (theme === 'dark') setDarkMode(true);
     }, []);
@@ -30,8 +31,11 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
 
                 <div className="settings_body">
                     <div className="settings_section_label">Account settings</div>
-                    <div className="settings_item">
+                    <div className="settings_item"
+                        onClick={()=>navigate('/update-Account')}
+                    >
                         <span className="settings_item_text">Update account</span>
+                        
                     </div>
                     <div className="settings_item">
                         <span className="settings_item_text">Change password</span>

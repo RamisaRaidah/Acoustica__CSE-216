@@ -15,6 +15,7 @@ import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
 import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
 import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
+import UpdateAccount from './pages/auth/update_account/UpdateAccount';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
 import Plans from '@/pages/subscriptions/plans/Plans';
 import PlanDetails from '@/pages/subscriptions/plans/PlanDetails';
@@ -73,6 +74,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
+          <Route path="/update-Account" element={<UpdateAccount/>}/>
           <Route path="/plans" element={<Plans />} />
           <Route path="/plan-details/:plan_id" element={<PlanDetails />} />
           <Route path="/checkout/:plan_id" element={<Checkout />} />

@@ -31,7 +31,7 @@ function SignIn() {
         const response = await signIn(email, password);
         if (response && response.token) {
             signin({
-                user_id: response.user_id.toString(),
+                user_id: response.user_id,
                 email: email,
                 token: response.token,
                 user_type: response.user_type,

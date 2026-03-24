@@ -1,0 +1,300 @@
+.update-account-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 6rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+}
+
+/* ── Header ── */
+
+.update-account-header {
+    margin-bottom: 2rem;
+}
+
+.update-account-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+    font-weight: 800;
+    margin: 0 0 0.3rem;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+}
+
+.update-account-header p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ── Two column form ── */
+
+.update-account-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* ── Section title ── */
+
+.ua-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+.ua-section-title::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, #e07b2a, transparent);
+    border-radius: 2px;
+    margin-top: 4px;
+}
+
+/* ── Left column ── */
+
+.update-account-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ── Right column ── */
+
+.update-account-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* ── PFP ── */
+
+.ua-pfp-group {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.ua-pfp-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+}
+
+.ua-pfp-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border-color, #ddd);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+}
+
+.ua-pfp-wrapper:hover .ua-pfp-preview {
+    transform: scale(1.04);
+    border-color: #e07b2a;
+}
+
+.ua-pfp-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ua-pfp-wrapper:hover .ua-pfp-overlay {
+    opacity: 1;
+}
+
+/* ── Form groups ── */
+
+.ua-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ua-form-group label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ua-form-group input,
+.ua-form-group select,
+.ua-form-group textarea {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface-color, #f5f5f5);
+    border: 1.5px solid var(--border-color, #e0e0e0);
+    border-radius: 10px;
+    color: var(--text-color);
+    transition: all 0.2s;
+    outline: none;
+}
+
+.ua-form-group input:focus,
+.ua-form-group select:focus,
+.ua-form-group textarea:focus {
+    border-color: #e07b2a;
+    background: var(--surface-hover, #fffaf6);
+}
+
+.ua-form-group textarea {
+    resize: none;
+    min-height: 90px;
+    line-height: 1.5;
+}
+
+.ua-form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    cursor: pointer;
+}
+
+.ua-char-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+/* ── Feedback messages ── */
+
+.ua-error {
+    font-size: 0.875rem;
+    color: #dc3545;
+    padding: 0.6rem 0.9rem;
+    background: rgba(220, 53, 69, 0.08);
+    border-radius: 8px;
+    border-left: 3px solid #dc3545;
+}
+
+.ua-success {
+    font-size: 0.875rem;
+    color: #198754;
+    padding: 0.6rem 0.9rem;
+    background: rgba(25, 135, 84, 0.08);
+    border-radius: 8px;
+    border-left: 3px solid #198754;
+}
+
+/* ── Action buttons ── */
+
+.ua-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.ua-btn-primary {
+    flex: 1;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    color: #fff;
+    background: #e07b2a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ua-btn-primary:hover {
+    background: #c96a1e;
+    transform: translateY(-1px);
+}
+
+.ua-btn-primary:active {
+    transform: translateY(0);
+}
+
+.ua-btn-primary:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ua-btn-secondary {
+    flex: 1;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+    background: transparent;
+    border: 1.5px solid var(--border-color, #e0e0e0);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ua-btn-secondary:hover {
+    border-color: #e07b2a;
+    color: #e07b2a;
+}
+
+.ua-btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Dark mode ── */
+
+.dark .ua-form-group input,
+.dark .ua-form-group select,
+.dark .ua-form-group textarea {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.dark .ua-form-group input:focus,
+.dark .ua-form-group select:focus,
+.dark .ua-form-group textarea:focus {
+    border-color: #e07b2a;
+    background: var(--surface-hover);
+}
+
+.dark .update-account-header p {
+    color: rgba(255, 210, 150, 0.65);
+}
+
+.dark .ua-form-group label {
+    color: rgba(255, 210, 150, 0.65);
+}
+
+.dark .ua-char-count {
+    color: rgba(255, 210, 150, 0.5);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 700px) {
+    .update-account-form {
+        grid-template-columns: 1fr;
+    }
+}
