@@ -11,7 +11,7 @@ GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 def send_password_reset_email(to_email: str, reset_link: str):
     try:
         message = MIMEMultipart("alternative")
-        message["Subject"] = "Reset Your Password"
+        message["Subject"] = "Reset Your Password for Acoustica"
         message["From"] = GMAIL_USER
         message["To"] = to_email
 

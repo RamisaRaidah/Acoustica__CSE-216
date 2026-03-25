@@ -8,13 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 import secrets
 from datetime import datetime, timedelta
 import os
-
-GMAIL_USER = os.getenv("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
-
-from utility.email_service import send_password_reset_email
-
-
+from utils.email_service import send_password_reset_email
 from storage_service.services import storage
 
 logging.basicConfig(
