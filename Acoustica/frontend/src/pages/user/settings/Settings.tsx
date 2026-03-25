@@ -1,3 +1,4 @@
+import Alert from "@/components/alert/TwoButtonAlert";
 import { useTheme } from "@/contexts/ThemeContext";
 import "@/pages/user/settings/Settings.css";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
     const [darkMode, setDarkMode] = useState(false);
     const [notifications, setNotifications] = useState(true);
     const [email, setEmail] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const navigate=useNavigate();
     useEffect(() => {
         if (theme === 'dark') setDarkMode(true);
@@ -22,7 +24,20 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
     if (!isOpen) return null;
 
     return createPortal(
+        
         <div className="settings_overlay">
+            {showDeleteConfirm && (
+                <Alert
+                    message="Are you sure you want to delete your account? This action cannot be undone."
+                    type="confirm"
+                    onConfirm={() => {
+                        setShowDeleteConfirm(false);
+                        onClose();
+                        navigate('/delete/account');
+                    }}
+                    onCancel={() => setShowDeleteConfirm(false)}
+                />
+            )}
             <div className="settings_popup" onClick={e => e.stopPropagation()}>
                 <div className="settings_header">
                     <h2 className="settings_title">Settings</h2>
@@ -32,15 +47,27 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
                 <div className="settings_body">
                     <div className="settings_section_label">Account settings</div>
                     <div className="settings_item"
-                        onClick={()=>navigate('/update-Account')}
+                        onClick={()=>
+                            {
+                                navigate('/update/account');
+                                onClose();
+                            }
+                        }
                     >
                         <span className="settings_item_text">Update account</span>
                         
                     </div>
-                    <div className="settings_item">
+                    <div className="settings_item"
+                        onClick={()=>
+                            {
+                                navigate('/change/password');
+                                onClose();
+                            }
+                        }
+                    >
                         <span className="settings_item_text">Change password</span>
                     </div>
-                    <div className="settings_item">
+                    <div className="settings_item" onClick={() => setShowDeleteConfirm(true)}>
                         <span className="settings_item_text settings_danger">Delete account</span>
                     </div>
 

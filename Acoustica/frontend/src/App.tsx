@@ -15,7 +15,7 @@ import SignIn from '@/pages/auth/sign_in/Sign_in.tsx';
 import SignUp from '@/pages/auth/sign_up/Sign_up.tsx';
 import SignOut from '@/pages/auth/sign_out/Sign_out.tsx';
 import Onboarding from '@/pages/auth/onboarding/Onboarding.tsx';
-import UpdateAccount from './pages/auth/update_account/UpdateAccount';
+import UpdateAccount from './pages/user/users/update_account/UpdateAccount';
 import MyProfile from '@/pages/user/profile/private/MyProfile.tsx';
 import Plans from '@/pages/subscriptions/plans/Plans';
 import PlanDetails from '@/pages/subscriptions/plans/PlanDetails';
@@ -42,6 +42,12 @@ import { GenreProfile, MoodProfile, LanguageProfile, InstrumentProfile } from '@
 import Library from '@/pages/music/library/Library';
 import ArtistProfile from './pages/user/profile/public/ArtistProfile';
 
+
+import DeleteAccount from './pages/user/users/delete-account/DeleteAccount';
+import ChangePassword from './pages/user/users/change-password/ChangePassword';
+import ForgotPassword from './pages/user/users/forgot-pass/ForgotPassword';
+import ResetPassword from './pages/user/users/forgot-pass/ResetPassword';
+
 function App() {
   const scrollRef = useScroll();
   const { user } = useAuth();
@@ -53,6 +59,8 @@ function App() {
         <Route path="/sign-in" element={<PublicOnlyRoute><SignIn /></PublicOnlyRoute>} />
         <Route path="/sign-up" element={<PublicOnlyRoute><SignUp /></PublicOnlyRoute>} />
         <Route path="/onboarding" element={<ProtectedRoute requireOnboarding={false}><Onboarding /></ProtectedRoute>} />
+        <Route path="/forgot-password" element={<PublicOnlyRoute><ForgotPassword/></PublicOnlyRoute>}/>
+        <Route path="/reset-password" element={<PublicOnlyRoute><ResetPassword/></PublicOnlyRoute>}/>
 
         <Route element={
           <ProtectedRoute>
@@ -62,7 +70,7 @@ function App() {
                   <Sidebar />
                   <Topbar />
                   <Scrollbar />
-                  {user?.user_type === "listener" && <MusicPlayer />}
+                  {/* {user?.user_type === "listener" && <MusicPlayer />} */}
                   <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
                     <Outlet />
                   </div>
@@ -74,7 +82,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/sign-out" element={<SignOut />} />
-          <Route path="/update-Account" element={<UpdateAccount/>}/>
+          <Route path="/update/account" element={<UpdateAccount/>}/>
           <Route path="/plans" element={<Plans />} />
           <Route path="/plan-details/:plan_id" element={<PlanDetails />} />
           <Route path="/checkout/:plan_id" element={<Checkout />} />
@@ -101,6 +109,9 @@ function App() {
           <Route path="/explore/instruments/:instrument_name" element={<InstrumentProfile />} />
           <Route path="/music/library" element={<Library />} />
           <Route path="/artists/:artist_id" element={<ArtistProfile />} />
+          <Route path="/delete/account" element={<DeleteAccount/>}/>
+          <Route path="/change/password" element={<ChangePassword/>}/>
+          
         </Route>
       </Routes>
     </BrowserRouter>

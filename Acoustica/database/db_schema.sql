@@ -75,8 +75,8 @@ CREATE TABLE IF NOT EXISTS "users" (
   user_id SERIAL CONSTRAINT pk_users PRIMARY KEY,
   asset_id INT CONSTRAINT fk_users_asset_id REFERENCES asset(asset_id) ON DELETE CASCADE,
   user_type user_type_enum NOT NULL,
-  first_name TEXT,
-  last_name TEXT,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
   email TEXT CONSTRAINT uq_users_email UNIQUE NOT NULL,
   "password" TEXT NOT NULL,
   profile_picture TEXT,
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS "listener" (
 
 CREATE TABLE IF NOT EXISTS "artist" (
   artist_id INT CONSTRAINT pk_artist PRIMARY KEY REFERENCES "users"(user_id) ON DELETE CASCADE,
-  stage_name TEXT,
+  stage_name TEXT NOT NULL,
   bank_account TEXT,
   points INT DEFAULT 0,
   is_Band BOOLEAN
@@ -387,6 +387,13 @@ CREATE TABLE IF NOT EXISTS "notification" (
   is_read BOOLEAN DEFAULT FALSE
 );
 
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    token VARCHAR(100) PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
 
 
 CREATE UNIQUE INDEX idx_users_email ON users(email);

@@ -2,8 +2,8 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCountries, Country, getLanguages, Language } from "@/services/analytics_service/analytics";
 import { useAuth } from "@/contexts/AuthContext";
-import { updateAccount } from "@/services/user_service/auth";
-import "./UpdateAccount.css";
+import { updateAccount } from "@/services/user_service/users";
+import '@/pages/user/users/update_account/UpdateAccount.css'
 
 import default_pfp_img from '@/assets/images/Default_pfp.png';
 import { getMyProfile } from "@/services/user_service/users";

@@ -41,11 +41,3 @@ def refresh_route():
     result,status=auth.refresh(identity)
     return jsonify(result),status
 
-@auth_bp.put("/api/auth/update-account")
-@jwt_required()
-def update_account_route():
-    user_id = get_jwt_identity()
-    user_type = get_jwt()["user_type"] 
-    data = request.form.to_dict()
-    result, status = auth.update_account(user_id, user_type, data)
-    return jsonify(result), status

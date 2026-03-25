@@ -38,6 +38,12 @@ function SignUp(){
             if(password!=confirm_password){
                 throw new Error('Make sure both passwords match');
             }
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
+
+            if (!passwordRegex.test(password)) {
+                setError('Password must be 8+ characters with at least one uppercase, lowercase, digit, and special character.');
+                return;
+            }
             const response=await signUp(email, password, first_name, last_name, user_type);
             
             if(response && response.user_id){
@@ -163,7 +169,7 @@ function SignUp(){
                                 id="confirm-password"
                                 value={confirm_password}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
-                                placeholder="Enter your password"
+                                placeholder="Confirm your password"
                                 required
                             />
                             

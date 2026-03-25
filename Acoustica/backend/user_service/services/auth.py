@@ -78,7 +78,7 @@ def sign_up(data):
                         """
                         INSERT INTO artist (artist_id, stage_name, bank_account)
                         VALUES (%s, %s, %s)
-                        """,(user_id,None, None)
+                        """,(user_id,first_name+' '+last_name, None)
                     )
                 connection.commit()
             return {
@@ -145,100 +145,6 @@ def refresh(user_identity):
     access_token = create_access_token(identity=user_identity)
     return {"message": "Token refreshed", "token": access_token}, 200
 
-
-def update_account(user_id, user_type, data):
-    bio          = request.form.get("bio")
-    country_id   = request.form.get("country_id")
-    language_id  = request.form.get("language_id")
-    phone_number = request.form.get("phone_number")
-    gender       = request.form.get("gender")
-    date_of_birth = request.form.get("date_of_birth")
-
-    pfp = request.files.get("pfp")
-
-    connection = get_db_connection()
-    if connection is None:
-        return {"error": "Database connection failed"}, 500
-
-    new_pfp_path = None
-
-    try:
-       
-        if pfp:
-            pfp_ext = storage.get_file_extension(pfp)
-            new_pfp_path = f"Images/Profile_Pictures/pfp{user_id}.{pfp_ext}"
-            success = storage.upload_file_to_storage(
-                pfp.stream,
-                new_pfp_path,
-                pfp.mimetype
-            )
-            if not success:
-                raise Exception("Profile picture upload failed")
-
-        with connection:
-            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-
-               
-                cursor.execute(
-                    "SELECT profile_picture FROM users WHERE user_id = %s",
-                    (user_id,)
-                )
-                existing = cursor.fetchone()
-                old_pfp_path = existing["profile_picture"] if existing else None
-
-                fields = {
-                    "bio":           bio,
-                    "country_id":    country_id,
-                    "language_id":   language_id,
-                    "phone_number":  phone_number,
-                    "gender":        gender,
-                    "date_of_birth": date_of_birth,
-                }
-                if new_pfp_path:
-                    fields["profile_picture"] = new_pfp_path
-
-                fields = {k: v for k, v in fields.items() if v is not None}
-
-                if fields:
-                    set_clause = ", ".join(f"{col} = %s" for col in fields)
-                    values = list(fields.values()) + [user_id]
-                    cursor.execute(
-                        f"UPDATE users SET {set_clause} WHERE user_id = %s RETURNING user_id",
-                        values
-                    )
-                    if not cursor.fetchone():
-                        raise Exception("User update failed")
-
-             
-                if user_type == "artist":
-                    artist_fields = {
-                        "stage_name":   data.get("stage_name"),
-                        "bank_account": data.get("bank_account"),
-                    }
-                    artist_fields = {k: v for k, v in artist_fields.items() if v is not None}
-
-                    if artist_fields:
-                        set_clause = ", ".join(f"{col} = %s" for col in artist_fields)
-                        values = list(artist_fields.values()) + [user_id]
-                        cursor.execute(
-                            f"UPDATE artist SET {set_clause} WHERE artist_id = %s",
-                            values
-                        )
-
-
-        if new_pfp_path and old_pfp_path and "Default_pfp" not in old_pfp_path:
-            storage.delete_file_from_storage(old_pfp_path)
-
-        return {"message": "Account updated successfully"}, 200
-
-    except Exception as e:
-        if new_pfp_path:
-            storage.delete_file_from_storage(new_pfp_path)
-        logging.error(f"Update account failed for user {user_id}: {e}")
-        return {"error": "Account update failed"}, 500
-
-    finally:
-        release_connection(connection)
 
 ############################################## Helper functions ###############################################################
 

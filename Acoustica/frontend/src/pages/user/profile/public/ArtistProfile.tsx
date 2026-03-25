@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import ArtistStatsChart from '@/components/user/artists/ArtistStatsChart.tsx';
 import '@/pages/user/profile/public/ArtistProfile.css';
 import defaultCoverPic from '@/assets/images/music/Default_Cover_Picture.png';
+import playButtonPic from '@/assets/images/music/Play_Button.png';
 
 function ArtistProfile() {
     const { artist_id } = useParams<{ artist_id: string }>();
@@ -20,8 +21,13 @@ function ArtistProfile() {
     const [error, setError] = useState('');
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
-    const [songsLimit, setSongsLimit] = useState(5);
-    const [albumsLimit, setAlbumsLimit] = useState(5);
+    const [songsExpanded, setSongsExpanded] = useState(false);
+    const [albumsExpanded, setAlbumsExpanded] = useState(false);
+
+    const SONGS_INITIAL = 4;
+    const SONGS_MAX = 15;
+    const ALBUMS_INITIAL = 4;
+    const ALBUMS_MAX = 50;
 
     useEffect(() => {
         const loadArtist = async () => {
@@ -65,20 +71,36 @@ function ArtistProfile() {
         }
     };
 
-    if (loading) return <div className="loading">Loading artist...</div>;
+    if (loading) return <div className="loading">Loading artist</div>;
     if (error) return <div className="error">{error}</div>;
     if (!artist) return <div className="error">Artist not found</div>;
+
+    const visibleSongs = songs.slice(0, songsExpanded ? SONGS_MAX : SONGS_INITIAL);
+    const visibleAlbums = albums.slice(0, albumsExpanded ? ALBUMS_MAX : ALBUMS_INITIAL);
+
+    const showSeeMoreSongs = !songsExpanded && songs.length > SONGS_INITIAL;
+    const showSeeLessSongs = songsExpanded;
+    const showSeeMoreAlbums = !albumsExpanded && albums.length > ALBUMS_INITIAL;
+    const showSeeLessAlbums = albumsExpanded;
+    
 
     return (
         <div className="artist-profile-container">
 
-            {/* TOP SECTION */}
             <div className="artist-top">
+
                 <div className="artist-left">
-                    <h1 className="artist-name">
-                        {artist.stage_name || `${artist.first_name} ${artist.last_name}`}
-                    </h1>
-                    <p className="artist-bio">{artist.bio || 'No bio available'}</p>
+                    <div className="artist-name-row">
+                        <h1 className="artist-name">
+                            {artist.stage_name || `${artist.first_name} ${artist.last_name}`}
+                        </h1>
+                        <button className="play-circle-btn" aria-label="Play">
+                            <img src={playButtonPic} alt="Play" className="play-circle-img" />
+                        </button>
+                    </div>
+                    <p className="artist-bio">
+                        {artist.bio || `Hey, I am ${artist.stage_name || `${artist.first_name} ${artist.last_name}`}`}
+                    </p>
                     {artist_id && <ArtistStatsChart artist_id={parseInt(artist_id)} />}
                 </div>
 
@@ -101,60 +123,58 @@ function ArtistProfile() {
                 </div>
             </div>
 
-            {/* SONGS */}
-            <div className="artist-section">
-                <div className="section-header">
-                    <h2>Songs</h2>
-                    <div className="section-actions">
-                        {songsLimit < Math.min(songs.length, 15) && (
-                            <button className="see-all-btn" onClick={() => setSongsLimit(15)}>See more</button>
-                        )}
-                        {songsLimit > 5 && (
-                            <button className="see-all-btn" onClick={() => setSongsLimit(5)}>See less</button>
-                        )}
+            {/* ── BOTTOM: Songs on left | Albums on right ── */}
+            <div className="artist-bottom-grid">
+
+                <div className="artist-section">
+                    <div className="section-header">
+                        <h2>Songs</h2>
+                        <div className="section-actions">
+                            {showSeeMoreSongs && (
+                                <button className="see-all-btn" onClick={() => setSongsExpanded(true)}>See more</button>
+                            )}
+                            {showSeeLessSongs && (
+                                <button className="see-all-btn" onClick={() => setSongsExpanded(false)}>See less</button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="media-grid">
+                        {visibleSongs.map((song) => (
+                            <div key={song.song_id} className="media-card">
+                                <div className="media-thumb">
+                                    <img src={song.cover_picture_url || defaultCoverPic} alt={song.title} />
+                                </div>
+                                <span className="media-label">{song.title}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div className="media-grid">
-                    {songs.slice(0, songsLimit).map((song) => (
-                        <div key={song.song_id} className="media-card">
-                            <div className="media-thumb">
-                                <img src={song.cover_picture_url || defaultCoverPic} 
-                                alt={song.title} 
-                            />
-                            </div>
-                            <span className="media-label">{song.title}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
 
-            {/* ALBUMS */}
-            <div className="artist-section">
-                <div className="section-header">
-                    <h2>Albums</h2>
-                    <div className="section-actions">
-                        {albumsLimit < Math.min(albums.length, 50) && (
-                            <button className="see-all-btn" onClick={() => setAlbumsLimit(50)}>See more</button>
-                        )}
-                        {albumsLimit > 5 && (
-                            <button className="see-all-btn" onClick={() => setAlbumsLimit(5)}>See less</button>
-                        )}
+                <div className="artist-section">
+                    <div className="section-header">
+                        <h2>Albums</h2>
+                        <div className="section-actions">
+                            {showSeeMoreAlbums && (
+                                <button className="see-all-btn" onClick={() => setAlbumsExpanded(true)}>See more</button>
+                            )}
+                            {showSeeLessAlbums && (
+                                <button className="see-all-btn" onClick={() => setAlbumsExpanded(false)}>See less</button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="media-grid">
+                        {visibleAlbums.map((album) => (
+                            <div key={album.album_id} className="media-card">
+                                <div className="media-thumb">
+                                    <img src={album.cover_picture_url || defaultCoverPic} alt={album.title} />
+                                </div>
+                                <span className="media-label">{album.title}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div className="media-grid">
-                    {albums.slice(0, albumsLimit).map((album) => (
-                        <div key={album.album_id} className="media-card">
-                            <div className="media-thumb">
-                                <img src={album.cover_picture_url || defaultCoverPic} 
-                                alt={album.title} 
-                            />
-                            </div>
-                            <span className="media-label">{album.title}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
 
+            </div>
         </div>
     );
 }
