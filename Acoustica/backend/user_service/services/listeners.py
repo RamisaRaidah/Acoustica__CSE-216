@@ -2,6 +2,7 @@ from db import execute_sql
 import logging
 import sys
 from flask_jwt_extended import get_jwt_identity
+from storage_service.services import storage
 
 logging.basicConfig(
     level = logging.INFO,

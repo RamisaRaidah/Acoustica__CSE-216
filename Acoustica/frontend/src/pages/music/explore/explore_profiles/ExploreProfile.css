@@ -189,7 +189,7 @@
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--text-color);
-    margin-bottom: 1vh;
+    margin-bottom: 1.5vh;
     position: relative;
     display: inline-block;
 }
@@ -416,7 +416,7 @@
 }
 
 .explore-song-title {
-    margin-top: 0.2vh;
+    margin-top: 0.5vh;
     margin-bottom: 0;
     font-size: clamp(0.65rem, 0.8vw, 0.95rem);
     font-weight: 600;

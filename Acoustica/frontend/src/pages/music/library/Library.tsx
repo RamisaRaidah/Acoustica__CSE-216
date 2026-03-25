@@ -1,5 +1,4 @@
 import '@/pages/music/library/Library.css';
-import { useAuth } from "@/contexts/AuthContext";
 import { getAlbumCoverPicture, getAlbumSongs } from "@/services/music_service/albums";
 import { getLikedSongs, getLikedAlbums, getLikedPlaylists, LikedSong, LikedAlbum, LikedPlaylist } from "@/services/user_service/listeners";
 import { useEffect, useState } from "react";
@@ -17,8 +16,6 @@ function formatDuration(seconds: number): string {
     const s = seconds % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
-
-// ── Liked Songs trending-style list ──────────────────────────────────────────
 
 function LikedSongList({
     songs,
@@ -56,8 +53,6 @@ function LikedSongList({
     );
 }
 
-// ── Generic card grid (albums & playlists) ────────────────────────────────────
-
 interface CardItem {
     id: number;
     title: string;
@@ -65,7 +60,7 @@ interface CardItem {
     cover_url?: string;
     onPlay: () => void;
     onNavigate: () => void;
-    onSubtitleNavigate?: () => void; // NEW: optional click handler for subtitle
+    onSubtitleNavigate?: () => void; 
 }
 
 function CardGrid({ items }: { items: CardItem[] }) {
@@ -81,16 +76,17 @@ function CardGrid({ items }: { items: CardItem[] }) {
                         <div className="lib-card-cover" onClick={item.onNavigate}>
                             <img src={item.cover_url || default_cover} alt={item.title} />
                             <div
-                                className="lib-card-play-btn"
-                                onClick={(e) => { e.stopPropagation(); item.onPlay(); }}
+                                className="card-play-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    item.onPlay();
+                                }}
                             >
-                                {/* FIX: pointer-events none on inner img so clicks reach the button div */}
-                                <img src={play_button} style={{ pointerEvents: 'none' }} />
+                                <img src={play_button} />
                             </div>
                         </div>
                         <p className="lib-card-title" onClick={item.onNavigate}>{item.title}</p>
                         {item.subtitle && (
-                            // FIX: add --link class and onClick when onSubtitleNavigate is provided
                             <p
                                 className={`lib-card-subtitle${item.onSubtitleNavigate ? ' lib-card-subtitle--link' : ''}`}
                                 onClick={item.onSubtitleNavigate}
@@ -120,7 +116,7 @@ export default function Library() {
     const [likedPlaylists, setLikedPlaylists] = useState<LikedPlaylist[]>([]);
     const [cover_pictures, setCoverPictures] = useState<Record<number, string>>({});
 
-    const { playSong, createQueue } = useMusic();
+    const { createQueue } = useMusic();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -179,7 +175,6 @@ export default function Library() {
             });
         },
         onNavigate: () => navigate(`/music/albums/${album.album_id}`),
-        // FIX: wire up artist name navigation for liked albums
         onSubtitleNavigate: () => navigate(`/artists/${album.owner_id}`),
     }));
 
@@ -193,7 +188,6 @@ export default function Library() {
             });
         },
         onNavigate: () => navigate(`/music/playlists/${pl.playlist_id}`),
-        // playlists have no artist subtitle so onSubtitleNavigate is omitted
     }));
 
     if (loading) return <div className="loading">Loading</div>;
@@ -210,7 +204,7 @@ export default function Library() {
                     >
                         <span className="lib-label">Your Library</span>
                         <span className="lib-name">Liked Songs</span>
-                        <span className="lib-count">{likedSongs.length} songs</span>
+                        <span className="lib-count">{likedSongs.length} {likedSongs.length > 1? 'songs' : 'song'}</span>
                         <span className="lib-shine" />
                         <div
                             className="lib-play-btn"
@@ -230,10 +224,10 @@ export default function Library() {
                 <div className="lib-right-col">
 
                     <div className="lib-section-header">Liked Albums</div>
-                    {likedAlbums.length > 0 ? <CardGrid items={albumItems} /> : <p className="lib-empty">No liked album yet.</p>}
+                    {likedAlbums.length > 0 ? <CardGrid items={albumItems} /> : <p className="lib-empty">No liked albums yet.</p>}
 
                     <div className="lib-section-header lib-section-header--spaced">Liked Playlists</div>
-                    {likedPlaylists.length > 0 ? <CardGrid items={playlistItems} /> : <p className="lib-empty">No liked playlist yet.</p>}
+                    {likedPlaylists.length > 0 ? <CardGrid items={playlistItems} /> : <p className="lib-empty">No liked playlists yet.</p>}
                 </div>
 
             </div>
