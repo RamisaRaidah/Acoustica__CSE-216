@@ -23,16 +23,23 @@ def get_artists():
     """
 
     result = execute_sql(command, fetch_all = True)
-    artists = []
-    for r in result:
-        if r['profile_picture']:
-            profile_picture_url = r['profile_picture']
-        else:
-            profile_picture_url = "Images/Profile_Pictures/Default_pfp.png"
 
-        artists.append({'artist_id': r['artist_id'], 'artist_name': r['artist_name'], 'profile_picture_url': storage.generate_signed_url(profile_picture_url)})
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        for r in result:
+            if r['profile_picture']:
+                signed_url = storage.generate_signed_url(r['profile_picture'])
+                if signed_url:
+                    r['profile_picture'] = signed_url
+                else:
+                    r['profile_picture'] = "null"
+            else:
+                r['profile_picture'] = "null"
 
-    return artists, 200  
+        return result, 200  
 
 
 def get_artist_info(artist_id, viewer_id=None):
@@ -83,6 +90,27 @@ def get_artist_info(artist_id, viewer_id=None):
         profile["is_following"] = follow_check is not None
 
     return profile, 200
+
+### get_artist_song_metadata ###
+def get_artist_song_metadata(artist_id):
+    command = """
+        SELECT song_id
+        FROM song s JOIN album a ON (s.album_id = a.album_id)
+        WHERE a.owner_id = %s
+    """
+
+    result = execute_sql(command, (artist_id,), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        song_ids = []
+        for r in result:
+            song_ids.append(r['song_id'])
+
+        return song_ids, 200
 
 
 ### Helper functions ###

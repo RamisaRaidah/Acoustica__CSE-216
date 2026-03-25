@@ -33,6 +33,7 @@ def get_artists_route():
     result, status = artists.get_artists()
     return jsonify(result), status
 
+### get_artist_info_route ###
 @artists_bp.get("/api/artists/<int:artist_id>")
 def get_artist_info_route(artist_id):
     viewer_id = None
@@ -42,4 +43,11 @@ def get_artist_info_route(artist_id):
     except Exception:
         pass
     result, status = artists.get_artist_info(artist_id, viewer_id)
+    return jsonify(result), status
+
+### get_artist_song_metadata_route ###
+@artists_bp.get("/api/artists/<int:artist_id>/song_metadata")
+@jwt_required()
+def get_artist_song_metadata_route(artist_id):
+    result, status = artists.get_artist_song_metadata(artist_id)
     return jsonify(result), status

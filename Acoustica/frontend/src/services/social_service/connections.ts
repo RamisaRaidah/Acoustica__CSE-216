@@ -1,4 +1,5 @@
 import api from '@/services/api';
+import { Artist } from '@/services/user_service/artists';
 
 export interface followResponse{
     message: string;
@@ -14,4 +15,8 @@ export async function followArtist(artist_id:number):Promise<followResponse>{
 
 export async function checkFollowStatus(artist_id:number):Promise<followResponse>{
     return api.request<followResponse>(`/api/connections/${artist_id}/follow-check-status`);
+}
+
+export async function getFollowedArtists(): Promise<Artist[]> {
+    return api.request('/api/connections/me/followed-artists');
 }

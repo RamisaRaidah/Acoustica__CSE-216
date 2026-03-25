@@ -81,7 +81,7 @@ export default function SongProfile() {
             }
         }
         loadSongData(songId);
-    }, []);
+    }, [songId]);
 
     useEffect(() => {
         if (song_id === playingSong?.song_id) setLiked(playingSongLiked);

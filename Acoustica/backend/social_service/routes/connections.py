@@ -13,6 +13,7 @@ logging.basicConfig(
 
 connections_bp = Blueprint("connections", __name__) 
 
+### follow_artist_route ###
 @connections_bp.post("/api/connections/<int:artist_id>/follow-artist")
 @jwt_required()
 def follow_artist_route(artist_id):
@@ -21,9 +22,18 @@ def follow_artist_route(artist_id):
     result, status = connections.follow_artist(listener_id, artist_id)
     return jsonify(result), status
 
+### check_follow_status_route ###
 @connections_bp.get("/api/connections/<int:artist_id>/follow-check-status")
 @jwt_required()
-def checkFollowStatus_route(artist_id):
+def check_follow_status_route(artist_id):
     listener_id = get_jwt_identity()
-    result, status = connections.checkFollowStatus(listener_id, artist_id)
+    result, status = connections.check_follow_status(listener_id, artist_id)
+    return jsonify(result), status
+
+### get_followed_artists_route ###
+@connections_bp.get("/api/connections/me/followed-artists")
+@jwt_required()
+def get_followed_artists_route():
+    listener_id = get_jwt_identity()
+    result, status = connections.get_followed_artists()
     return jsonify(result), status

@@ -3,7 +3,7 @@ import api from '@/services/api';
 export interface Artist {
     artist_id: number;
     artist_name: string;
-    profile_picture_url: string;
+    profile_picture: string;
 }
 
 export interface GetArtistInfoResponse {
@@ -25,4 +25,8 @@ export async function getArtists(): Promise<Artist[]> {
 
 export async function getArtistInfo(artist_id: number):Promise<GetArtistInfoResponse> {
     return api.request<GetArtistInfoResponse>(`/api/artists/${artist_id}`);
+}
+
+export async function getArtistSongMetadata(artistId: number): Promise<number[]> {
+    return api.request(`/api/artists/${artistId}/song_metadata`);
 }

@@ -1,49 +1,52 @@
-/* ===== LOADING STATE ===== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── Loading / Error ─────────────────────────────────────── */
 .loading {
-    text-align: center;
-    padding: 4rem;
-    font-size: 1.2rem;
-    color: var(--text-muted);
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading::after {
-    content: '...';
-    animation: ellipsis 1.5s infinite;
+  content: '...';
+  animation: ellipsis 1.5s infinite;
 }
 
-/* ===== ERROR STATE ===== */
 .error {
-    text-align: center;
-    padding: 4rem;
-    font-size: 1.2rem;
-    color: #dc3545;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+  color: #dc3545;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .error::before {
-    content: '⚠️ ';
-    font-size: 2rem;
-    margin-right: 0.5rem;
+  content: '⚠️ ';
+  font-size: 2rem;
+  margin-right: 0.5rem;
 }
 
-/* ===== CONTENT ===== */
-
+/* ── Root ────────────────────────────────────────────────── */
 #artist-container {
   display: block;
   position: relative;
   overflow-y: visible;
   width: 100%;
   box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-color);
 }
 
-#artist-header {
+/* ── Header ──────────────────────────────────────────────── */
+#artist-container .artist-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -52,48 +55,78 @@
 
 #artist-container h1 {
   margin: 0;
-  font-size: 2vw;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 2.2vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--text-color);
+  position: relative;
+  display: inline-block;
 }
 
-#artist-grid {
+#artist-container h1::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, #e07b2a, transparent);
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+#artist-container .artist-empty {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  padding: 1.5rem 0 2rem;
+  margin: 0;
+}
+
+/* ── Section ─────────────────────────────────────────────── */
+#artist-container .artist-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Grid ────────────────────────────────────────────────── */
+#artist-container .artist-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, calc((100% - 6 * 1vw) / 7)));
   row-gap: 2vw;
-  justify-items: center;
   column-gap: 1vw;
+  justify-items: center;
 }
 
-.artist-card {
+/* ── Card ────────────────────────────────────────────────── */
+#artist-container .artist-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
   width: 100%;
   transition: transform 0.25s ease;
 }
 
-.artist-card:hover {
+#artist-container .artist-card:hover {
   transform: translateY(-0.6vh);
 }
 
-.artist-card-cover {
+#artist-container .artist-card-cover {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: 0.7vw;
   overflow: hidden;
-  box-shadow: 0 0.4vh 1.5vh var(--shadow);
+  box-shadow: 0 0.4vh 1.5vh var(--shadow, rgba(0, 0, 0, 0.18));
   transition: box-shadow 0.25s ease;
+  cursor: pointer;
 }
 
-.artist-card:hover .artist-card-cover {
-  box-shadow: 0 0.8vh 2.5vh var(--shadow);
+#artist-container .artist-card:hover .artist-card-cover {
+  box-shadow: 0 0.8vh 2.5vh var(--shadow, rgba(0, 0, 0, 0.28));
 }
 
-.artist-card-cover img {
+#artist-container .artist-card-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -101,31 +134,56 @@
   transition: transform 0.35s ease;
 }
 
-.artist-card:hover .artist-card-cover img {
+#artist-container .artist-card:hover .artist-card-cover img {
   transform: scale(1.06);
 }
 
-.artist-card-cover::after {
+/* ── Play button ─────────────────────────────────────────── */
+#artist-container .artist-card-play-btn {
   position: absolute;
-  inset: 0;
+  bottom: 0.5vw;
+  right: 0.5vw;
+  z-index: 4;
+  width: 2.2vw;
+  height: 2.2vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8vw;
-  color: white;
-  background: rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(3px);
+  background: rgba(224, 123, 42, 0.92);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.7vw;
+  color: #fff;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transform: scale(0.8) translateY(4px);
+  transition: opacity 0.22s ease, transform 0.22s ease, background 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.artist-card:hover .artist-card-cover::after {
+#artist-container .artist-card-play-btn img {
+  border-radius: 50%;
+}
+
+#artist-container .artist-card:hover .artist-card-play-btn {
   opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
-.artist-card-title {
+#artist-container .artist-card-play-btn:hover {
+  background: rgba(224, 123, 42, 1);
+  transform: scale(1.1) translateY(0) !important;
+  box-shadow: 0 4px 16px rgba(224, 123, 42, 0.55);
+}
+
+#artist-container .artist-card-play-btn:active {
+  transform: scale(0.95) translateY(0) !important;
+}
+
+/* ── Card title ──────────────────────────────────────────── */
+#artist-container .artist-card-title {
   margin-top: 0.7vh;
-  font-size: 0.9vw;
+  font-size: 0.88rem;
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
@@ -137,9 +195,52 @@
   padding: 0.2vh 0.3vw;
   border-radius: 0.3vw;
   transition: color 0.2s ease;
-  user-select: text;
+  font-family: 'DM Sans', sans-serif;
 }
 
-.artist-card-title:hover {
+#artist-container .artist-card-title:hover {
   text-decoration: underline;
+  color: #e07b2a;
+}
+
+/* ── See all ─────────────────────────────────────────────── */
+#artist-container .artist-see-all-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.2vh;
+}
+
+#artist-container .artist-see-all-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #e07b2a;
+  padding: 0.3rem 0;
+  position: relative;
+  transition: opacity 0.2s ease;
+  opacity: 0.85;
+}
+
+#artist-container .artist-see-all-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1.5px;
+  background: #e07b2a;
+  transition: width 0.25s ease;
+}
+
+#artist-container .artist-see-all-btn:hover {
+  opacity: 1;
+}
+
+#artist-container .artist-see-all-btn:hover::after {
+  width: 100%;
 }
