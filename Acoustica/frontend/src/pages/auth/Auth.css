@@ -6,6 +6,15 @@ html, body {
   overflow-x: hidden;
 }
 
+.error-message {
+    font-size: 0.875rem;
+    color: #dc3545;
+    padding: 0.6rem 0.9rem;
+    background: rgba(220, 53, 69, 0.08);
+    border-radius: 8px;
+    border-left: 3px solid #dc3545;
+}
+
 body:has(.auth-container) {
   background-color: transparent !important;
 }
@@ -258,15 +267,6 @@ body:has(.auth-container) #page {
     transform: none;
 }
 
-
-
-.error-message {
-    display: none;
-    text-align: left;
-    border-radius: 8px;
-    color: #ff0000;
-    font-size: 0.875rem;
-}
 
 .auth-forgot-pass {
     text-align: left;

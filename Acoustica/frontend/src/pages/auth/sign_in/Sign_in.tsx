@@ -120,7 +120,14 @@ function SignIn() {
           </div>
 
           <div className="auth-forgot-pass">
-            <a href="/forgot-pass">Forgot your password?</a>
+            <a 
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/forgot-password');
+              }}
+            >
+              Forgot your password?
+            </a>
           </div>
 
           {error && (

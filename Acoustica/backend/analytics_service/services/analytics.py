@@ -381,7 +381,9 @@ def get_instrument_my_songs(instrument_id):
         return [], 200
     else:
         return result, 200
+    
 
+##################### Artist Public Profile page Stats #####################
 def get_artist_stats(artist_id):
     """Get statistics for artist charts"""
     
@@ -396,7 +398,7 @@ def get_artist_stats(artist_id):
         LEFT JOIN album al ON al.album_id = s.album_id
         WHERE sa.artist_id = %s
         ORDER BY s.play_count DESC
-        LIMIT 3
+        LIMIT 4
     """
     top_songs_result = execute_sql(top_songs_sql, (artist_id,), fetch_all=True)
     

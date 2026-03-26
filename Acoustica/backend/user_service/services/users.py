@@ -1,10 +1,14 @@
 from flask import request
 from psycopg2.extras import RealDictCursor
+from user_service.services.auth import check_password, hash_password
 from db import execute_sql, get_db_connection, connection_pool, release_connection
 import logging
 import sys
 from flask_jwt_extended import get_jwt_identity
-
+import secrets
+from datetime import datetime, timedelta
+import os
+from utils.email_service import send_password_reset_email
 from storage_service.services import storage
 
 logging.basicConfig(
@@ -91,8 +95,7 @@ def onboarding(user_id, user_type, data):
     connection = get_db_connection()
     if connection is None:
         return {"error": "Database connection failed"}, 500
-    
-    logging.info('Oh cool, cool')
+
 
     pfp_path=None
 
@@ -219,12 +222,124 @@ def get_profile_picture(user_id):
     else:
         return {'error': 'failed'}, 409
 
-def update_account():
-    return ("update_account")
+def update_account(user_id, user_type, data):
+    bio = request.form.get("bio")
+    country_id = request.form.get("country_id")
+    language_id = request.form.get("language_id")
+    phone_number = request.form.get("phone_number")
+    gender = request.form.get("gender")
+    date_of_birth = request.form.get("date_of_birth")
 
-def delete_account():
-    return ("delete_account")
+    pfp = request.files.get("pfp")
 
+    connection = get_db_connection()
+    if connection is None:
+        return {"error": "Database connection failed"}, 500
+
+    new_pfp_path = None
+
+    try:
+       
+        if pfp:
+            pfp_ext = storage.get_file_extension(pfp)
+            new_pfp_path = f"Images/Profile_Pictures/pfp{user_id}.{pfp_ext}"
+            success = storage.upload_file_to_storage(
+                pfp.stream,
+                new_pfp_path,
+                pfp.mimetype
+            )
+            if not success:
+                raise Exception("Profile picture upload failed")
+
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+
+               
+                cursor.execute(
+                    "SELECT profile_picture FROM users WHERE user_id = %s",
+                    (user_id,)
+                )
+                existing = cursor.fetchone()
+                old_pfp_path = existing["profile_picture"] if existing else None
+
+                fields = {
+                    "bio": bio,
+                    "country_id": country_id,
+                    "language_id": language_id,
+                    "phone_number": phone_number,
+                    "gender": gender,
+                    "date_of_birth": date_of_birth,
+                }
+                if new_pfp_path:
+                    fields["profile_picture"] = new_pfp_path
+
+                fields = {k: v for k, v in fields.items() if v is not None}
+
+                if fields:
+                    set_clause = ", ".join(f"{col} = %s" for col in fields)
+                    values = list(fields.values()) + [user_id]
+                    cursor.execute(
+                        f"UPDATE users SET {set_clause} WHERE user_id = %s RETURNING user_id",
+                        values
+                    )
+                    if not cursor.fetchone():
+                        raise Exception("User update failed")
+
+             
+                if user_type == "artist":
+                    artist_fields = {
+                        "stage_name":   data.get("stage_name"),
+                        "bank_account": data.get("bank_account"),
+                    }
+                    artist_fields = {k: v for k, v in artist_fields.items() if v is not None}
+
+                    if artist_fields:
+                        set_clause = ", ".join(f"{col} = %s" for col in artist_fields)
+                        values = list(artist_fields.values()) + [user_id]
+                        cursor.execute(
+                            f"UPDATE artist SET {set_clause} WHERE artist_id = %s",
+                            values
+                        )
+
+
+        if new_pfp_path and old_pfp_path and "Default_pfp" not in old_pfp_path:
+            storage.delete_file_from_storage(old_pfp_path)
+
+        return {"message": "Account updated successfully"}, 200
+
+    except Exception as e:
+        if new_pfp_path:
+            storage.delete_file_from_storage(new_pfp_path)
+        logging.error(f"Update account failed for user {user_id}: {e}")
+        return {"error": "Account update failed"}, 500
+
+    finally:
+        release_connection(connection)
+
+
+def delete_account(user_id):
+    check_sql="""
+                SELECT asset_id
+                FROM users
+                WHERE user_id=%s
+                """
+    res=execute_sql(check_sql,(user_id,),fetch_one=True)
+    if not res:
+        return {"error": "User not found"}, 404
+    
+    asset_id=res["asset_id"]
+
+    delete_sql="""
+                    DELETE FROM asset
+                    WHERE asset_id=%s
+                """
+    resFinal=execute_sql(delete_sql,(asset_id,))
+
+    if resFinal is False:
+            return {"error": "Failed to delete account"}, 500
+
+    return {"message": "Account deleted successfully"}, 200
+    
 def get_user_list():
     return ("get_user_list")
 
@@ -247,12 +362,6 @@ def set_theme(theme):
 def set_play_mode():
     return ("set_play_mode")
 
-def add_notification(user_id):
-    return (f"add_notification {user_id}")
-
-def get_notifications():
-    return ("get_notifications")
-
 def add_badge():
     return ("add_badge")
 
@@ -264,5 +373,137 @@ def add_user_badge(user_id):
 
 def get_user_badges(user_id):
     return (f"get_user_badges {user_id}")
+
+def change_password(user_id, data):
+    current_password = data.get("current_password")
+    new_password = data.get("new_password")
+
+    if not current_password or not new_password:
+        return {"error": "Both current and new password are required"}, 400
+
+    if current_password == new_password:
+        return {"error": "New password must be different from current password"}, 400
+
+    sql = 'SELECT "password" FROM users WHERE user_id = %s'
+    result = execute_sql(sql, (user_id,), fetch_one=True)
+
+    if not result:
+        return {"error": "User not found"}, 404
+
+    if not check_password(current_password, result["password"]):
+        return {"error": "Current password is incorrect"}, 401
+
+    new_hashed = hash_password(new_password)
+
+    connection = get_db_connection()
+    if connection is None:
+        return {"error": "Database connection failed"}, 500
+
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(
+                    """
+                    UPDATE users
+                    SET password = %s
+                    WHERE user_id = %s
+                    RETURNING user_id
+                    """,
+                    (new_hashed, user_id)
+                )
+                if not cursor.fetchone():
+                    raise Exception("Password update failed")
+
+        return {"message": "Password changed successfully"}, 200
+
+    except Exception as e:
+        logging.error(f"Change password failed for user {user_id}: {e}")
+        return {"error": "Password change failed"}, 500
+
+    finally:
+        release_connection(connection)
+
+def forgot_password(data):
+    email = data.get("email")
+    if not email:
+        return {"error": "Email is required"}, 400
+
+    sql = 'SELECT user_id FROM users WHERE email = %s'
+    result = execute_sql(sql, (email,), fetch_one=True)
+
+    """
+        security through obscurity
+        If any attacker wants to do it, we still send them ok, even in case the email was not sent.
+        So our poor, honest users might be misled ocassionally, but that is a cost we must all pay for the sake of security!!
+    """
+    if not result:
+        return {"message": "If that email exists, a reset link has been sent. Check spam if needed."}, 200
+
+    user_id = result["user_id"]
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.utcnow() + timedelta(minutes=15)
+
+    insert_sql = """
+        INSERT INTO password_reset_tokens (token, user_id, expires_at)
+        VALUES (%s, %s, %s)
+    """
+    execute_sql(insert_sql, (token, user_id, expires_at))
+
+    reset_link = f"http://localhost:8081/reset-password?token={token}"
+
+    send_password_reset_email(email, reset_link)
+
+    return {"message": "If that email exists, a reset link has been sent. Check spam if needed."}, 200
+
+
+def reset_password(data):
+    token = data.get("token")
+    new_password = data.get("new_password")
+
+    if not token or not new_password:
+        return {"error": "Token and new password are required"}, 400
+
+    sql = """
+        SELECT user_id, expires_at, used
+        FROM password_reset_tokens
+        WHERE token = %s
+    """
+    result = execute_sql(sql, (token,), fetch_one=True)
+
+    if not result:
+        return {"error": "Invalid or expired token"}, 400
+
+    if result["used"]:
+        return {"error": "Token has already been used"}, 400
+
+    if datetime.utcnow() > result["expires_at"]:
+        return {"error": "Token has expired"}, 400
+
+    new_hashed = hash_password(new_password)
+    user_id = result["user_id"]
+
+    connection = get_db_connection()
+    if connection is None:
+        return {"error": "Database connection failed"}, 500
+
+    try:
+        with connection:
+            with connection.cursor(cursor_factory=RealDictCursor) as cursor:
+                cursor.execute(
+                    "UPDATE users SET password = %s WHERE user_id = %s",
+                    (new_hashed, user_id)
+                )
+                cursor.execute(
+                    "UPDATE password_reset_tokens SET used = TRUE WHERE token = %s",
+                    (token,)
+                )
+        return {"message": "Password reset successfully."}, 200
+
+    except Exception as e:
+        logging.error(f"Reset password failed: {e}")
+        return {"error": "Password reset failed"}, 500
+
+    finally:
+        release_connection(connection)
 
 ### Helper functions ###

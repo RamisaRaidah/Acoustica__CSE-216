@@ -57,12 +57,19 @@ def get_profile_picture_route(user_id):
 @users_bp.put("/api/users/me")
 @jwt_required()
 def update_account_route():
-    return jsonify("update_account")
+    user_id = get_jwt_identity()
+    user_type = get_jwt()["user_type"] 
+    data = request.form.to_dict()
+    result, status = users.update_account(user_id, user_type, data)
+    return jsonify(result), status
+
 
 @users_bp.delete("/api/users/me")
 @jwt_required()
 def delete_account_route():
-    return jsonify("delete_account")
+    user_id=get_jwt_identity()
+    result,status=users.delete_account(user_id)
+    return jsonify(result),status
 
 @users_bp.get("/api/users")
 @jwt_required()
@@ -92,16 +99,6 @@ def set_theme_route():
 def set_play_mode_route():
     return jsonify("set_play_mode")
 
-@users_bp.post("/api/users/<user_id>/notifications")
-@jwt_required()
-def add_notification_route(user_id):
-    return jsonify(f"add_notification {user_id}")
-
-@users_bp.get("/api/users/me/notifications")
-@jwt_required()
-def get_notifications_route():
-    return jsonify("get_notifications")
-
 @users_bp.post("/api/users/badges")
 @jwt_required()
 def add_badge_route():
@@ -122,3 +119,23 @@ def add_user_badge_route(user_id):
 def get_user_badges_route(user_id):
     return jsonify(f"get_user_badges {user_id}")
 
+@users_bp.patch("/api/users/change-password")
+@jwt_required()
+def change_password_route():
+    user_id = get_jwt_identity()
+    data = request.get_json() or {}
+    result, status = users.change_password(user_id, data)
+    return jsonify(result), status
+
+
+@users_bp.post("/api/users/forgot-password")
+def forgot_password_route():
+    data = request.get_json() or {}
+    result, status = users.forgot_password(data)
+    return jsonify(result), status
+
+@users_bp.post("/api/users/reset-password")
+def reset_password_route():
+    data = request.get_json() or {}
+    result, status = users.reset_password(data)
+    return jsonify(result), status

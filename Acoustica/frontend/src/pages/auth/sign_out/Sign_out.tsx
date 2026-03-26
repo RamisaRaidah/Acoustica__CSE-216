@@ -1,10 +1,11 @@
 import { signOut } from "@/services/user_service/auth";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 function SignOut() {
     const {signout}=useAuth()
+    const [error, setError] = useState('');
     const navigate = useNavigate();
         console.log('I am not sure what is happening');
     useEffect(() => {
@@ -13,6 +14,7 @@ function SignOut() {
             await signOut();
         } catch (e) {
             console.error(e);
+            setError('Failed to sign-out. Please try again.');
         } finally {
             
             signout();
@@ -29,7 +31,9 @@ function SignOut() {
         logout();
     }, [navigate]);
 
-    return <div>Signing out...</div>;
+    if(error) return <div className="error">{error}</div>;
+
+    return <div className="loading">Signing out...</div>;
 }
 
 export default SignOut;
