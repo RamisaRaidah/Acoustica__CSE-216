@@ -54,7 +54,7 @@ def get_followed_artists():
         WHERE listener_id = %s
     """
 
-    result = execute_sql(command, get_jwt_identity(), fetch_all = True)
+    result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data"}, 500
