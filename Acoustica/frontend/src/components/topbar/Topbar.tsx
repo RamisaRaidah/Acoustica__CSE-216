@@ -33,7 +33,7 @@ export default function ListenerTopbar() {
     }
 
     return (
-        <div className="topbar">
+        <div id="topbar">
             <div className="topbar_left">
                 <div className='topbar-button'><img src={shop_button_img} className="icon" />Shop</div>
             </div>

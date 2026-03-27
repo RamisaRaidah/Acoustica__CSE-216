@@ -1,7 +1,7 @@
 import "@/pages/music/playlist/playlists/Playlists.css"
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getMyPlaylists, getPopularPublicPlaylists, getPlaylistSongs, Playlist } from "@/services/music_service/playlists";
+import { getMyPlaylists, getPopularPublicPlaylists, getPlaylistSongs, Playlist, addViewCount } from "@/services/music_service/playlists";
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import { useMusic } from "@/contexts/MusicContext";
@@ -35,6 +35,7 @@ function PlaylistSection({ playlists, onNavigate }: PlaylistSectionProps) {
                                         const song_ids = songs.map(song => song.song_id);
                                         createQueue(song_ids);
                                     });
+                                    addViewCount(playlist.playlist_id);
                                 }}
                             >
                                 <img src={play_button} />

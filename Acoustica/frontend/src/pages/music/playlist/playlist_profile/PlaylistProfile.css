@@ -177,7 +177,8 @@
     white-space: normal;
 }
 
-#playlist-profile-container #playlist-meta {
+#playlist-profile-container #playlist-meta,
+#playlist-profile-container #playlist-creator {
     display: flex;
     align-items: center;
     gap: 0.5rem;

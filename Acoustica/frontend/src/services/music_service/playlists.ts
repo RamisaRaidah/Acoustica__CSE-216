@@ -11,7 +11,13 @@ export async function createPlaylist(formData: FormData) {
 export interface Playlist {
     playlist_id: number;
     title: string;
+    description: string;
+    creator_id: number;
+    creator_name: string;
+    creation_date: string;
     cover_picture_url: string;
+    visibility: string;
+    view_count: number;
 }
 
 export async function getMyPlaylists(): Promise<Playlist[]> {
@@ -20,17 +26,6 @@ export async function getMyPlaylists(): Promise<Playlist[]> {
 
 export async function getPopularPublicPlaylists(): Promise<Playlist[]> {
     return api.request('/api/music/playlists/popular_public_playlists');
-}
-
-export interface Playlist {
-    playlist_id: number;
-    title: string;
-    description: string;
-    creator_id: number;
-    creation_date: string;
-    cover_picture_url: string;
-    visibility: string;
-    view_count: number;
 }
 
 export async function getPlaylistDetails(playlistId: number): Promise<Playlist> {
@@ -62,4 +57,10 @@ export async function likePlaylist(playlistId: number) {
 
 export async function isLiked(playlistId: number): Promise<boolean> {
     return api.request(`/api/music/playlists/${playlistId}/liked`);
+}
+
+export async function addViewCount(playlistId: number) {
+    return api.request(`/api/music/playlists/${playlistId}/view`, {
+        method: 'POST'
+    })
 }

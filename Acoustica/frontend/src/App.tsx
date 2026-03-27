@@ -70,7 +70,7 @@ function App() {
                   <Sidebar />
                   <Topbar />
                   <Scrollbar />
-                  {/* {user?.user_type === "listener" && <MusicPlayer />} */}
+                  {user?.user_type === "listener" && <MusicPlayer />}
                   <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
                     <Outlet />
                   </div>

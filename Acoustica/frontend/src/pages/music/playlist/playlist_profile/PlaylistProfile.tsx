@@ -4,7 +4,7 @@ import play_button from '@/assets/images/music/Play_Button.png';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useEffect, useState } from 'react';
 import { SongInfo } from '@/services/music_service/songs';
-import { Playlist, getPlaylistDetails, getPlaylistSongs, deletePlaylist, likePlaylist, isLiked } from '@/services/music_service/playlists';
+import { Playlist, getPlaylistDetails, getPlaylistSongs, deletePlaylist, likePlaylist, isLiked, addViewCount } from '@/services/music_service/playlists';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMusic } from '@/contexts/MusicContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,6 +28,7 @@ export default function PlaylistProfile() {
     useEffect(() => {
         async function loadData() {
             try {
+                await addViewCount(playlistId);
                 const [playlist, songs, liked] = await Promise.all([
                     getPlaylistDetails(playlistId),
                     getPlaylistSongs(playlistId),
@@ -65,9 +66,9 @@ export default function PlaylistProfile() {
             }
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Failed to delete the playlist';
+            const message = err instanceof Error ? err.message : 'Failed to delete the playlist!';
             console.log('ERROR: ', message);
-            setAlertMessage('Failed to delete the playlist');
+            setAlertMessage('Failed to delete the playlist!');
         }
     }
 
@@ -94,6 +95,7 @@ export default function PlaylistProfile() {
                         <p id="playlist-label">Playlist</p>
                         <h2 id="playlist-title">{playlist?.title || "Untitled"}</h2>
                         <div id='playlist-description'>{playlist?.description}</div>
+                        <div id='playlist-creator'>{playlist?.creator_name}</div>
                         <div id="playlist-meta">
                             <span>{playlist?.visibility}</span>
                             {songs.length > 0 &&

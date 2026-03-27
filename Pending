@@ -1,21 +1,16 @@
 ### Shanon ###
 1. popular, trending, recommended songs
-2. song profile
 5. discography
 6. queue management
-7. song full screen
-8. song lyrics
-9. playlist view count
 10. adding analytics
 11. search system (indexing and others)
 12. AI based search
 
 
 ### Arana ###
-1. Update account ------ Done
 2. community
 3. subscription cronjob
 4. report
 5. Admin stuff - everything
 6. About us
-7. change pass, forgot Pass  ----- DONE
+8. song profile

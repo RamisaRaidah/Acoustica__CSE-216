@@ -1,4 +1,4 @@
-.topbar {
+#topbar {
     position: fixed;
     top: 0;
     left: 18vw;
@@ -12,7 +12,7 @@
     padding: 1vw 2vw;
     box-sizing: border-box;
     backdrop-filter: blur(6px);
-    z-index: 9998;
+    z-index: 100;
 }
 
 .topbar_left {
@@ -118,13 +118,13 @@
     opacity: 1;
 }
 
-.searchbar {
+#topbar .searchbar {
     display: flex;
     align-items: center;
     flex: 1;
 }
 
-.search_wrapper {
+#topbar .search_wrapper {
     position: relative;
     flex: 1;
     min-width: 20vh;
@@ -133,7 +133,7 @@
     align-items: center;
 }
 
-.search_bar {
+#topbar .search_bar {
     width: 100%;
     padding: 0.5em 1em;
     font-size: 1rem;
@@ -146,17 +146,17 @@
     box-sizing: border-box;
 }
 
-.search_bar::placeholder {
+#topbar .search_bar::placeholder {
     color: #aaa;
 }
 
-.search_bar:focus {
+#topbar .search_bar:focus {
     border-color: #6c63ff;
     box-shadow: 0 0 8px rgba(108, 99, 255, 0.6);
     background-color: #1a1a1a;
 }
 
-.search_dropdown {
+#topbar .search_dropdown {
     position: absolute;
     top: calc(100% + 0.5em);
     left: 0;
@@ -172,24 +172,24 @@
     padding: 0.4em 0 0.6em;
 }
 
-.search_dropdown::-webkit-scrollbar {
+#topbar .search_dropdown::-webkit-scrollbar {
     width: 0.25em;
 }
 
-.search_dropdown::-webkit-scrollbar-track {
+#topbar .search_dropdown::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.search_dropdown::-webkit-scrollbar-thumb {
+#topbar .search_dropdown::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 0.25em;
 }
 
-.search_dropdown::-webkit-scrollbar-thumb:hover {
+#topbar .search_dropdown::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.25);
 }
 
-.search_dropdown.active {
+#topbar .search_dropdown.active {
     display: block;
     animation: dropdownFadeIn 0.15s ease;
 }
@@ -206,9 +206,9 @@
     }
 }
 
-.song_result_header,
-.album_result_header,
-.artist_result_header {
+#topbar .song_result_header,
+#topbar .album_result_header,
+#topbar .artist_result_header {
     padding: 0.75em 1em 0.3em;
     font-size: 0.65em;
     text-transform: uppercase;
@@ -217,13 +217,13 @@
     color: rgba(255, 255, 255, 0.3);
 }
 
-.album_result_header,
-.artist_result_header {
+#topbar .album_result_header,
+#topbar .artist_result_header {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     margin-top: 0.4em;
 }
 
-.search_item {
+#topbar .search_item {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -235,12 +235,12 @@
     gap: 0;
 }
 
-.search_item:hover {
+#topbar .search_item:hover {
     background: rgba(255, 255, 255, 0.07);
 }
 
 /* Song-specific: play button takes no space when hidden, expands on hover */
-.search_item_song .play_button {
+#topbar .search_item_song .play_button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,7 +260,7 @@
     z-index: 1;
 }
 
-.search_item_song:hover .play_button {
+#topbar .search_item_song:hover .play_button {
     opacity: 1;
     width: 1.8em;
     border: 1.5px solid rgba(255, 255, 255, 0.55);
@@ -268,23 +268,23 @@
     margin-right: 0.6em;
 }
 
-.search_item_song .play_button:hover {
+#topbar .search_item_song .play_button:hover {
     border-color: #fff !important;
     color: #fff;
 }
 
 /* Text container */
-.search_item_text {
+#topbar .search_item_text {
     display: flex;
     flex-direction: column;
     min-width: 0;
 }
 
-.search_item_song .search_item_text {
+#topbar .search_item_song .search_item_text {
     transform: translateX(0);
 }
 
-.search_item_title {
+#topbar .search_item_title {
     display: block;
     color: rgba(255, 255, 255, 0.92);
     font-size: 0.9em;
@@ -295,12 +295,12 @@
     text-overflow: ellipsis;
 }
 
-.search_item_title:hover {
+#topbar .search_item_title:hover {
     text-decoration: underline;
     text-underline-offset: 2px;
 }
 
-.search_item_artist_name {
+#topbar .search_item_artist_name {
     display: block;
     color: rgba(255, 255, 255, 0.38);
     font-size: 0.75em;
@@ -311,7 +311,7 @@
     text-overflow: ellipsis;
 }
 
-.search_item_artist_name:hover {
+#topbar .search_item_artist_name:hover {
     color: rgba(255, 255, 255, 0.65);
     text-decoration: underline;
     text-underline-offset: 2px;

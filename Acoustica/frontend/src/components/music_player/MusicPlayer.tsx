@@ -2,7 +2,7 @@ import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { addStreamHistory } from "@/services/user_service/users";
-import { SongInfo, getSongMetadata, likeSong } from "@/services/music_service/songs";
+import { likeSong, getSongLyrics } from "@/services/music_service/songs";
 import play_previous_button from '@/assets/images/Musicbar_Buttons/Play_Previous_Button.png';
 import play_button from '@/assets/images/Musicbar_Buttons/Play_Button.png';
 import pause_button from '@/assets/images/Musicbar_Buttons/Pause_Button.png';
@@ -12,16 +12,19 @@ import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 import shuffle_button from '@/assets/images/Musicbar_Buttons/Shuffle_Button.png';
 import queue_button from '@/assets/images/Musicbar_Buttons/Queue_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
+import exit_full_screen_button from '@/assets/images/Musicbar_Buttons/Exit_Full_Screen_Button.png';
 import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
 
 export default function MusicPlayer() {
-    const { song, song_play_status, song_url, cover_picture_url, play_key, playSong, liked, toggleLike, prev, next, queue, createQueue, shuffleQueue, playAtIndex } = useMusic();
+    const { song, song_play_status, song_url, cover_picture_url, play_key, liked, toggleLike, prev, next, queue, createQueue, shuffleQueue, playAtIndex } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
     const startTimeRef = useRef<number | null>(null);
 
+    const [isFullScreen, setFullScreen] = useState<boolean>(false);
     const [isPlaying, setIsPlaying] = useState(song_play_status?.playing ?? false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -30,6 +33,10 @@ export default function MusicPlayer() {
     const [songReady, setSongReady] = useState(false);
     const [coverPictureReady, setCoverPictureReady] = useState(false);
     const [queueOpen, setQueueOpen] = useState(false);
+    const [lyrics, setLyrics] = useState<{lyrics: string}>({lyrics: ""});
+    const [lyricsOpen, setLyricsOpen] = useState(false);
+    const [lyricsText, setLyricsText] = useState<string>("");
+    const [lyricsLoading, setLyricsLoading] = useState(false);
     const navigate = useNavigate();
 
     const formatTime = (seconds: number) => {
@@ -181,13 +188,42 @@ export default function MusicPlayer() {
             setIsPlaying(true);
             startSegment();
         }
-
         savePlayerState({
             song_id: song?.song_id,
             progress: (audio.currentTime / audio.duration) * 100,
             playing: !isPlaying
         });
     };
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'F9') {
+                const audio = audioRef.current;
+                if (!audio || !ready) return;
+
+                if (isPlaying) {
+                    audio.pause();
+                    setIsPlaying(false);
+                    endSegment();
+                } else {
+                    audio.play();
+                    setIsPlaying(true);
+                    startSegment();
+                }
+
+                savePlayerState({
+                    song_id: song?.song_id,
+                    progress: (audio.currentTime / audio.duration) * 100,
+                    playing: !isPlaying
+                });
+            }
+            else if (e.key === 'F8') prev();
+            else if (e.key === 'F10') next();
+            else if (e.key === 'Escape') setFullScreen(false);
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     const updateTimeFromDrag = useCallback((e: MouseEvent | React.MouseEvent) => {
         const audio = audioRef.current;
@@ -220,119 +256,191 @@ export default function MusicPlayer() {
         window.addEventListener('mouseup', onMouseUp);
     }, [updateTimeFromDrag]);
 
-    useEffect(() => {
-        createQueue([1, 3, 6, 7, 8, 9]);
-    }, []);
+    // useEffect(() => {
+    //     createQueue([1, 3, 6, 7, 8, 9]);
+    // }, []);
 
     return (
-        <div className="music_player">
-            <audio ref={audioRef} src={song_url ?? ""} className="audio" />
-
-            <img
-                src={cover_picture_url ?? ""}
-                className="cover_picture"
-                style={{ display: ready ? "block" : "none" }}
-            />
-
-            <div className="song_info">
-                <div id="song-name" onClick={() => navigate(`/music/songs/${song?.song_id}`)}>{ready ? song?.title : ""}</div>
-                <div id="artist-name" onClick={() => navigate(`/artists/${song?.owner_id}`)}>{ready ? song?.owner_name : ""}</div>
-            </div>
-
-            <div className="music_control1">
-                <div className="music_control1_top" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
-                    <img src={play_previous_button} className="play_previous_button" onClick={prev} />
-                    <img
-                        src={isPlaying ? pause_button : play_button}
-                        className="play_pause_button"
-                        onClick={handlePlayPause}
-                    />
-                    <img src={play_next_button} className="play_next_button" onClick={next} />
-                </div>
-
-                <div className="music_control1_bottom">
-                    <p className="play_time">{song_url ? formatTime(currentTime) : "..."}</p>
-                    <div
-                        className="progress_container"
-                        ref={progressContainerRef}
-                        onClick={updateTimeFromDrag as any}
-                        onMouseDown={handleMouseDown}
-                    >
-                        <div className="progress_track">
-                            <div className="progress_bar" ref={progressBarRef} style={{ width: progressWidth }}>
-                                <div className="progress_knob"></div>
-                            </div>
+        <div id="music-player-container">
+            <div id="fullscreen-overlay" style={{ display: isFullScreen ? 'flex' : 'none' }}>
+                <div id="overlay-left">
+                    <div id="cd-container" className={isPlaying ? 'cd-spinning' : ''}>
+                        <div id="cd-disc">
+                            <img src={cover_picture_url ?? ''} id="cd-cover-img" />
+                            <div id="cd-hole"></div>
                         </div>
                     </div>
-                    <p className="total_time">{song_url ? formatTime(duration) : "..."}</p>
+                </div>
+                <div id="overlay-right">
+                    <div id="overlay-song-name">{song?.title}</div>
+                    <div id="overlay-album-name">{song?.album_title}</div>
+                    <div id="overlay-artist-name">{song?.owner_name}</div>
                 </div>
             </div>
 
-            <div className="music_control2" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
-                <img src={lyrics_button} className="lyrics_button" />
-                <img
-                    src={like_button}
-                    className="like_button"
-                    onClick={() => { if (song) { toggleLike(); likeSong(song.song_id); } }}
-                    style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }}
-                />
-                <img
-                    src={queue_button}
-                    className={`queue_button${queueOpen ? ' queue_button--active' : ''}`}
-                    onClick={() => setQueueOpen(prev => !prev)}
-                />
-                <img src={shuffle_button} className="shuffle_button" onClick={shuffleQueue} />
-                <img src={full_screen_button} className="full_screen_button" />
-            </div>
+            <div id="music-player" style={{ left: isFullScreen ? '0vw' : '18vw', width: isFullScreen ? '100%' : '82vw' }}>
+                <audio ref={audioRef} src={song_url ?? ""} className="audio" />
 
-            <div className={`queue_popup${queueOpen ? ' queue_popup--open' : ''}`}>
-                <div className="queue_popup_header">
-                    <span className="queue_popup_title">Up next</span>
-                    <div className="queue_popup_header_right">
-                        <span className="queue_popup_count">{queue.length} songs</span>
-                        <button className="queue_popup_close" onClick={() => setQueueOpen(false)}>✕</button>
+                <img
+                    src={cover_picture_url ?? ""}
+                    className="cover_picture"
+                    style={{ display: ready ? "block" : "none" }}
+                />
+
+                <div className="song_info">
+                    <div id="song-name" onClick={() => {setFullScreen(false); navigate(`/music/songs/${song?.song_id}`);}}>{ready ? song?.title : ""}</div>
+                    <div id="artist-name" onClick={() => { setFullScreen(false); navigate(`/artists/${song?.owner_id}`);}}>{ready ? song?.owner_name : ""}</div>
+                </div>
+
+                <div className="music_control1">
+                    <div className="music_control1_top" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
+                        <img src={play_previous_button} className="play_previous_button" onClick={prev} />
+                        <img
+                            src={isPlaying ? pause_button : play_button}
+                            className="play_pause_button"
+                            onClick={handlePlayPause}
+                        />
+                        <img src={play_next_button} className="play_next_button" onClick={next} />
+                    </div>
+
+                    <div className="music_control1_bottom">
+                        <p className="play_time">{song_url ? formatTime(currentTime) : "..."}</p>
+                        <div
+                            className="progress_container"
+                            ref={progressContainerRef}
+                            onClick={updateTimeFromDrag as any}
+                            onMouseDown={handleMouseDown}
+                        >
+                            <div className="progress_track">
+                                <div className="progress_bar" ref={progressBarRef} style={{ width: progressWidth }}>
+                                    <div className="progress_knob"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p className="total_time">{song_url ? formatTime(duration) : "..."}</p>
                     </div>
                 </div>
-                <div className="queue_popup_divider" />
-                <div className="queue_popup_list">
-                    {queue.length === 0 ? (
-                        <div className="queue_empty">Your queue is empty</div>
-                    ) : (
-                        <>
-                            {song && (
-                                <>
-                                    <div className="queue_section_header">Now playing</div>
-                                    <div className="queue_item queue_now_playing">
-                                        <div className="queue_item_index">▶</div>
-                                        <div className="queue_item_info">
-                                            <div className="queue_item_title">{song.title}</div>
-                                            <div className="queue_item_artist">{song.owner_name}</div>
+
+                <div className="music_control2" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
+                    <img
+                        src={lyrics_button}
+                        className={`lyrics_button${lyricsOpen ? ' lyrics_button--active' : ''}`}
+                        onClick={async () => {
+                            if (lyricsOpen) { setLyricsOpen(false); return; }
+                            if (!song) return;
+                            setLyricsOpen(true);
+                            setLyricsLoading(true);
+                            try {
+                                const res = await getSongLyrics(song.song_id);
+                                console.log(res);
+
+                                if (!res.lyrics || res.lyrics === "null") {
+                                    setLyricsText("No lyrics available for this song.");
+                                    setLyricsLoading(false);
+                                    return;
+                                }
+                                
+                                const textRes = await fetch(res.lyrics);
+                                console.log(textRes);
+                                const text = await textRes.text();
+                                console.log(text);
+                                setLyricsText(text);
+                            } catch {
+                                setLyricsText("No lyrics available for this song");
+                            } finally {
+                                setLyricsLoading(false);
+                            }
+                        }}
+                    />
+                    <img
+                        src={like_button}
+                        className="like_button"
+                        onClick={() => { if (song) { toggleLike(); likeSong(song.song_id); } }}
+                        style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }}
+                    />
+                    <img
+                        src={queue_button}
+                        className={`queue_button${queueOpen ? ' queue_button--active' : ''}`}
+                        onClick={() => setQueueOpen(prev => !prev)}
+                    />
+                    <img src={shuffle_button} className="shuffle_button" onClick={shuffleQueue} />
+                    <img src={isFullScreen ? exit_full_screen_button : full_screen_button} className="full_screen_button" onClick={() => setFullScreen(!isFullScreen)} />
+                </div>
+
+                <div className={`queue_popup${queueOpen ? ' queue_popup--open' : ''}`}>
+                    <div className="queue_popup_header">
+                        <span className="queue_popup_title">Up next</span>
+                        <div className="queue_popup_header_right">
+                            <span className="queue_popup_count">{queue.length} songs</span>
+                            <button className="queue_popup_close" onClick={() => setQueueOpen(false)}>✕</button>
+                        </div>
+                    </div>
+                    <div className="queue_popup_divider" />
+                    <div className="queue_popup_list">
+                        {queue.length === 0 ? (
+                            <div className="queue_empty">Your queue is empty</div>
+                        ) : (
+                            <>
+                                {song && (
+                                    <>
+                                        <div className="queue_section_header">Now playing</div>
+                                        <div className="queue_item queue_now_playing">
+                                            <div className="queue_item_index">▶</div>
+                                            <div className="queue_item_info">
+                                                <div className="queue_item_title">{song.title}</div>
+                                                <div className="queue_item_artist">{song.owner_name}</div>
+                                            </div>
+                                            <div className="queue_item_duration">{formatTime(duration)}</div>
                                         </div>
-                                        <div className="queue_item_duration">{formatTime(duration)}</div>
+                                    </>
+                                )}
+                                <div className="queue_section_header">Queue</div>
+                                {queue.map((qSong, index) => (
+                                    <div
+                                        className="queue_item"
+                                        key={qSong.song_id}
+                                        onClick={() => {
+                                            playAtIndex(index);
+                                        }}
+                                    >
+                                        <div className="queue_item_index">{index + 1}</div>
+                                        <div className="queue_item_info">
+                                            <div className="queue_item_title">{qSong.title}</div>
+                                            <div className="queue_item_artist">{qSong.owner_name}</div>
+                                        </div>
+                                        <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
                                     </div>
-                                </>
-                            )}
-                            <div className="queue_section_header">Queue</div>
-                            {queue.map((qSong, index) => (
-                                <div
-                                    className="queue_item"
-                                    key={qSong.song_id}
-                                    onClick={() => {
-                                        playAtIndex(index);
-                                    }}
-                                >
-                                    <div className="queue_item_index">{index + 1}</div>
-                                    <div className="queue_item_info">
-                                        <div className="queue_item_title">{qSong.title}</div>
-                                        <div className="queue_item_artist">{qSong.owner_name}</div>
-                                    </div>
-                                    <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
-                                </div>
-                            ))}
-                        </>
-                    )}
+                                ))}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
+            {lyricsOpen && createPortal(
+                <div className="lyrics_overlay" onClick={() => setLyricsOpen(false)}>
+                    <div className="lyrics_popup" onClick={e => e.stopPropagation()}>
+                        <div className="lyrics_header">
+                            <div className="lyrics_header_left">
+                                <div className="lyrics_song_name">{song?.title}</div>
+                                <div className="lyrics_artist_name">{song?.owner_name}</div>
+                            </div>
+                            <button className="lyrics_close" onClick={() => setLyricsOpen(false)}>✕</button>
+                        </div>
+                        <div className="lyrics_body">
+                            {lyricsLoading ? (
+                                <div className="lyrics_loading">
+                                    <div className="lyrics_loading_dot" />
+                                    <div className="lyrics_loading_dot" />
+                                    <div className="lyrics_loading_dot" />
+                                </div>
+                            ) : (
+                                <pre className="lyrics_text">{lyricsText}</pre>
+                            )}
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </div>
     );
 }

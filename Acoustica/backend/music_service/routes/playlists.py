@@ -108,3 +108,10 @@ def like_playlist_route(playlist_id):
 def is_liked_route(playlist_id):
     result, status = playlists.is_liked(playlist_id)
     return jsonify(result), status
+
+### add_view_count_route ###
+@playlists_bp.post("/api/music/playlists/<int:playlist_id>/view")
+@jwt_required()
+def add_view_count_route(playlist_id):
+    result, status = playlists.add_view_count(playlist_id)
+    return jsonify(result), status
