@@ -10,7 +10,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useMusic } from '@/contexts/MusicContext';
-import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
+import like_button from '@/assets/images/music/Like_Song_With_Border_Button.png';
+import music_play_button from '@/assets/images/music/Play_Button.png'
+
 
 export default function SongProfile() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -43,7 +45,7 @@ export default function SongProfile() {
                     getSongGenres(songId),
                     getSongMoods(songId),
                     getSongInstruments(songId),
-                    isLiked(songId)
+                    isLiked(songId),
                 ]);
 
                 const [albumCover, ownerPfp, ...collaboratorPfpResults] = await Promise.all([
@@ -53,17 +55,21 @@ export default function SongProfile() {
                 ]);
 
                 const d = new Date(info.release_date);
-                const formattedDate = `${String(d.getUTCDate()).padStart(2, '0')} ${d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })} ${d.getUTCFullYear()}`;
+                const formattedDate = `${String(d.getUTCDate()).padStart(2, '0')} ${d.toLocaleString('en-US', {
+                    month: 'short',
+                    timeZone: 'UTC',
+                })} ${d.getUTCFullYear()}`;
 
                 const pfpMap: Record<number, string> = {};
                 collabs.forEach((c, i) => {
-                    if (collaboratorPfpResults[i].profile_picture !== "null") {
+                    if (collaboratorPfpResults[i].profile_picture !== 'null') {
                         pfpMap[c.artist_id] = collaboratorPfpResults[i].profile_picture;
                     }
                 });
+
                 setSong(info);
                 setCoverPicture(albumCover.cover_picture_url);
-                if (ownerPfp.profile_picture !== "null") setOwnerProfilePicture(ownerPfp.profile_picture);
+                if (ownerPfp.profile_picture !== 'null') setOwnerProfilePicture(ownerPfp.profile_picture);
                 setReleaseDate(formattedDate);
                 setCollaborators(collabs);
                 setCollaboratorPfps(pfpMap);
@@ -71,12 +77,10 @@ export default function SongProfile() {
                 setMoods(moods);
                 setInstruments(instruments);
                 setLiked(liked);
-            } 
-            catch (err) {
-                console.log("ERROR:", err);
+            } catch (err) {
+                console.log('ERROR:', err);
                 setError('Failed to load data!');
-            } 
-            finally {
+            } finally {
                 setLoading(false);
             }
         }
@@ -85,16 +89,13 @@ export default function SongProfile() {
 
     useEffect(() => {
         if (song_id === playingSong?.song_id) setLiked(playingSongLiked);
-    }, [playingSongLiked])
+    }, [playingSongLiked]);
 
     async function handleDeleteSong() {
         try {
             const response = await deleteSong(songId);
-            if (response) {
-                setAlertMessage('The song is deleted successfully!');
-            }
-        }
-        catch (err) {
+            if (response) setAlertMessage('The song is deleted successfully!');
+        } catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to delete the song';
             console.log('ERROR: ', message);
             setAlertMessage('Failed to delete the song');
@@ -110,7 +111,6 @@ export default function SongProfile() {
     const vocalists = getCollaboratorsByRole('vocalist');
     const lyricists = getCollaboratorsByRole('lyricist');
     const composers = getCollaboratorsByRole('composer');
-
     const hasMultiple = vocalists.length > 1 || lyricists.length > 1 || composers.length > 1;
 
     if (loading) return <div className='loading'>Loading</div>;
@@ -118,8 +118,20 @@ export default function SongProfile() {
 
     return (
         <div id='song-profile-container'>
-            {alertMessage && <Alert message={alertMessage} onConfirm={() => { setAlertMessage(null); navigate('/music/discography'); }} />}
-            {confirmation && <Alert message='Are you sure to delete the song?' type='confirm' onConfirm={() => { setConfirmation(false); handleDeleteSong(); }} onCancel={() => setConfirmation(false)} />}
+            {alertMessage && (
+                <Alert
+                    message={alertMessage}
+                    onConfirm={() => { setAlertMessage(null); navigate('/music/discography'); }}
+                />
+            )}
+            {confirmation && (
+                <Alert
+                    message='Are you sure to delete the song?'
+                    type='confirm'
+                    onConfirm={() => { setConfirmation(false); handleDeleteSong(); }}
+                    onCancel={() => setConfirmation(false)}
+                />
+            )}
 
             <div id='song-profile-container-left'>
 
@@ -133,19 +145,68 @@ export default function SongProfile() {
                     </div>
 
                     <div id='song-profile-container-song-info'>
-                        <div id='song-profile-container-song-title'>{song?.title ?? 'Song Name'}</div>
-                        <div id='song-profile-container-owner-name'>{song?.owner_name ?? 'Owner Name'}</div>
-                        <div id='song-profile-container-album-title' onClick={() => navigate(`/music/albums/${song?.album_id}`)}>{song?.album_title ?? 'Album Name'}</div>
+                        <div id='song-profile-container-song-title'>
+                            {song?.title ?? 'Song Name'}
+                        </div>
+
+                        <div id='song-profile-container-owner-name'
+                            onClick={() => navigate(`/artists/${song?.owner_id}`)}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            {song?.owner_name ?? 'Owner Name'}
+                        </div>
+
+                        <div
+                            id='song-profile-container-album-title'
+                            onClick={() => navigate(`/music/albums/${song?.album_id}`)}
+                        >
+                            {song?.album_title ?? 'Album Name'}
+                        </div>
+
                         <div id='song-profile-container-length'>
                             {formatLength(song?.length ?? 0)}
                         </div>
+
                         <div id='song-profile-container-song-buttons'>
-                            <button id='song-profile-container-like-btn' title='Like' onClick={() => { likeSong(songId); setLiked(!liked); if (song_id === playingSong?.song_id) toggleLike(); }}><img id='like-button' src={like_button} style={{ filter: liked ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} /></button>
-                            <button id='song-profile-container-add-btn' title='Add to playlist'>+</button>
-                            <button id='song-profile-container-play-btn' title='Play' onClick={() => { if (song) playSong({ song_id: song.song_id, progress: 0, playing: true }) }}>▶</button>
+                            <button
+                                id='song-profile-container-like-btn'
+                                title='Like'
+                                onClick={() => {
+                                    likeSong(songId);
+                                    setLiked(!liked);
+                                    if (song_id === playingSong?.song_id) toggleLike();
+                                }}
+                            >
+                                <img
+                                    id='like-button'
+                                    src={like_button}
+                                    alt='Like'
+                                    style={{
+                                        filter: liked
+                                            ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)'
+                                            : undefined, 
+                                    }}
+                                />
+                            </button>
+
+                            <button id='song-profile-container-add-btn' title='Add to playlist'>
+                                +
+                            </button>
+
+                            <button
+                                id='song-profile-container-play-btn'
+                                title='Play'
+                                onClick={() => {
+                                    if (song)
+                                        playSong({ song_id: song.song_id, progress: 0, playing: true });
+                                }}
+                            >
+                                <img id='song-profile-play-btn-img' src={music_play_button} alt="▶" />
+                            </button>
                         </div>
                     </div>
                 </div>
+
 
                 <div id='song-profile-container-collaborators-card'>
                     <div id='song-profile-container-collaborator-header'>
@@ -214,34 +275,40 @@ export default function SongProfile() {
 
                 <div className='song-profile-container-meta-section'>
                     <div className='song-profile-container-meta-header'>Genres</div>
-                    <div className='song-profile-container-tag-list'>
+                    <div className='song-profile-container-tag-list genres'>
                         {genres?.map(x => (
-                            <span key={x.genre_name} className='song-profile-container-tag'>{x.genre_name}</span>
+                            <span key={x.genre_name} className='song-profile-container-tag'>
+                                {x.genre_name}
+                            </span>
                         ))}
                     </div>
                 </div>
 
                 <div className='song-profile-container-meta-section'>
                     <div className='song-profile-container-meta-header'>Moods</div>
-                    <div className='song-profile-container-tag-list'>
+                    <div className='song-profile-container-tag-list moods'>
                         {moods?.map(x => (
-                            <span key={x.mood_name} className='song-profile-container-tag'>{x.mood_name}</span>
+                            <span key={x.mood_name} className='song-profile-container-tag'>
+                                {x.mood_name}
+                            </span>
                         ))}
                     </div>
                 </div>
 
                 <div className='song-profile-container-meta-section'>
                     <div className='song-profile-container-meta-header'>Instruments</div>
-                    <div className='song-profile-container-tag-list'>
+                    <div className='song-profile-container-tag-list instruments'>
                         {instruments?.map(x => (
-                            <span key={x.instrument_name} className='song-profile-container-tag'>{x.instrument_name}</span>
+                            <span key={x.instrument_name} className='song-profile-container-tag'>
+                                {x.instrument_name}
+                            </span>
                         ))}
                     </div>
                 </div>
 
                 <div className='song-profile-container-meta-section'>
                     <div className='song-profile-container-meta-header'>Language</div>
-                    <div className='song-profile-container-tag-list'>
+                    <div className='song-profile-container-tag-list language'>
                         {song?.language && (
                             <span className='song-profile-container-tag'>{song.language}</span>
                         )}
@@ -253,32 +320,39 @@ export default function SongProfile() {
                     <div id='song-profile-container-release-date'>{release_date}</div>
                 </div>
 
-                {user?.user_type === 'artist' && Number(song?.owner_id) === Number(user.user_id) && 
+                {user?.user_type === 'artist' &&
+                    Number(song?.owner_id) === Number(user.user_id) && (
                     <div id='song-profile-container-action-buttons'>
-                    <button
-                        id='song-profile-container-edit-btn'
-                        onClick={() => navigate(`/music/songs/${songId}/edit`)}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                        Edit Song
-                    </button>
-                        <button id='song-profile-container-delete-btn' onClick={() => setConfirmation(true)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                        </svg>
-                        Delete Song
-                    </button>
-                </div>}
+                        <button
+                            id='song-profile-container-edit-btn'
+                            onClick={() => navigate(`/music/songs/${songId}/edit`)}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" strokeWidth="2.5"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                            Edit Song
+                        </button>
 
+                        <button
+                            id='song-profile-container-delete-btn'
+                            onClick={() => setConfirmation(true)}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" strokeWidth="2.5"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                <path d="M10 11v6" />
+                                <path d="M14 11v6" />
+                                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                            </svg>
+                            Delete Song
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

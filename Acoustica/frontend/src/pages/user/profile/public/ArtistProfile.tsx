@@ -123,7 +123,7 @@ function ArtistProfile() {
                 </div>
             </div>
 
-            {/* ── BOTTOM: Songs on left | Albums on right ── */}
+
             <div className="artist-bottom-grid">
 
                 <div className="artist-section">

@@ -39,7 +39,6 @@ def create_payment_intent(user_id):
     if auto_renewal not in ["on", "off"]:
         return {"error": "auto_renewal must be on or off"}, 400
 
-    # Check already subscribed
     existing = execute_sql(
         """
         SELECT subscription_id 
@@ -53,7 +52,6 @@ def create_payment_intent(user_id):
     if existing:
         return {"error": "You already have an active subscription"}, 409
 
-    # Get plan
     plan = execute_sql(
         """SELECT plan_id, plan_type, plan_cost, plan_validity, max_members 
         FROM plan 
@@ -64,7 +62,7 @@ def create_payment_intent(user_id):
     if not plan:
         return {"error": "Invalid plan_id"}, 404
 
-    # Amount in cents for Stripe
+
     amount_cents = int(float(plan["plan_cost"]) * 100)
 
     try:

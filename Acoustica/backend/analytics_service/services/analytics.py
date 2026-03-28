@@ -394,9 +394,8 @@ def get_artist_stats(artist_id):
             s.play_count,
             al.cover_picture
         FROM song s
-        JOIN song_artist sa ON sa.song_id = s.song_id
         LEFT JOIN album al ON al.album_id = s.album_id
-        WHERE sa.artist_id = %s
+        WHERE al.owner_id = %s
         ORDER BY s.play_count DESC
         LIMIT 4
     """
@@ -415,8 +414,7 @@ def get_artist_stats(artist_id):
             COUNT(DISTINCT ssh.listener_id) as listener_count
         FROM song_stream_history ssh
         JOIN song s ON s.song_id = ssh.song_id
-        JOIN song_artist sa ON sa.song_id = s.song_id
-        WHERE sa.artist_id = %s
+        WHERE sa.owner_id = %s
         AND ssh.date_time >= NOW() - INTERVAL '6 months'
         GROUP BY DATE_TRUNC('month', ssh.date_time)
         ORDER BY DATE_TRUNC('month', ssh.date_time)
