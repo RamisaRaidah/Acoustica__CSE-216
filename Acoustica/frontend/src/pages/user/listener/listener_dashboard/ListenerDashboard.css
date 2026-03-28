@@ -1,6 +1,11 @@
 .dashboard_container {
   display: block;
+  position: relative;
+  overflow-y: visible;
+  width: 100%;
   box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-color);
 }
 
 .banner1_wrapper {

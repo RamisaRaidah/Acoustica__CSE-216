@@ -120,6 +120,36 @@ def get_instruments_route():
     result, status = analytics.get_instruments()
     return jsonify(result), status
 
+### get_trending_songs_route ###
+@analytics_bp.get("/api/analytics/trending-songs")
+@jwt_required()
+def get_trending_songs_route():
+    result, status = analytics.get_trending_songs()
+    return jsonify(result), status
+
+
+### get_popular_songs_route ###
+@analytics_bp.get("/api/analytics/popular-songs")
+@jwt_required()
+def get_popular_songs_route():
+    result, status = analytics.get_popular_songs()
+    return jsonify(result), status
+
+### get_trending_artists_route ###
+@analytics_bp.get("/api/analytics/trending-artists")
+@jwt_required()
+def get_trending_artists_route():
+    result, status = analytics.get_trending_artists()
+    return jsonify(result), status
+
+
+### get_popular_artists_route ###
+@analytics_bp.get("/api/analytics/popular-artists")
+@jwt_required()
+def get_popular_artists_route():
+    result, status = analytics.get_popular_artists()
+    return jsonify(result), status
+
 ### get_genre_trending_songs_route ###
 @analytics_bp.get("/api/analytics/genre_trending_songs/<genre_id>")
 @jwt_required()

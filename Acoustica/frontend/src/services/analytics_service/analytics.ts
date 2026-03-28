@@ -1,5 +1,6 @@
 import api from '@/services/api';
 import { SongInfo } from '@/services/music_service/songs';
+import { Artist } from '@/services/user_service/artists';
 
 export interface Country {
     country_id:number;
@@ -58,6 +59,26 @@ export interface ArtistStats {
 
 export async function getInstruments(): Promise<Instrument[]> {
     return api.request('/api/analytics/instruments');
+}
+
+export async function getTrendingSongs(): Promise<SongInfo[]> {
+    return api.request('/api/analytics/trending_songs');
+}
+
+export async function getPopularSongs(): Promise<SongInfo[]> {
+    return api.request('/api/analytics/popular_songs');
+}
+
+export async function getTrendingArtists(): Promise<Artist[]> {
+    return api.request('/api/analytics/trending_artists');
+}
+
+export async function getPopularArtists(): Promise<Artist[]> {
+    return api.request('/api/analytics/popular_artists');
+}
+
+export async function getRecommendation(listenerId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/recommendation/listeners/${listenerId}`);
 }
 
 export async function getGenreTrendingSongs(genreId: number): Promise<SongInfo[]> {

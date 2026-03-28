@@ -24,11 +24,13 @@ interface MusicContextType {
     createQueue: (songs: number[]) => void;
     shuffleQueue: () => void;
     playAtIndex: (i: number) => void;
+    loading: boolean;
 }
 
 const MusicContext = createContext<MusicContextType | null>(null);
 
 export function MusicProvider({ children }: { children: React.ReactNode }) {
+    const [loading, setLoading] = useState<boolean>(true);
     const [song_play_status, setSongPlayStatus] = useState<SongPlayStatus | null>(
         JSON.parse(localStorage.getItem("song") || "null")
     );
@@ -122,11 +124,12 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
                 localStorage.setItem("song", JSON.stringify(lastSong));
             });
         }
+        setLoading(false);
     }, []);
 
 
     return (
-        <MusicContext.Provider value={{ song, song_play_status, playSong, song_url, cover_picture_url, play_key, liked, toggleLike, queue, prev, next, createQueue, shuffleQueue, playAtIndex }}>
+        <MusicContext.Provider value={{ song, song_play_status, playSong, song_url, cover_picture_url, play_key, liked, toggleLike, queue, prev, next, createQueue, shuffleQueue, playAtIndex, loading }}>
             {children}
         </MusicContext.Provider>
     )

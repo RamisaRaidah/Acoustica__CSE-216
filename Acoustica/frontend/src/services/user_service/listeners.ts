@@ -34,3 +34,7 @@ export async function getLikedPlaylists(): Promise<LikedPlaylist[]> {
     return api.request('/api/listeners/me/liked-playlists');
 }
 
+export async function getRecentlyPlayed() {
+    return api.request(`/api/listeners/me/recently-played`)
+}
+

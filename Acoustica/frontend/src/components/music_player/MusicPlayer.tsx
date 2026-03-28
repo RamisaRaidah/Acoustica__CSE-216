@@ -33,7 +33,7 @@ export default function MusicPlayer() {
     const [songReady, setSongReady] = useState(false);
     const [coverPictureReady, setCoverPictureReady] = useState(false);
     const [queueOpen, setQueueOpen] = useState(false);
-    const [lyrics, setLyrics] = useState<{lyrics: string}>({lyrics: ""});
+    const [lyrics, setLyrics] = useState<{ lyrics: string }>({ lyrics: "" });
     const [lyricsOpen, setLyricsOpen] = useState(false);
     const [lyricsText, setLyricsText] = useState<string>("");
     const [lyricsLoading, setLyricsLoading] = useState(false);
@@ -197,29 +197,7 @@ export default function MusicPlayer() {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'F9') {
-                const audio = audioRef.current;
-                if (!audio || !ready) return;
-
-                if (isPlaying) {
-                    audio.pause();
-                    setIsPlaying(false);
-                    endSegment();
-                } else {
-                    audio.play();
-                    setIsPlaying(true);
-                    startSegment();
-                }
-
-                savePlayerState({
-                    song_id: song?.song_id,
-                    progress: (audio.currentTime / audio.duration) * 100,
-                    playing: !isPlaying
-                });
-            }
-            else if (e.key === 'F8') prev();
-            else if (e.key === 'F10') next();
-            else if (e.key === 'Escape') setFullScreen(false);
+            if (e.key === 'Escape') setFullScreen(false);
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
@@ -288,8 +266,8 @@ export default function MusicPlayer() {
                 />
 
                 <div className="song_info">
-                    <div id="song-name" onClick={() => {setFullScreen(false); navigate(`/music/songs/${song?.song_id}`);}}>{ready ? song?.title : ""}</div>
-                    <div id="artist-name" onClick={() => { setFullScreen(false); navigate(`/artists/${song?.owner_id}`);}}>{ready ? song?.owner_name : ""}</div>
+                    <div id="song-name" onClick={() => { setFullScreen(false); navigate(`/music/songs/${song?.song_id}`); }}>{ready ? song?.title : ""}</div>
+                    <div id="artist-name" onClick={() => { setFullScreen(false); navigate(`/artists/${song?.owner_id}`); }}>{ready ? song?.owner_name : ""}</div>
                 </div>
 
                 <div className="music_control1">
@@ -339,7 +317,7 @@ export default function MusicPlayer() {
                                     setLyricsLoading(false);
                                     return;
                                 }
-                                
+
                                 const textRes = await fetch(res.lyrics);
                                 console.log(textRes);
                                 const text = await textRes.text();

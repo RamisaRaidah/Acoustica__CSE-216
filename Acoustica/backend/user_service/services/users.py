@@ -197,18 +197,19 @@ def get_my_profile_picture(user_id):
     """
     user = execute_sql(sql, (user_id,), fetch_one=True)
 
-    if not user:
-        return {"error": "User not found"}, 404
-
-    if user.get("profile_picture"):
-        url = storage.generate_signed_url(user["profile_picture"], expires_in=3600)
+    if user is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif user is None:
+        return {"error": "user not found"}, 404
     else:
-        url = storage.generate_signed_url(
-            "Images/Profile_Pictures/Default_pfp.png",
-            expires_in=3600
-        )
-
-    return {"profile_picture": url}, 200
+        if user["profile_picture"]:
+            signed_url = storage.generate_signed_url(user["profile_picture"])
+            if signed_url:
+                return {"profile_picture": signed_url}, 200
+            else:
+                return {"profile_picture": "null"}, 200
+        else:
+            return {"profile_picture": "null"}, 200   
 
 ### get_profile_picture ### 
 def get_profile_picture(user_id):

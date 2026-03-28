@@ -12,7 +12,7 @@
     padding: 1vw 2vw;
     box-sizing: border-box;
     backdrop-filter: blur(6px);
-    z-index: 100;
+    z-index: 90;
 }
 
 .topbar_left {

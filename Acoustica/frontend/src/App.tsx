@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 import ProtectedRoute from '@/components/routes/ProtectedRoute';
 import PublicOnlyRoute from '@/components/routes/PublicOnlyRoute';
+import AppLoader from '@/components/app_loader/AppLoader';
 import Sidebar from '@/components/sidebar/Sidebar';
 import Topbar from '@/components/topbar/Topbar';
 import MusicPlayer from '@/components/music_player/MusicPlayer';
@@ -66,15 +67,17 @@ function App() {
           <ProtectedRoute>
             <NotificationProvider>
               <MusicProvider>
-                <div className="app_layout">
-                  <Sidebar />
-                  <Topbar />
-                  <Scrollbar />
-                  {user?.user_type === "listener" && <MusicPlayer />}
-                  <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
-                    <Outlet />
+                <AppLoader>
+                  <div className="app_layout">
+                    <Sidebar />
+                    <Topbar />
+                    <Scrollbar />
+                    {user?.user_type === "listener" && <MusicPlayer />}
+                    <div id="content" ref={scrollRef} style={{ height: user?.user_type === "listener" ? "77vh" : "89vh" }}>
+                      <Outlet />
+                    </div>
                   </div>
-                </div>
+                </AppLoader>
               </MusicProvider>
             </NotificationProvider>
           </ProtectedRoute>

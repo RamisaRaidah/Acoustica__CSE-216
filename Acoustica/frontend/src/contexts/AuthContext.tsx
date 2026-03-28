@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { getMyProfilePicture } from "@/services/user_service/auth";
+import default_profile_picture from '@/assets/images/Default_pfp.png';
 
 interface User {
     user_id: number;
@@ -17,15 +18,17 @@ interface AuthContextType {
     signout: () => void;
     updateUser: (updates: Partial<User>) => void;
     refreshProfilePicture: () => Promise<void>; 
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider ({ children }: { children: React.ReactNode }) {
+    const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<User | null>(
         JSON.parse(localStorage.getItem("user") || "null")
     );
-    const [profile_picture, setProfilePicture] = useState<string | null>(null);
+    const [profile_picture, setProfilePicture] = useState<string>(default_profile_picture);
 
     function signin(user: User) {
         setUser(user);
@@ -50,27 +53,30 @@ export function AuthProvider ({ children }: { children: React.ReactNode }) {
 
     async function refreshProfilePicture() {
         const response = await getMyProfilePicture();
-        if (response) {
+        if (response.profile_picture !== "null") {
             setProfilePicture(response.profile_picture);
-        } else {
-            setProfilePicture(null);
+        } 
+        else {
+            setProfilePicture(default_profile_picture);
         }
     }
 
     useEffect(() => {
         async function fetchProfilePicture() {
             const response = await getMyProfilePicture();
-            if(response){
+            if(response.profile_picture !== "null"){
                 setProfilePicture(response.profile_picture);
-            }else{
-                setProfilePicture(null);
             }
+            else {
+                setProfilePicture(default_profile_picture);
+            }
+            setLoading(false);
         }
         if (user) fetchProfilePicture();
     }, [user]);
 
     return (
-        <AuthContext.Provider value={{ user, profile_picture, signin, signout, updateUser, refreshProfilePicture }}>
+        <AuthContext.Provider value={{ user, profile_picture, signin, signout, updateUser, refreshProfilePicture, loading }}>
             {children}
         </AuthContext.Provider>
     );
