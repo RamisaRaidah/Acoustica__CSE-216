@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getArtistInfo, GetArtistInfoResponse } from '@/services/user_service/artists';
 import { GetArtistSongResponse, getArtistSongs } from '@/services/music_service/songs';
 import { getArtistAlbums, GetArtistAlbumResponse } from '@/services/music_service/albums';
@@ -23,6 +23,8 @@ function ArtistProfile() {
 
     const [songsExpanded, setSongsExpanded] = useState(false);
     const [albumsExpanded, setAlbumsExpanded] = useState(false);
+    
+    const navigate = useNavigate();
 
     const SONGS_INITIAL = 4;
     const SONGS_MAX = 15;
@@ -140,7 +142,7 @@ function ArtistProfile() {
                     </div>
                     <div className="media-grid">
                         {visibleSongs.map((song) => (
-                            <div key={song.song_id} className="media-card">
+                            <div key={song.song_id} className="media-card" onClick={() => navigate(`/music/songs/${song.song_id}`)}>
                                 <div className="media-thumb">
                                     <img src={song.cover_picture_url || defaultCoverPic} alt={song.title} />
                                 </div>
@@ -164,7 +166,7 @@ function ArtistProfile() {
                     </div>
                     <div className="media-grid">
                         {visibleAlbums.map((album) => (
-                            <div key={album.album_id} className="media-card">
+                            <div key={album.album_id} className="media-card" onClick={() => navigate(`/music/albums/${album.album_id}`)}>
                                 <div className="media-thumb">
                                     <img src={album.cover_picture_url || defaultCoverPic} alt={album.title} />
                                 </div>
