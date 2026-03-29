@@ -1,6 +1,8 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 import logging
 import sys
+
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from social_service.services import posts
 
@@ -32,13 +34,33 @@ def edit_review_route(review_id):
 def delete_review_route(review_id):
     return jsonify(f"delete_review {review_id}")
 
-@posts_bp.post("/api/reports/<asset_id>")
+@posts_bp.post("/api/reports/<int:asset_id>")
+@jwt_required()
 def create_report_route(asset_id):
-    return jsonify(f"create_report {asset_id}")
+    current_user = get_jwt_identity()
+    if current_user["user_type"] != "listener":
+        return jsonify({"error": "Only listeners can submit reports"}), 403
+    
+    data = request.get_json()
+    text = data.get("text")
+    image = data.get("image")
 
-@posts_bp.get("/api/reports/<asset_id>")
+    if not text:
+        return jsonify({"error": "Report text is required"}), 400
+
+    result, status = posts.create_report(asset_id, current_user["user_id"], text, image)
+    return jsonify(result), status
+
+
+@posts_bp.get("/api/reports/<int:asset_id>")
+@jwt_required()
 def get_reports_route(asset_id):
-    return jsonify(f"get_reports {asset_id}")
+    current_user = get_jwt_identity()
+    if current_user["user_type"] != "admin":
+        return jsonify({"error": "Admins only"}), 403
+
+    result, status = posts.get_reports(asset_id)
+    return jsonify(result), status
 
 @posts_bp.patch("/api/reports/<report_id>")
 def handle_user_report_route(report_id):

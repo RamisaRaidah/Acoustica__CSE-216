@@ -57,6 +57,12 @@ export default function Sidebar() {
                         <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={approval_status_button_img} className='icon' />Approval status</div>
                     </>
                 }
+                {
+                    user?.user_type=='admin' &&
+                    <>
+                        <div className='sidebar-button' onClick={()=> navigate('/report-approval')}><img src={draft_button_img} className='icon'/>Reports</div>
+                    </>
+                }
             </div>
 
             <div className='sidebar_navigation_bottom'>
