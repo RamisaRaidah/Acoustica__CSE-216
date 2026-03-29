@@ -104,7 +104,7 @@ function App() {
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />
           <Route path="/subscription-details" element={<SubscriptionDetails />} />
-          <Route path="/myFamily" element={<FamilyManagement />} />
+          <Route path="/my-family" element={<FamilyManagement />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/explore/genres/:genre_name" element={<GenreProfile />} />
           <Route path="/explore/moods/:mood_name" element={<MoodProfile />} />

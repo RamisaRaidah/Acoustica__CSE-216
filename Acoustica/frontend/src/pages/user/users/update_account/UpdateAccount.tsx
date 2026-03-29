@@ -101,7 +101,7 @@ function UpdateAccount() {
         };
 
         loadData();
-    }, []);
+    }, [pfp_preview.split('.')[1]]);
 
     const handlePfpChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

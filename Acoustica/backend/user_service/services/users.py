@@ -303,9 +303,9 @@ def update_account(user_id, user_type, data):
                         )
 
 
-        if new_pfp_path and old_pfp_path and "Default_pfp" not in old_pfp_path:
-            storage.delete_file_from_storage(old_pfp_path)
-
+        #if new_pfp_path and old_pfp_path and "Default_pfp" not in old_pfp_path:
+            # storage.delete_file_from_storage(old_pfp_path)
+        
         return {"message": "Account updated successfully"}, 200
 
     except Exception as e:
