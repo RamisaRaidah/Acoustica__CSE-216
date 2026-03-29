@@ -89,6 +89,7 @@ def get_artist_sales_stats(artist_id):
 def get_family_analytics(family_id):
     return (f"get_family_analytics {family_id}")
 
+### get_countries ###
 def get_countries():
     result = execute_sql(
         "SELECT country_id, country_name FROM country ORDER BY country_name",
@@ -101,7 +102,8 @@ def get_countries():
         return [], 200
     else:
         return result, 200
-    
+
+### get_languages ###
 def get_languages():
     result = execute_sql(
         "SELECT language_id, language_name FROM language ORDER BY language_name",
@@ -115,6 +117,7 @@ def get_languages():
     else:
         return result, 200
 
+### get_genres ###
 def get_genres():
     result = execute_sql(
         "SELECT genre_id, genre_name FROM genre ORDER BY genre_name",
@@ -128,6 +131,7 @@ def get_genres():
     else:
         return result, 200
 
+### get_moods ###
 def get_moods():
     result = execute_sql(
         "SELECT mood_id, mood_name FROM mood ORDER BY mood_name",
@@ -141,6 +145,7 @@ def get_moods():
     else:
         return result, 200
 
+### get_instruments ###
 def get_instruments():
     result = execute_sql(
         "SELECT instrument_id, instrument_name FROM instrument ORDER BY instrument_name",
@@ -153,6 +158,96 @@ def get_instruments():
         return [], 200
     else:
         return result, 200
+    
+### get_trending_songs ###
+def get_trending_songs():
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        ORDER BY s.play_count DESC
+        LIMIT 5
+    """
+
+    result = execute_sql(command, fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+
+### get_popular_songs ###
+def get_popular_songs():
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
+        ORDER BY s.play_count DESC
+        LIMIT 5
+    """
+
+    result = execute_sql(command, fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+
+### get_trending_artists ###
+def get_trending_artists():
+    command = """
+        SELECT artist_id, stage_name artist_name, profile_picture
+        FROM artist a JOIN users u ON (a.artist_id = u.user_id) 
+        LIMIT 10
+    """
+
+    result = execute_sql(command, fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        for r in result:
+            if r['profile_picture']:
+                signed_url = storage.generate_signed_url(r['profile_picture'])
+                if signed_url:
+                    r['profile_picture'] = signed_url
+                else:
+                    r['profile_picture'] = "null"
+            else:
+                r['profile_picture'] = "null"
+
+        return result, 200 
+
+### get_popular_artists ###
+def get_popular_artists():
+    command = """
+        SELECT artist_id, stage_name artist_name, profile_picture
+        FROM artist a JOIN users u ON (a.artist_id = u.user_id)
+        LIMIT 10 
+    """
+
+    result = execute_sql(command, fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        for r in result:
+            if r['profile_picture']:
+                signed_url = storage.generate_signed_url(r['profile_picture'])
+                if signed_url:
+                    r['profile_picture'] = signed_url
+                else:
+                    r['profile_picture'] = "null"
+            else:
+                r['profile_picture'] = "null"
+
+        return result, 200 
     
 ### get_genre_trending_songs_ ###
 def get_genre_trending_songs(genre_id):

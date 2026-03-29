@@ -127,7 +127,6 @@ def get_trending_songs_route():
     result, status = analytics.get_trending_songs()
     return jsonify(result), status
 
-
 ### get_popular_songs_route ###
 @analytics_bp.get("/api/analytics/popular-songs")
 @jwt_required()
@@ -141,7 +140,6 @@ def get_popular_songs_route():
 def get_trending_artists_route():
     result, status = analytics.get_trending_artists()
     return jsonify(result), status
-
 
 ### get_popular_artists_route ###
 @analytics_bp.get("/api/analytics/popular-artists")

@@ -62,19 +62,19 @@ export async function getInstruments(): Promise<Instrument[]> {
 }
 
 export async function getTrendingSongs(): Promise<SongInfo[]> {
-    return api.request('/api/analytics/trending_songs');
+    return api.request('/api/analytics/trending-songs');
 }
 
 export async function getPopularSongs(): Promise<SongInfo[]> {
-    return api.request('/api/analytics/popular_songs');
+    return api.request('/api/analytics/popular-songs');
 }
 
 export async function getTrendingArtists(): Promise<Artist[]> {
-    return api.request('/api/analytics/trending_artists');
+    return api.request('/api/analytics/trending-artists');
 }
 
 export async function getPopularArtists(): Promise<Artist[]> {
-    return api.request('/api/analytics/popular_artists');
+    return api.request('/api/analytics/popular-artists');
 }
 
 export async function getRecommendation(listenerId: number): Promise<SongInfo[]> {

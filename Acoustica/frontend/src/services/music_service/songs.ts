@@ -8,20 +8,7 @@ export async function uploadSong(formData: FormData) {
     });
 }
 
-export interface SongInfo {
-    song_id: number;
-    title: string;
-    album_id: number;
-    album_title: string;
-    language_id: number;
-    language: string;
-    length: number;
-    release_date: string;
-    visibility: string;
-    play_count: number;
-    owner_id: number;
-    owner_name: string;
-}
+
 
 export interface GetArtistSongResponse {
     song_id: number;
