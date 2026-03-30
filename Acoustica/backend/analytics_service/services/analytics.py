@@ -161,14 +161,7 @@ def get_instruments():
     
 ### get_trending_songs ###
 def get_trending_songs():
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        ORDER BY s.play_count DESC
-        LIMIT 5
-    """
-
-    result = execute_sql(command, fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(10, NULL, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -179,14 +172,18 @@ def get_trending_songs():
 
 ### get_popular_songs ###
 def get_popular_songs():
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        ORDER BY s.play_count DESC
-        LIMIT 5
-    """
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL, NULL, NULL)", fetch_all = True)
 
-    result = execute_sql(command, fetch_all = True)
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+    
+### get_recommended_songs ###
+def get_recommended_songs():
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL, NULL, NULL)", (get_jwt_identity(),), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -200,7 +197,7 @@ def get_trending_artists():
     command = """
         SELECT artist_id, stage_name artist_name, profile_picture
         FROM artist a JOIN users u ON (a.artist_id = u.user_id) 
-        LIMIT 10
+        LIMIT 8
     """
 
     result = execute_sql(command, fetch_all = True)
@@ -227,7 +224,7 @@ def get_popular_artists():
     command = """
         SELECT artist_id, stage_name artist_name, profile_picture
         FROM artist a JOIN users u ON (a.artist_id = u.user_id)
-        LIMIT 10 
+        LIMIT 8 
     """
 
     result = execute_sql(command, fetch_all = True)
@@ -251,15 +248,7 @@ def get_popular_artists():
     
 ### get_genre_trending_songs_ ###
 def get_genre_trending_songs(genre_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song_genre g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE genre_id = %s
-        ORDER BY genre_id ASC
-        LIMIT 5
-    """
-
-    result = execute_sql(command, (genre_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, %s , NULL, NULL, NULL)", (genre_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -270,15 +259,7 @@ def get_genre_trending_songs(genre_id):
 
 ### get_genre_popular_songs ###
 def get_genre_popular_songs(genre_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song_genre g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE genre_id = %s
-        ORDER BY s.play_count DESC
-        LIMIT 15
-    """
-
-    result = execute_sql(command, (genre_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, %s , NULL, NULL, NULL)", (genre_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -287,17 +268,9 @@ def get_genre_popular_songs(genre_id):
     else:
         return result, 200
 
-### get_genre_my_songs ###
-def get_genre_my_songs(genre_id):
-    command = """
-        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
-        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN song_genre g ON (s.song_id = g.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE listener_id = %s AND genre_id = %s
-        ORDER BY h.date_time DESC
-        LIMIT 10
-    """
-
-    result = execute_sql(command, (get_jwt_identity(), genre_id), fetch_all = True)
+### get_genre_recommended_songs ###
+def get_genre_recommended_songs(genre_id):
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, %s, NULL , NULL , NULL)", (get_jwt_identity(), genre_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -308,15 +281,7 @@ def get_genre_my_songs(genre_id):
     
 ### get_mood_trending_songs_ ###
 def get_mood_trending_songs(mood_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song_mood g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE mood_id = %s
-        ORDER BY mood_id ASC
-        LIMIT 5
-    """
-
-    result = execute_sql(command, (mood_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, %s , NULL, NULL)", (mood_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -327,15 +292,7 @@ def get_mood_trending_songs(mood_id):
 
 ### get_mood_popular_songs ###
 def get_mood_popular_songs(mood_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song_mood g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE mood_id = %s
-        ORDER BY s.play_count DESC
-        LIMIT 15
-    """
-
-    result = execute_sql(command, (mood_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, %s , NULL, NULL)", (mood_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -344,17 +301,9 @@ def get_mood_popular_songs(mood_id):
     else:
         return result, 200
 
-### get_mood_my_songs ###
-def get_mood_my_songs(mood_id):
-    command = """
-        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
-        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN song_mood g ON (s.song_id = g.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE listener_id = %s AND mood_id = %s
-        ORDER BY h.date_time DESC
-        LIMIT 10
-    """
-
-    result = execute_sql(command, (get_jwt_identity(), mood_id), fetch_all = True)
+### get_mood_recommended_songs ###
+def get_mood_recommended_songs(mood_id):
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, %s , NULL , NULL)", (get_jwt_identity(), mood_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -365,15 +314,7 @@ def get_mood_my_songs(mood_id):
     
 ### get_language_trending_songs_ ###
 def get_language_trending_songs(language_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE l.language_id = %s
-        ORDER BY l.language_id ASC
-        LIMIT 5
-    """
-
-    result = execute_sql(command, (language_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , %s , NULL)", (language_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -384,15 +325,7 @@ def get_language_trending_songs(language_id):
 
 ### get_language_popular_songs ###
 def get_language_popular_songs(language_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE l.language_id = %s
-        ORDER BY s.play_count DESC
-        LIMIT 15
-    """
-
-    result = execute_sql(command, (language_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , %s , NULL)", (language_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -401,17 +334,9 @@ def get_language_popular_songs(language_id):
     else:
         return result, 200
 
-### get_language_my_songs ###
-def get_language_my_songs(language_id):
-    command = """
-        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
-        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE listener_id = %s AND l.language_id = %s
-        ORDER BY h.date_time DESC
-        LIMIT 10
-    """
-
-    result = execute_sql(command, (get_jwt_identity(), language_id), fetch_all = True)
+### get_language_recommended_songs ###
+def get_language_recommended_songs(language_id):
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL , %s , NULL)", (get_jwt_identity(), language_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -422,15 +347,7 @@ def get_language_my_songs(language_id):
     
 ### get_instrument_trending_songs_ ###
 def get_instrument_trending_songs(instrument_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song_instrument g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE instrument_id = %s
-        ORDER BY instrument_id ASC
-        LIMIT 5
-    """
-
-    result = execute_sql(command, (instrument_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , NULL , %s)", (instrument_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -441,15 +358,7 @@ def get_instrument_trending_songs(instrument_id):
 
 ### get_instrument_popular_songs ###
 def get_instrument_popular_songs(instrument_id):
-    command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
-        FROM song_instrument g JOIN song s ON (g.song_id = s.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE instrument_id = %s
-        ORDER BY s.play_count DESC
-        LIMIT 15
-    """
-
-    result = execute_sql(command, (instrument_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , NULL , %s)", (instrument_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -458,17 +367,9 @@ def get_instrument_popular_songs(instrument_id):
     else:
         return result, 200
 
-### get_instrument_my_songs ###
-def get_instrument_my_songs(instrument_id):
-    command = """
-        SELECT DISTINCT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, h.date_time
-        FROM song_stream_history h JOIN song s ON (h.song_id = s.song_id) JOIN song_instrument g ON (s.song_id = g.song_id) JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
-        WHERE listener_id = %s AND instrument_id = %s
-        ORDER BY h.date_time DESC
-        LIMIT 10
-    """
-
-    result = execute_sql(command, (get_jwt_identity(), instrument_id), fetch_all = True)
+### get_instrument_recommended_songs ###
+def get_instrument_recommended_songs(instrument_id):
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL , NULL , %s)", (get_jwt_identity(), instrument_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500

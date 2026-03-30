@@ -13,7 +13,7 @@ export interface ExploreProfileConfig {
     getItems: () => Promise<{ id: number; name: string }[]>;
     getTrending: (id: number) => Promise<SongInfo[]>;
     getPopular: (id: number) => Promise<SongInfo[]>;
-    getMySongs: (id: number) => Promise<SongInfo[]>;
+    getRecommendedSongs: (id: number) => Promise<SongInfo[]>;
     getColor: (index: number) => string;
 }
 
@@ -141,20 +141,18 @@ export default function ExploreProfile({ config }: { config: ExploreProfileConfi
                 setItemName(found.name);
                 setItemColor(config.getColor(items.findIndex(x => x.id === found.id)));
 
-                const [trending, popular, my] = await Promise.all([
+                const [trending, popular, recommended] = await Promise.all([
                     config.getTrending(found.id),
                     config.getPopular(found.id),
-                    config.getMySongs(found.id),
+                    config.getRecommendedSongs(found.id),
                 ]);
 
                 setTrendingSongs(trending);
                 setPopularSongs(popular);
+                setRecommendedSongs(recommended);
 
-                const combined = [...my.slice(0, 5), ...popular.slice(0, 3), ...trending.slice(0, 2)];
-                const unique = shuffle(dedupeById(combined));
-                setRecommendedSongs(unique);
-                setQueueSongs(shuffle(dedupeById([...trending, ...popular, ...unique]).map(s => s.song_id)));
-                const album_ids = [...new Map([...trending, ...popular, ...unique].map(s => [s.album_id, s])).keys()];
+                setQueueSongs(shuffle(dedupeById([...trending, ...popular, ...recommended]).map(s => s.song_id)));
+                const album_ids = [...new Map([...trending, ...popular, ...recommended].map(s => [s.album_id, s])).keys()];
 
                 const cp_entries = await Promise.all(
                     album_ids.map(async id => {

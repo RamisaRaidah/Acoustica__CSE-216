@@ -69,16 +69,16 @@ export async function getPopularSongs(): Promise<SongInfo[]> {
     return api.request('/api/analytics/popular-songs');
 }
 
+export async function getRecommendedSongs(): Promise<SongInfo[]> {
+    return api.request('/api/analytics/recommendation/listeners/me');
+}
+
 export async function getTrendingArtists(): Promise<Artist[]> {
     return api.request('/api/analytics/trending-artists');
 }
 
 export async function getPopularArtists(): Promise<Artist[]> {
     return api.request('/api/analytics/popular-artists');
-}
-
-export async function getRecommendation(listenerId: number): Promise<SongInfo[]> {
-    return api.request(`/api/analytics/recommendation/listeners/${listenerId}`);
 }
 
 export async function getGenreTrendingSongs(genreId: number): Promise<SongInfo[]> {
@@ -89,8 +89,8 @@ export async function getGenrePopularSongs(genreId: number): Promise<SongInfo[]>
     return api.request(`/api/analytics/genre_popular_songs/${genreId}`);
 }
 
-export async function getGenreMySongs(genreId: number): Promise<SongInfo[]> {
-    return api.request(`/api/analytics/genre_my_songs/${genreId}`);
+export async function getGenreRecommendedSongs(genreId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/genre_recommended_songs/${genreId}`);
 }
 
 export async function getMoodTrendingSongs(moodId: number): Promise<SongInfo[]> {
@@ -101,8 +101,8 @@ export async function getMoodPopularSongs(moodId: number): Promise<SongInfo[]> {
     return api.request(`/api/analytics/mood_popular_songs/${moodId}`);
 }
 
-export async function getMoodMySongs(moodId: number): Promise<SongInfo[]> {
-    return api.request(`/api/analytics/mood_my_songs/${moodId}`);
+export async function getMoodRecommendedSongs(moodId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/mood_recommended_songs/${moodId}`);
 }
 
 export async function getLanguageTrendingSongs(languageId: number): Promise<SongInfo[]> {
@@ -113,8 +113,8 @@ export async function getLanguagePopularSongs(languageId: number): Promise<SongI
     return api.request(`/api/analytics/language_popular_songs/${languageId}`);
 }
 
-export async function getLanguageMySongs(languageId: number): Promise<SongInfo[]> {
-    return api.request(`/api/analytics/language_my_songs/${languageId}`);
+export async function getLanguageRecommendedSongs(languageId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/language_recommended_songs/${languageId}`);
 }
 
 export async function getInstrumentTrendingSongs(instrumentId: number): Promise<SongInfo[]> {
@@ -125,8 +125,8 @@ export async function getInstrumentPopularSongs(instrumentId: number): Promise<S
     return api.request(`/api/analytics/instrument_popular_songs/${instrumentId}`);
 }
 
-export async function getInstrumentMySongs(instrumentId: number): Promise<SongInfo[]> {
-    return api.request(`/api/analytics/instrument_my_songs/${instrumentId}`);
+export async function getInstrumentRecommendedSongs(instrumentId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/instrument_recommended_songs/${instrumentId}`);
 }
 
 export async function getArtistStats(artist_id: number): Promise<ArtistStats> {

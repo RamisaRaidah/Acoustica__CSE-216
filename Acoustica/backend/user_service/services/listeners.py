@@ -138,6 +138,36 @@ def get_liked_playlists():
             playlists.append({'playlist_id': r['playlist_id'], 'title': r['title'], 'cover_picture_url': storage.generate_signed_url(r['cover_picture'])})
         
         return playlists, 200
+    
+### get_recently_played_songs ###
+def get_recently_played_songs():
+    command = """
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, 
+            s.language_id, l.language_name language, s.length, 
+            s.release_date, s.lyrics, s.copyright_certificate, 
+            s.play_count, a.owner_id, ar.stage_name owner_name
+        FROM song s 
+        JOIN album a ON (s.album_id = a.album_id) 
+        JOIN language l ON (s.language_id = l.language_id) 
+        JOIN artist ar ON (a.owner_id = ar.artist_id)
+        JOIN (
+            SELECT DISTINCT ON (song_id) song_id, date_time
+            FROM song_stream_history
+            WHERE listener_id = %s AND duration > 30
+            ORDER BY song_id, date_time DESC
+        ) latest ON (s.song_id = latest.song_id)
+        ORDER BY latest.date_time DESC
+        LIMIT 5;
+    """
+
+    result = execute_sql(command, (get_jwt_identity(),), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
 
 def add_followed_artist(artist_id):
     return (f"add_followed_artist {artist_id}")

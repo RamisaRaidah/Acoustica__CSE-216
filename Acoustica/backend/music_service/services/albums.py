@@ -172,7 +172,7 @@ def get_my_albums():
 ### get_album_songs ###
 def get_album_songs(album_id):
     command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE a.album_id = %s
     """

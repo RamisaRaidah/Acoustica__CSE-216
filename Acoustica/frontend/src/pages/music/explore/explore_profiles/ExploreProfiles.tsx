@@ -91,10 +91,10 @@ const INSTRUMENT_COLORS = [
 ];
 
 import ExploreProfile, { ExploreProfileConfig } from '@/pages/music/explore/explore_profiles/ExploreProfile';
-import { getGenres, getGenreTrendingSongs, getGenrePopularSongs, getGenreMySongs } from '@/services/analytics_service/analytics';
-import { getMoods, getMoodTrendingSongs, getMoodPopularSongs, getMoodMySongs } from '@/services/analytics_service/analytics';
-import { getLanguages, getLanguageTrendingSongs, getLanguagePopularSongs, getLanguageMySongs } from '@/services/analytics_service/analytics';
-import { getInstruments, getInstrumentTrendingSongs, getInstrumentPopularSongs, getInstrumentMySongs } from '@/services/analytics_service/analytics';
+import { getGenres, getGenreTrendingSongs, getGenrePopularSongs, getGenreRecommendedSongs } from '@/services/analytics_service/analytics';
+import { getMoods, getMoodTrendingSongs, getMoodPopularSongs, getMoodRecommendedSongs } from '@/services/analytics_service/analytics';
+import { getLanguages, getLanguageTrendingSongs, getLanguagePopularSongs, getLanguageRecommendedSongs } from '@/services/analytics_service/analytics';
+import { getInstruments, getInstrumentTrendingSongs, getInstrumentPopularSongs, getInstrumentRecommendedSongs } from '@/services/analytics_service/analytics';
 
 const genreConfig: ExploreProfileConfig = {
     paramKey: "genre_name",
@@ -102,7 +102,7 @@ const genreConfig: ExploreProfileConfig = {
     getItems: () => getGenres().then(g => g.map(x => ({ id: x.genre_id, name: x.genre_name }))),
     getTrending: getGenreTrendingSongs,
     getPopular: getGenrePopularSongs,
-    getMySongs: getGenreMySongs,
+    getRecommendedSongs: getGenreRecommendedSongs,
     getColor: (i: number) => GENRE_COLORS[i % GENRE_COLORS.length],
 };
 
@@ -116,7 +116,7 @@ const moodConfig: ExploreProfileConfig = {
     getItems: () => getMoods().then(m => m.map(x => ({ id: x.mood_id, name: x.mood_name }))),
     getTrending: getMoodTrendingSongs,
     getPopular: getMoodPopularSongs,
-    getMySongs: getMoodMySongs,
+    getRecommendedSongs: getMoodRecommendedSongs,
     getColor: (i: number) => MOOD_COLORS[i % MOOD_COLORS.length],
 };
 
@@ -130,7 +130,7 @@ const languageConfig: ExploreProfileConfig = {
     getItems: () => getLanguages().then(l => l.map(x => ({ id: x.language_id, name: x.language_name }))),
     getTrending: getLanguageTrendingSongs,
     getPopular: getLanguagePopularSongs,
-    getMySongs: getLanguageMySongs,
+    getRecommendedSongs: getLanguageRecommendedSongs,
     getColor: (i: number) => LANGUAGE_COLORS[i % LANGUAGE_COLORS.length],
 };
 
@@ -144,7 +144,7 @@ const instrumentConfig: ExploreProfileConfig = {
     getItems: () => getInstruments().then(i => i.map(x => ({ id: x.instrument_id, name: x.instrument_name }))),
     getTrending: getInstrumentTrendingSongs,
     getPopular: getInstrumentPopularSongs,
-    getMySongs: getInstrumentMySongs,
+    getRecommendedSongs: getInstrumentRecommendedSongs,
     getColor: (i: number) => INSTRUMENT_COLORS[i % INSTRUMENT_COLORS.length],
 };
 

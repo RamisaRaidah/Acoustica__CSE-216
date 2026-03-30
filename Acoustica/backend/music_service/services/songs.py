@@ -49,10 +49,10 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                     return {"error": "exists"}, 500
                 
                 cursor.execute("""
-                    INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, visibility, copyright_certificate)
+                    INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, copyright_certificate)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING song_id
-                    """, (title, album, language, length, release_date, 'null', None, 'private', 'null')
+                    """, (title, album, language, length, release_date, 'null', None, 'null')
                 )
                 song_id = cursor.fetchone()["song_id"]
 
@@ -147,7 +147,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
 ### get_song_datails ###
 def get_song_metadata(song_id):
     command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.visibility, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE song_id = %s
     """
@@ -493,12 +493,11 @@ def get_artist_songs(artist_id):
             al.album_id,
             al.cover_picture
         FROM song s
-        LEFT JOIN album al ON al.album_id = s.album_id
-        WHERE al.owner_id = %s
+        JOIN album al ON al.album_id = s.album_id
+        WHERE al.owner_id = %s AND al.visibility = 'public'
         ORDER BY s.play_count DESC
         LIMIT 15
     """
-    ##REMEMBER TO ADD AND s.visibility = 'public' WHEN WE DO IT
     songs_result = execute_sql(songs_sql, (artist_id,), fetch_all=True)
     songs = []
     for s in (songs_result or []):
@@ -512,7 +511,6 @@ def get_artist_songs(artist_id):
     logging.info(f"Fetched {len(songs)} songs for artist {artist_id}")
     return songs, 200
         
-
 ### Helper functions ###
 
 def compress_audio(file) -> io.BytesIO:

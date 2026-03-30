@@ -134,6 +134,13 @@ def get_popular_songs_route():
     result, status = analytics.get_popular_songs()
     return jsonify(result), status
 
+### get_recommended_songs_route ###
+@analytics_bp.get("/api/analytics/recommendation/listeners/me")
+@jwt_required()
+def get_recommended_songs_route():
+    result, status = analytics.get_recommended_songs()
+    return jsonify(result), status
+
 ### get_trending_artists_route ###
 @analytics_bp.get("/api/analytics/trending-artists")
 @jwt_required()
@@ -162,11 +169,11 @@ def get_genre_popular_songs_route(genre_id):
     result, status = analytics.get_genre_popular_songs(genre_id)
     return jsonify(result), status
 
-### get_genre_my_songs_route ###
-@analytics_bp.get("/api/analytics/genre_my_songs/<genre_id>")
+### get_genre_recommended_songs_route ###
+@analytics_bp.get("/api/analytics/genre_recommended_songs/<genre_id>")
 @jwt_required()
-def get_genre_my_songs_route(genre_id):
-    result, status = analytics.get_genre_my_songs(genre_id)
+def get_genre_recommended_songs_route(genre_id):
+    result, status = analytics.get_genre_recommended_songs(genre_id)
     return jsonify(result), status
 
 ### get_mood_trending_songs_route ###
@@ -183,11 +190,11 @@ def get_mood_popular_songs_route(mood_id):
     result, status = analytics.get_mood_popular_songs(mood_id)
     return jsonify(result), status
 
-### get_mood_my_songs_route ###
-@analytics_bp.get("/api/analytics/mood_my_songs/<mood_id>")
+### get_mood_recommended_songs_route ###
+@analytics_bp.get("/api/analytics/mood_recommended_songs/<mood_id>")
 @jwt_required()
-def get_mood_my_songs_route(mood_id):
-    result, status = analytics.get_mood_my_songs(mood_id)
+def get_mood_recommended_songs_route(mood_id):
+    result, status = analytics.get_mood_recommended_songs(mood_id)
     return jsonify(result), status
 
 ### get_language_trending_songs_route ###
@@ -204,11 +211,11 @@ def get_language_popular_songs_route(language_id):
     result, status = analytics.get_language_popular_songs(language_id)
     return jsonify(result), status
 
-### get_language_my_songs_route ###
-@analytics_bp.get("/api/analytics/language_my_songs/<language_id>")
+### get_language_recommended_songs_route ###
+@analytics_bp.get("/api/analytics/language_recommended_songs/<language_id>")
 @jwt_required()
-def get_language_my_songs_route(language_id):
-    result, status = analytics.get_language_my_songs(language_id)
+def get_language_recommended_songs_route(language_id):
+    result, status = analytics.get_language_recommended_songs(language_id)
     return jsonify(result), status
 
 ### get_instrument_trending_songs_route ###
@@ -225,11 +232,11 @@ def get_instrument_popular_songs_route(instrument_id):
     result, status = analytics.get_instrument_popular_songs(instrument_id)
     return jsonify(result), status
 
-### get_instrument_my_songs_route ###
-@analytics_bp.get("/api/analytics/instrument_my_songs/<instrument_id>")
+### get_instrument_recommended_songs_route ###
+@analytics_bp.get("/api/analytics/instrument_recommended_songs/<instrument_id>")
 @jwt_required()
-def get_instrument_my_songs_route(instrument_id):
-    result, status = analytics.get_instrument_my_songs(instrument_id)
+def get_instrument_recommended_songs_route(instrument_id):
+    result, status = analytics.get_instrument_recommended_songs(instrument_id)
     return jsonify(result), status
 
 @analytics_bp.get("/api/analytics/artists/<int:artist_id>/stats")

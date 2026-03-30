@@ -1,17 +1,18 @@
-import '@/pages/user/listener/listener_dashboard/ListenerDashboard.css';
+import '@/pages/user/dashboard/Dashboard.css';
 import banner_img from '@/assets/images/deco/Banner2.png';
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import default_profile_picture from '@/assets/images/Default_pfp.png';
 import play_button from '@/assets/images/music/Play_Button.png';
-import { getTrendingSongs, getPopularSongs, getTrendingArtists, getPopularArtists } from '@/services/analytics_service/analytics';
+import { getTrendingSongs, getPopularSongs, getRecommendedSongs, getTrendingArtists, getPopularArtists } from '@/services/analytics_service/analytics';
+import { getRecentlyPlayed } from '@/services/user_service/listeners';
 import { SongInfo } from '@/services/music_service/songs';
 import { Artist } from '@/services/user_service/artists';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useMusic } from '@/contexts/MusicContext';
+import { useAuth } from '@/contexts/AuthContext';
 
-// ─── helpers ────────────────────────────────────────────────────────────────
 
 function formatPlayCount(n: number): string {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M plays`;
@@ -19,7 +20,6 @@ function formatPlayCount(n: number): string {
     return `${n} plays`;
 }
 
-// ─── Recently Played (trending-list style) ───────────────────────────────────
 
 function RecentlyPlayedList({
     songs,
@@ -62,8 +62,6 @@ function RecentlyPlayedList({
         </div>
     );
 }
-
-// ─── Song Grid (playlist-card style) ────────────────────────────────────────
 
 function SongGrid({
     songs,
@@ -114,8 +112,6 @@ function SongGrid({
     );
 }
 
-// ─── Artist Grid ─────────────────────────────────────────────────────────────
-
 function ArtistGrid({
     artists,
     columns,
@@ -153,40 +149,64 @@ function ArtistGrid({
     );
 }
 
-// ─── Section Header ──────────────────────────────────────────────────────────
-
 function SectionHeader({ title }: { title: string }) {
     return <div className="ld-section-header">{title}</div>;
 }
 
-// ─── Main Dashboard ──────────────────────────────────────────────────────────
-
-export default function ListenerDashboard() {
+export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [recentlyPlayedSongs, setRecentlyPlayedSongs] = useState<SongInfo[]>([])
     const [trendingSongs, setTrendingSongs] = useState<SongInfo[]>([]);
     const [popularSongs, setPopularSongs] = useState<SongInfo[]>([]);
+    const [recommendedSongs, setRecommendedSongs] = useState<SongInfo[]>([]);
     const [trendingArtists, setTrendingArtists] = useState<Artist[]>([]);
     const [popularArtists, setPopularArtists] = useState<Artist[]>([]);
     const [coverPictures, setCoverPictures] = useState<Record<number, string>>({});
+    const { user } = useAuth();
+
+    if (!user) return <Navigate to="/sign-in" />;
 
     useEffect(() => {
         async function loadData() {
             try {
-                const [ts, ps, ta, pa] = await Promise.all([
+                const [ts, ps, ta, pa, re] = await Promise.all([
                     getTrendingSongs(),
                     getPopularSongs(),
                     getTrendingArtists(),
                     getPopularArtists(),
+                    getRecommendedSongs()
                 ]);
+
+                let rps = [];
+
+                if (user?.user_type === 'listener') {
+                    rps = await getRecentlyPlayed();
+                    setRecentlyPlayedSongs(rps);
+                }
 
                 setTrendingSongs(ts);
                 setPopularSongs(ps);
                 setTrendingArtists(ta);
                 setPopularArtists(pa);
+                setRecommendedSongs(re); {
+                    popularSongs.length > 0 && (
+                        <section className="ld-section">
+                            <SectionHeader title="Popular songs" />
+                            <SongGrid songs={popularSongs} coverPictures={coverPictures} columns={5} />
+                        </section>
+                    )
+                }
 
-                // load cover pictures for all songs
-                const allSongs = [...ts, ...ps];
+                {
+                    recommendedSongs.length > 0 && user?.user_type === 'listener' && (
+                        <section className="ld-section">
+                            <SectionHeader title="Recommended for you" />
+                            <SongGrid songs={recommendedSongs} coverPictures={coverPictures} columns={5} />
+                        </section>
+                )}
+
+                const allSongs = [...rps, ...ts, ...ps, ...re];
                 const albumIds = [...new Set(allSongs.map(s => s.album_id))];
                 const entries = await Promise.all(
                     albumIds.map(async id => {
@@ -199,10 +219,12 @@ export default function ListenerDashboard() {
                 setCoverPictures(
                     Object.fromEntries(entries.filter((e): e is [number, string] => e !== null))
                 );
-            } catch (err) {
-                console.error('ListenerDashboard load error:', err);
+            } 
+            catch (err) {
+                console.error('ERROR:', err);
                 setError('Failed to load data!');
-            } finally {
+            } 
+            finally {
                 setLoading(false);
             }
         }
@@ -215,10 +237,8 @@ export default function ListenerDashboard() {
     return (
         <div id="ld-container">
 
-            {/* ── Two-column layout: left = banner + songs, right = lists + artists ── */}
             <div className="ld-top-row">
 
-                {/* LEFT: banner on top, then song sections below */}
                 <div className="ld-left-col">
                     <div className="ld-banner-wrapper">
                         <img src={banner_img} className="ld-banner" alt="banner" />
@@ -237,15 +257,21 @@ export default function ListenerDashboard() {
                             <SongGrid songs={popularSongs} coverPictures={coverPictures} columns={5} />
                         </section>
                     )}
+
+                    {user.user_type === 'listener' && recommendedSongs.length > 0 && user.user_type === 'listener' && (
+                        <section className="ld-section">
+                            <SectionHeader title="Recommended for you" />
+                            <SongGrid songs={recommendedSongs} coverPictures={coverPictures} columns={5} />
+                        </section>
+                    )}
                 </div>
 
-                {/* RIGHT: recently played + artists */}
                 <div className="ld-right-col">
-                    {popularSongs.length > 0 && (
+                    {user.user_type === 'listener' && recentlyPlayedSongs.length > 0 && (
                         <section className="ld-section">
                             <SectionHeader title="Recently played" />
                             <RecentlyPlayedList
-                                songs={popularSongs.slice(0, 6)}
+                                songs={recentlyPlayedSongs}
                                 coverPictures={coverPictures}
                             />
                         </section>

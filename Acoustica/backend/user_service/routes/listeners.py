@@ -74,6 +74,13 @@ def get_liked_playlists_route():
     result, status = listeners.get_liked_playlists()
     return jsonify(result), status
 
+### get_recently_played_songs_route ###
+@listeners_bp.get("/api/listeners/me/recently-played")
+@jwt_required()
+def get_recently_played_songs_route():
+    result, status = listeners.get_recently_played_songs()
+    return jsonify(result), status
+
 @listeners_bp.post("/api/listeners/me/followed-artists/<artist_id>")
 @jwt_required()
 def add_followed_artist_route(artist_id):

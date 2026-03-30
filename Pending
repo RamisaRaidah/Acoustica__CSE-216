@@ -1,12 +1,9 @@
 ### Shanon ###
-1. popular, trending, recommended songs
-5. discography
 6. queue management
 10. adding analytics
 11. search system (indexing and others)
-12. AI based search
-13. song visibility
-14. song profile and music player like sync
+12. AI based search*
+14. song profile and music player like sync*
 
 
 ### Arana ###
@@ -16,3 +13,4 @@
 5. Admin stuff - everything
 6. About us
 8. song profile
+9. discography

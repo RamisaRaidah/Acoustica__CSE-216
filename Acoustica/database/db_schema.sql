@@ -157,7 +157,6 @@ CREATE TABLE IF NOT EXISTS "song" (
   release_date DATE,
   song_audio TEXT,
   lyrics TEXT,
-  "visibility" visibility_enum,
   copyright_certificate TEXT,
   play_count INT DEFAULT 0
 );

@@ -26,7 +26,7 @@ import CancelSubscription from '@/pages/subscriptions/cancel/CancelSubscription'
 import CancelSuccess from '@/pages/subscriptions/cancel/CancelSuccess';
 import SubscriptionDetails from '@/pages/subscriptions/subscriptions-details/SubscriptionDetails';
 import FamilyManagement from '@/pages/subscriptions/family/FamilyManagement';
-import Dashboard from '@/pages/user/Dashboard';
+import Dashboard from '@/pages/user/dashboard/Dashboard';
 import Playlists from '@/pages/music/playlist/playlists/Playlists';
 import Artists from '@/pages/user/artist/artists/Artists';
 import CreateAlbum from '@/pages/music/album/create_album/CreateAlbum';
