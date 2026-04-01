@@ -50,7 +50,7 @@ export default function Sidebar() {
                 {
                     user?.user_type === 'artist' && 
                     <>
-                        <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={discography_button_img} className='icon' />Discography</div>
+                        <div className='sidebar-button' onClick={() => navigate('/discography')}><img src={discography_button_img} className='icon' />Discography</div>
                         <div className='sidebar-button' onClick={() => navigate('/music/create-album')}><img src={create_album_button_img} className='icon' />Create album</div>
                         <div className='sidebar-button' onClick={() => navigate('/music/upload-song')}><img src={upload_song_button_img} className='icon' />Upload song</div>
                         <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={draft_button_img} className='icon' />Drafts</div>

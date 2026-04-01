@@ -1,0 +1,39 @@
+.song_modal_overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.song_modal_popup {
+    background: var(--bg-color, #fff);
+    border-radius: 20px;
+    padding: 1.5rem;
+    max-width: 960px;
+    width: 90%;
+    max-height: 88vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+}
+
+.song_modal_close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-muted, #888);
+    transition: color 0.2s;
+    z-index: 1;
+}
+
+.song_modal_close:hover {
+    color: var(--text-color, #1a1a1a);
+}

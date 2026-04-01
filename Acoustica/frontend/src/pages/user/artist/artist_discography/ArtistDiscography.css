@@ -1,0 +1,298 @@
+/* ===== DISCOGRAPHY PAGE ===== */
+/* ── LOADING / ERROR ── */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+.loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+.error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+.error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* ── Page container ── */
+.discography-container {
+    
+    margin: 0 auto;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+}
+
+/* ── Two-column layout wraps everything── */
+.discography-layout {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+/* Left column: hero + Top Songs + All Songs */
+.discography-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+    min-width: 0;
+}
+
+/* Right column: Trending + Albums + Collaborations */
+.discography-right {
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+    min-width: 0;
+}
+
+/* ── Hero banner (inside left column) ── */
+.discography-hero {
+    padding-bottom: 0.5rem;
+}
+
+.discography-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+    color: var(--text-color);
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+}
+
+.discography-hero-title span {
+    color: #e8651a;
+}
+
+.discography-hero-underline {
+    width: 380px;
+    max-width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #e8651a, transparent);
+    border-radius: 2px;
+    margin-top: 0.5rem;
+}
+
+/* ── Section block ── */
+.disco-section {
+    min-width: 0;
+}
+
+.disco-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+}
+
+.disco-section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 1.5vw, 1.45rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-color);
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.disco-section-header h2::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 3px;
+    background: linear-gradient(90deg, #e07b2a, transparent);
+    border-radius: 2px;
+    margin-top: 4px;
+}
+
+/* Trending: special accent header */
+.disco-section-header h2.accent-header {
+    color: var(--text-color);
+}
+.disco-section-header h2.accent-header::after {
+    background: linear-gradient(90deg, #e8651a, rgba(232, 101, 26, 0.2));
+    width: 50px;
+}
+
+.section-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.2vh;
+}
+
+.see-all-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #e07b2a;
+    padding: 0.3rem 0;
+    position: relative;
+    transition: opacity 0.2s ease;
+    opacity: 0.85;
+}
+
+.see-all-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 1.5px;
+    background: #e07b2a;
+    transition: width 0.25s ease;
+}
+
+.see-all-btn:hover {
+    opacity: 1;
+}
+
+.see-all-btn:hover::after {
+    width: 100%;
+}
+
+/* ── Media grid ── */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+}
+
+/* Left column sections: 5 columns */
+.media-grid.five-col {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+/* Trending songs: 4-column */
+.media-grid.trending-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.media-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+    min-width: 0;
+}
+.media-card:hover { transform: translateY(-3px); }
+
+.media-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #c8914e;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.25s ease;
+    position: relative;
+}
+.media-card:hover .media-thumb {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.media-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+}
+.media-card:hover .media-thumb img { transform: scale(1.07); }
+
+
+.trending-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: #e8651a;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.media-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    transition: color 0.15s ease;
+}
+.media-card:hover .media-label { color: #e07b2a; }
+
+.media-sublabel {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: var(--text-muted, #888);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* ── Empty state ── */
+.disco-empty {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text-muted, #888);
+    font-style: italic;
+    padding: 1rem 0 0.5rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .discography-layout {
+        grid-template-columns: 1fr;
+    }
+    .media-grid,
+    .media-grid.five-col,
+    .media-grid.trending-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .media-grid,
+    .media-grid.five-col,
+    .media-grid.trending-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
