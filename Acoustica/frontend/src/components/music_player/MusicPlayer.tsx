@@ -18,7 +18,7 @@ import { createPortal } from "react-dom";
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 
 export default function MusicPlayer() {
-    const { song, song_play_status, song_url, cover_picture_url, play_key, liked, toggleLike, prev, next, queue, createQueue, shuffleQueue, playAtIndex } = useMusic();
+    const { song, song_play_status, song_url, cover_picture_url, play_key, liked, toggleLike, prev, next, queue, removeFromQueue, shuffleQueue, playAtIndex } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
@@ -34,7 +34,6 @@ export default function MusicPlayer() {
     const [songReady, setSongReady] = useState(false);
     const [coverPictureReady, setCoverPictureReady] = useState(false);
     const [queueOpen, setQueueOpen] = useState(false);
-    const [lyrics, setLyrics] = useState<{ lyrics: string }>({ lyrics: "" });
     const [lyricsOpen, setLyricsOpen] = useState(false);
     const [lyricsText, setLyricsText] = useState<string>("");
     const [lyricsLoading, setLyricsLoading] = useState(false);
@@ -186,7 +185,8 @@ export default function MusicPlayer() {
             audio.pause();
             setIsPlaying(false);
             endSegment();
-        } else {
+        } 
+        else {
             audio.play();
             setIsPlaying(true);
             startSegment();
@@ -236,10 +236,6 @@ export default function MusicPlayer() {
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
     }, [updateTimeFromDrag]);
-
-    // useEffect(() => {
-    //     createQueue([1, 3, 6, 7, 8, 9]);
-    // }, []);
 
     return (
         <div id="music-player-container">
@@ -378,26 +374,37 @@ export default function MusicPlayer() {
                                                 <div className="queue_item_artist">{song.owner_name}</div>
                                             </div>
                                             <div className="queue_item_duration">{formatTime(duration)}</div>
+                                            <button className="queue_item_remove" style={{ visibility: 'hidden' }} disabled>✕</button>
                                         </div>
                                     </>
                                 )}
                                 <div className="queue_section_header">Queue</div>
-                                {queue.map((qSong, index) => (
-                                    <div
-                                        className="queue_item"
-                                        key={qSong.song_id}
-                                        onClick={() => {
-                                            playAtIndex(index);
-                                        }}
-                                    >
-                                        <div className="queue_item_index">{index + 1}</div>
-                                        <div className="queue_item_info">
-                                            <div className="queue_item_title">{qSong.title}</div>
-                                            <div className="queue_item_artist">{qSong.owner_name}</div>
-                                        </div>
-                                        <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
-                                    </div>
-                                ))}
+                                    {queue.map((qSong, i) => {
+                                        const isCurrentSong = qSong.song_id === song_play_status?.song_id;
+                                        return (
+                                            <div
+                                                className={`queue_item${isCurrentSong ? ' queue_item--playing' : ''}`}
+                                                key={qSong.song_id}
+                                                onClick={() => playAtIndex(i)}
+                                            >
+                                                <div className="queue_item_index">
+                                                    {isCurrentSong ? '▶' : i + 1}
+                                                </div>
+                                                <div className="queue_item_info">
+                                                    <div className="queue_item_title">{qSong.title}</div>
+                                                    <div className="queue_item_artist">{qSong.owner_name}</div>
+                                                </div>
+                                                <div className="queue_item_duration">{formatSongLength(qSong.length)}</div>
+                                                <button
+                                                    className="queue_item_remove"
+                                                    onClick={e => { e.stopPropagation(); removeFromQueue(qSong.song_id); }}
+                                                    title="Remove from queue"
+                                                    disabled={isCurrentSong}
+                                                    style={{ visibility: isCurrentSong ? 'hidden' : undefined }}
+                                                >✕</button>
+                                            </div>
+                                        );
+                                    })}
                             </>
                         )}
                     </div>

@@ -183,7 +183,7 @@ def get_popular_songs():
     
 ### get_recommended_songs ###
 def get_recommended_songs():
-    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL, NULL, NULL)", (get_jwt_identity(),), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 50, NULL, NULL, NULL, NULL)", (get_jwt_identity(),), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500

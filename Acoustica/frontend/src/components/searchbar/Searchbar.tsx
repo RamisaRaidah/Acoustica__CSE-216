@@ -28,7 +28,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
     const [searchDropdownOpen, setSearchDropdownOpen] = useState<boolean>(false);
     const seachWrapperRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
-    const { playSong } = useMusic();
+    const { playSong, addToQueue } = useMusic();
 
     const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
@@ -117,6 +117,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                             className="play_button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
+                                                addToQueue(song.song_id, true);
                                                 playSong({ song_id: song.song_id, progress: 0, playing: true });
                                                 close();
                                             }}

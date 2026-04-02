@@ -2,6 +2,8 @@ import { createContext, useState, useContext, useEffect } from "react";
 import { SongInfo, getSongMetadata, getSongAudio, isLiked } from "@/services/music_service/songs";
 import { getAlbumCoverPicture } from "@/services/music_service/albums";
 import { getLastListening } from "@/services/user_service/users";
+import { getRecommendedSongs } from "@/services/analytics_service/analytics";
+import { shuffle, isSubset } from "@/utils/helper";
 
 export interface SongPlayStatus {
     song_id: number;
@@ -21,7 +23,9 @@ interface MusicContextType {
     queue: SongInfo[];
     prev: () => void;
     next: () => void;
-    createQueue: (songs: number[]) => void;
+    createQueue: (songs: number[], autoPlay?: boolean, initialProgress?: number) => void;
+    addToQueue: (song: number, atStart: boolean) => void;
+    removeFromQueue: (song: number) => void;
     shuffleQueue: () => void;
     playAtIndex: (i: number) => void;
     loading: boolean;
@@ -40,7 +44,9 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     const [play_key, setPlayKey] = useState(0);
     const [liked, setLiked] = useState<boolean>(false);
     const [queue, setQueue] = useState<SongInfo[]>([]);
+    const [playedSongs, setPlayedSongs] = useState<number[]>([]);
     const [index, setIndex] = useState<number>(0);
+    const [initialized, setInitialized] = useState<boolean>(false);
 
     function playSong(song_play_status: SongPlayStatus) {
         setSongPlayStatus(song_play_status);
@@ -59,27 +65,55 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     }
 
     function next() {
-        const newIndex = index < queue.length - 1 ? index + 1 : 0;
-        setIndex(newIndex);
-        playSong({ song_id: queue[newIndex].song_id, progress: 0, playing: true });
+        async function loadRecommendedSongs() {
+            if (!song_play_status) return;
+            const recommendedSongs = await getRecommendedSongs();
+            const newQueue = shuffle(recommendedSongs.filter(x => !queue.some(y => x.song_id === y.song_id))).slice(0, 15);
+            setQueue(newQueue);
+            setIndex(0);
+            setPlayedSongs([]);
+            if (newQueue.length > 0) {
+                playSong({ song_id: newQueue[0].song_id, progress: 0, playing: true });
+            }
+        }
+
+        const justPlayed = queue[index].song_id;
+        const updatedPlayed = new Set([...playedSongs, justPlayed]);
+
+        if (queue.length > 0 && isSubset(new Set(queue.map(x => x.song_id)), updatedPlayed)) {
+            loadRecommendedSongs();
+        } 
+        else {
+            const newIndex = index < queue.length - 1 ? index + 1 : 0;
+            setIndex(newIndex);
+            playSong({ song_id: queue[newIndex].song_id, progress: 0, playing: true });
+            setPlayedSongs([...playedSongs, justPlayed]);
+        }
     }
 
-    async function createQueue(songs: number[], autoPlay = true) {
+    async function createQueue(songs: number[], autoPlay = true, initialProgress = 0) {
         const results = await Promise.all(songs.map(id => getSongMetadata(id)));
         setQueue(results);
         setIndex(0);
-        if (autoPlay && results.length > 0) {
-            playSong({ song_id: results[0].song_id, progress: 0, playing: true });
+        if (results.length > 0) {
+            playSong({ song_id: results[0].song_id, progress: initialProgress, playing: autoPlay });
         }
     }
 
-    function shuffle<T>(array: T[]): T[] {
-        const arr = [...array]; 
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+    async function addToQueue(song: number, atStart = false) {
+        const result = await getSongMetadata(song);
+        if (atStart) {
+            setQueue(queue.filter(x => x.song_id !== song));
+            setQueue([result, ...queue]);
         }
-        return arr;
+        else {
+            if (queue.some(x => x.song_id === song)) return;
+            else setQueue([...queue, result]);
+        }
+    }
+
+    function removeFromQueue(song: number) {
+        setQueue(queue.filter(x => x.song_id != song));
     }
 
     function shuffleQueue() {
@@ -108,28 +142,48 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     }, [song_play_status?.song_id, play_key]);
 
     useEffect(() => {
-        if (song_play_status) {
-            setSongPlayStatus({ ...song_play_status, playing: false });
-            localStorage.setItem("song", JSON.stringify({ ...song_play_status, playing: false }));
-        } 
-        else {
-            getLastListening().then(res => {
-                if (res.song_id === -1) return;
-                const lastSong: SongPlayStatus = {
-                    song_id: res.song_id,
-                    progress: res.progress,
-                    playing: false
-                };
-                setSongPlayStatus(lastSong);
-                localStorage.setItem("song", JSON.stringify(lastSong));
-            });
+        async function init() {
+            if (song_play_status) {
+                setSongPlayStatus({ ...song_play_status, playing: false });
+                localStorage.setItem("song", JSON.stringify({ ...song_play_status, playing: false }));
+            } else {
+                const res = await getLastListening();
+                if (res.song_id !== -1) {
+                    const lastSong: SongPlayStatus = {
+                        song_id: res.song_id,
+                        progress: res.progress,
+                        playing: false
+                    };
+                    setSongPlayStatus(lastSong);
+                    localStorage.setItem("song", JSON.stringify(lastSong));
+                }
+            }
+            setInitialized(true);
+            setLoading(false);
         }
-        setLoading(false);
+        init();
     }, []);
 
+    useEffect(() => {
+        if (!initialized || !song_play_status) return;
+
+        async function loadRecommendedSongs() {
+            if (!song_play_status) return;
+            const [recommendedSongs, currentSong] = await Promise.all([
+                getRecommendedSongs(),
+                getSongMetadata(song_play_status.song_id)
+            ]);
+            setQueue([currentSong, ...shuffle(recommendedSongs.filter(x => x.song_id !== currentSong.song_id)).slice(0, 14)]);
+        }
+
+        if (queue.length === 0) {
+            loadRecommendedSongs();
+            playSong(song_play_status);
+        }
+    }, [initialized, song_play_status?.song_id]);
 
     return (
-        <MusicContext.Provider value={{ song, song_play_status, playSong, song_url, cover_picture_url, play_key, liked, toggleLike, queue, prev, next, createQueue, shuffleQueue, playAtIndex, loading }}>
+        <MusicContext.Provider value={{ song, song_play_status, playSong, song_url, cover_picture_url, play_key, liked, toggleLike, queue, prev, next, createQueue, addToQueue, removeFromQueue, shuffleQueue, playAtIndex, loading }}>
             {children}
         </MusicContext.Provider>
     )

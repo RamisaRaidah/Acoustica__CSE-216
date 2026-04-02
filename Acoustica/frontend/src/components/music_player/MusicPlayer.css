@@ -597,12 +597,42 @@ img[src=""] {
   letter-spacing: 0.04em;
 }
 
-.queue_now_playing .queue_item_title {
+/* Remove button — hidden until row is hovered */
+.queue_item_remove {
+  background: none;
+  border: none;
+  color: #c07040;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0 0 0 0.3vw;
+  line-height: 1;
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.queue_item:hover .queue_item_remove {
+  opacity: 1;
+}
+
+.queue_item_remove:hover {
+  color: #e03030;
+}
+
+/* Now-playing highlight */
+.queue_item--playing {
+  background: rgba(224, 123, 42, 0.18);
+  border-left: 2px solid #e07b2a;
+  padding-left: calc(1em - 2px);
+  /* compensate for border */
+}
+
+.queue_item--playing .queue_item_title {
   color: #c04a08;
   font-weight: 600;
 }
 
-.queue_now_playing .queue_item_index {
+.queue_item--playing .queue_item_index {
   color: #c04a08;
 }
 

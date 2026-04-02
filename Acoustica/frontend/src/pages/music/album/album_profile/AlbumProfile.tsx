@@ -50,7 +50,7 @@ export default function AlbumProfile() {
             }
         }
         loadData();
-    }, []);
+    }, [albumId]);
 
     useEffect(() => {
         let total = 0;

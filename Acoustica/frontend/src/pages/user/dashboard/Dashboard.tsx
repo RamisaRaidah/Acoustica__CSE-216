@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useMusic } from '@/contexts/MusicContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { shuffle } from '@/utils/helper';
 import SongProfile from "@/pages/music/song/song_profile/SongProfile";
 
 
@@ -278,7 +279,7 @@ export default function Dashboard() {
                     {user.user_type === 'listener' && recommendedSongs.length > 0 && user.user_type === 'listener' && (
                         <section className="ld-section">
                             <SectionHeader title="Recommended for you" />
-                            <SongGrid songs={recommendedSongs} coverPictures={coverPictures} columns={5} />
+                            <SongGrid songs={shuffle(recommendedSongs).slice(0, 10)} coverPictures={coverPictures} columns={5} />
                         </section>
                     )}
                 </div>
