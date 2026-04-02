@@ -50,7 +50,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
                 
                 cursor.execute("""
                     INSERT INTO song (title, album_id, language_id, length, release_date, song_audio, lyrics, copyright_certificate)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING song_id
                     """, (title, album, language, length, release_date, 'null', None, 'null')
                 )

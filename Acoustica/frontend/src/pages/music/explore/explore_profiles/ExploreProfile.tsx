@@ -6,6 +6,7 @@ import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import { useMusic } from '@/contexts/MusicContext';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
+import { shuffle } from '@/utils/helper';
 
 export interface ExploreProfileConfig {
     paramKey: string;
@@ -23,15 +24,6 @@ function formatPlayCount(n: number): string {
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M plays`;
     if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K plays`;
     return `${n} plays`;
-}
-
-function shuffle<T>(array: T[]): T[] {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
 }
 
 function dedupeById(songs: SongInfo[]): SongInfo[] {
