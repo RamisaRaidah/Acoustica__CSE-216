@@ -98,3 +98,7 @@ export async function isLiked(songId: number): Promise<boolean> {
 export async function getArtistSongs(artist_id: number): Promise<GetArtistSongResponse[]> {
     return api.request(`/api/music/songs/artists/${artist_id}`);
 }
+
+export async function getArtistCollaborationSongs(artist_id: number): Promise<GetArtistSongResponse[]> {
+    return api.request(`/api/music/songs/collaboration/artists/${artist_id}`);
+}

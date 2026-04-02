@@ -141,3 +141,8 @@ def is_liked_route(song_id):
 def get_artist_songs_route(artist_id):
     result, status = songs.get_artist_songs(artist_id)
     return jsonify(result), status
+
+@songs_bp.get("/api/music/songs/collaboration/artists/<int:artist_id>")
+def get_artist_collaboration_songs_route(artist_id):
+    result, status = songs.get_artist_collaboration_songs(artist_id)
+    return jsonify(result), status

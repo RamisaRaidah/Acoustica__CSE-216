@@ -42,12 +42,13 @@ import Explore from '@/pages/music/explore/Explore';
 import { GenreProfile, MoodProfile, LanguageProfile, InstrumentProfile } from '@/pages/music/explore/explore_profiles/ExploreProfiles';
 import Library from '@/pages/music/library/Library';
 import ArtistProfile from './pages/user/profile/public/ArtistProfile';
+import Discography from '@/pages/user/artist/artist_discography/ArtistDiscography';
 
 
-import DeleteAccount from './pages/user/users/delete-account/DeleteAccount';
-import ChangePassword from './pages/user/users/change-password/ChangePassword';
-import ForgotPassword from './pages/user/users/forgot-pass/ForgotPassword';
-import ResetPassword from './pages/user/users/forgot-pass/ResetPassword';
+import DeleteAccount from '@/pages/user/users/delete-account/DeleteAccount';
+import ChangePassword from '@/pages/user/users/change-password/ChangePassword';
+import ForgotPassword from '@/pages/user/users/forgot-pass/ForgotPassword';
+import ResetPassword from '@/pages/user/users/forgot-pass/ResetPassword';
 
 function App() {
   const scrollRef = useScroll();
@@ -114,6 +115,7 @@ function App() {
           <Route path="/artists/:artist_id" element={<ArtistProfile />} />
           <Route path="/delete/account" element={<DeleteAccount/>}/>
           <Route path="/change/password" element={<ChangePassword/>}/>
+          <Route path="/discography" element={<Discography/>}/>
           
         </Route>
       </Routes>
