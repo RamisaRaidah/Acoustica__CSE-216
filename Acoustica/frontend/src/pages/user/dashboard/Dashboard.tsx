@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useMusic } from '@/contexts/MusicContext';
 import { useAuth } from '@/contexts/AuthContext';
+import SongProfile from "@/pages/music/song/song_profile/SongProfile";
 
 
 function formatPlayCount(n: number): string {
@@ -30,6 +31,7 @@ function RecentlyPlayedList({
 }) {
     const { playSong } = useMusic();
     const navigate = useNavigate();
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     return (
         <div className="ld-recently-list">
@@ -45,7 +47,7 @@ function RecentlyPlayedList({
                     <div className="ld-recently-info">
                         <span
                             className="ld-recently-title"
-                            onClick={() => navigate(`/music/songs/${song.song_id}`)}
+                            onClick={() => setSelectedSongId(song.song_id)}
                         >
                             {song.title}
                         </span>
@@ -59,6 +61,13 @@ function RecentlyPlayedList({
                     <span className="ld-recently-count">{formatPlayCount(song.play_count)}</span>
                 </div>
             ))}
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }
@@ -74,6 +83,7 @@ function SongGrid({
 }) {
     const { playSong } = useMusic();
     const navigate = useNavigate();
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     return (
         <div className="ld-song-grid">
@@ -81,7 +91,7 @@ function SongGrid({
                 <div className="ld-song-card" key={song.song_id}>
                     <div
                         className="ld-song-cover"
-                        onClick={() => navigate(`/music/songs/${song.song_id}`)}
+                        onClick={() => setSelectedSongId(song.song_id)}
                     >
                         <img src={coverPictures[song.album_id] || default_cover} alt={song.title} />
                         <div
@@ -96,7 +106,7 @@ function SongGrid({
                     </div>
                     <p
                         className="ld-song-title"
-                        onClick={() => navigate(`/music/songs/${song.song_id}`)}
+                        onClick={() => setSelectedSongId(song.song_id)}
                     >
                         {song.title}
                     </p>
@@ -108,6 +118,13 @@ function SongGrid({
                     </p>
                 </div>
             ))}
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }

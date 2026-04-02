@@ -26,6 +26,13 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
     return createPortal(
         
         <div className="settings_overlay">
+            <button 
+                id='song-profile-close-btn'
+                onClick={onClose}
+                aria-label='Close'
+            >
+                ✕
+            </button>
             {showDeleteConfirm && (
                 <Alert
                     message="Are you sure you want to delete your account? This action cannot be undone."

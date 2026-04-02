@@ -15,6 +15,7 @@ import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_But
 import exit_full_screen_button from '@/assets/images/Musicbar_Buttons/Exit_Full_Screen_Button.png';
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
+import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 
 export default function MusicPlayer() {
     const { song, song_play_status, song_url, cover_picture_url, play_key, liked, toggleLike, prev, next, queue, createQueue, shuffleQueue, playAtIndex } = useMusic();
@@ -38,6 +39,8 @@ export default function MusicPlayer() {
     const [lyricsText, setLyricsText] = useState<string>("");
     const [lyricsLoading, setLyricsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     const formatTime = (seconds: number) => {
         if (!Number.isFinite(seconds)) return "0:00";
@@ -266,7 +269,13 @@ export default function MusicPlayer() {
                 />
 
                 <div className="song_info">
-                    <div id="song-name" onClick={() => { setFullScreen(false); navigate(`/music/songs/${song?.song_id}`); }}>{ready ? song?.title : ""}</div>
+                    <div id="song-name" onClick={() => { setFullScreen(false); 
+                        if (song?.song_id !== undefined) {
+                            setSelectedSongId(song.song_id);
+                        }}}
+                    >
+                    {ready ? song?.title : ""}
+                    </div>
                     <div id="artist-name" onClick={() => { setFullScreen(false); navigate(`/artists/${song?.owner_id}`); }}>{ready ? song?.owner_name : ""}</div>
                 </div>
 
@@ -418,6 +427,14 @@ export default function MusicPlayer() {
                     </div>
                 </div>,
                 document.body
+            )}
+
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
             )}
         </div>
     );

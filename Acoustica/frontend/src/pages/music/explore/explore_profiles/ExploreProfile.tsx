@@ -6,6 +6,7 @@ import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import { useMusic } from '@/contexts/MusicContext';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
+import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 
 export interface ExploreProfileConfig {
     paramKey: string;
@@ -45,6 +46,8 @@ function SongGrid({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures
     const visible = expanded ? songs : songs.slice(0, POPULAR_SONGS_COLUMNS);
     const hasMore = songs.length > POPULAR_SONGS_COLUMNS;
 
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
+
     return (
         <div className="explore-song-section">
             <div className="explore-song-grid">
@@ -52,7 +55,9 @@ function SongGrid({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures
                     <div className="explore-song-card" key={song.song_id}>
                         <div
                             className="explore-song-cover"
-                            onClick={() => navigate(`/music/songs/${song.song_id}`)}
+                            onClick={() => 
+                                setSelectedSongId(song.song_id)
+                            }
                         >
                             <img src={cover_pictures[song.album_id] || default_cover} alt={song.title} />
                             <div
@@ -65,7 +70,7 @@ function SongGrid({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures
                                 <img src={play_button} />
                             </div>
                         </div>
-                        <p className="explore-song-title" onClick={() => navigate(`/music/songs/${song.song_id}`)}>
+                        <p className="explore-song-title" onClick={() => setSelectedSongId(song.song_id)}>
                             {song.title}
                         </p>
                         <p className="explore-song-artist" onClick={() => navigate(`/artists/${song.owner_id}`)}>
@@ -81,6 +86,13 @@ function SongGrid({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures
                     </button>
                 </div>
             )}
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }
@@ -88,6 +100,7 @@ function SongGrid({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures
 function TrendingList({ songs, cover_pictures }: { songs: SongInfo[], cover_pictures: Record<number, string> }) {
     const { playSong } = useMusic();
     const navigate = useNavigate();
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     return (
         <div className="explore-trending-list">
@@ -101,7 +114,7 @@ function TrendingList({ songs, cover_pictures }: { songs: SongInfo[], cover_pict
                         <div className="explore-trending-play">▶</div>
                     </div>
                     <div className="explore-trending-info">
-                        <span className="explore-trending-title" onClick={() => navigate(`/music/songs/${song.song_id}`)}>
+                        <span className="explore-trending-title" onClick={() => setSelectedSongId(song.song_id)}>
                             {song.title}
                         </span>
                         <span className="explore-trending-artist" onClick={() => navigate(`/artists/${song.owner_id}`)}>
@@ -111,6 +124,14 @@ function TrendingList({ songs, cover_pictures }: { songs: SongInfo[], cover_pict
                     <span className="explore-trending-playcount">{formatPlayCount(song.play_count)}</span>
                 </div>
             ))}
+
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }

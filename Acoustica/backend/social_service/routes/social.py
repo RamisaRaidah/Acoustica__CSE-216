@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify
 import logging
 import sys
 
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
 from social_service.services import social
 
 logging.basicConfig(
@@ -60,9 +62,11 @@ def remove_family_member_route(family_id, member_id):
 def share_to_friend_route(friend_id):
     return jsonify(f"share_to_friend {friend_id}")
 
-@social_bp.post("/api/social/families/<family_id>/shares")
-def share_to_family_route(family_id):
-    return jsonify(f"share_to_family {family_id}")
+@social_bp.post("/api/social/families/<int:family_id>/shares/<int:asset_id>")
+@jwt_required()
+def share_to_family_route(family_id,asset_id):
+    user_id=get_jwt_identity()
+    return social.share_to_family(family_id,asset_id,user_id)
 
 @social_bp.get("/api/social/friends/me/shares")
 def get_friend_shared_contents_route():
@@ -72,10 +76,14 @@ def get_friend_shared_contents_route():
 def remove_friend_shared_content_route(friend_share_id):
     return jsonify(f"remove_friend_shared_content {friend_share_id}")
 
-@social_bp.get("/api/social/families/<family_id>/shares")
+@social_bp.get("/api/social/families/<int:family_id>/shares")
+@jwt_required()
 def get_family_shared_contents_route(family_id):
-    return jsonify(f"get_family_shared_contents {family_id}")
+    user_id=get_jwt_identity()
+    return social.get_family_shared_contents(family_id,user_id)
 
-@social_bp.delete("/api/social/families/<family_id>/shares/<family_share_id>")
-def remove_family_shared_content_route(family_id, family_share_id):
-    return jsonify(f"remove_family_shared_content {family_id} {family_share_id}")
+@social_bp.delete("/api/social/families/<int:family_id>/shares/<int:family_shared_id>")
+@jwt_required()
+def delete_family_shared_content_route(family_id, family_shared_id):
+    user_id = get_jwt_identity()
+    return social.remove_family_shared_content(family_id, family_shared_id, user_id)
