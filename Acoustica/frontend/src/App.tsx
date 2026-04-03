@@ -37,12 +37,12 @@ import EditPlaylist from '@/pages/music/playlist/edit_playlist/EditPlaylist';
 import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
 import EditAlbum from '@/pages/music/album/edit_album/EditAlbum';
 import EditSong from '@/pages/music/song/edit_song/EditSong';
-import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 import Explore from '@/pages/music/explore/Explore';
 import { GenreProfile, MoodProfile, LanguageProfile, InstrumentProfile } from '@/pages/music/explore/explore_profiles/ExploreProfiles';
 import Library from '@/pages/music/library/Library';
 import ArtistProfile from './pages/user/profile/public/ArtistProfile';
 import Discography from '@/pages/user/artist/artist_discography/ArtistDiscography';
+import FamilySharedContents from '@/pages/social/family/FamilySharedContents';
 
 
 import DeleteAccount from '@/pages/user/users/delete-account/DeleteAccount';
@@ -115,7 +115,8 @@ function App() {
           <Route path="/delete/account" element={<DeleteAccount/>}/>
           <Route path="/change/password" element={<ChangePassword/>}/>
           <Route path="/discography" element={<Discography/>}/>
-          
+          <Route path="/family/:familyId/shared-contents" element={<FamilySharedContents/>}/>
+
         </Route>
       </Routes>
     </BrowserRouter>

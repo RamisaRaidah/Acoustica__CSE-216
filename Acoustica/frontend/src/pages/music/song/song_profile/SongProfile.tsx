@@ -1,18 +1,30 @@
 import '@/pages/music/song/song_profile/SongProfile.css';
 import { useEffect, useState } from 'react';
-import { SongInfo, getSongMetadata, Collaborator, getSongCollaborators, getSongGenres, getSongMoods, getSongInstruments, deleteSong, likeSong, isLiked } from '@/services/music_service/songs';
+import {    SongInfo, 
+            getSongMetadata, 
+            Collaborator, 
+            getSongCollaborators, 
+            getSongGenres, 
+            getSongMoods, 
+            getSongInstruments, 
+            deleteSong, 
+            likeSong, 
+            isLiked 
+        } from '@/services/music_service/songs';
 import { Genre, Mood, Instrument } from '@/services/analytics_service/analytics';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
 import { getProfilePicture } from '@/services/user_service/users';
 import default_pfp from '@/assets/images/Default_pfp.png';
 import default_cover_picture from '@/assets/images/music/Default_Cover_Picture.png';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useMusic } from '@/contexts/MusicContext';
 import like_button from '@/assets/images/music/Like_Song_With_Border_Button.png';
 import music_play_button from '@/assets/images/music/Play_Button.png'
 import { createPortal } from 'react-dom';
+import ShareToFamilyPopup from '@/pages/social/family/ShareToFamily';
+
 
 interface SongProfileProps {
     isOpen: boolean;
@@ -40,7 +52,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
     const { user } = useAuth();
     const navigate = useNavigate();
     const { song: playingSong, playSong, liked: playingSongLiked, toggleLike } = useMusic();
-
+    const [shareOpen, setShareOpen] = useState(false);
     
 
     useEffect(() => {
@@ -142,258 +154,288 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
     );
 
     return createPortal (
-        <div id='song-profile-overlay' onClick={onClose}>    
-            <div id='song-profile-container' onClick={e => e.stopPropagation()}>
-                <button id='song-profile-close-btn' onClick={onClose}>✕</button>
-                {alertMessage && (
-                    <Alert
-                        message={alertMessage}
-                        onConfirm={() => { 
-                                setAlertMessage(null); 
-                                onClose(); 
-                                navigate('/music/discography'); 
+        <>
+            <div id='song-profile-overlay' onClick={onClose}>    
+                <div id='song-profile-container' onClick={e => e.stopPropagation()}>
+                    <button id='song-profile-close-btn' onClick={onClose}>✕</button>
+                    {alertMessage && (
+                        <Alert
+                            message={alertMessage}
+                            onConfirm={() => { 
+                                    setAlertMessage(null); 
+                                    onClose(); 
+                                    navigate('/music/discography'); 
+                                }
                             }
-                        }
-                    />
-                )}
-                {confirmation && (
-                    <Alert
-                        message='Are you sure to delete the song?'
-                        type='confirm'
-                        onConfirm={() => { 
-                                setConfirmation(false); 
-                                onClose(); 
-                                handleDeleteSong(); 
-                            }
-                        }
-                        onCancel={() => setConfirmation(false)}
-                    />
-                )}
-
-                <div id='song-profile-container-left'>
-
-                    <div id='song-profile-container-left-top'>
-                        <div id='song-profile-container-cover-picture-container'>
-                            <img
-                                src={cover_picture || default_cover_picture}
-                                id='song-profile-container-cover-picture'
-                                alt='Album cover'
-                            />
-                        </div>
-
-                        <div id='song-profile-container-song-info'>
-                            <div id='song-profile-container-song-title'>
-                                {song?.title ?? 'Song Name'}
-                            </div>
-
-                            <div id='song-profile-container-owner-name'
-                                onClick={() => navigate(`/artists/${song?.owner_id}`)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                {song?.owner_name ?? 'Owner Name'}
-                            </div>
-
-                            <div
-                                id='song-profile-container-album-title'
-                                onClick={() => navigate(`/music/albums/${song?.album_id}`)}
-                            >
-                                {song?.album_title ?? 'Album Name'}
-                            </div>
-
-                            <div id='song-profile-container-length'>
-                                {formatLength(song?.length ?? 0)}
-                            </div>
-
-                            <div id='song-profile-container-song-buttons'>
-                                <button
-                                    id='song-profile-container-like-btn'
-                                    title='Like'
-                                    onClick={() => {
-                                        likeSong(songId);
-                                        setLiked(!liked);
-                                        if (songId === playingSong?.song_id) toggleLike();
-                                    }}
-                                >
-                                    <img
-                                        id='like-button'
-                                        src={like_button}
-                                        alt='Like'
-                                        style={{
-                                            filter: liked
-                                                ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)'
-                                                : undefined, 
-                                        }}
-                                    />
-                                </button>
-
-                                <button id='song-profile-container-add-btn' title='Add to playlist'>
-                                    +
-                                </button>
-
-                                <button
-                                    id='song-profile-container-play-btn'
-                                    title='Play'
-                                    onClick={() => {
-                                        if (song)
-                                            playSong({ song_id: song.song_id, progress: 0, playing: true });
-                                    }}
-                                >
-                                    <img id='song-profile-play-btn-img' src={music_play_button} alt="▶" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div id='song-profile-container-collaborators-card'>
-                        <div id='song-profile-container-collaborator-header'>
-                            <span>Collaborators</span>
-                            {hasMultiple && (
-                                <button
-                                    id='song-profile-container-show-all-btn'
-                                    onClick={() => setShowAllCollaborators(v => !v)}
-                                >
-                                    {showAllCollaborators ? 'Show Less' : 'Show All'}
-                                </button>
-                            )}
-                        </div>
-
-                        {vocalists.length > 0 && (
-                            <div className='song-profile-container-collaborator-group'>
-                                <div className='song-profile-container-collaborator-role'>Vocalist</div>
-                                {(showAllCollaborators ? vocalists : vocalists.slice(0, 1)).map(c => (
-                                    <div key={`${c.artist_id}-vocalist`} className='song-profile-container-collaborator-item'>
-                                        <img
-                                            className='song-profile-container-collaborator-avatar'
-                                            src={collaborator_pfps[c.artist_id] || default_pfp}
-                                            alt={c.artist_name}
-                                        />
-                                        <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {lyricists.length > 0 && (
-                            <div className='song-profile-container-collaborator-group'>
-                                <div className='song-profile-container-collaborator-role'>Lyricist</div>
-                                {(showAllCollaborators ? lyricists : lyricists.slice(0, 1)).map(c => (
-                                    <div key={`${c.artist_id}-lyricist`} className='song-profile-container-collaborator-item'>
-                                        <img
-                                            className='song-profile-container-collaborator-avatar'
-                                            src={collaborator_pfps[c.artist_id] || default_pfp}
-                                            alt={c.artist_name}
-                                        />
-                                        <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {composers.length > 0 && (
-                            <div className='song-profile-container-collaborator-group'>
-                                <div className='song-profile-container-collaborator-role'>Composer</div>
-                                {(showAllCollaborators ? composers : composers.slice(0, 1)).map(c => (
-                                    <div key={`${c.artist_id}-composer`} className='song-profile-container-collaborator-item'>
-                                        <img
-                                            className='song-profile-container-collaborator-avatar'
-                                            src={collaborator_pfps[c.artist_id] || default_pfp}
-                                            alt={c.artist_name}
-                                        />
-                                        <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div id='song-profile-container-right'>
-
-                    <div className='song-profile-container-meta-section'>
-                        <div className='song-profile-container-meta-header'>Genres</div>
-                        <div className='song-profile-container-tag-list genres'>
-                            {genres?.map(x => (
-                                <span key={x.genre_name} className='song-profile-container-tag'>
-                                    {x.genre_name}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className='song-profile-container-meta-section'>
-                        <div className='song-profile-container-meta-header'>Moods</div>
-                        <div className='song-profile-container-tag-list moods'>
-                            {moods?.map(x => (
-                                <span key={x.mood_name} className='song-profile-container-tag'>
-                                    {x.mood_name}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className='song-profile-container-meta-section'>
-                        <div className='song-profile-container-meta-header'>Instruments</div>
-                        <div className='song-profile-container-tag-list instruments'>
-                            {instruments?.map(x => (
-                                <span key={x.instrument_name} className='song-profile-container-tag'>
-                                    {x.instrument_name}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className='song-profile-container-meta-section'>
-                        <div className='song-profile-container-meta-header'>Language</div>
-                        <div className='song-profile-container-tag-list language'>
-                            {song?.language && (
-                                <span className='song-profile-container-tag'>{song.language}</span>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className='song-profile-container-meta-section'>
-                        <div className='song-profile-container-meta-header'>Release Date</div>
-                        <div id='song-profile-container-release-date'>{release_date}</div>
-                    </div>
-
-                    {user?.user_type === 'artist' &&
-                        Number(song?.owner_id) === Number(user.user_id) && (
-                        <div id='song-profile-container-action-buttons'>
-                            <button
-                                id='song-profile-container-edit-btn'
-                                onClick={() => navigate(`/music/songs/${songId}/edit`)}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" strokeWidth="2.5"
-                                    strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg>
-                                Edit Song
-                            </button>
-
-                            <button
-                                id='song-profile-container-delete-btn'
-                                onClick={() => setConfirmation(true)}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" strokeWidth="2.5"
-                                    strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="3 6 5 6 21 6" />
-                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                                    <path d="M10 11v6" />
-                                    <path d="M14 11v6" />
-                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                                </svg>
-                                Delete Song
-                            </button>
-                        </div>
+                        />
                     )}
+                    {confirmation && (
+                        <Alert
+                            message='Are you sure to delete the song?'
+                            type='confirm'
+                            onConfirm={() => { 
+                                    setConfirmation(false); 
+                                    onClose(); 
+                                    handleDeleteSong(); 
+                                }
+                            }
+                            onCancel={() => setConfirmation(false)}
+                        />
+                    )}
+
+                    <div id='song-profile-container-left'>
+
+                        <div id='song-profile-container-left-top'>
+                            <div id='song-profile-container-cover-picture-container'>
+                                <img
+                                    src={cover_picture || default_cover_picture}
+                                    id='song-profile-container-cover-picture'
+                                    alt='Album cover'
+                                />
+                            </div>
+
+                            <div id='song-profile-container-song-info'>
+                                <div id='song-profile-container-song-title'>
+                                    {song?.title ?? 'Song Name'}
+                                </div>
+
+                                <div id='song-profile-container-owner-name'
+                                    onClick={() => navigate(`/artists/${song?.owner_id}`)}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {song?.owner_name ?? 'Owner Name'}
+                                </div>
+
+                                <div
+                                    id='song-profile-container-album-title'
+                                    onClick={() => navigate(`/music/albums/${song?.album_id}`)}
+                                >
+                                    {song?.album_title ?? 'Album Name'}
+                                </div>
+
+                                <div id='song-profile-container-length'>
+                                    {formatLength(song?.length ?? 0)}
+                                </div>
+
+                                <div id='song-profile-container-song-buttons'>
+                                    <button
+                                        id='song-profile-container-like-btn'
+                                        title='Like'
+                                        onClick={() => {
+                                            likeSong(songId);
+                                            setLiked(!liked);
+                                            if (songId === playingSong?.song_id) toggleLike();
+                                        }}
+                                    >
+                                        <img
+                                            id='like-button'
+                                            src={like_button}
+                                            alt='Like'
+                                            style={{
+                                                filter: liked
+                                                    ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)'
+                                                    : undefined, 
+                                            }}
+                                        />
+                                    </button>
+
+                                    <button id='song-profile-container-add-btn' title='Add to playlist'>
+                                        +
+                                    </button>
+
+                                    {Number(song?.owner_id) !== Number(user?.user_id) && (
+                                        <button
+                                            id='song-profile-container-share-btn'
+                                            title='Share to Family'
+                                            onClick={() => setShareOpen(true)}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" strokeWidth="2.5"
+                                                strokeLinecap="round" strokeLinejoin="round">
+                                                <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" />
+                                                <circle cx="18" cy="19" r="3" />
+                                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                                            </svg>
+                                        </button>
+                                    )}
+
+                                    <button
+                                        id='song-profile-container-play-btn'
+                                        title='Play'
+                                        onClick={() => {
+                                            if (song)
+                                                playSong({ song_id: song.song_id, progress: 0, playing: true });
+                                        }}
+                                    >
+                                        <img id='song-profile-play-btn-img' src={music_play_button} alt="▶" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id='song-profile-container-collaborators-card'>
+                            <div id='song-profile-container-collaborator-header'>
+                                <span>Collaborators</span>
+                                {hasMultiple && (
+                                    <button
+                                        id='song-profile-container-show-all-btn'
+                                        onClick={() => setShowAllCollaborators(v => !v)}
+                                    >
+                                        {showAllCollaborators ? 'Show Less' : 'Show All'}
+                                    </button>
+                                )}
+                            </div>
+
+                            {vocalists.length > 0 && (
+                                <div className='song-profile-container-collaborator-group'>
+                                    <div className='song-profile-container-collaborator-role'>Vocalist</div>
+                                    {(showAllCollaborators ? vocalists : vocalists.slice(0, 1)).map(c => (
+                                        <div key={`${c.artist_id}-vocalist`} className='song-profile-container-collaborator-item'>
+                                            <img
+                                                className='song-profile-container-collaborator-avatar'
+                                                src={collaborator_pfps[c.artist_id] || default_pfp}
+                                                alt={c.artist_name}
+                                            />
+                                            <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {lyricists.length > 0 && (
+                                <div className='song-profile-container-collaborator-group'>
+                                    <div className='song-profile-container-collaborator-role'>Lyricist</div>
+                                    {(showAllCollaborators ? lyricists : lyricists.slice(0, 1)).map(c => (
+                                        <div key={`${c.artist_id}-lyricist`} className='song-profile-container-collaborator-item'>
+                                            <img
+                                                className='song-profile-container-collaborator-avatar'
+                                                src={collaborator_pfps[c.artist_id] || default_pfp}
+                                                alt={c.artist_name}
+                                            />
+                                            <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {composers.length > 0 && (
+                                <div className='song-profile-container-collaborator-group'>
+                                    <div className='song-profile-container-collaborator-role'>Composer</div>
+                                    {(showAllCollaborators ? composers : composers.slice(0, 1)).map(c => (
+                                        <div key={`${c.artist_id}-composer`} className='song-profile-container-collaborator-item'>
+                                            <img
+                                                className='song-profile-container-collaborator-avatar'
+                                                src={collaborator_pfps[c.artist_id] || default_pfp}
+                                                alt={c.artist_name}
+                                            />
+                                            <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div id='song-profile-container-right'>
+
+                        <div className='song-profile-container-meta-section'>
+                            <div className='song-profile-container-meta-header'>Genres</div>
+                            <div className='song-profile-container-tag-list genres'>
+                                {genres?.map(x => (
+                                    <span key={x.genre_name} className='song-profile-container-tag'>
+                                        {x.genre_name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className='song-profile-container-meta-section'>
+                            <div className='song-profile-container-meta-header'>Moods</div>
+                            <div className='song-profile-container-tag-list moods'>
+                                {moods?.map(x => (
+                                    <span key={x.mood_name} className='song-profile-container-tag'>
+                                        {x.mood_name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className='song-profile-container-meta-section'>
+                            <div className='song-profile-container-meta-header'>Instruments</div>
+                            <div className='song-profile-container-tag-list instruments'>
+                                {instruments?.map(x => (
+                                    <span key={x.instrument_name} className='song-profile-container-tag'>
+                                        {x.instrument_name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className='song-profile-container-meta-section'>
+                            <div className='song-profile-container-meta-header'>Language</div>
+                            <div className='song-profile-container-tag-list language'>
+                                {song?.language && (
+                                    <span className='song-profile-container-tag'>{song.language}</span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className='song-profile-container-meta-section'>
+                            <div className='song-profile-container-meta-header'>Release Date</div>
+                            <div id='song-profile-container-release-date'>{release_date}</div>
+                        </div>
+
+                        {user?.user_type === 'artist' &&
+                            Number(song?.owner_id) === Number(user.user_id) && (
+                            <div id='song-profile-container-action-buttons'>
+                                <button
+                                    id='song-profile-container-edit-btn'
+                                    onClick={() => navigate(`/music/songs/${songId}/edit`)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" strokeWidth="2.5"
+                                        strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                    Edit Song
+                                </button>
+
+                                <button
+                                    id='song-profile-container-delete-btn'
+                                    onClick={() => setConfirmation(true)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" strokeWidth="2.5"
+                                        strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="3 6 5 6 21 6" />
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                        <path d="M10 11v6" />
+                                        <path d="M14 11v6" />
+                                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                                    </svg>
+                                    Delete Song
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
+
+                
+                
             </div>
-            
-        </div>,
+            {song?.asset_id && (
+                <ShareToFamilyPopup
+                    isOpen={shareOpen}
+                    onClose={() => setShareOpen(false)}
+                    assetId={song.asset_id}
+                />
+            )}
+
+        </>
+        ,
         document.body
     );
 }

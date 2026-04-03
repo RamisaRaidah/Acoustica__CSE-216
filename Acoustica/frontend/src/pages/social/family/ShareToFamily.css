@@ -1,0 +1,212 @@
+/* ══════════════════════════════════════
+   ShareToFamilyPopup.css
+   Matches SongProfile's aesthetic:
+   font: DM Sans / Playfair Display
+   accent: #e8651a
+   card bg: #be6b47 (collaborators card colour)
+══════════════════════════════════════ */
+
+#stf-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1100;                   /* above SongProfile (1000) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: stf-fade-in 0.18s ease;
+}
+
+@keyframes stf-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Container ── */
+#stf-container {
+    position: relative;
+    background: var(--bg-color, #fff);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 360px;
+    padding: 2rem 1.6rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color, #1a1a1a);
+    animation: stf-slide-up 0.22s ease;
+}
+
+@keyframes stf-slide-up {
+    from { transform: translateY(18px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Close button ── */
+#stf-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--text-muted, #999);
+    line-height: 1;
+    transition: color 0.2s, transform 0.2s;
+    z-index: 10;
+}
+#stf-close-btn:hover {
+    color: var(--text-color, #1a1a1a);
+    transform: scale(1.15);
+}
+
+/* ── Family badge ── */
+#stf-family-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--accent, #e8651a);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.45rem 1rem 0.45rem 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    width: fit-content;
+    box-shadow: 0 3px 12px rgba(232, 101, 26, 0.35);
+}
+
+#stf-family-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+#stf-family-name {
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Textarea wrapper ── */
+#stf-note-wrapper {
+    position: relative;
+    background: var(--accent, #be6b47);
+    border-radius: 16px;
+    padding: 1rem 1rem 2rem;
+}
+
+#stf-note {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #fff;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+#stf-note::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+#stf-note:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#stf-char-count {
+    position: absolute;
+    bottom: 0.6rem;
+    right: 0.85rem;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+}
+#stf-char-count.at-limit {
+    color: #ffcdd2;
+}
+
+/* ── Error ── */
+#stf-error {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: #c0392b;
+    background: rgba(192, 57, 43, 0.08);
+    border: 1.5px solid rgba(192, 57, 43, 0.25);
+    border-radius: 10px;
+    padding: 0.55rem 0.85rem;
+    line-height: 1.4;
+}
+.dark #stf-error {
+    color: #e57373;
+    background: rgba(229, 115, 115, 0.1);
+    border-color: rgba(229, 115, 115, 0.3);
+}
+
+/* ── Share button ── */
+#stf-share-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    border: none;
+    border-radius: 24px;
+    padding: 0.7rem 1.2rem;
+    background: var(--accent, #e8651a);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    box-shadow: 0 3px 14px rgba(232, 101, 26, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.25s ease;
+}
+#stf-share-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(232, 101, 26, 0.5);
+}
+#stf-share-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+#stf-share-btn.success {
+    background: #27ae60;
+    box-shadow: 0 3px 14px rgba(39, 174, 96, 0.4);
+    opacity: 1;
+}
+
+/* ── Spinner ── */
+.stf-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2.5px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: stf-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+@keyframes stf-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Dark mode textarea bg ── */
+.dark #stf-note-wrapper {
+    background: #a0522d;
+}

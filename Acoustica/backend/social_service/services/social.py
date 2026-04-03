@@ -1,3 +1,4 @@
+from storage_service.services import storage
 from db import execute_sql
 import logging
 import sys
@@ -41,7 +42,10 @@ def remove_family_member(family_id, member_id):
 def share_to_friend(friend_id):
     return (f"share_to_friend {friend_id}")
 
-def share_to_family(family_id, asset_id, user_id):
+def share_to_family(family_id, asset_id, user_id, note=None):
+    if note and len(note) > 80:
+        return {"error": "Note exceeds 80 character limit"}, 400
+    
     membership_check = """
         SELECT f.parent_account_id
         FROM family f
@@ -72,10 +76,10 @@ def share_to_family(family_id, asset_id, user_id):
         return {"error": "Asset not found or not a shareable type (must be song, album, or playlist)"}, 404
 
     sql = """
-        INSERT INTO family_shared_content (sender_id, family_id, content_id, date_time)
-        VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
+        INSERT INTO family_shared_content (sender_id, family_id, content_id, note, date_time)
+        VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
     """
-    execute_sql(sql, (user_id, family_id, asset_id))
+    execute_sql(sql, (user_id, family_id, asset_id, note))
 
     return {"message": "Content successfully shared to family."}, 200
 
@@ -88,7 +92,7 @@ def remove_friend_shared_content(friend_share_id):
 
 def get_family_shared_contents(family_id, user_id):
     membership_check = """
-        SELECT 1
+        SELECT f.family_name
         FROM family f
         JOIN plan_subscription s ON s.subscription_id = f.subscription_id
         WHERE f.family_id = %s
@@ -103,7 +107,9 @@ def get_family_shared_contents(family_id, user_id):
               )
           )
     """
-    if not execute_sql(membership_check, (family_id, user_id, user_id), fetch_one=True):
+
+    family_name=execute_sql(membership_check, (family_id, user_id, user_id), fetch_one=True)
+    if not family_name:
         return {"error": "Family not found, subscription inactive, or user is not a member"}, 403
 
     sql = """
@@ -114,35 +120,47 @@ def get_family_shared_contents(family_id, user_id):
             fsc.date_time,
             a.asset_type,
             u.first_name || ' ' || u.last_name  AS sender_name,
-            u.profile_picture                    AS sender_profile_picture,
+            u.profile_picture AS sender_profile_picture,
+            COALESCE(artist.first_name || ' ' || artist.last_name, 'Unknown') AS artist_name,
 
-            -- Title: resolved per asset type
             CASE a.asset_type
                 WHEN 'song'     THEN s.title
                 WHEN 'album'    THEN al.title
                 WHEN 'playlist' THEN pl.title
             END AS content_title,
 
-            -- Cover: resolved per asset type
             CASE a.asset_type
                 WHEN 'song'     THEN al_s.cover_picture   -- song's album cover
                 WHEN 'album'    THEN al.cover_picture
                 WHEN 'playlist' THEN pl.cover_picture
-            END AS cover_picture
+            END AS cover_picture,
+
+            fsc.note,
+
+            CASE a.asset_type
+                WHEN 'song'     THEN s.song_id
+                WHEN 'album'    THEN al.album_id
+                WHEN 'playlist' THEN pl.playlist_id
+            END AS typed_id
 
         FROM family_shared_content fsc
         JOIN asset a  ON a.asset_id       = fsc.content_id
         JOIN users u  ON u.user_id        = fsc.sender_id
 
-        -- Song joins
         LEFT JOIN song     s    ON a.asset_type = 'song'     AND s.asset_id  = a.asset_id
         LEFT JOIN album    al_s ON a.asset_type = 'song'     AND al_s.album_id = s.album_id
 
-        -- Album join
         LEFT JOIN album    al   ON a.asset_type = 'album'    AND al.asset_id = a.asset_id
 
-        -- Playlist join
         LEFT JOIN playlist pl   ON a.asset_type = 'playlist' AND pl.asset_id = a.asset_id
+
+        LEFT JOIN users artist 
+                ON artist.user_id = 
+                    CASE a.asset_type
+                        WHEN 'song' THEN al_s.owner_id
+                        WHEN 'album' THEN al.owner_id
+                        WHEN 'playlist' THEN pl.creator_id
+                    END
 
         WHERE fsc.family_id = %s
         ORDER BY fsc.date_time DESC
@@ -150,24 +168,33 @@ def get_family_shared_contents(family_id, user_id):
     rows = execute_sql(sql, (family_id,), fetch_all=True)
 
     if not rows:
-        return {"message": "No shared content found for this family.", "data": []}, 200
+        return {
+                    "family_name": family_name["family_name"], 
+                    "message": "No shared content found for this family.", "data": []
+                }, 200
 
-    contents = [
-        {
-            "family_shared_id": row[0],
-            "content_id":        row[1],
-            "sender_id":         row[2],
-            "date_time":         row[3],
-            "asset_type":        row[4],
-            "sender_name":       row[5],
-            "sender_profile_picture": row[6],
-            "content_title":     row[7],
-            "cover_picture":     row[8],
-        }
-        for row in rows
-    ]
+    contents = []
+    for row in rows:
 
-    return {"data": contents}, 200
+        contents.append({
+            "family_shared_id": row["family_shared_id"],
+            "content_id":       row["content_id"],
+            "sender_id":        row["sender_id"],
+            "date_time":        row["date_time"],
+            "asset_type":       row["asset_type"],
+            "sender_name":      row["sender_name"],
+            "sender_profile_picture": storage.generate_signed_url(row["sender_profile_picture"]) if row["sender_profile_picture"] else None,
+            "content_title":    row["content_title"],
+            "cover_picture":    storage.generate_signed_url(row["cover_picture"]) if row["cover_picture"] else None,
+            "note":             row["note"],
+            "typed_id":         row["typed_id"],
+            "artist_name": row["artist_name"]
+        })
+
+    return {    
+                "family_name": family_name["family_name"],
+                "data": contents
+            }, 200
 
 
 def remove_family_shared_content(family_id, family_shared_id, user_id):
@@ -187,5 +214,36 @@ def remove_family_shared_content(family_id, family_shared_id, user_id):
     execute_sql(sql, (family_shared_id,))
 
     return {"message": "Shared content removed successfully."}, 200
+
+
+def get_user_family(user_id):
+    """
+    Returns the single family the user belongs to (as parent or member),
+    paired with an active subscription.
+    """
+    sql = """
+        SELECT
+            f.family_id,
+            f.family_name
+        FROM family f
+        JOIN plan_subscription s ON s.subscription_id = f.subscription_id
+        WHERE s.end_date >= CURRENT_DATE
+          AND s.is_active = TRUE
+          AND (
+              f.parent_account_id = %s
+              OR EXISTS (
+                  SELECT 1 FROM family_member fm
+                  WHERE fm.family_id = f.family_id
+                    AND fm.member_id = %s
+              )
+          )
+        LIMIT 1
+    """
+    row = execute_sql(sql, (user_id, user_id), fetch_one=True)
+    if not row:
+        return {"error": "No active family found for this user"}, 404
+
+    return {"family_id": row["family_id"], "family_name": row["family_name"]}, 200
+
 
 ### Helper functions ###

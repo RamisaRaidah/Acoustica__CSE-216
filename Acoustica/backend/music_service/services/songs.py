@@ -147,7 +147,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
 ### get_song_datails ###
 def get_song_metadata(song_id):
     command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name,s.asset_id
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE song_id = %s
     """

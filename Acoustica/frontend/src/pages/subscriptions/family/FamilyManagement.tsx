@@ -142,6 +142,10 @@ function FamilyManagement() {
                 <p>Manage your family members</p>
             </div>
 
+            <button className="shared-content-button" onClick={() => navigate(`/family/${family.family_id}/shared-contents`)}>
+                See Shared Contents
+            </button>
+
             <div className="family-counter-card">
                 <div className="family-counter">
                     <span className="family-counter-num">{family.members.length}</span>
