@@ -5,11 +5,6 @@ export function getUser() {
     return user ? JSON.parse(user) : null;
 }
 
-interface GetLastListeningResponse {
-    song_id: number,
-    progress: number
-}
-
 export interface DeleteMyAccountResponse{
     message:string;
 }
@@ -36,18 +31,6 @@ export interface GetMyProfileResponse{
 interface MessageResponse {
     message: string;
 }
-
-export async function getLastListening(): Promise<GetLastListeningResponse> {
-    return api.request('/api/listeners/me/last-listening');
-}
-
-export async function addStreamHistory(segments: {}) {
-    api.request('/api/listeners/me/stream-history', {
-        method: 'POST',
-        body: JSON.stringify(segments)
-    });
-}
-
 
 export async function getMyProfile(): Promise<GetMyProfileResponse> {
     return api.request<GetMyProfileResponse>('/api/users/me');

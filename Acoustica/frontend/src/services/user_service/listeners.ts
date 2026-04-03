@@ -1,5 +1,25 @@
 import api from "@/services/api";
 
+export interface GetLastListeningResponse {
+    song_id: number,
+    progress: number
+}
+
+export async function getLastListening(): Promise<GetLastListeningResponse> {
+    return api.request('/api/listeners/me/last-listening');
+}
+
+export async function addStreamHistory(segments: {}) {
+    api.request('/api/listeners/me/stream-history', {
+        method: 'POST',
+        body: JSON.stringify(segments)
+    });
+}
+
+export async function getDailyStreamTime(): Promise<{stream_time: number}> {
+    return api.request('/api/listeners/me/daily-stream-time');
+}
+
 export interface LikedSong {
     song_id: number;
     title: string;

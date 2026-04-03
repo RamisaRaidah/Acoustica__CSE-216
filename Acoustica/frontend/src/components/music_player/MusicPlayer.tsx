@@ -1,7 +1,7 @@
 import "@/components/music_player/MusicPlayer.css";
 import { useMusic } from "@/contexts/MusicContext";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { addStreamHistory } from "@/services/user_service/users";
+import { addStreamHistory } from "@/services/user_service/listeners";
 import { likeSong, getSongLyrics } from "@/services/music_service/songs";
 import play_previous_button from '@/assets/images/Musicbar_Buttons/Play_Previous_Button.png';
 import play_button from '@/assets/images/Musicbar_Buttons/Play_Button.png';
@@ -11,13 +11,15 @@ import lyrics_button from '@/assets/images/Musicbar_Buttons/Lyrics_Button.png';
 import like_button from '@/assets/images/Musicbar_Buttons/Like_Button.png';
 import shuffle_button from '@/assets/images/Musicbar_Buttons/Shuffle_Button.png';
 import queue_button from '@/assets/images/Musicbar_Buttons/Queue_Button.png';
+import loop_button from '@/assets/images/Musicbar_Buttons/Loop_Button.png';
 import full_screen_button from '@/assets/images/Musicbar_Buttons/Full_Screen_Button.png';
 import exit_full_screen_button from '@/assets/images/Musicbar_Buttons/Exit_Full_Screen_Button.png';
 import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
+import Alert from "@/components/alert/TwoButtonAlert";
 
 export default function MusicPlayer() {
-    const { song, song_play_status, song_url, cover_picture_url, play_key, liked, toggleLike, prev, next, queue, removeFromQueue, shuffleQueue, playAtIndex } = useMusic();
+    const { song, song_play_status, play, pause, song_url, cover_picture_url, play_key, liked, toggleLike, prev, next, queue, removeFromQueue, shuffleQueue, playAtIndex, loop, toggleLoop, limitReached } = useMusic();
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const progressContainerRef = useRef<HTMLDivElement>(null);
@@ -25,7 +27,6 @@ export default function MusicPlayer() {
     const startTimeRef = useRef<number | null>(null);
 
     const [isFullScreen, setFullScreen] = useState<boolean>(false);
-    const [isPlaying, setIsPlaying] = useState(song_play_status?.playing ?? false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [progressWidth, setProgressWidth] = useState("0%");
@@ -36,6 +37,8 @@ export default function MusicPlayer() {
     const [lyricsOpen, setLyricsOpen] = useState(false);
     const [lyricsText, setLyricsText] = useState<string>("");
     const [lyricsLoading, setLyricsLoading] = useState(false);
+    const limitReachedRef = useRef(limitReached);
+    const [alert, setAlert] = useState<string>("");
     const navigate = useNavigate();
 
     const formatTime = (seconds: number) => {
@@ -104,7 +107,6 @@ export default function MusicPlayer() {
         setCurrentTime(0);
         setDuration(0);
         setProgressWidth("0%");
-        setIsPlaying(false);
         startTimeRef.current = null;
     }, [song?.song_id, play_key]);
 
@@ -126,7 +128,6 @@ export default function MusicPlayer() {
 
             if (song_play_status?.playing) {
                 audio.play();
-                setIsPlaying(true);
                 startSegment();
             }
         };
@@ -154,20 +155,25 @@ export default function MusicPlayer() {
             savePlayerState({
                 song_id: song?.song_id,
                 progress: (audio.currentTime / audio.duration) * 100,
-                playing: isPlaying
+                playing: song_play_status?.playing
             });
         };
 
         audio.addEventListener('timeupdate', handleTimeUpdate);
         return () => audio.removeEventListener('timeupdate', handleTimeUpdate);
-    }, [song?.song_id, play_key, isPlaying, savePlayerState]);
+    }, [song?.song_id, play_key, song_play_status?.playing, savePlayerState]);
+
+    useEffect(() => {
+        limitReachedRef.current = limitReached;
+    }, [limitReached]);
 
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
         const handleEnded = () => {
-            setIsPlaying(false);
+            pause();
             endSegment();
+            flushSegments();
             next();
         };
         audio.addEventListener('ended', handleEnded);
@@ -178,20 +184,20 @@ export default function MusicPlayer() {
         const audio = audioRef.current;
         if (!audio || !ready) return;
 
-        if (isPlaying) {
+        if (song_play_status?.playing) {
             audio.pause();
-            setIsPlaying(false);
+            pause();
             endSegment();
         } 
         else {
             audio.play();
-            setIsPlaying(true);
+            play();
             startSegment();
         }
         savePlayerState({
             song_id: song?.song_id,
             progress: (audio.currentTime / audio.duration) * 100,
-            playing: !isPlaying
+            playing: !song_play_status?.playing
         });
     };
 
@@ -216,7 +222,7 @@ export default function MusicPlayer() {
         setCurrentTime(audio.currentTime);
 
         audio.play().then(() => {
-            setIsPlaying(true);
+            play();
             startSegment();
         });
     }, [endSegment, startSegment]);
@@ -238,7 +244,7 @@ export default function MusicPlayer() {
         <div id="music-player-container">
             <div id="fullscreen-overlay" style={{ display: isFullScreen ? 'flex' : 'none' }}>
                 <div id="overlay-left">
-                    <div id="cd-container" className={isPlaying ? 'cd-spinning' : ''}>
+                    <div id="cd-container" className={song_play_status?.playing ? 'cd-spinning' : ''}>
                         <div id="cd-disc">
                             <img src={cover_picture_url ?? ''} id="cd-cover-img" />
                             <div id="cd-hole"></div>
@@ -268,13 +274,21 @@ export default function MusicPlayer() {
 
                 <div className="music_control1">
                     <div className="music_control1_top" style={{ opacity: ready ? 1 : 0.4, pointerEvents: ready ? 'auto' : 'none' }}>
-                        <img src={play_previous_button} className="play_previous_button" onClick={prev} />
+                        <img src={play_previous_button} className="play_previous_button" onClick={() => {
+                            endSegment();
+                            flushSegments();
+                            prev();
+                        }} />
                         <img
-                            src={isPlaying ? pause_button : play_button}
+                            src={song_play_status?.playing ? pause_button : play_button}
                             className="play_pause_button"
                             onClick={handlePlayPause}
                         />
-                        <img src={play_next_button} className="play_next_button" onClick={next} />
+                        <img src={play_next_button} className="play_next_button" onClick={() => {
+                            endSegment();
+                            flushSegments();
+                            next();
+                        }} />
                     </div>
 
                     <div className="music_control1_bottom">
@@ -338,6 +352,7 @@ export default function MusicPlayer() {
                         onClick={() => setQueueOpen(prev => !prev)}
                     />
                     <img src={shuffle_button} className="shuffle_button" onClick={shuffleQueue} />
+                    <img src={loop_button} className="loop_button" onClick={toggleLoop} style={{ filter: loop ? 'brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(800%) hue-rotate(340deg) brightness(90%)' : undefined }} />
                     <img src={isFullScreen ? exit_full_screen_button : full_screen_button} className="full_screen_button" onClick={() => setFullScreen(!isFullScreen)} />
                 </div>
 

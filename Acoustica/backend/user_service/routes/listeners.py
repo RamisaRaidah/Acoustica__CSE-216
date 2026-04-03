@@ -36,6 +36,13 @@ def add_stream_history_route():
     result, status = listeners.add_stream_history(segments)
     return jsonify(result), status
 
+### get_daily_stream_time_route ###
+@listeners_bp.get("/api/listeners/me/daily-stream-time")
+@jwt_required()
+def get_daily_stream_time_route():
+    result, status = listeners.get_daily_stream_time()
+    return jsonify(result), status
+
 @listeners_bp.get("/api/listeners/me/stream-history")
 @jwt_required()
 def get_stream_history_route():
