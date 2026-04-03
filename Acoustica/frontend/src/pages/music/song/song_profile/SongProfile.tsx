@@ -1,18 +1,30 @@
 import '@/pages/music/song/song_profile/SongProfile.css';
 import { useEffect, useState } from 'react';
-import { SongInfo, getSongMetadata, Collaborator, getSongCollaborators, getSongGenres, getSongMoods, getSongInstruments, deleteSong, likeSong, isLiked } from '@/services/music_service/songs';
+import {    SongInfo, 
+            getSongMetadata, 
+            Collaborator, 
+            getSongCollaborators, 
+            getSongGenres, 
+            getSongMoods, 
+            getSongInstruments, 
+            deleteSong, 
+            likeSong, 
+            isLiked 
+        } from '@/services/music_service/songs';
 import { Genre, Mood, Instrument } from '@/services/analytics_service/analytics';
 import { getAlbumCoverPicture } from '@/services/music_service/albums';
 import { getProfilePicture } from '@/services/user_service/users';
 import default_pfp from '@/assets/images/Default_pfp.png';
 import default_cover_picture from '@/assets/images/music/Default_Cover_Picture.png';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useMusic } from '@/contexts/MusicContext';
 import like_button from '@/assets/images/music/Like_Song_With_Border_Button.png';
 import music_play_button from '@/assets/images/music/Play_Button.png'
 import { createPortal } from 'react-dom';
+import ShareToFamilyPopup from '@/pages/social/family/ShareToFamily';
+
 
 interface SongProfileProps {
     isOpen: boolean;
@@ -40,7 +52,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
     const { user } = useAuth();
     const navigate = useNavigate();
     const { song: playingSong, playSong, liked: playingSongLiked, toggleLike } = useMusic();
-
+    const [shareOpen, setShareOpen] = useState(false);
     
 
     useEffect(() => {
@@ -230,6 +242,23 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                     +
                                 </button>
 
+                                {Number(song?.owner_id) !== Number(user?.user_id) && (
+                                    <button
+                                        id='song-profile-container-share-btn'
+                                        title='Share to Family'
+                                        onClick={() => setShareOpen(true)}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" strokeWidth="2.5"
+                                            strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" />
+                                            <circle cx="18" cy="19" r="3" />
+                                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                                        </svg>
+                                    </button>
+                                )}
+
                                 <button
                                     id='song-profile-container-play-btn'
                                     title='Play'
@@ -392,6 +421,14 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                     )}
                 </div>
             </div>
+
+             {song?.asset_id && (
+                <ShareToFamilyPopup
+                    isOpen={shareOpen}
+                    onClose={() => setShareOpen(false)}
+                    assetId={song.asset_id}
+                />
+            )}
             
         </div>,
         document.body

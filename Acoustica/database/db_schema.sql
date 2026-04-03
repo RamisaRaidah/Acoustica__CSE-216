@@ -286,7 +286,9 @@ CREATE TABLE IF NOT EXISTS "family_shared_content" (
   family_id INT CONSTRAINT fk_family_shared_content_family_family_id REFERENCES family(family_id) ON DELETE CASCADE,
   sender_id INT CONSTRAINT fk_family_shared_content_listener_sender_id REFERENCES listener(listener_id) ON DELETE CASCADE,
   content_id INT CONSTRAINT fk_family_shared_content_asset_content_id REFERENCES asset(asset_id) ON DELETE CASCADE,
-  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  note TEXT,
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT ck_family_shared_content_note_length CHECK (char_length(note) <= 80)
 );
 
 CREATE TABLE IF NOT EXISTS "product" (

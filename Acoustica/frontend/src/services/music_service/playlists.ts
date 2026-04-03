@@ -18,6 +18,7 @@ export interface Playlist {
     cover_picture_url: string;
     visibility: string;
     view_count: number;
+    asset_id: number;
 }
 
 export async function getMyPlaylists(): Promise<Playlist[]> {

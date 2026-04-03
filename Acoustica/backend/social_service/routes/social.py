@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 import logging
 import sys
 
@@ -64,9 +64,11 @@ def share_to_friend_route(friend_id):
 
 @social_bp.post("/api/social/families/<int:family_id>/shares/<int:asset_id>")
 @jwt_required()
-def share_to_family_route(family_id,asset_id):
-    user_id=get_jwt_identity()
-    return social.share_to_family(family_id,asset_id,user_id)
+def share_to_family_route(family_id, asset_id):
+    user_id = get_jwt_identity()
+    data = request.get_json(silent=True) or {}
+    note = data.get("note")
+    return social.share_to_family(family_id, asset_id, user_id, note)
 
 @social_bp.get("/api/social/friends/me/shares")
 def get_friend_shared_contents_route():
@@ -87,3 +89,10 @@ def get_family_shared_contents_route(family_id):
 def delete_family_shared_content_route(family_id, family_shared_id):
     user_id = get_jwt_identity()
     return social.remove_family_shared_content(family_id, family_shared_id, user_id)
+
+@social_bp.get("/api/social/families/me")
+@jwt_required()
+def get_user_family_route():
+    user_id = get_jwt_identity()
+    return social.get_user_family(user_id)
+ 

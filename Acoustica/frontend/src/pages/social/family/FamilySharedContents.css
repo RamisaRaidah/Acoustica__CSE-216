@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ── Container ───────────────────────────────────────────── */
+
+#fsc-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5vh;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+
+.fsc-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.fsc-title-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.fsc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 2.2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+    margin: 0;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.fsc-title-underline {
+    width: 100%;
+    max-width: 420px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #e07b2a, transparent);
+    border-radius: 2px;
+    margin-top: 8px;
+}
+
+.fsc-family-name {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-top: 4px;
+    text-align: center;
+    font-weight: 400;
+}
+
+/* ── Section ─────────────────────────────────────────────── */
+
+.fsc-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2vh;
+}
+
+.fsc-section-header {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 1.4vw, 1.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+    position: relative;
+    display: inline-block;
+}
+
+.fsc-section-header::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, #e07b2a, transparent);
+    border-radius: 2px;
+    margin-top: 4px;
+}
+
+/* ── Grid ────────────────────────────────────────────────── */
+
+.fsc-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CARD — fixed 168.9 × 168.9 px square
+   ══════════════════════════════════════════════════════════ */
+
+.fsc-card {
+    position: relative;
+    border-radius: 14px;
+    overflow: visible;
+    cursor: pointer;
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: #ccc;
+}
+
+/* clip the cover + panel to the card bounds */
+.fsc-card-inner {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.fsc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24);
+}
+
+/* Cover image — fills the entire card */
+.fsc-card-cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+    z-index: 0;
+}
+
+.fsc-card:hover .fsc-card-cover {
+    transform: scale(1.05);
+}
+
+/* ── Type badge — top LEFT
+   White pill, subtle orange border ──────────────────────── */
+
+.fsc-card-type-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(224, 123, 42, 0.55);
+    color: #3a2a1a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+    z-index: 4;
+    pointer-events: none;
+}
+
+/* ── Title + artist — top RIGHT
+   On a 57.4 × 32.2 px white rect at 60% opacity ────────── */
+
+.fsc-card-title-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 57.4px;
+    height: 32.2px;
+    background: rgba(255, 255, 255, 0.60);
+    border-radius: 6px;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 5px;
+    box-sizing: border-box;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.fsc-card-content-title {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: rgba(50, 35, 20, 0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    width: 100%;
+    text-align: right;
+}
+
+.fsc-card-content-artist {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 500;
+    color: rgba(50, 35, 20, 0.72);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+    width: 100%;
+    text-align: right;
+}
+
+/* ══════════════════════════════════════════════════════════
+   WHITE INNER PANEL
+   Floats over the cover — starts ~38% from top,
+   ~8px margin left/right, ~8px from bottom.
+   opacity = 86% (rgba 255,255,255,0.86)
+   ══════════════════════════════════════════════════════════ */
+
+.fsc-card-panel {
+    position: absolute;
+    top: 60px;          /* ~35% of 168.9px */
+    left: 8px;
+    right: 38px;
+    bottom: 8px;
+    background: rgba(255, 255, 255, 0.86);
+    border-radius: 11px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 7px 7px 6px 7px;
+    box-sizing: border-box;
+    gap: 5px;
+}
+
+/* ── Note box — terracotta, fills available space ────────── */
+
+.fsc-card-note {
+    flex: 1;
+    background: #c97a52;
+    border-radius: 8px;
+    padding: 6px 7px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.fsc-card-note p {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+/* ── Footer row ──────────────────────────────────────────── */
+
+.fsc-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    flex-shrink: 0;
+    height: 28px;
+}
+
+.fsc-card-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.fsc-card-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.fsc-card-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.fsc-card-sender {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 7.5px;
+    font-weight: 700;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.fsc-card-date {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 6.5px;
+    color: #7a5c3a;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+/* ── Play button — WHITE circle, orange icon
+   Hidden by default, appears on card hover ───────────────── */
+
+.fsc-card-play {
+    position: absolute;
+    bottom: 10px;
+    right: -4px; /* slightly overflows the panel edge */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    padding: 0;
+    z-index: 5;
+    /* hidden by default */
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fsc-card-play img {
+    width: 45%;
+    height: 45%;
+    object-fit: contain;
+    display: block;
+}
+
+/* show on card hover */
+.fsc-card:hover .fsc-card-play {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.fsc-card-play:hover {
+    transform: scale(1.12) !important;
+    box-shadow: 0 4px 14px rgba(224, 123, 42, 0.4);
+}
+
+.fsc-card-play:active {
+    transform: scale(0.95) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STATES
+   ══════════════════════════════════════════════════════════ */
+
+.fsc-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    font-size: clamp(0.85rem, 1vw, 1.1rem);
+    color: #a05830;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+}
+
+.dark .fsc-empty {
+    color: rgba(255, 210, 150, 0.6);
+}
+
+.fsc-loading {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.fsc-loading::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+    0%   { content: '.';   }
+    33%  { content: '..';  }
+    66%  { content: '...'; }
+}
+
+.fsc-error {
+    text-align: center;
+    padding: 4rem;
+    font-size: 1.2rem;
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.fsc-error::before {
+    content: '⚠️ ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}

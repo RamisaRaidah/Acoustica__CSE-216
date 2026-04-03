@@ -37,12 +37,12 @@ import EditPlaylist from '@/pages/music/playlist/edit_playlist/EditPlaylist';
 import AlbumProfile from '@/pages/music/album/album_profile/AlbumProfile';
 import EditAlbum from '@/pages/music/album/edit_album/EditAlbum';
 import EditSong from '@/pages/music/song/edit_song/EditSong';
-import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 import Explore from '@/pages/music/explore/Explore';
 import { GenreProfile, MoodProfile, LanguageProfile, InstrumentProfile } from '@/pages/music/explore/explore_profiles/ExploreProfiles';
 import Library from '@/pages/music/library/Library';
 import ArtistProfile from './pages/user/profile/public/ArtistProfile';
 import Discography from '@/pages/user/artist/artist_discography/ArtistDiscography';
+import FamilySharedContents from '@/pages/social/family/FamilySharedContents';
 
 
 import DeleteAccount from '@/pages/user/users/delete-account/DeleteAccount';
@@ -100,7 +100,6 @@ function App() {
           <Route path="/music/albums/:album_id/edit" element={<EditAlbum />} />
           <Route path="/music/create-playlist" element={<CreatePlaylist />} />
           <Route path="/music/upload-song" element={<UploadSong />} />
-          <Route path="/music/songs/:song_id" element={<SongProfile />} />
           <Route path="/music/songs/:song_id/edit" element={<EditSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />
@@ -116,7 +115,8 @@ function App() {
           <Route path="/delete/account" element={<DeleteAccount/>}/>
           <Route path="/change/password" element={<ChangePassword/>}/>
           <Route path="/discography" element={<Discography/>}/>
-          
+          <Route path="/family/:familyId/shared-contents" element={<FamilySharedContents/>}/>
+
         </Route>
       </Routes>
     </BrowserRouter>

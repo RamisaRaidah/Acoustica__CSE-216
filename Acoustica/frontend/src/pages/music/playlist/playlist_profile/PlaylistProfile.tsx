@@ -8,6 +8,7 @@ import { Playlist, getPlaylistDetails, getPlaylistSongs, deletePlaylist, likePla
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMusic } from '@/contexts/MusicContext';
 import { useAuth } from '@/contexts/AuthContext';
+import ShareToFamilyPopup from '@/pages/social/family/ShareToFamily';
 
 export default function PlaylistProfile() {
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function PlaylistProfile() {
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [shareOpen, setShareOpen] = useState(false);
 
     useEffect(() => {
         async function loadData() {
@@ -137,6 +139,19 @@ export default function PlaylistProfile() {
                         <img src={play_button} alt="Play" />
                     </button>
 
+                    {Number(user?.user_id) !== Number(playlist?.creator_id) && (
+                        <button id="share-playlist-btn" onClick={() => setShareOpen(true)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" strokeWidth="2.5"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" />
+                                <circle cx="18" cy="19" r="3" />
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                            </svg>
+                        </button>
+                    )}
+
                     {
                         Number(user?.user_id) === Number(playlist?.creator_id) && 
                         <button id="edit-playlist-btn" onClick={() => navigate(`/music/playlists/${playlistId}/edit`)}>
@@ -196,6 +211,13 @@ export default function PlaylistProfile() {
                     </button>
                 </div>
             }
+            {playlist?.asset_id && (
+                <ShareToFamilyPopup
+                    isOpen={shareOpen}
+                    onClose={() => setShareOpen(false)}
+                    assetId={playlist.asset_id}
+                />
+            )}
         </div>
     );
 }

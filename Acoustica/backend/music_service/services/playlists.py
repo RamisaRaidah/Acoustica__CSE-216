@@ -100,8 +100,9 @@ def create_playlist(title, description, visibility, cover_picture, songs):
 ### get_playlist_details ###
 def get_playlist_details(playlist_id):
     command = """
-        SELECT p.playlist_id, p.title, p.description, p.creator_id, (u.first_name || ' ' || u.last_name) creator_name, p.creation_date, p.cover_picture, p.visibility, p.view_count 
-        FROM playlist p JOIN users u ON (p.creator_id = u.user_id)
+        SELECT p.playlist_id, p.title, p.description, p.creator_id, (u.first_name || ' ' || u.last_name) creator_name, p.creation_date, p.cover_picture, p.visibility, p.view_count, p.asset_id
+        FROM playlist p 
+        JOIN users u ON (p.creator_id = u.user_id)
         WHERE p.playlist_id = %s
     """
 
@@ -112,7 +113,19 @@ def get_playlist_details(playlist_id):
     elif result is None:
         return None, 200
     else:
-        return {'playlist_id': result['playlist_id'], 'title': result['title'], 'description': result['description'], 'creator_id': result['creator_id'], 'creator_name': result['creator_name'], 'creation_date': result['creation_date'], 'cover_picture_url': storage.generate_signed_url(result['cover_picture']), 'visibility': result['visibility'], 'view_count': result['view_count']}, 200
+        return {
+                'playlist_id': result['playlist_id'], 
+                'title': result['title'], 
+                'description': result['description'], 
+                'creator_id': result['creator_id'], 
+                'creator_name': result['creator_name'], 
+                'creation_date': result['creation_date'], 
+                'cover_picture_url': storage.generate_signed_url(result['cover_picture']), 
+                'visibility': result['visibility'], 
+                'view_count': result['view_count'],
+                'asset_id': result['asset_id']
+                
+                }, 200
 
 ### edit_playlist ###
 def edit_playlist(playlist_id, title, description, visibility, cover_picture, added_songs, deleted_songs, cover_action):

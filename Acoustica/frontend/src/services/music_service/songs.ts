@@ -20,6 +20,7 @@ export interface SongInfo {
     play_count: number;
     owner_id: number;
     owner_name: string;
+    asset_id:number;
 }
 
 

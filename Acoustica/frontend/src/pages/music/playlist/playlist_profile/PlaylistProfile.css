@@ -552,3 +552,33 @@
     color: var(--playlist-profile-card-bottom-subtext);
     font-style: italic;
 }
+
+#playlist-profile-container #share-playlist-btn {
+    position: absolute;
+    top: calc(clamp(1rem, 1.8vh, 1.6rem) + clamp(44px, 3.2vw, 54px) + 0.5rem);
+    right: clamp(1rem, 1.2vw, 1.8rem);
+    z-index: 2;
+    width: clamp(36px, 2.6vw, 44px);
+    height: clamp(36px, 2.6vw, 44px);
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #c95f0e;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    backdrop-filter: blur(8px);
+}
+
+#playlist-profile-container #share-playlist-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+}
+
+#playlist-profile-container #share-playlist-btn:active {
+    transform: scale(1);
+}
