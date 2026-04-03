@@ -26,6 +26,7 @@ export interface Album {
     release_date: string;
     visibility: string;
     copyright_certificate: string;
+    asset_id: number;
 }
 
 export interface GetArtistAlbumResponse {

@@ -117,7 +117,7 @@ def get_album_details(album_id):
     album_id = int(album_id)
 
     result = execute_sql("""
-        SELECT album_id, title, description, owner_id, stage_name owner_name, release_date, visibility, copyright_certificate 
+        SELECT album_id, title, description, owner_id, stage_name owner_name, release_date, visibility, copyright_certificate , asset_id
         FROM album a JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE album_id = %s
         """, (album_id,),

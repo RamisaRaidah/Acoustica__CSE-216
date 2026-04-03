@@ -26,8 +26,8 @@ function SharedCard({ item, onSongClick }: SharedCardProps) {
 
     function handleCardClick() {
         if (item.asset_type === 'song') onSongClick(item.typed_id);
-        else if (item.asset_type === 'album') navigate(`/albums/${item.typed_id}`);
-        else if (item.asset_type === 'playlist') navigate(`/playlists/${item.typed_id}`);
+        else if (item.asset_type === 'album') navigate(`/music/albums/${item.typed_id}`);
+        else if (item.asset_type === 'playlist') navigate(`/music/playlists/${item.typed_id}`);
     }
 
     function handlePlay(e: React.MouseEvent) {
@@ -43,18 +43,18 @@ function SharedCard({ item, onSongClick }: SharedCardProps) {
     return (
         <div className="fsc-card" onClick={handleCardClick}>
 
-            {/* Inner wrapper clips the cover + panel cleanly */}
+            
             <div className="fsc-card-inner">
 
-                {/* Cover image — fills entire card as background */}
+
                 <img className="fsc-card-cover" src={cover} alt={item.content_title} />
 
-                {/* Type badge — top LEFT, white pill with orange border */}
+    
                 <div className="fsc-card-type-badge">
                     {item.asset_type.charAt(0).toUpperCase() + item.asset_type.slice(1)}
                 </div>
 
-                {/* Title + artist — top RIGHT, 57.4×32.2px white rect at 60% opacity */}
+        
                 <div className="fsc-card-title-overlay">
                     <span className="fsc-card-content-title">{item.content_title}</span>
                     {item.artist_name && (
@@ -62,17 +62,24 @@ function SharedCard({ item, onSongClick }: SharedCardProps) {
                     )}
                 </div>
 
-                {/* White semi-transparent inner panel */}
+           
                 <div className="fsc-card-panel">
 
-                    {/* Note box */}
+    
                     {item.note && (
                         <div className="fsc-card-note">
                             <p>{item.note}</p>
                         </div>
                     )}
+                    {
+                        !item.note &&(
+                            <div className="fsc-card-note">
+                                <p></p>
+                            </div>
+                        )
+                    }
 
-                    {/* Footer: avatar + name/date */}
+            
                     <div className="fsc-card-footer">
                         <div className="fsc-card-footer-left">
                             <img className="fsc-card-avatar" src={avatar} alt={item.sender_name} />
@@ -87,7 +94,7 @@ function SharedCard({ item, onSongClick }: SharedCardProps) {
 
             </div>
 
-            {/* Play button — outside inner (so it can overflow), hidden until hover */}
+        
             {item.asset_type === 'song' && (
                 <button className="fsc-card-play" onClick={handlePlay} aria-label="Play">
                     <img src={play_button} alt="play" />
@@ -125,9 +132,14 @@ export default function FamilySharedContents() {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [songs, setSongs] = useState<FamilySharedContent[]>([]);
-    const [albums, setAlbums] = useState<FamilySharedContent[]>([]);
-    const [playlists, setPlaylists] = useState<FamilySharedContent[]>([]);
+    
+    // For separate
+    // const [songs, setSongs] = useState<FamilySharedContent[]>([]);
+    // const [albums, setAlbums] = useState<FamilySharedContent[]>([]);
+    // const [playlists, setPlaylists] = useState<FamilySharedContent[]>([]);
+
+    const [items, setItems] = useState<FamilySharedContent[]>([]);
+
     const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
     const [familyName, setFamilyName] = useState('');
 
@@ -142,9 +154,14 @@ export default function FamilySharedContents() {
                 const res = await getFamilySharedContents(Number(familyId));
                 setFamilyName(res.family_name);
                 const data = res.data ?? [];
-                setSongs(data.filter(d => d.asset_type === 'song'));
-                setAlbums(data.filter(d => d.asset_type === 'album'));
-                setPlaylists(data.filter(d => d.asset_type === 'playlist'));
+                
+                // setSongs(data.filter(d => d.asset_type === 'song'));
+                // setAlbums(data.filter(d => d.asset_type === 'album'));
+                // setPlaylists(data.filter(d => d.asset_type === 'playlist'));
+
+                setItems([...data].sort(
+                    (a, b) => new Date(b.date_time).getTime() - new Date(a.date_time).getTime()
+                ));
             } catch {
                 setError('Failed to load shared content.');
             } finally {
@@ -157,7 +174,9 @@ export default function FamilySharedContents() {
     if (loading) return <div className="fsc-loading">Loading</div>;
     if (error)   return <div className="fsc-error">{error}</div>;
 
-    const isEmpty = songs.length === 0 && albums.length === 0 && playlists.length === 0;
+    // const isEmpty = songs.length === 0 && albums.length === 0 && playlists.length === 0;
+
+    const isEmpty = items.length === 0;
 
     return (
         <div id="fsc-container">
@@ -172,10 +191,19 @@ export default function FamilySharedContents() {
             {isEmpty ? (
                 <div className="fsc-empty">No shared content yet. Be the first to share something!</div>
             ) : (
+                
                 <>
-                    <SharedSection title="Songs"     items={songs}     onSongClick={setSelectedSongId} />
-                    <SharedSection title="Albums"    items={albums}    onSongClick={setSelectedSongId} />
-                    <SharedSection title="Playlists" items={playlists} onSongClick={setSelectedSongId} />
+                    {/*
+                        <SharedSection title="Songs"     items={songs}     onSongClick={setSelectedSongId} />
+                        <SharedSection title="Albums"    items={albums}    onSongClick={setSelectedSongId} />
+                        <SharedSection title="Playlists" items={playlists} onSongClick={setSelectedSongId} />
+                    */}
+                    <div className="fsc-grid">
+                        {items.map(item => (
+                            <SharedCard key={item.family_shared_id} item={item} onSongClick={setSelectedSongId} />
+                        ))}
+                    </div>
+
                 </>
             )}
 
