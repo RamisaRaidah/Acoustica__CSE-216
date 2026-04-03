@@ -59,6 +59,24 @@ def add_stream_history(segments):
 def get_stream_history():
     return ("get_stream_history")
 
+### get_daily_stream_time ###
+def get_daily_stream_time():
+    command = """   
+        SELECT SUM(duration) stream_time
+        FROM song_stream_history
+        WHERE listener_id = %s AND date_time >= CURRENT_DATE AND date_time < CURRENT_DATE + INTERVAL '1 day'
+    """
+
+    result = execute_sql(command, (get_jwt_identity(),), fetch_one = True)
+
+    print(f"Stream time: {result['stream_time']}")
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return {"stream_time": 0}, 200
+    else:
+        return result, 200
+
 ### get_last_listening ###
 
 def get_last_listening():

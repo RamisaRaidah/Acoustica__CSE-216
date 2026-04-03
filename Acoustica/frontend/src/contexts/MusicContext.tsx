@@ -1,11 +1,15 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { SongInfo, getSongMetadata, getSongAudio, isLiked } from "@/services/music_service/songs";
 import { getAlbumCoverPicture } from "@/services/music_service/albums";
-import { getLastListening } from "@/services/user_service/users";
+import { getLastListening } from "@/services/user_service/listeners";
 import { getRecommendedSongs } from "@/services/analytics_service/analytics";
 import { shuffle, isSubset } from "@/utils/helper";
+import { getDailyStreamTime } from "@/services/user_service/listeners";
+import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
+import Alert from "@/components/alert/TwoButtonAlert";
 
-export interface SongPlayStatus {
+interface SongPlayStatus {
     song_id: number;
     progress: number;
     playing: boolean;
@@ -15,6 +19,8 @@ interface MusicContextType {
     song: SongInfo | null;
     song_play_status: SongPlayStatus | null;
     playSong: (song: SongPlayStatus) => void;
+    play: () => void;
+    pause: () => void;
     song_url: string | null;
     cover_picture_url: string | null;
     play_key: number;
@@ -28,13 +34,19 @@ interface MusicContextType {
     removeFromQueue: (song: number) => void;
     shuffleQueue: () => void;
     playAtIndex: (i: number) => void;
+    loop: boolean;
+    toggleLoop: () => void;
+    limitReached: boolean;
     loading: boolean;
 }
+
+const FREE_LIMIT = 2 * 60;
 
 const MusicContext = createContext<MusicContextType | null>(null);
 
 export function MusicProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
+    const { user } = useAuth();
     const [song_play_status, setSongPlayStatus] = useState<SongPlayStatus | null>(
         JSON.parse(localStorage.getItem("song") || "null")
     );
@@ -43,15 +55,33 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     const [cover_picture_url, setCoverPictureURL] = useState<string | null>(null);
     const [play_key, setPlayKey] = useState(0);
     const [liked, setLiked] = useState<boolean>(false);
+    const [loop, setLoop] = useState<boolean>(false);
     const [queue, setQueue] = useState<SongInfo[]>([]);
     const [playedSongs, setPlayedSongs] = useState<number[]>([]);
     const [index, setIndex] = useState<number>(0);
     const [initialized, setInitialized] = useState<boolean>(false);
+    const [dailyStreamTime, setDailyStreamTime] = useState<number>(0);
+    const [limitReached, setLimitReached] = useState<boolean>(false);
+    const [alert, setAlert] = useState<string>("");
+    const navigate = useNavigate();
 
     function playSong(song_play_status: SongPlayStatus) {
+        if (limitReached) {
+            pause();
+            setAlert("Sorry! You have reached your daily limit.");
+            return;
+        }
         setSongPlayStatus(song_play_status);
         setPlayKey(prev => prev + 1);
         localStorage.setItem("song", JSON.stringify(song_play_status));
+    }
+
+    function play() {
+        if (song_play_status) setSongPlayStatus({ ...song_play_status, playing: true });
+    }
+
+    function pause() {
+        if (song_play_status) setSongPlayStatus({ ...song_play_status, playing: false });
     }
 
     function toggleLike() {
@@ -80,7 +110,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         const justPlayed = queue[index].song_id;
         const updatedPlayed = new Set([...playedSongs, justPlayed]);
 
-        if (queue.length > 0 && isSubset(new Set(queue.map(x => x.song_id)), updatedPlayed)) {
+        if (queue.length > 0 && isSubset(new Set(queue.map(x => x.song_id)), updatedPlayed) && !loop) {
             loadRecommendedSongs();
         } 
         else {
@@ -103,12 +133,13 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     async function addToQueue(song: number, atStart = false) {
         const result = await getSongMetadata(song);
         if (atStart) {
-            setQueue(queue.filter(x => x.song_id !== song));
-            setQueue([result, ...queue]);
+            setQueue(prev => [result, ...prev.filter(x => x.song_id !== song)]);
         }
         else {
-            if (queue.some(x => x.song_id === song)) return;
-            else setQueue([...queue, result]);
+            setQueue(prev => {
+                if (prev.some(x => x.song_id === song)) return prev;
+                else return([...prev, result]);
+            });
         }
     }
 
@@ -127,6 +158,10 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         if (i < 0 || i >= queue.length) return;
         setIndex(i);
         playSong({ song_id: queue[i].song_id, progress: 0, playing: true });
+    }
+
+    function toggleLoop() {
+        setLoop(!loop);
     }
 
     useEffect(() => {
@@ -182,8 +217,31 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
         }
     }, [initialized, song_play_status?.song_id]);
 
+    useEffect(() => {
+        if (user?.listener_type === 'premium') {
+            setLimitReached(false);
+            return;
+        }
+
+        async function check() {
+            const res = await getDailyStreamTime();
+            console.log(res.stream_time);
+            if (res.stream_time >= FREE_LIMIT) {
+                setLimitReached(true);
+            }
+            else {
+                setLimitReached(false);
+            }
+        }
+        check();
+        const interval = setInterval(check, 30000);
+
+        return () => clearInterval(interval);
+    }, [user?.listener_type]);
+
     return (
-        <MusicContext.Provider value={{ song, song_play_status, playSong, song_url, cover_picture_url, play_key, liked, toggleLike, queue, prev, next, createQueue, addToQueue, removeFromQueue, shuffleQueue, playAtIndex, loading }}>
+        <MusicContext.Provider value={{ song, song_play_status, playSong, play, pause, song_url, cover_picture_url, play_key, liked, toggleLike, queue, prev, next, createQueue, addToQueue, removeFromQueue, shuffleQueue, playAtIndex, loop, toggleLoop, limitReached, loading }}>
+            {alert && <Alert type="confirm" message={alert} confirmKey="Upgrade to premium" onConfirm={() => navigate('/plans')} onCancel={() => setAlert("")} />}
             {children}
         </MusicContext.Provider>
     )

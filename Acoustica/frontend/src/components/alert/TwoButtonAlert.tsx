@@ -5,11 +5,13 @@ import logo_img from "@/assets/images/deco/Logo.png";
 interface AlertProps {
     message: string;
     type?: 'alert' | 'confirm';
+    confirmKey?: string;
+    cancelKey?: string;
     onConfirm?: () => void;
     onCancel?: () => void;
 }
 
-export default function Alert({ message, type = 'alert', onConfirm, onCancel }: AlertProps) {
+export default function Alert({ message, type = 'alert', confirmKey = 'confirm', cancelKey = 'cancel', onConfirm, onCancel }: AlertProps) {
     const [show, setShow] = useState(true);
 
     if (!show) return null;
@@ -36,8 +38,8 @@ export default function Alert({ message, type = 'alert', onConfirm, onCancel }: 
                 <div className={`alert-actions ${type === 'confirm' ? 'two-buttons' : ''}`}>
                     {type === 'confirm' ? (
                         <>
-                            <button className="alert-cancel" onClick={handleCancel}>Cancel</button>
-                            <button className="alert-ok" onClick={handleConfirm}>Confirm</button>
+                            <button className="alert-cancel" onClick={handleCancel}>{cancelKey}</button>
+                            <button className="alert-ok" onClick={handleConfirm}>{confirmKey}</button>
                         </>
                     ) : (
                         <button className="alert-ok" onClick={handleConfirm}>OK</button>
