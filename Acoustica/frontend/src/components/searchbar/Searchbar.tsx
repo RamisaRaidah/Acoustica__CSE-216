@@ -4,6 +4,7 @@ import { SongInfo } from "@/services/music_service/songs";
 import { Album } from "@/services/music_service/albums";
 import { useNavigate } from "react-router-dom";
 import { useMusic } from "@/contexts/MusicContext";
+import SongProfile from "@/pages/music/song/song_profile/SongProfile";
 
 interface SearchbarProps {
     prompt: string;
@@ -28,6 +29,8 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
     const seachWrapperRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const { playSong, addToQueue } = useMusic();
+
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     useEffect(() => {
         if (!queryParam) {
@@ -104,7 +107,9 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                     onClick={() => {
                                         close();
                                         onSongSelect?.(song);
-                                        if (!prevent_default) navigate(`/music/songs/${song.song_id}`);
+                                        if (!prevent_default){
+
+                                        }
                                     }}
                                 >
                                     {!prevent_default && (
@@ -126,7 +131,9 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                             onClick={(e) => {
                                                 if (!prevent_default) {
                                                     e.stopPropagation();
-                                                    navigate(`/music/songs/${song.song_id}`);
+                                                    if (song?.song_id !== undefined) {
+                                                        setSelectedSongId(song.song_id);
+                                                    }
                                                     close();
                                                 }
                                             }}
@@ -215,6 +222,14 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                     )}
                 </div>
             </div>
+
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }

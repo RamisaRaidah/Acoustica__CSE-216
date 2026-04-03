@@ -100,7 +100,6 @@ function App() {
           <Route path="/music/albums/:album_id/edit" element={<EditAlbum />} />
           <Route path="/music/create-playlist" element={<CreatePlaylist />} />
           <Route path="/music/upload-song" element={<UploadSong />} />
-          <Route path="/music/songs/:song_id" element={<SongProfile />} />
           <Route path="/music/songs/:song_id/edit" element={<EditSong />} />
           <Route path="/cancel-subscription" element={<CancelSubscription />} />
           <Route path="/cancel/success" element={<CancelSuccess />} />

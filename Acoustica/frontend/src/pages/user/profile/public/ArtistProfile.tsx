@@ -9,6 +9,7 @@ import ArtistStatsChart from '@/components/user/artists/ArtistStatsChart.tsx';
 import '@/pages/user/profile/public/ArtistProfile.css';
 import defaultCoverPic from '@/assets/images/music/Default_Cover_Picture.png';
 import playButtonPic from '@/assets/images/music/Play_Button.png';
+import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 
 function ArtistProfile() {
     const { artist_id } = useParams<{ artist_id: string }>();
@@ -23,6 +24,8 @@ function ArtistProfile() {
 
     const [songsExpanded, setSongsExpanded] = useState(false);
     const [albumsExpanded, setAlbumsExpanded] = useState(false);
+
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
     
     const navigate = useNavigate();
 
@@ -142,7 +145,7 @@ function ArtistProfile() {
                     </div>
                     <div className="media-grid">
                         {visibleSongs.map((song) => (
-                            <div key={song.song_id} className="media-card" onClick={() => navigate(`/music/songs/${song.song_id}`)}>
+                            <div key={song.song_id} className="media-card" onClick={() => setSelectedSongId(song.song_id)}>
                                 <div className="media-thumb">
                                     <img src={song.cover_picture_url || defaultCoverPic} alt={song.title} />
                                 </div>
@@ -177,6 +180,14 @@ function ArtistProfile() {
                 </div>
 
             </div>
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
+
         </div>
     );
 }

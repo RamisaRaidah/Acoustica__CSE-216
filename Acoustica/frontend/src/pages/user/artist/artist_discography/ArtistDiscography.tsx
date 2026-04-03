@@ -6,6 +6,7 @@ import { getArtistSongs, getArtistCollaborationSongs, GetArtistSongResponse, Son
 import { getArtistAlbums, GetArtistAlbumResponse } from '@/services/music_service/albums';
 import '@/pages/user/artist/artist_discography/ArtistDiscography.css';
 import defaultCoverPic from '@/assets/images/music/Default_Cover_Picture.png';
+import SongProfile from "@/pages/music/song/song_profile/SongProfile";
 
 interface MediaItem {
     id: number;
@@ -111,6 +112,8 @@ function Discography() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
+
     useEffect(() => {
         if (!user?.user_id) return;
 
@@ -189,7 +192,7 @@ function Discography() {
                         title="Top Songs"
                         fiveCol
                         items={topSongs.map(toMediaFromSongInfo)}
-                        onCardClick={(id) => navigate(`/music/songs/${id}`)}
+                        onCardClick={(id) => setSelectedSongId(id)}
                         initialCount={5}
                         maxCount={10}
                         emptyMessage="No popular songs yet."
@@ -199,7 +202,7 @@ function Discography() {
                         title="All Songs"
                         fiveCol
                         items={allSongs.map(toMediaFromArtistSong)}
-                        onCardClick={(id) => navigate(`/music/songs/${id}`)}
+                        onCardClick={(id) => setSelectedSongId(id)}
                         initialCount={5}
                         maxCount={50}
                         emptyMessage="You haven't uploaded any songs yet."
@@ -211,7 +214,7 @@ function Discography() {
                         <MediaSection
                             title="Trending Songs"
                             items={trendingSongs.map(toMediaFromSongInfo)}
-                            onCardClick={(id) => navigate(`/music/songs/${id}`)}
+                            onCardClick={(id) => setSelectedSongId(id)}
                             accentHeader
                             isTrendingGrid
                             initialCount={4}
@@ -231,7 +234,7 @@ function Discography() {
                     <MediaSection
                         title="Your Collaborations"
                         items={collabs.map(toMediaFromArtistSong)}
-                        onCardClick={(id) => navigate(`/music/songs/${id}`)}
+                        onCardClick={(id) => setSelectedSongId(id)}
                         initialCount={4}
                         maxCount={50}
                         emptyMessage="No collaborations found."
@@ -239,6 +242,13 @@ function Discography() {
                 </div>
 
             </div>
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }

@@ -8,6 +8,7 @@ import { useEffect, useState, useRef } from 'react';
 import { DatePicker, DatePickerHandle } from '@/components/date_picker/DatePicker';
 import Alert from '@/components/alert/TwoButtonAlert';
 import { useNavigate, useParams } from 'react-router-dom';
+import SongProfile from "@/pages/music/song/song_profile/SongProfile";
 
 export default function EditSong() {
     const { song_id } = useParams<{ song_id: string }>();
@@ -60,6 +61,7 @@ export default function EditSong() {
 
     const lyricsInputRef = useRef<HTMLInputElement>(null);
     const ccInputRef = useRef<HTMLInputElement>(null);
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     function resetForm() {
         formRef.current?.reset();
@@ -291,7 +293,7 @@ export default function EditSong() {
 
     return (
         <div id='edit-song-container'>
-            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => { setAlertMessage(null); if (alertMessage === "The song is updated successfully!") navigate(`/music/songs/${songId}`) }} />}
+            {alertMessage && <Alert message={alertMessage} type="alert" onConfirm={() => { setAlertMessage(null); if (alertMessage === "The song is updated successfully!") setSelectedSongId(songId); }} />}
             {confirmation && <Alert message='Are you sure to apply the changes?' type='confirm' onConfirm={() => { setConfirmation(false); handleSubmit() }} onCancel={() => setConfirmation(false)} />}
 
             <div id="create-album-header">
@@ -553,6 +555,14 @@ export default function EditSong() {
                 </div>
 
             </form>
+
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }

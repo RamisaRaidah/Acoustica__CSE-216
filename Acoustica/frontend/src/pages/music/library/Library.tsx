@@ -7,6 +7,7 @@ import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import { useMusic } from '@/contexts/MusicContext';
 import { getPlaylistSongs } from '@/services/music_service/playlists';
+import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 
 const GRID_COLUMNS = 5;
 
@@ -26,6 +27,7 @@ function LikedSongList({
 }) {
     const { playSong } = useMusic();
     const navigate = useNavigate();
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
 
     return (
         <div className="lib-trending-list">
@@ -39,7 +41,7 @@ function LikedSongList({
                         <div className="lib-trending-play">▶</div>
                     </div>
                     <div className="lib-trending-info">
-                        <span className="lib-trending-title" onClick={() => navigate(`/music/songs/${song.song_id}`)}>
+                        <span className="lib-trending-title" onClick={() =>setSelectedSongId(song.song_id) }>
                             {song.title}
                         </span>
                         <span className="lib-trending-artist" onClick={() => navigate(`/artists/${song.owner_id}`)}>
@@ -49,6 +51,13 @@ function LikedSongList({
                     <span className="lib-trending-meta">{formatDuration(song.length)}</span>
                 </div>
             ))}
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }
