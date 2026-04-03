@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS "language_preference" (
 CREATE TABLE IF NOT EXISTS "followed_artist" (
   listener_id INT CONSTRAINT fk_followed_artist_listener_id REFERENCES listener(listener_id) ON DELETE CASCADE,
   artist_id INT CONSTRAINT fk_followed_artist_artist_id REFERENCES artist(artist_id) ON DELETE CASCADE,
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_followed_artist PRIMARY KEY (listener_id, artist_id)
 );
 
@@ -216,18 +217,21 @@ CREATE TABLE IF NOT EXISTS "song_stream_history" (
 CREATE TABLE IF NOT EXISTS "liked_song" (
   listener_id INT CONSTRAINT fk_liked_song_listener_id REFERENCES listener(listener_id) ON DELETE CASCADE,
   song_id INT CONSTRAINT fk_liked_song_song_id REFERENCES song(song_id) ON DELETE CASCADE,
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_liked_song PRIMARY KEY (listener_id, song_id)
 );
 
 CREATE TABLE IF NOT EXISTS "liked_album" (
   listener_id INT CONSTRAINT fk_liked_album_listener_id REFERENCES listener(listener_id) ON DELETE CASCADE,
   album_id INT CONSTRAINT fk_liked_album_album_id REFERENCES album(album_id) ON DELETE CASCADE,
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_liked_album PRIMARY KEY (listener_id, album_id)
 );
 
 CREATE TABLE IF NOT EXISTS "liked_playlist" (
   listener_id INT CONSTRAINT fk_liked_playlist_listener_id REFERENCES listener(listener_id) ON DELETE CASCADE,
   playlist_id INT CONSTRAINT fk_liked_playlist_playlist_id REFERENCES playlist(playlist_id) ON DELETE CASCADE,
+  date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_liked_playlist PRIMARY KEY (listener_id, playlist_id)
 );
 

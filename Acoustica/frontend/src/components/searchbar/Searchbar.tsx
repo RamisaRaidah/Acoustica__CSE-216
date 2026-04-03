@@ -108,7 +108,9 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                         close();
                                         onSongSelect?.(song);
                                         if (!prevent_default){
-
+                                            if (song?.song_id !== undefined) {
+                                                setSelectedSongId(song.song_id);
+                                            }
                                         }
                                     }}
                                 >

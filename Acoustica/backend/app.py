@@ -15,9 +15,6 @@ from social_service.routes import activities, posts, social, connections
 from analytics_service.routes import analytics
 from storage_service.routes import storage
 
-from Test_Shanon.routes import test_shanon
-from Test_Arana.routes import test_arana
-
 load_dotenv()
 
 logging.basicConfig(
@@ -64,9 +61,6 @@ app.register_blueprint(users.users_bp)
 app.register_blueprint(storage.storage_bp)
 app.register_blueprint(notifications.notifications_bp)
 app.register_blueprint(connections.connections_bp)
-
-app.register_blueprint(test_shanon.test_shanon_bp)
-app.register_blueprint(test_arana.test_arana_bp)
 
 @app.route("/")
 def home():

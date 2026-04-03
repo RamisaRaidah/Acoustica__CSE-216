@@ -1,9 +1,14 @@
+import random
+
+from flask import json
+
 from storage_service.services import storage
 from db import execute_sql
 import logging
 import sys
 
 from flask_jwt_extended import get_jwt_identity
+from utils.ai_agent import generate_response
 
 logging.basicConfig(
     level = logging.INFO,
@@ -161,7 +166,7 @@ def get_instruments():
     
 ### get_trending_songs ###
 def get_trending_songs():
-    result = execute_sql("SELECT * FROM fn_get_trending_songs(10, NULL, NULL, NULL, NULL)", fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(10, NULL, NULL, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -172,7 +177,7 @@ def get_trending_songs():
 
 ### get_popular_songs ###
 def get_popular_songs():
-    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL, NULL, NULL)", fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -183,7 +188,7 @@ def get_popular_songs():
     
 ### get_recommended_songs ###
 def get_recommended_songs():
-    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 50, NULL, NULL, NULL, NULL)", (get_jwt_identity(),), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 50, NULL, NULL, NULL, NULL, NULL)", (get_jwt_identity(),), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -194,13 +199,7 @@ def get_recommended_songs():
 
 ### get_trending_artists ###
 def get_trending_artists():
-    command = """
-        SELECT artist_id, stage_name artist_name, profile_picture
-        FROM artist a JOIN users u ON (a.artist_id = u.user_id) 
-        LIMIT 8
-    """
-
-    result = execute_sql(command, fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_artists(8, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data"}, 500
@@ -221,13 +220,7 @@ def get_trending_artists():
 
 ### get_popular_artists ###
 def get_popular_artists():
-    command = """
-        SELECT artist_id, stage_name artist_name, profile_picture
-        FROM artist a JOIN users u ON (a.artist_id = u.user_id)
-        LIMIT 8 
-    """
-
-    result = execute_sql(command, fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_artists(8, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data"}, 500
@@ -248,7 +241,7 @@ def get_popular_artists():
     
 ### get_genre_trending_songs_ ###
 def get_genre_trending_songs(genre_id):
-    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, %s , NULL, NULL, NULL)", (genre_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, %s , NULL, NULL, NULL, NULL)", (genre_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -259,7 +252,7 @@ def get_genre_trending_songs(genre_id):
 
 ### get_genre_popular_songs ###
 def get_genre_popular_songs(genre_id):
-    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, %s , NULL, NULL, NULL)", (genre_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, %s , NULL, NULL, NULL, NULL)", (genre_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -270,7 +263,7 @@ def get_genre_popular_songs(genre_id):
 
 ### get_genre_recommended_songs ###
 def get_genre_recommended_songs(genre_id):
-    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, %s, NULL , NULL , NULL)", (get_jwt_identity(), genre_id), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, %s, NULL , NULL , NULL, NULL)", (get_jwt_identity(), genre_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -281,7 +274,7 @@ def get_genre_recommended_songs(genre_id):
     
 ### get_mood_trending_songs_ ###
 def get_mood_trending_songs(mood_id):
-    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, %s , NULL, NULL)", (mood_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, %s , NULL, NULL, NULL)", (mood_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -292,7 +285,7 @@ def get_mood_trending_songs(mood_id):
 
 ### get_mood_popular_songs ###
 def get_mood_popular_songs(mood_id):
-    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, %s , NULL, NULL)", (mood_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, %s , NULL, NULL, NULL)", (mood_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -303,7 +296,7 @@ def get_mood_popular_songs(mood_id):
 
 ### get_mood_recommended_songs ###
 def get_mood_recommended_songs(mood_id):
-    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, %s , NULL , NULL)", (get_jwt_identity(), mood_id), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, %s , NULL , NULL, NULL)", (get_jwt_identity(), mood_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -314,7 +307,7 @@ def get_mood_recommended_songs(mood_id):
     
 ### get_language_trending_songs_ ###
 def get_language_trending_songs(language_id):
-    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , %s , NULL)", (language_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , %s , NULL, NULL)", (language_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -325,7 +318,7 @@ def get_language_trending_songs(language_id):
 
 ### get_language_popular_songs ###
 def get_language_popular_songs(language_id):
-    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , %s , NULL)", (language_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , %s , NULL, NULL)", (language_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -336,7 +329,7 @@ def get_language_popular_songs(language_id):
 
 ### get_language_recommended_songs ###
 def get_language_recommended_songs(language_id):
-    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL , %s , NULL)", (get_jwt_identity(), language_id), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL , %s , NULL, NULL)", (get_jwt_identity(), language_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -347,7 +340,7 @@ def get_language_recommended_songs(language_id):
     
 ### get_instrument_trending_songs_ ###
 def get_instrument_trending_songs(instrument_id):
-    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , NULL , %s)", (instrument_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , NULL , %s, NULL)", (instrument_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -358,7 +351,7 @@ def get_instrument_trending_songs(instrument_id):
 
 ### get_instrument_popular_songs ###
 def get_instrument_popular_songs(instrument_id):
-    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , NULL , %s)", (instrument_id,), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , NULL , %s, NULL)", (instrument_id,), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -369,7 +362,7 @@ def get_instrument_popular_songs(instrument_id):
 
 ### get_instrument_recommended_songs ###
 def get_instrument_recommended_songs(instrument_id):
-    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL , NULL , %s)", (get_jwt_identity(), instrument_id), fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_recommended_songs(%s, 10, NULL, NULL , NULL , %s, NULL)", (get_jwt_identity(), instrument_id), fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data!"}, 500
@@ -381,21 +374,7 @@ def get_instrument_recommended_songs(instrument_id):
 
 ##################### Artist Public Profile page Stats #####################
 def get_artist_stats(artist_id):
-    """Get statistics for artist charts"""
-    
-    top_songs_sql = """
-        SELECT 
-            DISTINCT s.song_id,
-            s.title,
-            s.play_count,
-            al.cover_picture
-        FROM song s
-        LEFT JOIN album al ON al.album_id = s.album_id
-        WHERE al.owner_id = %s
-        ORDER BY s.play_count DESC
-        LIMIT 4
-    """
-    top_songs_result = execute_sql(top_songs_sql, (artist_id,), fetch_all=True)
+    top_songs_result = execute_sql("SELECT * FROM fn_get_popular_songs(4, NULL, NULL , NULL , NULL, %s)", (artist_id,), fetch_all=True)
     
     top_songs = []
     for song in (top_songs_result or []):
@@ -433,5 +412,64 @@ def get_artist_stats(artist_id):
         "monthly_listeners": monthly_listeners,
         "total_plays": int(total_plays)
     }, 200
+
+### get_smart_recommendations ###
+def get_smart_recommendations(prompt):
+    genres = execute_sql("SELECT genre_id, genre_name FROM genre", fetch_all=True)
+    moods = execute_sql("SELECT mood_id, mood_name FROM mood", fetch_all=True)
+    languages = execute_sql("SELECT language_id, language_name FROM language", fetch_all=True)
+    instruments = execute_sql("SELECT instrument_id, instrument_name FROM instrument", fetch_all=True)
+    artists = execute_sql("SELECT artist_id, stage_name FROM artist", fetch_all=True)
+
+    resources = {
+        "genres":      [{"id": g["genre_id"],      "name": g["genre_name"]}      for g in genres],
+        "moods":       [{"id": m["mood_id"],       "name": m["mood_name"]}       for m in moods],
+        "languages":   [{"id": l["language_id"],   "name": l["language_name"]}   for l in languages],
+        "instruments": [{"id": i["instrument_id"], "name": i["instrument_name"]} for i in instruments],
+        "artists":     [{"id": a["artist_id"],     "name": a["stage_name"]}      for a in artists],
+    }
+
+    response = generate_response(prompt, resources)
+
+    try:
+        filters = json.loads(response)
+    except (json.JSONDecodeError, TypeError):
+        filters = {}
+
+    selected_genres = filters.get("genres") or [None]
+    selected_moods = filters.get("moods") or [None]
+    selected_languages = filters.get("languages") or [None]
+    selected_instruments = filters.get("instruments") or [None]
+    selected_artists = filters.get("artists") or [None]
+
+    logging.info(selected_genres)
+    logging.info(selected_moods)
+    logging.info(selected_languages)
+    logging.info(selected_instruments)
+    logging.info(selected_artists)
+
+    seen_ids = set()
+    selected_songs = []
+
+    for g in selected_genres:
+        for m in selected_moods:
+            for l in selected_languages:
+                for i in selected_instruments:
+                    for a in selected_artists:
+                        result = execute_sql(
+                            "SELECT * FROM fn_get_recommended_songs(%s, 20, %s, %s, %s, %s, %s)",
+                            (get_jwt_identity(), g, m, l, i, a),
+                            fetch_all=True
+                        )
+
+                        if result: 
+                            for song in result:
+                                if song["song_id"] not in seen_ids:
+                                    seen_ids.add(song["song_id"])
+                                    selected_songs.append(song)
+
+    random.shuffle(selected_songs)
+
+    return selected_songs[:20], 200
 
 ### Helper functions ###

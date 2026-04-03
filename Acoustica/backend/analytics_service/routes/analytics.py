@@ -244,3 +244,11 @@ def get_instrument_recommended_songs_route(instrument_id):
 def get_artist_stats_route(artist_id):
     result, status = analytics.get_artist_stats(artist_id)
     return jsonify(result), status
+
+### get_smart_recommendations ###
+@analytics_bp.post("/api/analytics/smart-recommendations")
+@jwt_required()
+def get_smart_recommendations_route():
+    prompt = request.json.get("prompt")
+    result, status = analytics.get_smart_recommendations(prompt)
+    return jsonify(result), status

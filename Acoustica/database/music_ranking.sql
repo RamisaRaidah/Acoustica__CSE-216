@@ -1,23 +1,19 @@
 -- ============================================================
---  MUSIC RANKING
---  fn_base_song_stats        – shared aggregates
---  fn_popular_score          – popular score formula
---  fn_trending_score         – trending score formula
---  fn_combined_score         – recommendation score formula
---  fn_popular_songs          – popular songs (raw)
---  fn_trending_songs         – trending songs (raw)
---  fn_recommended_songs      – personalized recommendations (raw)
---  fn_get_popular_songs      – enriched popular (SongInfo-compatible)
+--  ARTIST FILTER EXTENSION
+--  Adds p_artist_id parameter to all 6 functions
+--  fn_popular_songs          – raw popular  (+ artist filter)
+--  fn_trending_songs         – raw trending (+ artist filter)
+--  fn_recommended_songs      – raw rec      (+ artist filter)
+--  fn_get_popular_songs      – enriched popular  (SongInfo-compatible)
 --  fn_get_trending_songs     – enriched trending (SongInfo-compatible)
---  fn_get_recommended_songs  – enriched recommended (SongInfo-compatible)
+--  fn_get_recommended_songs  – enriched rec      (SongInfo-compatible)
 -- ============================================================
-
 
 -- ============================================================
 -- SECTION 0: SHARED HELPERS
 -- ============================================================
 
--- 0.1  All-time & 7-day stream aggregates per song
+-- 0.1  fn_base_song_stats  (UPDATED: likes_7d now uses date_time)
 CREATE OR REPLACE FUNCTION fn_base_song_stats()
 RETURNS TABLE (
     song_id             INT,
@@ -56,9 +52,11 @@ LANGUAGE sql STABLE AS $$
         GROUP BY ps.song_id
     ),
     likes AS (
+        -- previously all-time; now correctly scoped to last 7 days
         SELECT  ls.song_id,
                 COUNT(*) AS likes_7d
         FROM    liked_song ls
+        WHERE   ls.date_time >= NOW() - INTERVAL '7 days'
         GROUP BY ls.song_id
     ),
     today_streams AS (
@@ -136,7 +134,6 @@ LANGUAGE sql IMMUTABLE AS $$
           + 0.3 * p_similarity;
 $$;
 
-
 -- ============================================================
 -- SECTION 1: fn_popular_songs
 -- ============================================================
@@ -145,7 +142,8 @@ CREATE OR REPLACE FUNCTION fn_popular_songs(
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
-    p_instrument_id INT DEFAULT NULL
+    p_instrument_id INT DEFAULT NULL,
+    p_artist_id     INT DEFAULT NULL        -- NEW
 )
 RETURNS TABLE (
     song_id          INT,
@@ -173,6 +171,9 @@ LANGUAGE sql STABLE AS $$
     AND    (p_instrument_id IS NULL OR EXISTS (
                 SELECT 1 FROM song_instrument si
                 WHERE  si.song_id = s.song_id AND si.instrument_id = p_instrument_id))
+    AND    (p_artist_id     IS NULL OR EXISTS (        -- NEW
+                SELECT 1 FROM song_artist sa
+                WHERE  sa.song_id = s.song_id AND sa.artist_id = p_artist_id))
     ORDER  BY popular_score DESC
     LIMIT  p_limit;
 $$;
@@ -186,7 +187,8 @@ CREATE OR REPLACE FUNCTION fn_trending_songs(
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
-    p_instrument_id INT DEFAULT NULL
+    p_instrument_id INT DEFAULT NULL,
+    p_artist_id     INT DEFAULT NULL        -- NEW
 )
 RETURNS TABLE (
     song_id         INT,
@@ -219,6 +221,9 @@ LANGUAGE sql STABLE AS $$
         AND    (p_instrument_id IS NULL OR EXISTS (
                     SELECT 1 FROM song_instrument si
                     WHERE  si.song_id = s.song_id AND si.instrument_id = p_instrument_id))
+        AND    (p_artist_id     IS NULL OR EXISTS (    -- NEW
+                    SELECT 1 FROM song_artist sa
+                    WHERE  sa.song_id = s.song_id AND sa.artist_id = p_artist_id))
     ),
     maxes AS (
         SELECT
@@ -257,7 +262,8 @@ CREATE OR REPLACE FUNCTION fn_recommended_songs(
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
-    p_instrument_id INT DEFAULT NULL
+    p_instrument_id INT DEFAULT NULL,
+    p_artist_id     INT DEFAULT NULL        -- NEW
 )
 RETURNS TABLE (
     song_id   INT,
@@ -327,7 +333,11 @@ BEGIN
         AND    (p_instrument_id IS NULL OR EXISTS (
                     SELECT 1 FROM song_instrument si
                     WHERE  si.song_id = s.song_id AND si.instrument_id = p_instrument_id))
+        AND    (p_artist_id     IS NULL OR EXISTS (    -- NEW
+                    SELECT 1 FROM song_artist sa
+                    WHERE  sa.song_id = s.song_id AND sa.artist_id = p_artist_id))
     ),
+    -- rest of buckets unchanged from here ...
     user_liked_artists AS (
         SELECT DISTINCT sa.artist_id
         FROM   liked_song ls
@@ -445,12 +455,9 @@ BEGIN
     ),
     already_included AS (
         SELECT b1.song_id FROM bucket1 b1
-        UNION ALL
-        SELECT b2.song_id FROM bucket2 b2
-        UNION ALL
-        SELECT b3.song_id FROM bucket3 b3
-        UNION ALL
-        SELECT b4.song_id FROM bucket4 b4
+        UNION ALL SELECT b2.song_id FROM bucket2 b2
+        UNION ALL SELECT b3.song_id FROM bucket3 b3
+        UNION ALL SELECT b4.song_id FROM bucket4 b4
     ),
     bucket5 AS (
         SELECT ss.song_id                                AS song_id,
@@ -465,14 +472,10 @@ BEGIN
     SELECT ar.song_id, ar.title, ar.rec_score, ar.bucket
     FROM (
         SELECT b1.song_id, b1.title, b1.rec_score, b1.bucket FROM bucket1 b1
-        UNION ALL
-        SELECT b2.song_id, b2.title, b2.rec_score, b2.bucket FROM bucket2 b2
-        UNION ALL
-        SELECT b3.song_id, b3.title, b3.rec_score, b3.bucket FROM bucket3 b3
-        UNION ALL
-        SELECT b4.song_id, b4.title, b4.rec_score, b4.bucket FROM bucket4 b4
-        UNION ALL
-        SELECT b5.song_id, b5.title, b5.rec_score, b5.bucket FROM bucket5 b5
+        UNION ALL SELECT b2.song_id, b2.title, b2.rec_score, b2.bucket FROM bucket2 b2
+        UNION ALL SELECT b3.song_id, b3.title, b3.rec_score, b3.bucket FROM bucket3 b3
+        UNION ALL SELECT b4.song_id, b4.title, b4.rec_score, b4.bucket FROM bucket4 b4
+        UNION ALL SELECT b5.song_id, b5.title, b5.rec_score, b5.bucket FROM bucket5 b5
     ) ar
     ORDER BY ar.rec_score DESC
     LIMIT p_limit;
@@ -490,7 +493,8 @@ CREATE OR REPLACE FUNCTION fn_get_popular_songs(
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
-    p_instrument_id INT DEFAULT NULL
+    p_instrument_id INT DEFAULT NULL,
+    p_artist_id     INT DEFAULT NULL        -- NEW
 )
 RETURNS TABLE (
     song_id      INT,
@@ -518,7 +522,7 @@ LANGUAGE sql STABLE AS $$
         s.play_count,
         a.owner_id,
         ar.stage_name   AS owner_name
-    FROM fn_popular_songs(p_limit, p_genre_id, p_mood_id, p_language_id, p_instrument_id) p
+    FROM fn_popular_songs(p_limit, p_genre_id, p_mood_id, p_language_id, p_instrument_id, p_artist_id) p
     JOIN song     s  ON s.song_id     = p.song_id
     JOIN album    a  ON a.album_id    = s.album_id
     JOIN language l  ON l.language_id = s.language_id
@@ -533,7 +537,8 @@ CREATE OR REPLACE FUNCTION fn_get_trending_songs(
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
-    p_instrument_id INT DEFAULT NULL
+    p_instrument_id INT DEFAULT NULL,
+    p_artist_id     INT DEFAULT NULL        -- NEW
 )
 RETURNS TABLE (
     song_id      INT,
@@ -561,7 +566,7 @@ LANGUAGE sql STABLE AS $$
         s.play_count,
         a.owner_id,
         ar.stage_name   AS owner_name
-    FROM fn_trending_songs(p_limit, p_genre_id, p_mood_id, p_language_id, p_instrument_id) t
+    FROM fn_trending_songs(p_limit, p_genre_id, p_mood_id, p_language_id, p_instrument_id, p_artist_id) t
     JOIN song     s  ON s.song_id     = t.song_id
     JOIN album    a  ON a.album_id    = s.album_id
     JOIN language l  ON l.language_id = s.language_id
@@ -577,7 +582,8 @@ CREATE OR REPLACE FUNCTION fn_get_recommended_songs(
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
-    p_instrument_id INT DEFAULT NULL
+    p_instrument_id INT DEFAULT NULL,
+    p_artist_id     INT DEFAULT NULL        -- NEW
 )
 RETURNS TABLE (
     song_id      INT,
@@ -605,7 +611,7 @@ LANGUAGE sql STABLE AS $$
         s.play_count,
         a.owner_id,
         ar.stage_name   AS owner_name
-    FROM fn_recommended_songs(p_user_id, p_limit, p_genre_id, p_mood_id, p_language_id, p_instrument_id) r
+    FROM fn_recommended_songs(p_user_id, p_limit, p_genre_id, p_mood_id, p_language_id, p_instrument_id, p_artist_id) r
     JOIN song     s  ON s.song_id     = r.song_id
     JOIN album    a  ON a.album_id    = s.album_id
     JOIN language l  ON l.language_id = s.language_id
@@ -618,18 +624,17 @@ $$;
 -- USAGE QUICK REFERENCE
 -- ============================================================
 /*
-── Raw (score columns only) ───────────────────────────────────
-SELECT * FROM fn_popular_songs(50, NULL, NULL, NULL, NULL);
-SELECT * FROM fn_trending_songs(50, NULL, NULL, NULL, NULL);
-SELECT * FROM fn_recommended_songs(7, 50, NULL, NULL, NULL, NULL);
+── By artist (raw) ────────────────────────────────────────────
+SELECT * FROM fn_popular_songs(50, NULL, NULL, NULL, NULL, 3);
+SELECT * FROM fn_trending_songs(50, NULL, NULL, NULL, NULL, 3);
+SELECT * FROM fn_recommended_songs(7, 50, NULL, NULL, NULL, NULL, 3);
 
-── Enriched (full SongInfo columns) ──────────────────────────
-SELECT * FROM fn_get_popular_songs(10, NULL, NULL, NULL, NULL);
-SELECT * FROM fn_get_trending_songs(10, NULL, NULL, NULL, NULL);
-SELECT * FROM fn_get_recommended_songs(7, 50, NULL, NULL, NULL, NULL);
+── By artist (enriched) ───────────────────────────────────────
+SELECT * FROM fn_get_popular_songs(10, NULL, NULL, NULL, NULL, 3);
+SELECT * FROM fn_get_trending_songs(10, NULL, NULL, NULL, NULL, 3);
+SELECT * FROM fn_get_recommended_songs(7, 50, NULL, NULL, NULL, NULL, 3);
 
-── With filters ───────────────────────────────────────────────
-SELECT * FROM fn_get_trending_songs(5, 3, NULL, NULL, NULL);   -- genre 3
-SELECT * FROM fn_get_popular_songs(5, NULL, 2, NULL, NULL);    -- mood 2
-SELECT * FROM fn_get_recommended_songs(7, 10, 1, NULL, NULL, NULL); -- genre 1
+── Combined filters ───────────────────────────────────────────
+SELECT * FROM fn_get_trending_songs(10, 2, NULL, NULL, NULL, 3); -- genre 2 + artist 3
+SELECT * FROM fn_get_popular_songs(10, NULL, 1, NULL, NULL, 5);  -- mood 1 + artist 5
 */
