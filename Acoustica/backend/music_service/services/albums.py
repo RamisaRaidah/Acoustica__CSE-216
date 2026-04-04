@@ -308,7 +308,8 @@ def delete_album(album_id):
                 if cover_picture:
                     storage.delete_file_from_storage(cover_picture)
 
-                storage.delete_file_from_storage(copyright_certificate)
+                if copyright_certificate:
+                    storage.delete_file_from_storage(copyright_certificate)
 
     except Exception as e:
         connection.rollback()
