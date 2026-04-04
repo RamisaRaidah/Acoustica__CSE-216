@@ -249,6 +249,6 @@ def get_artist_stats_route(artist_id):
 @analytics_bp.post("/api/analytics/smart-recommendations")
 @jwt_required()
 def get_smart_recommendations_route():
-    prompt = request.json.get("prompt")
+    prompt = request.json
     result, status = analytics.get_smart_recommendations(prompt)
     return jsonify(result), status

@@ -1,4 +1,4 @@
-import '@/pages/music/playlist/playlist_profile/PlaylistProfile.css'
+import '@/pages/music/playlist/playlist_profile/PlaylistProfile.css';
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import play_button from '@/assets/images/music/Play_Button.png';
 import Alert from '@/components/alert/TwoButtonAlert';

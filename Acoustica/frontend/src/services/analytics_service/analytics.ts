@@ -132,3 +132,10 @@ export async function getInstrumentRecommendedSongs(instrumentId: number): Promi
 export async function getArtistStats(artist_id: number): Promise<ArtistStats> {
     return api.request<ArtistStats>(`/api/analytics/artists/${artist_id}/stats`);
 }
+
+export async function getSmartRecommendations(userPrompt: string): Promise<SongInfo[]> {
+    return api.request('/api/analytics/smart-recommendations', {
+        method: 'POST',
+        body: JSON.stringify(userPrompt)
+    });
+}
