@@ -37,34 +37,48 @@ def delete_review_route(review_id):
 @posts_bp.post("/api/reports/<int:asset_id>")
 @jwt_required()
 def create_report_route(asset_id):
-    current_user = get_jwt_identity()
-    if current_user["user_type"] != "listener":
-        return jsonify({"error": "Only listeners can submit reports"}), 403
-    
-    data = request.get_json()
-    text = data.get("text")
-    image = data.get("image")
+    user_id = get_jwt_identity()
+
+    text = request.form.get("text")
+    image = request.files.get("image")
 
     if not text:
         return jsonify({"error": "Report text is required"}), 400
 
-    result, status = posts.create_report(asset_id, current_user["user_id"], text, image)
+    result, status = posts.create_report(asset_id, user_id, text, image)
     return jsonify(result), status
 
 
-@posts_bp.get("/api/reports/<int:asset_id>")
+@posts_bp.get("/api/reports/get/<int:asset_id>")
 @jwt_required()
 def get_reports_route(asset_id):
-    current_user = get_jwt_identity()
-    if current_user["user_type"] != "admin":
-        return jsonify({"error": "Admins only"}), 403
 
     result, status = posts.get_reports(asset_id)
     return jsonify(result), status
 
-@posts_bp.patch("/api/reports/<report_id>")
+
+@posts_bp.patch("/api/reports/handle/<int:report_id>")
+@jwt_required()
 def handle_user_report_route(report_id):
-    return jsonify(f"handle_user_report {report_id}")
+    user_id=get_jwt_identity()
+
+    data = request.get_json() or {}
+    action = data.get("action") 
+    note = data.get("note")
+
+    if not action:
+        return jsonify({"error": "action is required"}), 400
+
+    result, status = posts.handle_user_report(report_id,user_id, action, note)
+    return jsonify(result), status
+
+@posts_bp.get("/api/reports")
+@jwt_required()
+def get_all_reports_route():
+
+    result, status = posts.get_all_reports()
+    return jsonify(result), status
+
 
 @posts_bp.post("/api/announcements")
 def create_announcement_route():

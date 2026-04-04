@@ -105,7 +105,8 @@ def handle_webhook(req):
 
     if event["type"] == "payment_intent.succeeded":
         payment_intent = event["data"]["object"]
-        metadata = payment_intent.get("metadata", {})
+        payment_intent_dict = payment_intent.to_dict()
+        metadata = payment_intent_dict.get("metadata", {})
 
         user_id = int(metadata.get("user_id"))
         plan_id = int(metadata.get("plan_id"))

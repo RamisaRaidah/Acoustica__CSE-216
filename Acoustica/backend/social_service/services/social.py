@@ -2,6 +2,7 @@ from storage_service.services import storage
 from db import execute_sql
 import logging
 import sys
+from user_service.services.notifications import create_notification
 
 logging.basicConfig(
     level = logging.INFO,
@@ -68,11 +69,12 @@ def share_to_family(family_id, asset_id, user_id, note=None):
         return {"error": "Family not found, subscription inactive, or user is not a member"}, 403
 
     asset_check = """
-        SELECT 1 FROM asset 
+        SELECT asset_type FROM asset 
         WHERE asset_id = %s
         AND asset_type IN ('song', 'album', 'playlist')
     """
-    if not execute_sql(asset_check, (asset_id,), fetch_one=True):
+    asset = execute_sql(asset_check, (asset_id,), fetch_one=True)
+    if not asset:
         return {"error": "Asset not found or not a shareable type (must be song, album, or playlist)"}, 404
 
     sql = """
@@ -81,8 +83,37 @@ def share_to_family(family_id, asset_id, user_id, note=None):
     """
     execute_sql(sql, (user_id, family_id, asset_id, note))
 
-    return {"message": "Content successfully shared to family."}, 200
+    create_notification(user_id, 'Your content has been shared to family!')
 
+
+    members = execute_sql(
+        """
+        SELECT member_id FROM family_member
+        WHERE family_id = %s AND member_id != %s
+        """,
+        (family_id, user_id), fetch_all=True
+    )
+
+    logging.info(f"Member number: {len(members)}")
+    
+
+    sender = execute_sql(
+        "SELECT first_name, last_name FROM users WHERE user_id = %s",
+        (user_id,), fetch_one=True
+    )
+    sender_name = f"{sender['first_name']} {sender['last_name']}" if sender else "A family member"
+
+    if members:
+        asset_type = asset["asset_type"]
+        for member in members:
+            id=member["member_id"]
+            logging.info(f"Sending notifications to {id}")
+            create_notification(
+                member["member_id"],
+                f"{sender_name} shared a {asset_type} with your family!"
+            )
+
+    return {"message": "Content successfully shared to family."}, 200
 
 def get_friend_shared_contents():
     return ("get_friend_shared_contents")
