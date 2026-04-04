@@ -17,13 +17,12 @@ logging.basicConfig(
 )
 
 ### search_song ###
-
 def search_song(seed):
     seed = seed.lower().replace(" ", "")
     param = (f"%{seed}%",)
 
     songs_query = """
-        SELECT song_id, s.album_id, s.title, a.title album_title, ar.artist_id owner_id, ar.stage_name owner_name, s.length
+        SELECT s.song_id, s.album_id, s.title, a.title album_title, ar.artist_id owner_id, ar.stage_name owner_name, s.length, s.asset_id
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE LOWER(REPLACE(s.title, ' ', '')) LIKE %s
         LIMIT 5
@@ -34,13 +33,12 @@ def search_song(seed):
     return {"songs": songs}, 200
 
 ### search_album ###
-
 def search_album(seed):
     seed = seed.lower().replace(" ", "")
     param = (f"%{seed}%",)
 
     albums_query = """
-        SELECT album_id, title, stage_name owner_name
+        SELECT a.album_id, a.title, ar.stage_name owner_name, a.asset_id
         FROM album a JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
         LIMIT 5
@@ -51,13 +49,12 @@ def search_album(seed):
     return {"albums": albums}, 200
 
 ### search_artist ###
-
 def search_artist(seed):
     seed = seed.lower().replace(" ", "")
     param = (f"%{seed}%",)
 
     artists_query = """
-        SELECT artist_id, stage_name artist_name
+        SELECT a.artist_id, a.stage_name artist_name, u.asset_id
         FROM artist a JOIN users u ON (a.artist_id = u.user_id)
         WHERE LOWER(REPLACE(stage_name, ' ', '')) LIKE %s
         LIMIT 5
@@ -66,6 +63,22 @@ def search_artist(seed):
     artists = execute_sql(artists_query, param, fetch_all = True) or []
 
     return {"artists": artists}, 200
+
+### search_playlist ###
+def search_playlist(seed):
+    seed = seed.lower().replace(" ", "")
+    param = (f"%{seed}%",)
+
+    playlists_query = """
+        SELECT p.playlist_id, p.title, p.creator_id, (u.first_name || ' ' || u.last_name) creator_name, p.asset_id
+        FROM playlist p JOIN users u ON (p.creator_id = u.user_id)
+        WHERE LOWER(REPLACE(title, ' ', '')) LIKE %s
+        LIMIT 5
+    """
+
+    playlists = execute_sql(playlists_query, param, fetch_all = True) or []
+
+    return {"playlists": playlists}, 200
 
 def recommend_song():
     return ("recommend_song")

@@ -1,7 +1,6 @@
 import api from "@/services/api";
 import { useEffect, useRef, useState } from "react";
 import { SongInfo } from "@/services/music_service/songs";
-import { Album } from "@/services/music_service/albums";
 import { useNavigate } from "react-router-dom";
 import { useMusic } from "@/contexts/MusicContext";
 import SongProfile from "@/pages/music/song/song_profile/SongProfile";
@@ -11,20 +10,43 @@ interface SearchbarProps {
     song?: boolean;
     album?: boolean;
     artist?: boolean;
+    playlist?: boolean;
     onSongSelect?: (song: SongInfo) => void;
+    onAlbumSelect?: (album: AlbumSearchParam) => void;
+    onArtistSelect?: (artist: ArtistSearchParam) => void;
+    onPlaylistSelect?: (playlist: PlaylistSearchParam) => void;
     prevent_default?: boolean;
 }
 
-interface ArtistInfo {
-    artist_id: number;
-    artist_name: string;
+interface AlbumSearchParam {
+    album_id: number;
+    title: string;
+    owner_id: number;
+    owner_name: string;
+    asset_id: number;
 }
 
-export default function Searchbar({ prompt, song = false, album = false, artist = false, onSongSelect, prevent_default = false }: SearchbarProps) {
+interface ArtistSearchParam {
+    artist_id: number;
+    artist_name: string;
+    asset_id: number;
+}
+
+interface PlaylistSearchParam {
+    playlist_id: number;
+    title: string;
+    creator_id: number;
+    creator_name: string;
+    asset_id: number;
+}
+
+export default function Searchbar({ prompt, song = false, album = false, artist = false, playlist = false, onSongSelect, onAlbumSelect, onArtistSelect, onPlaylistSelect, prevent_default = false }: SearchbarProps) {
     const [queryParam, setQueryParam] = useState<string>("");
-    const [songs, setSongs] = useState<SongInfo[] | null>(null);
-    const [albums, setAlbums] = useState<Album[] | null>(null);
-    const [artists, setArtists] = useState<ArtistInfo[] | null>(null);
+    const [songs, setSongs] = useState<SongInfo[]>([]);
+    const [albums, setAlbums] = useState<AlbumSearchParam[]>([]);
+    const [artists, setArtists] = useState<ArtistSearchParam[]>([]);
+    const [playlists, setPlaylists] = useState<PlaylistSearchParam[]>([]);
+ 
     const [searchDropdownOpen, setSearchDropdownOpen] = useState<boolean>(false);
     const seachWrapperRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
@@ -34,9 +56,10 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
 
     useEffect(() => {
         if (!queryParam) {
-            setSongs(null);
-            setAlbums(null);
-            setArtists(null);
+            setSongs([]);
+            setAlbums([]);
+            setArtists([]);
+            setPlaylists([]);
             setSearchDropdownOpen(false);
             return;
         }
@@ -58,6 +81,12 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                 api.request(`/api/search/artist?q=${encodeURIComponent(queryParam)}`).then((data) => {
                     setArtists(data.artists);
                     if (data.artists.length > 0) setSearchDropdownOpen(true);
+                });
+            }
+            if (playlist) {
+                api.request(`/api/search/playlist?q=${encodeURIComponent(queryParam)}`).then((data) => {
+                    setPlaylists(data.playlists);  
+                    if (data.playlists.length > 0) setSearchDropdownOpen(true);
                 });
             }
         }, 300);
@@ -97,7 +126,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                 />
                 <div className={`search_dropdown ${searchDropdownOpen ? "active" : ""}`}>
 
-                    {songs && (
+                    {songs.length > 0 && (
                         <div className="song_result">
                             <div className="song_result_header">Songs</div>
                             {songs.map((song) => (
@@ -160,7 +189,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                         </div>
                     )}
 
-                    {albums && (
+                    {albums.length > 0 && (
                         <div className="album_result">
                             <div className="album_result_header">Albums</div>
                             {albums.map((album) => (
@@ -169,7 +198,8 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                     key={album.album_id}
                                     onClick={() => {
                                         close();
-                                        navigate(`/music/albums/${album.album_id}`);
+                                        onAlbumSelect?.(album);
+                                        if (!prevent_default) navigate(`/music/albums/${album.album_id}`);
                                     }}
                                 >
                                     <div className="search_item_text">
@@ -203,7 +233,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                         </div>
                     )}
 
-                    {artists && (
+                    {artists.length > 0 && (
                         <div className="artist_result">
                             <div className="artist_result_header">Artists</div>
                             {artists.map((artist) => (
@@ -212,11 +242,56 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                     key={artist.artist_id}
                                     onClick={() => {
                                         close();
-                                        navigate(`/artists/${artist.artist_id}`);
+                                        onArtistSelect?.(artist);
+                                        if (!prevent_default) navigate(`/artists/${artist.artist_id}`);
                                     }}
                                 >
                                     <div className="search_item_text">
                                         <span className="search_item_title">{artist.artist_name}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {playlists.length > 0 && (
+                        <div className="playlist_result">
+                            <div className="playlist_result_header">Playlists</div>
+                            {playlists.map((playlist) => (
+                                <div
+                                    className="search_item"
+                                    key={playlist.playlist_id}
+                                    onClick={() => {
+                                        close();
+                                        onPlaylistSelect?.(playlist);
+                                        if (!prevent_default) navigate(`/music/playlists/${playlist.playlist_id}`);
+                                    }}
+                                >
+                                    <div className="search_item_text">
+                                        <span
+                                            className="search_item_title"
+                                            onClick={(e) => {
+                                                if (!prevent_default) {
+                                                    e.stopPropagation();
+                                                    navigate(`/music/playlists/${playlist.playlist_id}`);
+                                                    close();
+                                                }
+                                            }}
+                                        >
+                                            {playlist.title}
+                                        </span>
+                                        <span
+                                            className="search_item_artist_name"
+                                            onClick={(e) => {
+                                                if (!prevent_default) {
+                                                    e.stopPropagation();
+                                                    navigate(`/artists/${playlist.creator_id}`);
+                                                    close();
+                                                }
+                                            }}
+                                        >
+                                            {playlist.creator_name}
+                                        </span>
                                     </div>
                                 </div>
                             ))}

@@ -81,7 +81,12 @@ export default function ListenerTopbar() {
             {alert && <Alert message={alert} onConfirm={() => setAlert("")} />}
 
             <div className="topbar_left">
-                <div className='topbar-button'><img src={shop_button_img} className="icon" />Shop</div>
+                {/* <div className='topbar-button'><img src={shop_button_img} className="icon" />Shop</div> */}
+                {user?.user_type === 'listener' && (
+                    <div className='topbar-button' onClick={() => navigate('/explore')}>
+                        <img src={explore_button_img} className="icon" />Explore
+                    </div>
+                )}
             </div>
 
             <div className="topbar_center">
@@ -191,14 +196,14 @@ export default function ListenerTopbar() {
             </div>
 
             <div className="topbar_right">
-                {user?.user_type === 'listener' && (
+                {/* {user?.user_type === 'listener' && (
                     <div className='topbar-button' onClick={() => navigate('/explore')}>
                         <img src={explore_button_img} className="icon" />Explore
                     </div>
-                )}
-                {user?.user_type === 'artist' && (
+                )} */}
+                {/* {user?.user_type === 'artist' && (
                     <div className='topbar-button'><img src={wallet_button_img} className="icon" />Wallet</div>
-                )}
+                )} */}
                 <Notifications />
                 <div ref={profileWrapperRef} className="profile_wrapper">
                     <div className="profile_picture" onClick={(e) => {

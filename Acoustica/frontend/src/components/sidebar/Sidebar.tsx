@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Settings from '@/pages/user/settings/Settings';
+import CreateReport from '@/pages/reports/create_report/CreateReport';
 import logo_img from '@/assets/images/deco/Logo.png';
 import name_img_light from '@/assets/images/deco/Acoustica1.png';
 import name_img_dark from '@/assets/images/deco/Acoustica2.png';
@@ -26,6 +27,7 @@ export default function Sidebar() {
     const { user } = useAuth();
     const listenerType = user?.listener_type ?? 'free';
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [createReportOpen, setCreateReportOpen] = useState(false);
     const navigate = useNavigate();
 
     return (
@@ -53,8 +55,8 @@ export default function Sidebar() {
                         <div className='sidebar-button' onClick={() => navigate('/discography')}><img src={discography_button_img} className='icon' />Discography</div>
                         <div className='sidebar-button' onClick={() => navigate('/music/create-album')}><img src={create_album_button_img} className='icon' />Create album</div>
                         <div className='sidebar-button' onClick={() => navigate('/music/upload-song')}><img src={upload_song_button_img} className='icon' />Upload song</div>
-                        <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={draft_button_img} className='icon' />Drafts</div>
-                        <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={approval_status_button_img} className='icon' />Approval status</div>
+                        {/* <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={draft_button_img} className='icon' />Drafts</div> */}
+                        {/* <div className='sidebar-button' onClick={() => navigate('/dashboard')}><img src={approval_status_button_img} className='icon' />Approval status</div> */}
                     </>
                 }
                 {
@@ -66,12 +68,13 @@ export default function Sidebar() {
             </div>
 
             <div className='sidebar_navigation_bottom'>
-                <div className='sidebar-button'><img src={report_button_img} className='icon' />Report</div>
+                {user?.user_type !== "admin" && <div className='sidebar-button' onClick={() => setCreateReportOpen(true)}><img src={report_button_img} className='icon' />Report</div>}
                 <div className='sidebar-button' onClick={() => setSettingsOpen(true)}><img src={settings_button_img} className='icon' />Settings</div>
                 <div className='sidebar-button' id='aboutus-button'>About us</div>
             </div>
 
             <Settings isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+            <CreateReport isOpen={createReportOpen} onClose={() => setCreateReportOpen(false)} />
         </div>
     )
 }
