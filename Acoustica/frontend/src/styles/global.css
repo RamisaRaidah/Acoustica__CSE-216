@@ -33,7 +33,7 @@ body {
   top: 10vh;
   left: 20vw;
   width: 78vw;
-  padding: 2vw 1vw;
+  padding: 2vw 1vw 2vw 0vw;
   box-sizing: border-box;
   border-radius: 0.5vw;
   /* background: white; */

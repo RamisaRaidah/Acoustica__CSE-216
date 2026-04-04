@@ -1,5 +1,5 @@
 -- ============================================================
---  ARTIST RANKING  (UPDATED: follower date_time now utilized)
+--  ARTIST RANKING
 --  fn_base_artist_stats      – shared aggregates per artist
 --  fn_popular_artist_score   – popular score formula
 --  fn_trending_artist_score  – trending score formula
@@ -15,7 +15,6 @@
 -- ============================================================
 
 -- 0.1  fn_base_artist_stats
---      UPDATED: splits followers into total_followers + new_followers_7d
 CREATE OR REPLACE FUNCTION fn_base_artist_stats()
 RETURNS TABLE (
     artist_id            INT,
@@ -24,11 +23,11 @@ RETURNS TABLE (
     streams_last_7d      BIGINT,
     unique_listeners_7d  BIGINT,
     saves_7d             BIGINT,
-    likes_7d             BIGINT,    -- likes of artist's songs in last 7d
+    likes_7d             BIGINT,
     streams_today        BIGINT,
     streams_yesterday    BIGINT,
     total_followers      BIGINT,
-    new_followers_7d     BIGINT     -- NEW: followers gained in last 7 days
+    new_followers_7d     BIGINT
 )
 LANGUAGE sql STABLE AS $$
     WITH
@@ -59,7 +58,6 @@ LANGUAGE sql STABLE AS $$
         GROUP BY sa.artist_id
     ),
     likes AS (
-        -- scoped to last 7 days using date_time (now available on liked_song)
         SELECT  sa.artist_id,
                 COUNT(*) AS likes_7d
         FROM    liked_song ls
@@ -114,7 +112,6 @@ $$;
 
 
 -- 0.2  fn_popular_artist_score
---      UPDATED: uses total_followers for long-term popularity signal
 CREATE OR REPLACE FUNCTION fn_popular_artist_score(
     p_total_streams    BIGINT,
     p_unique_listeners BIGINT,
@@ -129,13 +126,11 @@ $$;
 
 
 -- 0.3  fn_trending_artist_score
---      UPDATED: new_followers_7d replaces saves_7d as the 4th signal
---      saves_7d is a song-level metric; new follows is more native to artists
 CREATE OR REPLACE FUNCTION fn_trending_artist_score(
     norm_streams_7d      NUMERIC,
     norm_growth_rate     NUMERIC,
     norm_unique_7d       NUMERIC,
-    norm_new_followers   NUMERIC,   -- NEW: replaces norm_saves_7d
+    norm_new_followers   NUMERIC,
     norm_likes_7d        NUMERIC
 )
 RETURNS NUMERIC
@@ -159,7 +154,7 @@ CREATE OR REPLACE FUNCTION fn_popular_artists(
 )
 RETURNS TABLE (
     artist_id        INT,
-    stage_name       TEXT,
+    artist_name      TEXT,
     popular_score    NUMERIC,
     total_streams    BIGINT,
     unique_listeners BIGINT,
@@ -168,12 +163,12 @@ RETURNS TABLE (
 LANGUAGE sql STABLE AS $$
     SELECT
         ar.artist_id,
-        ar.stage_name,
+        ar.stage_name                   AS artist_name,
         fn_popular_artist_score(
             bas.total_streams,
             bas.unique_listeners,
             bas.total_followers
-        )                       AS popular_score,
+        )                               AS popular_score,
         bas.total_streams,
         bas.unique_listeners,
         bas.total_followers
@@ -207,21 +202,21 @@ CREATE OR REPLACE FUNCTION fn_trending_artists(
 )
 RETURNS TABLE (
     artist_id        INT,
-    stage_name       TEXT,
+    artist_name      TEXT,
     trending_score   NUMERIC,
     streams_last_7d  BIGINT,
     growth_rate      NUMERIC,
-    new_followers_7d BIGINT     -- NEW: exposed in raw output
+    new_followers_7d BIGINT
 )
 LANGUAGE sql STABLE AS $$
     WITH
     filtered AS (
         SELECT
             ar.artist_id,
-            ar.stage_name,
+            ar.stage_name               AS artist_name,
             bas.streams_last_7d,
             bas.unique_listeners_7d,
-            bas.new_followers_7d,           -- NEW
+            bas.new_followers_7d,
             bas.likes_7d,
             (bas.streams_today - bas.streams_yesterday)::NUMERIC
                 / (bas.streams_yesterday + 50) AS growth_rate
@@ -245,23 +240,23 @@ LANGUAGE sql STABLE AS $$
             GREATEST(MAX(f.streams_last_7d),    1)     AS max_s7d,
             GREATEST(MAX(f.growth_rate),        0.001) AS max_gr,
             GREATEST(MAX(f.unique_listeners_7d),1)     AS max_ul7d,
-            GREATEST(MAX(f.new_followers_7d),   1)     AS max_nf7d,   -- NEW
+            GREATEST(MAX(f.new_followers_7d),   1)     AS max_nf7d,
             GREATEST(MAX(f.likes_7d),           1)     AS max_lk7d
         FROM filtered f
     )
     SELECT
         f.artist_id,
-        f.stage_name,
+        f.artist_name,
         fn_trending_artist_score(
             f.streams_last_7d::NUMERIC         / m.max_s7d,
             GREATEST(f.growth_rate, 0)         / m.max_gr,
             f.unique_listeners_7d::NUMERIC     / m.max_ul7d,
-            f.new_followers_7d::NUMERIC        / m.max_nf7d,   -- NEW
+            f.new_followers_7d::NUMERIC        / m.max_nf7d,
             f.likes_7d::NUMERIC                / m.max_lk7d
         )                                       AS trending_score,
         f.streams_last_7d,
         f.growth_rate,
-        f.new_followers_7d                                      -- NEW
+        f.new_followers_7d
     FROM   filtered f
     CROSS JOIN maxes m
     ORDER  BY trending_score DESC
@@ -270,7 +265,7 @@ $$;
 
 
 -- ============================================================
--- SECTION 3: ENRICHED WRAPPERS (ArtistInfo-compatible)
+-- SECTION 3: ENRICHED WRAPPERS (Artist interface-compatible)
 -- ============================================================
 
 -- 3.1  fn_get_popular_artists
@@ -281,39 +276,23 @@ CREATE OR REPLACE FUNCTION fn_get_popular_artists(
     p_language_id INT DEFAULT NULL
 )
 RETURNS TABLE (
-    artist_id        INT,
-    stage_name       TEXT,
-    first_name       TEXT,
-    last_name        TEXT,
-    profile_picture  TEXT,
-    country          TEXT,
-    total_streams    BIGINT,
-    unique_listeners BIGINT,
-    total_followers  BIGINT,
-    popular_score    NUMERIC
+    artist_id       INT,
+    artist_name     TEXT,
+    profile_picture TEXT
 )
 LANGUAGE sql STABLE AS $$
     SELECT
         p.artist_id,
-        p.stage_name,
-        u.first_name,
-        u.last_name,
-        u.profile_picture,
-        c.country_name  AS country,
-        p.total_streams,
-        p.unique_listeners,
-        p.total_followers,
-        p.popular_score
+        p.artist_name,
+        u.profile_picture
     FROM fn_popular_artists(p_limit, p_genre_id, p_mood_id, p_language_id) p
-    JOIN artist  ar ON ar.artist_id = p.artist_id
-    JOIN users   u  ON u.user_id    = ar.artist_id
-    LEFT JOIN country c ON c.country_id = u.country_id
+    JOIN artist ar ON ar.artist_id = p.artist_id
+    JOIN users  u  ON u.user_id    = ar.artist_id
     ORDER BY p.popular_score DESC;
 $$;
 
 
 -- 3.2  fn_get_trending_artists
---      UPDATED: new_followers_7d added to output
 CREATE OR REPLACE FUNCTION fn_get_trending_artists(
     p_limit       INT DEFAULT 10,
     p_genre_id    INT DEFAULT NULL,
@@ -321,33 +300,18 @@ CREATE OR REPLACE FUNCTION fn_get_trending_artists(
     p_language_id INT DEFAULT NULL
 )
 RETURNS TABLE (
-    artist_id        INT,
-    stage_name       TEXT,
-    first_name       TEXT,
-    last_name        TEXT,
-    profile_picture  TEXT,
-    country          TEXT,
-    streams_last_7d  BIGINT,
-    growth_rate      NUMERIC,
-    new_followers_7d BIGINT,    -- NEW
-    trending_score   NUMERIC
+    artist_id       INT,
+    artist_name     TEXT,
+    profile_picture TEXT
 )
 LANGUAGE sql STABLE AS $$
     SELECT
         t.artist_id,
-        t.stage_name,
-        u.first_name,
-        u.last_name,
-        u.profile_picture,
-        c.country_name   AS country,
-        t.streams_last_7d,
-        t.growth_rate,
-        t.new_followers_7d,                -- NEW
-        t.trending_score
+        t.artist_name,
+        u.profile_picture
     FROM fn_trending_artists(p_limit, p_genre_id, p_mood_id, p_language_id) t
-    JOIN artist  ar ON ar.artist_id = t.artist_id
-    JOIN users   u  ON u.user_id    = ar.artist_id
-    LEFT JOIN country c ON c.country_id = u.country_id
+    JOIN artist ar ON ar.artist_id = t.artist_id
+    JOIN users  u  ON u.user_id    = ar.artist_id
     ORDER BY t.trending_score DESC;
 $$;
 

@@ -147,7 +147,7 @@ def upload_song(title, album, collaborators, language, genres, moods, instrument
 ### get_song_datails ###
 def get_song_metadata(song_id):
     command = """
-        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name,s.asset_id
+        SELECT s.song_id, s.title, s.album_id, a.title album_title, s.language_id, l.language_name language, s.length, s.release_date, s.lyrics, s.copyright_certificate, s.play_count, a.owner_id, ar.stage_name owner_name, s.asset_id
         FROM song s JOIN album a ON (s.album_id = a.album_id) JOIN language l ON (s.language_id = l.language_id) JOIN artist ar ON (a.owner_id = ar.artist_id)
         WHERE song_id = %s
     """
@@ -425,15 +425,27 @@ def delete_song(song_id):
     try:
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
-                cursor.execute("SELECT asset_id FROM song WHERE song_id = %s", (song_id,))
+                cursor.execute("SELECT asset_id, song_audio, copyright_certificate, lyrics FROM song WHERE song_id = %s", (song_id,))
                 
                 result = cursor.fetchone()
                 asset_id = result['asset_id']
+                song_audio = result['song_audio']
+                copyright_certificate = result['copyright_certificate']
+                lyrics = result['lyrics']
 
                 if not asset_id:
                     raise Exception()
                 
                 cursor.execute("DELETE FROM asset WHERE asset_id = %s", (asset_id,))
+
+                if song_audio:
+                    storage.delete_file_from_storage(song_audio)
+
+                if copyright_certificate:
+                    storage.delete_file_from_storage(copyright_certificate)
+
+                if lyrics:
+                    storage.delete_file_from_storage(lyrics)
 
     except Exception as e:
         connection.rollback()

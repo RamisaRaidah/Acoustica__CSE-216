@@ -1,7 +1,4 @@
-import random
-
 from flask import json
-
 from storage_service.services import storage
 from db import execute_sql
 import logging
@@ -9,6 +6,9 @@ import sys
 
 from flask_jwt_extended import get_jwt_identity
 from utils.ai_agent import generate_response
+
+import random
+import difflib
 
 logging.basicConfig(
     level = logging.INFO,
@@ -199,7 +199,7 @@ def get_recommended_songs():
 
 ### get_trending_artists ###
 def get_trending_artists():
-    result = execute_sql("SELECT * FROM fn_get_trending_artists(8, NULL, NULL, NULL)", fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_trending_artists(9, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data"}, 500
@@ -220,7 +220,7 @@ def get_trending_artists():
 
 ### get_popular_artists ###
 def get_popular_artists():
-    result = execute_sql("SELECT * FROM fn_get_popular_artists(8, NULL, NULL, NULL)", fetch_all = True)
+    result = execute_sql("SELECT * FROM fn_get_popular_artists(9, NULL, NULL, NULL)", fetch_all = True)
 
     if result is False:
         return {"error": "couldn't fetch data"}, 500
@@ -374,39 +374,51 @@ def get_instrument_recommended_songs(instrument_id):
 
 ##################### Artist Public Profile page Stats #####################
 def get_artist_stats(artist_id):
-    top_songs_result = execute_sql("SELECT * FROM fn_get_popular_songs(4, NULL, NULL , NULL , NULL, %s)", (artist_id,), fetch_all=True)
-    
+    top_songs_result = execute_sql("""
+        SELECT 
+            DISTINCT
+            s.song_id,
+            s.title,
+            s.play_count,
+            alb.cover_picture
+        FROM song s
+        JOIN song_artist sa ON sa.song_id = s.song_id
+        JOIN album alb ON alb.album_id = s.album_id
+        WHERE sa.artist_id = %s
+        ORDER BY s.play_count DESC
+        LIMIT 4
+    """, (artist_id,), fetch_all=True)
+
     top_songs = []
     for song in (top_songs_result or []):
         song_data = dict(song)
-        song_data["cover_picture_url"] = storage.generate_signed_url(song_data["cover_picture"]) if song_data["cover_picture"] else None
-        del song_data["cover_picture"]
+        cover_picture = song_data.pop("cover_picture")
+        song_data["cover_picture_url"] = storage.generate_signed_url(cover_picture) if cover_picture else None
         top_songs.append(song_data)
-    
+
     monthly_listeners_sql = """
         SELECT 
-            TO_CHAR(DATE_TRUNC('month', ssh.date_time), 'Mon') as month,
-            COUNT(DISTINCT ssh.listener_id) as listener_count
+            TO_CHAR(DATE_TRUNC('month', ssh.date_time), 'Mon') AS month,
+            COUNT(DISTINCT ssh.listener_id) AS listener_count
         FROM song_stream_history ssh
-        JOIN song s ON s.song_id = ssh.song_id
-        WHERE sa.owner_id = %s
+        JOIN song_artist sa ON sa.song_id = ssh.song_id
+        WHERE sa.artist_id = %s
         AND ssh.date_time >= NOW() - INTERVAL '6 months'
         GROUP BY DATE_TRUNC('month', ssh.date_time)
         ORDER BY DATE_TRUNC('month', ssh.date_time)
     """
     monthly_result = execute_sql(monthly_listeners_sql, (artist_id,), fetch_all=True)
     monthly_listeners = [dict(row) for row in (monthly_result or [])]
-    
 
     total_plays_sql = """
-        SELECT SUM(s.play_count) as total_plays
+        SELECT SUM(s.play_count) AS total_plays
         FROM song s
         JOIN song_artist sa ON sa.song_id = s.song_id
         WHERE sa.artist_id = %s
     """
     total_result = execute_sql(total_plays_sql, (artist_id,), fetch_one=True)
     total_plays = total_result["total_plays"] if total_result and total_result["total_plays"] else 0
-    
+
     return {
         "top_songs": top_songs,
         "monthly_listeners": monthly_listeners,
@@ -421,55 +433,109 @@ def get_smart_recommendations(prompt):
     instruments = execute_sql("SELECT instrument_id, instrument_name FROM instrument", fetch_all=True)
     artists = execute_sql("SELECT artist_id, stage_name FROM artist", fetch_all=True)
 
-    resources = {
-        "genres":      [{"id": g["genre_id"],      "name": g["genre_name"]}      for g in genres],
-        "moods":       [{"id": m["mood_id"],       "name": m["mood_name"]}       for m in moods],
-        "languages":   [{"id": l["language_id"],   "name": l["language_name"]}   for l in languages],
-        "instruments": [{"id": i["instrument_id"], "name": i["instrument_name"]} for i in instruments],
-        "artists":     [{"id": a["artist_id"],     "name": a["stage_name"]}      for a in artists],
-    }
-
-    response = generate_response(prompt, resources)
+    response = generate_response(prompt)
 
     try:
         filters = json.loads(response)
     except (json.JSONDecodeError, TypeError):
         filters = {}
 
-    selected_genres = filters.get("genres") or [None]
-    selected_moods = filters.get("moods") or [None]
-    selected_languages = filters.get("languages") or [None]
-    selected_instruments = filters.get("instruments") or [None]
-    selected_artists = filters.get("artists") or [None]
+    selected_genres = [fuzzy_match(g, genres, "genre_name")["genre_id"] for g in (filters.get("genres") or []) if fuzzy_match(g, genres, "genre_name")] or genres
+    selected_moods = [fuzzy_match(m, moods, "mood_name")["mood_id"] for m in (filters.get("moods") or []) if fuzzy_match(m, moods, "mood_name")] or moods
+    selected_languages = [fuzzy_match(l, languages, "language_name")["language_id"] for l in (filters.get("languages") or []) if fuzzy_match(l, languages, "language_name")] or languages
+    selected_instruments = [fuzzy_match(i, instruments, "instrument_name")["instrument_id"] for i in (filters.get("instruments") or []) if fuzzy_match(i, instruments, "instrument_name")] or instruments
+    selected_artists = [fuzzy_match(a, artists, "stage_name")["artist_id"] for a in (filters.get("artists") or []) if fuzzy_match(a, artists, "stage_name")] or artists
+    
+    logging.info(filters.get("genres"))
+    logging.info(filters.get("moods"))
+    logging.info(filters.get("languages"))
+    logging.info(filters.get("instruments"))
+    logging.info(filters.get("artists"))
 
-    logging.info(selected_genres)
-    logging.info(selected_moods)
-    logging.info(selected_languages)
-    logging.info(selected_instruments)
-    logging.info(selected_artists)
+    where_clauses = []
+    params = []
 
-    seen_ids = set()
-    selected_songs = []
+    if filters.get("languages"):
+        where_clauses.append("l.language_id IN %s")
+        params.append(tuple(selected_languages))
 
-    for g in selected_genres:
-        for m in selected_moods:
-            for l in selected_languages:
-                for i in selected_instruments:
-                    for a in selected_artists:
-                        result = execute_sql(
-                            "SELECT * FROM fn_get_recommended_songs(%s, 20, %s, %s, %s, %s, %s)",
-                            (get_jwt_identity(), g, m, l, i, a),
-                            fetch_all=True
-                        )
+    if filters.get("artists"):
+        where_clauses.append("sa.artist_id IN %s")
+        params.append(tuple(selected_artists))
 
-                        if result: 
-                            for song in result:
-                                if song["song_id"] not in seen_ids:
-                                    seen_ids.add(song["song_id"])
-                                    selected_songs.append(song)
+    where_sql = ("WHERE " + " AND ".join(where_clauses)) if where_clauses else ""
 
-    random.shuffle(selected_songs)
+    score_parts = []
 
-    return selected_songs[:20], 200
+    if filters.get("genres"):
+        ids = ", ".join(str(g) for g in selected_genres)
+        score_parts.append(f"(sg.genre_id IN ({ids}))::int")
+
+    if filters.get("moods"):
+        ids = ", ".join(str(m) for m in selected_moods)
+        score_parts.append(f"(sm.mood_id IN ({ids}))::int")
+
+    if filters.get("instruments"):
+        ids = ", ".join(str(i) for i in selected_instruments)
+        score_parts.append(f"(si.instrument_id IN ({ids}))::int")
+
+    score_sql = " + ".join(score_parts) if score_parts else "0"
+
+    command = f"""
+        SELECT 
+            s.song_id, 
+            s.title, 
+            s.album_id, 
+            a.title album_title, 
+            s.language_id, 
+            l.language_name language, 
+            s.length, 
+            s.release_date,
+            s.play_count, 
+            a.owner_id, 
+            ar.stage_name owner_name, 
+            s.asset_id
+        FROM 
+            song s
+            JOIN album a ON (s.album_id = a.album_id)
+            JOIN artist ar ON (a.owner_id = ar.artist_id)
+            JOIN language l ON (s.language_id = l.language_id)
+            JOIN song_artist sa ON (s.song_id = sa.song_id)
+            JOIN song_genre sg ON (s.song_id = sg.song_id)
+            JOIN song_mood sm ON (s.song_id = sm.song_id)
+            JOIN song_instrument si ON (s.song_id = si.song_id)
+        {where_sql}
+        GROUP BY 
+            s.song_id, 
+            s.title, 
+            s.album_id, 
+            a.title, 
+            s.language_id, 
+            l.language_name, 
+            s.length, 
+            s.release_date,
+            s.play_count, 
+            a.owner_id, 
+            ar.stage_name, 
+            s.asset_id
+        HAVING MAX({score_sql}) > 0
+        ORDER BY MAX({score_sql}) DESC, s.play_count DESC
+        LIMIT 15
+    """
+
+    result = execute_sql(command, params, fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
 
 ### Helper functions ###
+def fuzzy_match(name, items, key):
+    names = [i[key] for i in items]
+    matches = difflib.get_close_matches(name.lower(), [n.lower() for n in names], n = 1, cutoff = 0.6)
+    if matches:
+        return next((i for i in items if i[key].lower() == matches[0]), None)
+    return None

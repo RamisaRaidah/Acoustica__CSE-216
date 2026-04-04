@@ -253,7 +253,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 0.5vw;
+    border-radius: 50%;
     overflow: hidden;
     box-shadow: 0 0.3vh 1.2vh var(--shadow, rgba(0, 0, 0, 0.18));
     transition: box-shadow 0.25s ease;
