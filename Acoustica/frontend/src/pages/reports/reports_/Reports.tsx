@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllReports, Report } from '@/services/social_service/posts.ts';
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
+import ReportActionsModal from '@/pages/reports/report-action-modal/ReportActionsModal';
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import default_profile from '@/assets/images/Default_pfp.png';
-import '@/pages/reports/Reports.css';
+import '@/pages/reports/reports_/Reports.css';
 
 function formatDate(dt: string): string {
     const d = new Date(dt);
@@ -16,9 +17,26 @@ interface ReportRowProps {
     report: Report;
     index: number;
     onSongClick: (id: number) => void;
+    onActionsClick: (id: number) => void;
 }
 
-function ReportRow({ report, index, onSongClick }: ReportRowProps) {
+function NoteCell({ text }: { text: string | null }) {
+    const [expanded, setExpanded] = useState(false);
+    if (!text) return <span className="rp-no-value">—</span>;
+    return (
+        <div className="rp-note">
+            <p
+                className={expanded ? 'rp-note-expanded' : ''}
+                title={text}
+                onClick={() => setExpanded(p => !p)}
+            >
+                {text}
+            </p>
+        </div>
+    );
+}
+
+function ReportRow({ report, index, onSongClick, onActionsClick }: ReportRowProps) {
     const [imgOpen, setImgOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -38,7 +56,6 @@ function ReportRow({ report, index, onSongClick }: ReportRowProps) {
 
                 <span className="rp-index">{index + 1}</span>
 
-                {/* Clickable content cell */}
                 <div className="rp-content rp-content--clickable" onClick={handleContentClick}>
                     <img
                         className="rp-content-cover"
@@ -54,7 +71,7 @@ function ReportRow({ report, index, onSongClick }: ReportRowProps) {
                 <div className="rp-author">
                     <img
                         className="rp-avatar"
-                        src={default_profile}
+                        src={report.profile_pic??default_profile}
                         alt={`${report.first_name} ${report.last_name}`}
                     />
                     <div className="rp-author-info">
@@ -63,9 +80,7 @@ function ReportRow({ report, index, onSongClick }: ReportRowProps) {
                     </div>
                 </div>
 
-                <div className="rp-note">
-                    <p>{report.text}</p>
-                </div>
+                <NoteCell text={report.text} />
 
                 <div className="rp-image-cell">
                     {report.image ? (
@@ -83,8 +98,13 @@ function ReportRow({ report, index, onSongClick }: ReportRowProps) {
                 <span className="rp-time">{formatDate(report.date_time)}</span>
 
                 <div className="rp-actions">
-                    <button className="rp-actions-btn" aria-label="Actions">
-                        Actions
+                    <button className="rp-actions-btn" 
+                        onClick={() => {
+                            onActionsClick(report.report_id);
+                                                    
+                        }}
+                    >
+                        ⚙ Actions
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                             <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -107,6 +127,14 @@ export default function Reports() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
+    const [actionsReportId, setActionsReportId] = useState<number | null>(null);
+
+    function handleReportResolved(reportId: number) {
+        setReports(prev => prev.filter(r => r.report_id !== reportId));
+        setActionsReportId(null);
+        window.location.reload();
+    }
+    
 
     useEffect(() => {
         getAllReports()
@@ -146,6 +174,7 @@ export default function Reports() {
                                 report={report}
                                 index={i}
                                 onSongClick={setSelectedSongId}
+                                onActionsClick={setActionsReportId}
                             />
                         ))}
                     </div>
@@ -159,6 +188,14 @@ export default function Reports() {
                     songId={selectedSongId}
                 />
             )}
+
+            <ReportActionsModal
+                isOpen={actionsReportId !== null}
+                onClose={() => setActionsReportId(null)}
+                reportId={actionsReportId ?? 0}
+                onSuccess={handleReportResolved}
+                
+            />
         </div>
     );
 }

@@ -1,389 +1,169 @@
-/* ===== LOADING / ERROR ===== */
-.loading {
-    text-align: center;
-    padding: 4rem;
-    font-size: 1.2rem;
-    color: var(--text-muted);
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Sans', sans-serif;
-}
-.loading::after {
-    content: '...';
-    animation: ellipsis 1.5s infinite;
-}
-.error {
-    text-align: center;
-    padding: 4rem;
-    font-size: 1.2rem;
-    color: #dc3545;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Sans', sans-serif;
-}
-.error::before {
-    content: '⚠️ ';
-    font-size: 2rem;
-    margin-right: 0.5rem;
-}
+/* ===== About Us Page ===== */
 
-/* ── Page container ── */
-.artist-profile-container {
-    max-width: 1040px;
-    margin: 0 auto;
- 
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text-color);
-}
-
-
-
-.artist-top {
-    display: flex;
-    gap: 2rem;
-    align-items: stretch; 
-    margin-bottom: 2rem;
-}
-
-
-
-.artist-left {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-/* Name + play button on same line */
-.artist-name-row {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    margin-bottom: 0.35rem;
-}
-
-.artist-name {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.6rem, 2.8vw, 2.4rem);
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.1;
-    color: var(--text-color);
-    letter-spacing: -0.02em;
-}
-
-/* ── Circular play button ── */
-.play-circle-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    overflow: hidden;          
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    flex-shrink: 0;
-    background: var(--accent, #e8651a);
-    box-shadow: 0 2px 10px rgba(232, 101, 26, 0.45);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.play-circle-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 16px rgba(232, 101, 26, 0.55);
-}
-.play-circle-img {
+.about-container {
     width: 100%;
-    height: 100%;
-    object-fit: cover;         
-    display: block;
-}
-
-.artist-bio {
-    font-size: 0.95rem;
-    color: var(--text-muted, #666);
-    margin: 0 0 1.4rem;
-    line-height: 1.5;
     font-family: 'DM Sans', sans-serif;
-}
-.dark .artist-bio {
-    color: rgba(255, 210, 150, 0.65);
-}
-
-.artist-right {
-    flex: 0 0 200px;
+    color: var(--text-color);
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    justify-content: flex-start;
-}
-
-.artist-profile-image {
-    width: 190px;
-    height: 190px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
-}
-
-.follow-button {
-    background: var(--accent, #be6b47);
-    color: #fff;
-    border: none;
-    border-radius: 24px;
-    padding: 0.55rem 0.55rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.80rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    width: 70%;
-}
-.follow-button:hover { opacity: 0.85; }
-.follow-button.following {
-    background: transparent;
-    border: 2px solid var(--accent, #e8651a);
-    color: var(--accent, #e8651a);
-}
-
-.artist-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
-}
-.artist-meta span {
-    font-size: 0.82rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text-muted, #666);
-}
-.dark .artist-meta span { color: rgba(255, 210, 150, 0.65); }
-
-
-
-.artist-stats-wrapper {
-    flex: 1;                    
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-
-.stats-heading {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var( #101010);
-    margin: 0;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    font-size: 0.78rem;
-}
-
-.artist-stats-chart {
-    background: var(--accent, #be6b47);
-    border-radius: 16px;
-    padding: 1.4rem 1.6rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem 1.5rem;
-    flex: 1;
-    align-content: space-evenly;
-    width: 80%;
-}
-
-
-.song-stat-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.song-cover {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    object-fit: cover;
-    flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-.song-stat-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.song-title-text {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.play-count {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.play-bar {
-     height: 4px;
-    background: linear-gradient(90deg, #fff 0%, rgba(255, 220, 180, 0.7) 100%);
-    border-radius: 999px;
-    box-shadow: 0 1px 4px rgba(255, 255, 255, 0.25);
-    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    max-width: 100%;
-}
-
-.artist-stats-chart.artist-stats-empty {
-    display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    width: 80%;
+    padding: 2rem 3rem;
 }
 
-.stats-empty-text {
-    color: rgba(255, 255, 255, 0.7);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-style: italic;
-    margin: 0;
-}
-
-
-.artist-bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;   
-    gap: 2.5rem;
-    align-items: start;
-}
-
-
-.artist-section {
-    min-width: 0;
-}
-
-.section-header {
+.about-inner {
+    width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
 }
 
-.section-header h2 {
+/* ── Heading ── */
+.about-heading {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.1rem, 1.5vw, 1.6rem);
+    font-size: 2.6rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--text-color);
-    margin: 0;
+    margin: 0 0 0.3rem;
+    text-align: center;
     position: relative;
     display: inline-block;
 }
 
-.section-header h2::after {
+.about-heading::after {
     content: '';
     display: block;
-    width: 40px;
+    width: 60px;
     height: 3px;
     background: linear-gradient(90deg, #e07b2a, transparent);
     border-radius: 2px;
-    margin-top: 4px;
+    margin: 6px auto 0;
 }
 
-.section-actions { display: flex; gap: 0.75rem; }
+/* ── Description text ── */
+.about-description {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-muted, #555);
+    text-align: center;
+    margin: 1.6rem 0 2.5rem;
+    width: 100%;
+    max-width: 680px;
+}
 
-.see-all-btn {
-    background: none;
-    border: none;
-    color: #e07b2a;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
+.dark .about-description {
+    color: rgba(255, 210, 150, 0.65);
+}
+
+.about-highlight {
+    color: var(--accent, #e07b2a);
     font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    cursor: pointer;
-    padding: 0.3rem 0;
-    position: relative;
-    transition: opacity 0.2s ease;
-    opacity: 0.82;
-}
-.see-all-btn::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 0%;
-    height: 1.5px;
-    background: #e07b2a;
-    transition: width 0.25s ease;
-}
-.see-all-btn:hover { opacity: 1; }
-.see-all-btn:hover::after { width: 100%; }
-
-/* ── Media grid: always 4 cards per row ── */
-.media-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.6rem;
 }
 
-.media-card {
+/* ── Cards row ── */
+.about-cards {
+    display: flex;
+    gap: 0;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-bottom: 2.5rem;
+}
+
+/* ── Individual card ── */
+.about-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.35rem;
-    cursor: pointer;
-    transition: transform 0.25s ease;
-    min-width: 0;
-}
-.media-card:hover { transform: translateY(-3px); }
-
-.media-thumb {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--surface-muted, #ddd);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: box-shadow 0.25s ease;
-}
-.media-card:hover .media-thumb {
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    gap: 0.4rem;
+    flex: 1;
+    max-width: 380px;
 }
 
-.media-thumb img {
+/* ── Avatar with accent ring ── */
+.about-avatar-ring {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, #e07b2a 0%, #f5b27a 100%);
+    box-shadow: 0 4px 20px rgba(224, 123, 42, 0.3);
+    margin-bottom: 0.9rem;
+    flex-shrink: 0;
+}
+
+.about-avatar {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
     object-fit: cover;
     display: block;
-    transition: transform 0.35s ease;
+    background: var(--surface-muted, #ddd);
+    outline: 3px solid var(--bg-color, #fdf6ec);
+    outline-offset: -3px;
 }
-.media-card:hover .media-thumb img { transform: scale(1.07); }
 
-.media-label {
+/* ── Name ── */
+.about-name {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: var(--text-color);
+    margin: 0;
     text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-    transition: color 0.15s ease;
 }
-.media-card:hover .media-label { color: #e07b2a; }
-.dark .media-label { color: #ffeedd; }
+
+/* ── Role ── */
+.about-role {
+    font-size: 0.92rem;
+    color: var(--text-muted, #666);
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    text-align: center;
+}
+
+.dark .about-role {
+    color: rgba(255, 210, 150, 0.55);
+}
+
+/* ── Email wrapper (shows "email: " prefix) ── */
+.about-email-row {
+    font-size: 0.92rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+    text-align: center;
+}
+
+/* ── Email link ── */
+.about-email {
+    font-size: 0.92rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--text-color);
+    text-decoration: none;
+    text-align: center;
+    position: relative;
+    transition: color 0.2s;
+    word-break: break-all;
+}
+
+.about-email:hover {
+    color: var(--accent, #e07b2a);
+}
+
+/* ── Supervisor line ── */
+.about-supervisor {
+    font-size: 1rem;
+    color: var(--text-muted, #666);
+    font-family: 'DM Sans', sans-serif;
+    text-align: center;
+    margin: 0;
+}
+
+.dark .about-supervisor {
+    color: rgba(255, 210, 150, 0.55);
+}
+
+.about-supervisor-name {
+    font-weight: 700;
+    color: var(--text-color);
+}

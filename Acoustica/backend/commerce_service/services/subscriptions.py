@@ -27,100 +27,61 @@ def get_plans():
 def subscribe(user_id, plan_id, auto_renewal, payment_method, amount):
     if payment_method not in ["bank", "card", "online"]:
         logging.error("Invalid payment method")
-        return {"error":"Invalid payment method"},400
-    
+        return {"error": "Invalid payment method"}, 400
+
     if auto_renewal not in ["on", "off"]:
         return {"error": "auto_renewal must be 'on' or 'off'"}, 400
 
     if plan_id is None:
         logging.info("Plan id was not provided")
-        return {"error":"plan_id is needed"},400
+        return {"error": "plan_id is needed"}, 400
 
-    connection=get_db_connection()
+    connection = get_db_connection()
     if connection is None:
-        return {"error":"DB connection failed"},500
+        return {"error": "DB connection failed"}, 500
 
     try:
         with connection:
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(
                     """
-                    SELECT subscription_id 
-                    FROM plan_subscription
-                    WHERE owner_id = %s AND is_active = true
-                    FOR UPDATE
+                    CALL subscribe_user(
+                        %s, %s, %s, %s, %s,
+                        NULL, NULL, NULL, NULL, NULL, NULL
+                    )
                     """,
-                    (user_id,)
+                    (user_id, plan_id, auto_renewal, payment_method, amount)
                 )
-                active_sub = cursor.fetchone()
-                if active_sub:
-                    return {
-                        "error": "This user is already subscribed. Please cancel your existing subscription first"
-                    }, 409
+                result = cursor.fetchone()
 
+        if result["p_error"]:
+            
+            error_statuses = {
+                "already subscribed": 409,
+                "Invalid plan id": 404,
+                "Insufficient amount": 404,
+            }
+            status = next(
+                (code for msg, code in error_statuses.items() if msg in result["p_error"]),
+                400
+            )
+            return {"error": result["p_error"]}, status
 
-                cursor.execute(
-                    """
-                    SELECT plan_id, plan_type, plan_cost, plan_validity, max_members
-                    FROM plan
-                    WHERE plan_id = %s
-                    """,
-                    (plan_id,)
-                )
-                plan = cursor.fetchone()
-                if not plan:
-                    logging.info("Plan id was invalid")
-                    return {"error": "Invalid plan id"}, 404
-                if amount!=plan["plan_cost"]:
-                    logging.info("Insufficient amount for this plan")
-                    return {"error": "Insufficient amount for this plan"}, 404
-                start_date = date.today()
-                end_date = start_date + timedelta(days=plan["plan_validity"])
-
-                cursor.execute(
-                    """
-                    INSERT INTO transaction_history (user_id, transaction_type, amount, payment_method, status)
-                    VALUES (%s, 'subscription', %s, %s, 'completed')
-                    RETURNING transaction_id
-                    """,
-                    (user_id, amount, payment_method)
-                )
-                transaction = cursor.fetchone()
-                transaction_id = transaction["transaction_id"]
-
-                cursor.execute(
-                    """
-                    INSERT INTO plan_subscription (plan_id, owner_id, start_date, end_date, 
-                    transaction_id, auto_renewal_mode,is_active)
-                    VALUES (%s, %s, %s, %s, %s, %s, true)
-                    RETURNING subscription_id
-                    """,
-                    (plan_id, user_id, start_date, end_date, transaction_id, auto_renewal)
-                )
-                subscription = cursor.fetchone()
-                subscription_id = subscription["subscription_id"]
-
-                cursor.execute(
-                    """
-                    UPDATE listener SET listener_type = 'premium'
-                    WHERE listener_id = %s
-                    """,
-                    (user_id,)
-                )
-
-                                
-        create_notification(user_id,
-                                    f"""Your {plan['plan_type']} plan is now active! Enjoy premium access for the next {plan['plan_validity']} days"""
-                                    )
+        create_notification(
+            user_id,
+            f"Your {result['p_plan_type']} plan is now active! "
+            f"Enjoy premium access for the next {(result['p_end_date'] - result['p_start_date']).days} days"
+        )
 
         return {
             "message": "Subscription successful",
-            "subscription_id": subscription_id,
-            "plan_type": plan["plan_type"],
-            "start_date": str(start_date),
-            "end_date": str(end_date),
-            "amount": float(plan["plan_cost"])
+            "subscription_id": result["p_subscription_id"],
+            "plan_type": result["p_plan_type"],
+            "start_date": str(result["p_start_date"]),
+            "end_date": str(result["p_end_date"]),
+            "amount": float(result["p_plan_cost"])
         }, 201
+
     except Exception as e:
         logging.error(f"Subscription failed: {e}")
         return {"error": "Subscription failed"}, 500

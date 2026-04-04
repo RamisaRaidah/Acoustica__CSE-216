@@ -175,6 +175,7 @@ def get_all_reports():
             u.first_name,
             u.last_name,
             u.email,
+            u.profile_picture,
 
             CASE a.asset_type
                 WHEN 'song'     THEN s.title
@@ -232,8 +233,54 @@ def get_all_reports():
             "typed_id":      r["typed_id"],
             "content_title": r["content_title"],
             "cover_picture": storage.generate_signed_url(r["cover_picture"]) if r["cover_picture"] else None,
+            "profile_pic": storage.generate_signed_url(r["profile_picture"])
         })
 
     return {"reports": contents}, 200
+
+
+def get_all_activity_logs():
+    logs = execute_sql(
+        """
+        SELECT
+            al.activity_id,
+            al.date_time,
+            al.activity_details,
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.profile_picture,
+            a.role
+        FROM admin_activity_log al
+        JOIN admin a    ON a.admin_id = al.admin_id
+        JOIN users u    ON u.user_id  = al.admin_id
+        ORDER BY al.date_time DESC
+        """,
+        fetch_all=True
+    )
+
+    contents = []
+    for log in (logs or []):
+        details = log["activity_details"] or {}
+        contents.append({
+            "activity_id":      log["activity_id"],
+            "date_time":        log["date_time"].isoformat(),
+            "admin_first_name": log["first_name"],
+            "admin_last_name":  log["last_name"],
+            "admin_email":      log["email"],
+            "admin_role":       log["role"],
+            "admin_picture":    storage.generate_signed_url(log["profile_picture"]) if log["profile_picture"] else None,
+            "activity":         details.get("activity"),
+            "verdict":          details.get("verdict"),
+            "report_id":        details.get("report_id"),
+            "asset_id":         details.get("asset_id"),
+            "author_id":        details.get("author_id"),
+            "author_note":      details.get("author_note"),
+            "date_reported":    details.get("date_reported"),
+            "admin_note":       details.get("admin_note"),
+        })
+
+    return {"logs": contents}, 200
+
 
 ### Helper functions ###

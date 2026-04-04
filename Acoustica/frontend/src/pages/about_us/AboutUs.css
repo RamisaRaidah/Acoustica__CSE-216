@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ── Container ───────────────────────────────────────────── */
+
+#au-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-color);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+
+.au-header {
+    text-align: center;
+    animation: au-fadein 0.4s ease both;
+}
+
+.au-header h1 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+    position: relative;
+    display: inline-block;
+}
+
+.au-header h1::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 3px;
+    background: linear-gradient(90deg, #e07b2a, transparent);
+    border-radius: 2px;
+    margin: 8px auto 0;
+}
+
+/* ── Description ─────────────────────────────────────────── */
+
+.au-description {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text-color);
+    text-align: center;
+    max-width: 620px;
+    opacity: 0.85;
+    animation: au-fadein 0.45s 0.05s ease both;
+}
+
+.au-description strong {
+    font-weight: 600;
+    color: var(--text-color);
+    opacity: 1;
+}
+
+/* ── Members row ─────────────────────────────────────────── */
+
+.au-members {
+    display: flex;
+    gap: 35rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* ── Member card ─────────────────────────────────────────── */
+
+.au-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    animation: au-fadein 0.5s ease both;
+}
+
+.au-card-img-wrap {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    flex-shrink: 0;
+}
+
+.au-card-img {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    border: 3px solid rgba(224, 123, 42, 0.25);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.au-card-img-ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px dashed rgba(224, 123, 42, 0.18);
+    pointer-events: none;
+    transition: border-color 0.25s ease;
+}
+
+.au-card:hover .au-card-img {
+    border-color: rgba(224, 123, 42, 0.6);
+    transform: scale(1.03);
+}
+
+.au-card:hover .au-card-img-ring {
+    border-color: rgba(224, 123, 42, 0.35);
+}
+
+.au-card-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+}
+
+.au-card-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+}
+
+.au-card-role {
+    font-size: 0.78rem;
+    color: var(--text-muted, #a07850);
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.au-card-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #e07b2a;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.18s, gap 0.18s;
+    border-bottom: 1px solid transparent;
+}
+
+.au-card-email:hover {
+    opacity: 1;
+    border-bottom-color: rgba(224, 123, 42, 0.5);
+    gap: 7px;
+}
+
+/* ── Supervisor ──────────────────────────────────────────── */
+
+.au-supervisor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding-top: 1rem;
+    border-top: 1.5px solid rgba(224, 123, 42, 0.15);
+    width: 100%;
+    max-width: 340px;
+    animation: au-fadein 0.5s 0.25s ease both;
+}
+
+.au-supervisor-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #e07b2a;
+    opacity: 0.75;
+}
+
+.au-supervisor-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+    line-height: 1.3;
+}
+
+.au-supervisor-title {
+    font-size: 0.78rem;
+    color: var(--text-muted, #a07850);
+    font-weight: 400;
+}
+
+/* ── Animation ───────────────────────────────────────────── */
+
+@keyframes au-fadein {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Dark mode ───────────────────────────────────────────── */
+
+.dark .au-card-img {
+    border-color: rgba(224, 123, 42, 0.3);
+}
+
+.dark .au-card-img-ring {
+    border-color: rgba(224, 123, 42, 0.2);
+}
