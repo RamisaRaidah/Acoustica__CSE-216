@@ -43,7 +43,9 @@ import Library from '@/pages/music/library/Library';
 import ArtistProfile from './pages/user/profile/public/ArtistProfile';
 import Discography from '@/pages/user/artist/artist_discography/ArtistDiscography';
 import FamilySharedContents from '@/pages/social/family/FamilySharedContents';
-import Reports from '@/pages/reports/Reports';
+import Reports from '@/pages/reports/reports_/Reports';
+import ActivityLog from '@/pages/reports/activity-log/ActivityLog';
+import AboutUs from '@/pages/about_us/AboutUs';
 
 import DeleteAccount from '@/pages/user/users/delete-account/DeleteAccount';
 import ChangePassword from '@/pages/user/users/change-password/ChangePassword';
@@ -117,7 +119,8 @@ function App() {
           <Route path="/discography" element={<Discography/>}/>
           <Route path="/family/:familyId/shared-contents" element={<FamilySharedContents/>}/>
           <Route path="/reports" element={<Reports/>}/>
-
+          <Route path="/activity-log" element={<ActivityLog/>}/>
+          <Route path="/about-us" element={<AboutUs/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

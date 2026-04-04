@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 /* ── Overlay ─────────────────────────────────────────────── */
 
-.rm-overlay {
+.ram-overlay {
     position: fixed;
     inset: 0;
     z-index: 1000;
@@ -12,49 +12,57 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: rm-fade 0.2s ease both;
+    animation: ram-fade 0.2s ease both;
 }
 
-@keyframes rm-fade {
+@keyframes ram-fade {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
 
 /* ── Modal ───────────────────────────────────────────────── */
 
-.rm-modal {
-    width: min(420px, 90vw);
+.ram-modal {
+    width: min(380px, 90vw);
     background: var(--bg-color, #fff);
     border-radius: 18px;
-    padding: 28px 24px 24px;
+    padding: 24px 22px 22px;
     display: flex;
     flex-direction: column;
     gap: 14px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(224, 123, 42, 0.1);
-    animation: rm-slide 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: ram-slide 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     font-family: 'DM Sans', sans-serif;
 }
 
-@keyframes rm-slide {
-    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+@keyframes ram-slide {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
 
-/* ── Description ─────────────────────────────────────────── */
+/* ── Header ──────────────────────────────────────────────── */
 
-.rm-description {
-    margin: 0;
-    font-size: 0.88rem;
-    font-weight: 400;
+.ram-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ram-gear {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.ram-title {
+    font-size: 0.95rem;
+    font-weight: 700;
     color: var(--text-color, #1a1a1a);
-    line-height: 1.55;
-    text-align: center;
-    opacity: 0.75;
+    letter-spacing: 0.01em;
 }
 
 /* ── Textarea ────────────────────────────────────────────── */
 
-.rm-textarea {
+.ram-textarea {
     width: 100%;
     box-sizing: border-box;
     background: #c97a52;
@@ -71,98 +79,99 @@
     transition: box-shadow 0.18s;
 }
 
-.rm-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.65);
+.ram-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6);
 }
 
-.rm-textarea:focus {
+.ram-textarea:focus {
     box-shadow: 0 0 0 3px rgba(201, 122, 82, 0.35);
-}
-
-/* ── File attach ─────────────────────────────────────────── */
-
-.rm-file-input {
-    display: none;
-}
-
-.rm-file-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-muted, #a07850);
-    cursor: pointer;
-    text-align: center;
-    letter-spacing: 0.02em;
-    transition: color 0.15s;
-}
-
-.rm-file-label:hover {
-    color: #e07b2a;
 }
 
 /* ── Error ───────────────────────────────────────────────── */
 
-.rm-error {
+.ram-error {
     margin: 0;
     font-size: 0.78rem;
     color: #dc3545;
     text-align: center;
 }
 
-/* ── Submit button ───────────────────────────────────────── */
+/* ── Buttons ─────────────────────────────────────────────── */
 
-.rm-submit-btn {
-    align-self: center;
-    padding: 10px 40px;
+.ram-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.ram-btn {
+    flex: 1;
+    padding: 10px 0;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 700;
-    color: #fff;
-    background: #c97a52;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    min-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
-    box-shadow: 0 3px 12px rgba(201, 122, 82, 0.35);
 }
 
-.rm-submit-btn:hover:not(:disabled) {
-    background: #b86840;
-    transform: translateY(-1px);
-    box-shadow: 0 5px 18px rgba(201, 122, 82, 0.45);
+.ram-btn:active:not(:disabled) {
+    transform: scale(0.97);
 }
 
-.rm-submit-btn:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-.rm-submit-btn:disabled {
-    opacity: 0.55;
+.ram-btn:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
+}
+
+.ram-btn--dismiss {
+    background: transparent;
+    color: var(--text-color, #1a1a1a);
+    border: 1.5px solid rgba(122, 92, 58, 0.25);
+}
+
+.ram-btn--dismiss:hover:not(:disabled) {
+    background: rgba(122, 92, 58, 0.07);
+}
+
+.ram-btn--remove {
+    background: #c97a52;
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(201, 122, 82, 0.3);
+}
+
+.ram-btn--remove:hover:not(:disabled) {
+    background: #b86840;
+    box-shadow: 0 5px 16px rgba(201, 122, 82, 0.42);
 }
 
 /* ── Spinner ─────────────────────────────────────────────── */
 
-.rm-spinner {
+.ram-spinner {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
     border: 2px solid rgba(255, 255, 255, 0.35);
     border-top-color: #fff;
     border-radius: 50%;
-    animation: rm-spin 0.7s linear infinite;
+    animation: ram-spin 0.7s linear infinite;
 }
 
-@keyframes rm-spin {
+.ram-btn--dismiss .ram-spinner {
+    border-color: rgba(0, 0, 0, 0.15);
+    border-top-color: #1a1a1a;
+}
+
+@keyframes ram-spin {
     to { transform: rotate(360deg); }
 }
 
 /* ── Dark mode ───────────────────────────────────────────── */
 
-.dark .rm-modal {
+.dark .ram-modal {
     background: var(--bg-color, #1c1410);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(224, 123, 42, 0.12);
 }

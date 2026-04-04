@@ -60,7 +60,8 @@ export default function Sidebar() {
                 {
                     user?.user_type=='admin' &&
                     <>
-                        <div className='sidebar-button' onClick={()=> navigate('/report-approval')}><img src={draft_button_img} className='icon'/>Reports</div>
+                        <div className='sidebar-button' onClick={()=> navigate('/reports')}><img src={draft_button_img} className='icon'/>Reports</div>
+                        <div className='sidebar-button' onClick={()=> navigate('/activity-log')}><img src={discography_button_img} className='icon'/>Activity Log</div> 
                     </>
                 }
             </div>
@@ -68,7 +69,7 @@ export default function Sidebar() {
             <div className='sidebar_navigation_bottom'>
                 <div className='sidebar-button'><img src={report_button_img} className='icon' />Report</div>
                 <div className='sidebar-button' onClick={() => setSettingsOpen(true)}><img src={settings_button_img} className='icon' />Settings</div>
-                <div className='sidebar-button' id='aboutus-button'>About us</div>
+                <div className='sidebar-button' id='aboutus-button' onClick={()=>navigate('/about-us')}>About us</div>
             </div>
 
             <Settings isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />

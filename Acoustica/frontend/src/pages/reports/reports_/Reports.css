@@ -71,7 +71,7 @@
 .rp-table-head,
 .rp-row {
     display: grid;
-    grid-template-columns: 2.5rem 1.8fr 1.4fr 2fr 6rem 9rem 7rem;
+    grid-template-columns: 2.5rem 1.8fr 2fr 1.4fr 6rem 9rem 7rem;
     gap: 1rem;
     align-items: center;
     padding: 0 1rem;
@@ -82,6 +82,18 @@
 .rp-table-head {
     padding-bottom: 0.6rem;
     border-bottom: 1.5px solid rgba(224, 123, 42, 0.18);
+}
+
+.rp-table-head span:nth-child(1) {
+    padding-left: 10px; 
+}
+
+.rp-table-head span:nth-child(2) {
+    padding-left: 54px; 
+}
+
+.rp-table-head span:nth-child(3) {
+    padding-left: 44px;
 }
 
 .rp-table-head span {
@@ -229,10 +241,25 @@
     font-weight: 400;
     color: var(--text-color);
     line-height: 1.55;
-    /* wrap freely, no clamp */
     white-space: normal;
     word-break: break-word;
     opacity: 0.85;
+    cursor: pointer;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: opacity 0.15s;
+}
+
+.rp-note p:hover {
+    opacity: 1;
+}
+
+.rp-note-expanded {
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+    overflow: visible !important;
 }
 
 /* ── Image cell ──────────────────────────────────────────── */

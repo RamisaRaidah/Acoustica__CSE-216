@@ -107,3 +107,9 @@ def get_approval_requests_route(approval_request_id):
 @posts_bp.patch("/api/approval-requests/<approval_request_id>")
 def handle_approval_request_route(approval_request_id):
     return jsonify(f"handle_approval_request {approval_request_id}")
+
+@posts_bp.get("/api/activity-logs")
+@jwt_required()
+def get_all_activity_logs_route():
+    result, status = posts.get_all_activity_logs()
+    return jsonify(result), status

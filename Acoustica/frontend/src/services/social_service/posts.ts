@@ -26,6 +26,7 @@ export interface Report {
     typed_id: number;
     content_title: string | null;
     cover_picture: string | null;
+    profile_pic: string | null;
 }
 
 export interface GetReportsResponse {
@@ -40,6 +41,29 @@ export interface HandleReportPayload {
 export interface HandleReportResponse {
     message: string;
     report_id: number;
+}
+
+
+export interface ActivityLog {
+    activity_id: number;
+    date_time: string;
+    admin_first_name: string;
+    admin_last_name: string;
+    admin_email: string;
+    admin_role: string;
+    admin_picture: string | null;
+    activity: string | null;
+    verdict: string | null;
+    report_id: number | null;
+    asset_id: number | null;
+    author_id: number | null;
+    author_note: string | null;
+    date_reported: string | null;
+    admin_note: string | null;
+}
+
+export interface GetActivityLogsResponse {
+    logs: ActivityLog[];
 }
 
 
@@ -76,4 +100,8 @@ export async function handleUserReport(
 
 export async function getAllReports(): Promise<GetReportsResponse> {
     return api.request('/api/reports');
+}
+
+export async function getAllAdminActivity(): Promise<GetActivityLogsResponse> {
+    return api.request('/api/activity-logs');
 }
