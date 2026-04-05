@@ -85,6 +85,7 @@ function SongGrid({
     const { playSong } = useMusic();
     const navigate = useNavigate();
     const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
+    const { user } = useAuth();
 
     return (
         <div className="ld-song-grid">
@@ -95,7 +96,7 @@ function SongGrid({
                         onClick={() => setSelectedSongId(song.song_id)}
                     >
                         <img src={coverPictures[song.album_id] || default_cover} alt={song.title} />
-                        <div
+                        {user?.user_type === "listener" && <div
                             className="ld-song-play-btn"
                             onClick={e => {
                                 e.stopPropagation();
@@ -103,7 +104,7 @@ function SongGrid({
                             }}
                         >
                             <img src={play_button} alt="play" />
-                        </div>
+                        </div>}
                     </div>
                     <p
                         className="ld-song-title"

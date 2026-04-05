@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { getTrendingSongs, getPopularSongs } from '@/services/analytics_service/analytics';
+import { getArtistTrendingSongs, getArtistPopularSongs } from '@/services/analytics_service/analytics';
 import { getArtistSongs, getArtistCollaborationSongs, GetArtistSongResponse, SongInfo } from '@/services/music_service/songs';
 import { getArtistAlbums, GetArtistAlbumResponse } from '@/services/music_service/albums';
 import '@/pages/user/artist/artist_discography/ArtistDiscography.css';
@@ -123,8 +123,8 @@ function Discography() {
             try {
                 const [popular, trending, artistSongs, artistAlbums, collabSongs] =
                     await Promise.all([
-                        getPopularSongs(),
-                        getTrendingSongs(),
+                        getArtistPopularSongs(artistId),
+                        getArtistTrendingSongs(artistId),
                         getArtistSongs(artistId),
                         getArtistAlbums(artistId),
                         getArtistCollaborationSongs(artistId),

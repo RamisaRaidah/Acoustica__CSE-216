@@ -499,7 +499,7 @@ def is_liked(song_id):
 def get_artist_songs(artist_id):
     songs_sql = """
         SELECT 
-            DISTINCT s.song_id,
+            s.song_id,
             s.title,
             s.play_count,
             al.album_id,

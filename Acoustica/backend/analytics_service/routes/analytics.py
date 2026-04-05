@@ -252,6 +252,20 @@ def get_instrument_recommended_songs_route(instrument_id):
     result, status = analytics.get_instrument_recommended_songs(instrument_id)
     return jsonify(result), status
 
+### get_artist_trending_songs_route ###
+@analytics_bp.get("/api/analytics/artist_trending_songs/<artist_id>")
+@jwt_required()
+def get_artist_trending_songs_route(artist_id):
+    result, status = analytics.get_artist_trending_songs(artist_id)
+    return jsonify(result), status
+
+### get_artist_popular_songs_route ###
+@analytics_bp.get("/api/analytics/artist_popular_songs/<artist_id>")
+@jwt_required()
+def get_artist_popular_songs_route(artist_id):
+    result, status = analytics.get_artist_popular_songs(artist_id)
+    return jsonify(result), status
+
 @analytics_bp.get("/api/analytics/artists/<int:artist_id>/stats")
 @jwt_required()
 def get_artist_stats_route(artist_id):

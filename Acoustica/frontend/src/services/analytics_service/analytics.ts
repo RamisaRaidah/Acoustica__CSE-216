@@ -129,6 +129,14 @@ export async function getInstrumentRecommendedSongs(instrumentId: number): Promi
     return api.request(`/api/analytics/instrument_recommended_songs/${instrumentId}`);
 }
 
+export async function getArtistTrendingSongs(artistId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/artist_trending_songs/${artistId}`);
+}
+
+export async function getArtistPopularSongs(artistId: number): Promise<SongInfo[]> {
+    return api.request(`/api/analytics/artist_popular_songs/${artistId}`);
+}
+
 export async function getArtistStats(artist_id: number): Promise<ArtistStats> {
     return api.request<ArtistStats>(`/api/analytics/artists/${artist_id}/stats`);
 }

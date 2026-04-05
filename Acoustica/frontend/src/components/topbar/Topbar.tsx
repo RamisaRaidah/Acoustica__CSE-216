@@ -91,7 +91,7 @@ export default function ListenerTopbar() {
 
             <div className="topbar_center">
                 <Searchbar prompt={user?.user_type === 'listener' ? 'Explore. Discover. Repeat.' : 'Search...'} song album artist />
-                <div
+                {user?.user_type === "listener" && <div
                     className='topbar-button'
                     onClick={() => {
                         if (user?.listener_type === 'free') {
@@ -102,7 +102,7 @@ export default function ListenerTopbar() {
                     }}
                 >
                     <img src={ai_button_img} className="icon" />
-                </div>
+                </div>}
 
                 {/* AI Popup */}
                 {aiPopupOpen && (
@@ -163,7 +163,7 @@ export default function ListenerTopbar() {
                                             }
                                         }}
                                     >
-                                        <div
+                                        {user?.user_type === "listener" && <div
                                             className="play_button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -173,7 +173,7 @@ export default function ListenerTopbar() {
                                             }}
                                         >
                                             ▶
-                                        </div>
+                                        </div>}
                                         <div className="search_item_text">
                                             <span className="search_item_title">{song.title}</span>
                                             <span

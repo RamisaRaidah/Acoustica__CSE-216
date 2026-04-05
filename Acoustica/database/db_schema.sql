@@ -399,9 +399,3 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
     used BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
-
-
-CREATE UNIQUE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_user_id ON users(user_id);   
-CREATE INDEX idx_listener_listener_id ON listener(listener_id);
-CREATE INDEX idx_artist_artist_id ON artist(artist_id);

@@ -239,28 +239,26 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                         />
                                     </button>
 
-                                    <button id='song-profile-container-add-btn' title='Add to playlist'>
+                                    {/* <button id='song-profile-container-add-btn' title='Add to playlist'>
                                         +
-                                    </button>
-
-                                    {Number(song?.owner_id) !== Number(user?.user_id) && (
-                                        <button
-                                            id='song-profile-container-share-btn'
-                                            title='Share to Family'
-                                            onClick={() => setShareOpen(true)}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" strokeWidth="2.5"
-                                                strokeLinecap="round" strokeLinejoin="round">
-                                                <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" />
-                                                <circle cx="18" cy="19" r="3" />
-                                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                                            </svg>
-                                        </button>
-                                    )}
+                                    </button> */}
 
                                     <button
+                                        id='song-profile-container-share-btn'
+                                        title='Share to Family'
+                                        onClick={() => setShareOpen(true)}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" strokeWidth="2.5"
+                                            strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" />
+                                            <circle cx="18" cy="19" r="3" />
+                                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                                        </svg>
+                                    </button>
+
+                                    {user?.user_type === "listener" && <button
                                         id='song-profile-container-play-btn'
                                         title='Play'
                                         onClick={() => {
@@ -269,7 +267,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                         }}
                                     >
                                         <img id='song-profile-play-btn-img' src={music_play_button} alt="▶" />
-                                    </button>
+                                    </button>}
                                 </div>
                             </div>
                         </div>

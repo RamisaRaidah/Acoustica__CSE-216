@@ -384,6 +384,28 @@ def get_instrument_recommended_songs(instrument_id):
     else:
         return result, 200
     
+### get_artist_trending_songs_ ###
+def get_artist_trending_songs(artist_id):
+    result = execute_sql("SELECT * FROM fn_get_trending_songs(5, NULL, NULL , NULL , NULL,  %s)", (artist_id,), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+
+### get_artist_popular_songs ###
+def get_artist_popular_songs(artist_id):
+    result = execute_sql("SELECT * FROM fn_get_popular_songs(10, NULL, NULL , NULL , NULL, %s)", (artist_id,), fetch_all = True)
+
+    if result is False:
+        return {"error": "couldn't fetch data!"}, 500
+    elif result is None:
+        return [], 200
+    else:
+        return result, 200
+    
 
 ##################### Artist Public Profile page Stats #####################
 def get_artist_stats(artist_id):

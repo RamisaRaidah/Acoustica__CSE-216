@@ -1,15 +1,16 @@
+import '@/pages/user/profile/public/ArtistProfile.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getArtistInfo, GetArtistInfoResponse } from '@/services/user_service/artists';
 import { GetArtistSongResponse, getArtistSongs } from '@/services/music_service/songs';
-import { getArtistAlbums, GetArtistAlbumResponse } from '@/services/music_service/albums';
+import { getArtistAlbums, GetArtistAlbumResponse, getAlbumSongs } from '@/services/music_service/albums';
 import { followArtist } from '@/services/social_service/connections';
 import { useAuth } from '@/contexts/AuthContext';
 import ArtistStatsChart from '@/components/user/artists/ArtistStatsChart.tsx';
-import '@/pages/user/profile/public/ArtistProfile.css';
 import defaultCoverPic from '@/assets/images/music/Default_Cover_Picture.png';
-import playButtonPic from '@/assets/images/music/Play_Button.png';
+import play_button from '@/assets/images/music/Play_Button.png';
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
+import { useMusic } from '@/contexts/MusicContext';
 
 function ArtistProfile() {
     const { artist_id } = useParams<{ artist_id: string }>();
@@ -26,6 +27,7 @@ function ArtistProfile() {
     const [albumsExpanded, setAlbumsExpanded] = useState(false);
 
     const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
+    const { playSong, addToQueue, createQueue } = useMusic();
     
     const navigate = useNavigate();
 
@@ -99,8 +101,8 @@ function ArtistProfile() {
                         <h1 className="artist-name">
                             {artist.stage_name || `${artist.first_name} ${artist.last_name}`}
                         </h1>
-                        <button className="play-circle-btn" aria-label="Play">
-                            <img src={playButtonPic} alt="Play" className="play-circle-img" />
+                        <button className="play-circle-btn" aria-label="Play" onClick={() => createQueue([...songs.map(x => x.song_id)]) }>
+                            <img src={play_button} alt="Play" className="play-circle-img" />
                         </button>
                     </div>
                     <p className="artist-bio">
@@ -148,6 +150,9 @@ function ArtistProfile() {
                             <div key={song.song_id} className="media-card" onClick={() => setSelectedSongId(song.song_id)}>
                                 <div className="media-thumb">
                                     <img src={song.cover_picture_url || defaultCoverPic} alt={song.title} />
+                                    <div className="media-play-btn" onClick={e => { e.stopPropagation(); addToQueue(song.song_id, true); playSong({song_id: song.song_id, progress: 0, playing: true}); }}>
+                                        <img src={play_button} alt="play" />
+                                    </div>
                                 </div>
                                 <span className="media-label">{song.title}</span>
                             </div>
@@ -172,6 +177,17 @@ function ArtistProfile() {
                             <div key={album.album_id} className="media-card" onClick={() => navigate(`/music/albums/${album.album_id}`)}>
                                 <div className="media-thumb">
                                     <img src={album.cover_picture_url || defaultCoverPic} alt={album.title} />
+                                    <div 
+                                        className="media-play-btn" 
+                                        onClick={e => { 
+                                            e.stopPropagation(); 
+                                            getAlbumSongs(album.album_id).then(res => {
+                                                createQueue([...res.map(x => x.song_id)]);
+                                            })
+                                        }}
+                                    >
+                                        <img src={play_button} alt="play" />
+                                    </div>
                                 </div>
                                 <span className="media-label">{album.title}</span>
                             </div>
