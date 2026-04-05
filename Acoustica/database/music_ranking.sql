@@ -1,19 +1,3 @@
--- ============================================================
---  ARTIST FILTER EXTENSION
---  Adds p_artist_id parameter to all 6 functions
---  fn_popular_songs          – raw popular  (+ artist filter)
---  fn_trending_songs         – raw trending (+ artist filter)
---  fn_recommended_songs      – raw rec      (+ artist filter)
---  fn_get_popular_songs      – enriched popular  (SongInfo-compatible)
---  fn_get_trending_songs     – enriched trending (SongInfo-compatible)
---  fn_get_recommended_songs  – enriched rec      (SongInfo-compatible)
--- ============================================================
-
--- ============================================================
--- SECTION 0: SHARED HELPERS
--- ============================================================
-
--- 0.1  fn_base_song_stats  (UPDATED: likes_7d now uses date_time)
 CREATE OR REPLACE FUNCTION fn_base_song_stats()
 RETURNS TABLE (
     song_id             INT,
