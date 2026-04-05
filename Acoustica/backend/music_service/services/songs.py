@@ -506,7 +506,7 @@ def get_artist_songs(artist_id):
             al.cover_picture
         FROM song s
         JOIN album al ON al.album_id = s.album_id
-        WHERE al.owner_id = %s AND al.visibility = 'public'
+        WHERE al.owner_id = %s
         ORDER BY s.play_count DESC
         LIMIT 15
     """

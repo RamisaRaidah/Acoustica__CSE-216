@@ -67,7 +67,6 @@ function App() {
         <Route path="/reset-password" element={<PublicOnlyRoute><ResetPassword/></PublicOnlyRoute>}/>
 
         <Route element={
-          <ProtectedRoute>
             <NotificationProvider>
               <MusicProvider>
                 <AppLoader>
@@ -83,44 +82,52 @@ function App() {
                 </AppLoader>
               </MusicProvider>
             </NotificationProvider>
-          </ProtectedRoute>
+          
         }>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/my-profile" element={<MyProfile />} />
-          <Route path="/sign-out" element={<SignOut />} />
-          <Route path="/update/account" element={<UpdateAccount/>}/>
-          <Route path="/plans" element={<Plans />} />
-          <Route path="/plan-details/:plan_id" element={<PlanDetails />} />
-          <Route path="/checkout/:plan_id" element={<Checkout />} />
-          <Route path="/checkout/success" element={<CheckoutSuccess />} />
-          <Route path="/music/playlists" element={<Playlists />} />
-          <Route path="/music/playlists/:playlist_id" element={<PlaylistProfile />} />
-          <Route path="/music/playlists/:playlist_id/edit" element={<EditPlaylist />} />
-          <Route path="/artists" element={<Artists />} />
-          <Route path="/music/create-album" element={<CreateAlbum />} />
-          <Route path="/music/albums/:album_id" element={<AlbumProfile />} />
-          <Route path="/music/albums/:album_id/edit" element={<EditAlbum />} />
-          <Route path="/music/create-playlist" element={<CreatePlaylist />} />
-          <Route path="/music/upload-song" element={<UploadSong />} />
-          <Route path="/music/songs/:song_id/edit" element={<EditSong />} />
-          <Route path="/cancel-subscription" element={<CancelSubscription />} />
-          <Route path="/cancel/success" element={<CancelSuccess />} />
-          <Route path="/subscription-details" element={<SubscriptionDetails />} />
-          <Route path="/my-family" element={<FamilyManagement />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/explore/genres/:genre_name" element={<GenreProfile />} />
-          <Route path="/explore/moods/:mood_name" element={<MoodProfile />} />
-          <Route path="/explore/languages/:language_name" element={<LanguageProfile />} />
-          <Route path="/explore/instruments/:instrument_name" element={<InstrumentProfile />} />
-          <Route path="/music/library" element={<Library />} />
-          <Route path="/artists/:artist_id" element={<ArtistProfile />} />
-          <Route path="/delete/account" element={<DeleteAccount/>}/>
-          <Route path="/change/password" element={<ChangePassword/>}/>
-          <Route path="/discography" element={<Discography/>}/>
-          <Route path="/family/:familyId/shared-contents" element={<FamilySharedContents/>}/>
-          <Route path="/reports" element={<Reports/>}/>
-          <Route path="/activity-log" element={<ActivityLog/>}/>
-          <Route path="/about-us" element={<AboutUs/>}/>
+        
+            <Route path="/dashboard" element={<ProtectedRoute requireOnboarding={true}><Dashboard /></ProtectedRoute>} />
+            <Route path="/my-profile" element={<ProtectedRoute requireOnboarding={true}><MyProfile /></ProtectedRoute>} />
+            <Route path="/sign-out" element={<ProtectedRoute requireOnboarding={false}><SignOut /></ProtectedRoute>} />
+            <Route path="/update/account" element={<ProtectedRoute requireOnboarding={true}><UpdateAccount /></ProtectedRoute>} />
+            
+            <Route path="/artists" element={<ProtectedRoute requireOnboarding={true}><Artists /></ProtectedRoute>} />
+            <Route path="/artists/:artist_id" element={<ProtectedRoute requireOnboarding={true}><ArtistProfile /></ProtectedRoute>} />
+            <Route path="/delete/account" element={<ProtectedRoute requireOnboarding={true}><DeleteAccount /></ProtectedRoute>} />
+            <Route path="/change/password" element={<ProtectedRoute requireOnboarding={true}><ChangePassword /></ProtectedRoute>} />
+            <Route path="/about-us" element={<ProtectedRoute requireOnboarding={true}><AboutUs /></ProtectedRoute>} />
+
+      
+            <Route path="/plans" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Plans /></ProtectedRoute>} />
+            <Route path="/plan-details/:plan_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><PlanDetails /></ProtectedRoute>} />
+            <Route path="/checkout/:plan_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Checkout /></ProtectedRoute>} />
+            <Route path="/checkout/success" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><CheckoutSuccess /></ProtectedRoute>} />
+            <Route path="/cancel-subscription" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><CancelSubscription /></ProtectedRoute>} />
+            <Route path="/cancel/success" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><CancelSuccess /></ProtectedRoute>} />
+            <Route path="/subscription-details" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><SubscriptionDetails /></ProtectedRoute>} />
+            <Route path="/my-family" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><FamilyManagement /></ProtectedRoute>} />
+            <Route path="/family/:familyId/shared-contents" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><FamilySharedContents /></ProtectedRoute>} />
+            <Route path="/music/library" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Library /></ProtectedRoute>} />
+            <Route path="/music/playlists" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Playlists /></ProtectedRoute>} />
+            <Route path="/music/playlists/:playlist_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><PlaylistProfile /></ProtectedRoute>} />
+            <Route path="/music/playlists/:playlist_id/edit" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><EditPlaylist /></ProtectedRoute>} />
+            <Route path="/music/create-playlist" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><CreatePlaylist /></ProtectedRoute>} />
+            <Route path="/explore" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Explore /></ProtectedRoute>} />
+            <Route path="/explore/genres/:genre_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><GenreProfile /></ProtectedRoute>} />
+            <Route path="/explore/moods/:mood_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><MoodProfile /></ProtectedRoute>} />
+            <Route path="/explore/languages/:language_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><LanguageProfile /></ProtectedRoute>} />
+            <Route path="/explore/instruments/:instrument_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><InstrumentProfile /></ProtectedRoute>} />
+          
+            <Route path="/music/create-album" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><CreateAlbum /></ProtectedRoute>} />
+            <Route path="/music/albums/:album_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><AlbumProfile /></ProtectedRoute>} />
+            <Route path="/music/albums/:album_id/edit" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><EditAlbum /></ProtectedRoute>} />
+            <Route path="/music/upload-song" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><UploadSong /></ProtectedRoute>} />
+            <Route path="/music/songs/:song_id/edit" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><EditSong /></ProtectedRoute>} />
+            <Route path="/discography" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><Discography /></ProtectedRoute>} />
+
+          
+            <Route path="/reports" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["admin"]}><Reports /></ProtectedRoute>} />
+            <Route path="/activity-log" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["admin"]}><ActivityLog /></ProtectedRoute>} />
         </Route>
       </Routes>
     </BrowserRouter>
