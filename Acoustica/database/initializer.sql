@@ -456,3 +456,70 @@ INSERT INTO instrument (instrument_name) VALUES ('Sampler');
 INSERT INTO instrument (instrument_name) VALUES ('MIDI Controller');
 INSERT INTO instrument (instrument_name) VALUES ('Tabla');
 INSERT INTO instrument (instrument_name) VALUES ('Sitar');
+
+-- Plans table
+INSERT INTO "plan" (plan_type, plan_cost, plan_validity, max_members)
+VALUES ('Individual', 2, 30, 1);
+
+INSERT INTO "plan" (plan_type, plan_cost, plan_validity, max_members)
+VALUES ('Family', 8, 30, 5);
+
+-- Admin table
+BEGIN;
+WITH new_user as(
+    INSERT INTO users
+        (user_type,first_name,last_name,email,"password",
+        bio,country_id,language_id,phone_number,gender,
+        date_of_birth,theme,onboarding_done)
+    VALUES ('admin',
+            'Shadman',
+            'Sami',
+            'shadmansami.admin@gmail.com',
+            '$2b$12$30l/Yw8TC0qHAqLjHIrdu./.rn2kV.6XiSQ5naPRw0efErzAYQC5i',
+            'Admin Shadman Sami',
+            14,
+            10,
+            '0100000',
+            'Male',
+            '2003-06-18',
+            'dark',
+            true
+            )
+            RETURNING user_id    
+        )
+
+INSERT INTO admin (admin_id, role)
+SELECT user_id, 'super_admin'
+FROM new_user;
+
+COMMIT;
+
+
+BEGIN;
+WITH new_user as(
+    INSERT INTO users
+        (user_type,first_name,last_name,email,"password",
+        bio,country_id,language_id,phone_number,gender,
+        date_of_birth,theme,onboarding_done)
+    VALUES ('admin',
+            'Ramisa',
+            'Raidah Arana',
+            'ramisaraidah.admin@gmail.com',
+            '$2b$12$iePpT9Ub11EcgFSO/OIfCuc9wlUa9bSZQQjjdH.Gl5jyhgStLLxFO',
+            'Admin Ramisa Raidah',
+            14,
+            10,
+            '0100000',
+            'Female',
+            '2003-10-05',
+            'dark',
+            true
+            )
+            RETURNING user_id    
+        )
+
+INSERT INTO admin (admin_id, role)
+SELECT user_id, 'super_admin'
+FROM new_user;
+
+COMMIT;

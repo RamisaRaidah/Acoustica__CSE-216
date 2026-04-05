@@ -1,20 +1,3 @@
--- ============================================================
---  ARTIST RANKING
---  fn_base_artist_stats      – shared aggregates per artist
---  fn_popular_artist_score   – popular score formula
---  fn_trending_artist_score  – trending score formula
---  fn_popular_artists        – popular artists (raw)
---  fn_trending_artists       – trending artists (raw)
---  fn_get_popular_artists    – enriched popular (ArtistInfo-compatible)
---  fn_get_trending_artists   – enriched trending (ArtistInfo-compatible)
--- ============================================================
-
-
--- ============================================================
--- SECTION 0: SHARED HELPERS
--- ============================================================
-
--- 0.1  fn_base_artist_stats
 CREATE OR REPLACE FUNCTION fn_base_artist_stats()
 RETURNS TABLE (
     artist_id            INT,
@@ -111,7 +94,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- 0.2  fn_popular_artist_score
 CREATE OR REPLACE FUNCTION fn_popular_artist_score(
     p_total_streams    BIGINT,
     p_unique_listeners BIGINT,
@@ -125,7 +107,6 @@ LANGUAGE sql IMMUTABLE AS $$
 $$;
 
 
--- 0.3  fn_trending_artist_score
 CREATE OR REPLACE FUNCTION fn_trending_artist_score(
     norm_streams_7d      NUMERIC,
     norm_growth_rate     NUMERIC,
@@ -143,9 +124,6 @@ LANGUAGE sql IMMUTABLE AS $$
 $$;
 
 
--- ============================================================
--- SECTION 1: fn_popular_artists
--- ============================================================
 CREATE OR REPLACE FUNCTION fn_popular_artists(
     p_limit       INT DEFAULT 50,
     p_genre_id    INT DEFAULT NULL,
@@ -191,9 +169,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- ============================================================
--- SECTION 2: fn_trending_artists
--- ============================================================
 CREATE OR REPLACE FUNCTION fn_trending_artists(
     p_limit       INT DEFAULT 50,
     p_genre_id    INT DEFAULT NULL,
@@ -264,11 +239,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- ============================================================
--- SECTION 3: ENRICHED WRAPPERS (Artist interface-compatible)
--- ============================================================
-
--- 3.1  fn_get_popular_artists
 CREATE OR REPLACE FUNCTION fn_get_popular_artists(
     p_limit       INT DEFAULT 10,
     p_genre_id    INT DEFAULT NULL,
@@ -292,7 +262,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- 3.2  fn_get_trending_artists
 CREATE OR REPLACE FUNCTION fn_get_trending_artists(
     p_limit       INT DEFAULT 10,
     p_genre_id    INT DEFAULT NULL,
@@ -314,23 +283,3 @@ LANGUAGE sql STABLE AS $$
     JOIN users  u  ON u.user_id    = ar.artist_id
     ORDER BY t.trending_score DESC;
 $$;
-
-
--- ============================================================
--- USAGE QUICK REFERENCE
--- ============================================================
-/*
-── Raw ────────────────────────────────────────────────────────
-SELECT * FROM fn_popular_artists(50, NULL, NULL, NULL);
-SELECT * FROM fn_trending_artists(50, NULL, NULL, NULL);
-
-── Enriched ───────────────────────────────────────────────────
-SELECT * FROM fn_get_popular_artists(10, NULL, NULL, NULL);
-SELECT * FROM fn_get_trending_artists(10, NULL, NULL, NULL);
-
-── With filters ───────────────────────────────────────────────
-SELECT * FROM fn_get_popular_artists(10, 3, NULL, NULL);    -- genre 3
-SELECT * FROM fn_get_trending_artists(10, NULL, 2, NULL);   -- mood 2
-SELECT * FROM fn_get_popular_artists(10, NULL, NULL, 1);    -- language 1
-SELECT * FROM fn_get_trending_artists(10, 1, 2, NULL);      -- genre 1 + mood 2
-*/

@@ -47,3 +47,5 @@ CREATE INDEX idx_family_shared_sender ON family_shared_content(sender_id);
 
 CREATE INDEX idx_prt_user_id ON password_reset_tokens(user_id);
 CREATE INDEX idx_prt_unused ON password_reset_tokens(token) WHERE used = FALSE;
+
+CREATE UNIQUE INDEX unique_active_subscription ON plan_subscription(owner_id) WHERE is_active = TRUE;

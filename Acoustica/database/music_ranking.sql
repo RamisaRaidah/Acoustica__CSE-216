@@ -1,19 +1,3 @@
--- ============================================================
---  ARTIST FILTER EXTENSION
---  Adds p_artist_id parameter to all 6 functions
---  fn_popular_songs          – raw popular  (+ artist filter)
---  fn_trending_songs         – raw trending (+ artist filter)
---  fn_recommended_songs      – raw rec      (+ artist filter)
---  fn_get_popular_songs      – enriched popular  (SongInfo-compatible)
---  fn_get_trending_songs     – enriched trending (SongInfo-compatible)
---  fn_get_recommended_songs  – enriched rec      (SongInfo-compatible)
--- ============================================================
-
--- ============================================================
--- SECTION 0: SHARED HELPERS
--- ============================================================
-
--- 0.1  fn_base_song_stats  (UPDATED: likes_7d now uses date_time)
 CREATE OR REPLACE FUNCTION fn_base_song_stats()
 RETURNS TABLE (
     song_id             INT,
@@ -52,7 +36,6 @@ LANGUAGE sql STABLE AS $$
         GROUP BY ps.song_id
     ),
     likes AS (
-        -- previously all-time; now correctly scoped to last 7 days
         SELECT  ls.song_id,
                 COUNT(*) AS likes_7d
         FROM    liked_song ls
@@ -91,7 +74,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- 0.2  Popular score
 CREATE OR REPLACE FUNCTION fn_popular_score(
     p_total_streams    BIGINT,
     p_unique_listeners BIGINT
@@ -103,7 +85,6 @@ LANGUAGE sql IMMUTABLE AS $$
 $$;
 
 
--- 0.3  Trending score
 CREATE OR REPLACE FUNCTION fn_trending_score(
     norm_streams_7d  NUMERIC,
     norm_growth_rate NUMERIC,
@@ -121,7 +102,6 @@ LANGUAGE sql IMMUTABLE AS $$
 $$;
 
 
--- 0.4  Combined recommendation score
 CREATE OR REPLACE FUNCTION fn_combined_score(
     p_popular_score  NUMERIC,
     p_trending_score NUMERIC,
@@ -134,16 +114,13 @@ LANGUAGE sql IMMUTABLE AS $$
           + 0.3 * p_similarity;
 $$;
 
--- ============================================================
--- SECTION 1: fn_popular_songs
--- ============================================================
 CREATE OR REPLACE FUNCTION fn_popular_songs(
     p_limit         INT DEFAULT 50,
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
     p_instrument_id INT DEFAULT NULL,
-    p_artist_id     INT DEFAULT NULL        -- NEW
+    p_artist_id     INT DEFAULT NULL        
 )
 RETURNS TABLE (
     song_id          INT,
@@ -179,16 +156,13 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- ============================================================
--- SECTION 2: fn_trending_songs
--- ============================================================
 CREATE OR REPLACE FUNCTION fn_trending_songs(
     p_limit         INT DEFAULT 50,
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
     p_instrument_id INT DEFAULT NULL,
-    p_artist_id     INT DEFAULT NULL        -- NEW
+    p_artist_id     INT DEFAULT NULL        
 )
 RETURNS TABLE (
     song_id         INT,
@@ -221,7 +195,7 @@ LANGUAGE sql STABLE AS $$
         AND    (p_instrument_id IS NULL OR EXISTS (
                     SELECT 1 FROM song_instrument si
                     WHERE  si.song_id = s.song_id AND si.instrument_id = p_instrument_id))
-        AND    (p_artist_id     IS NULL OR EXISTS (    -- NEW
+        AND    (p_artist_id     IS NULL OR EXISTS (    
                     SELECT 1 FROM song_artist sa
                     WHERE  sa.song_id = s.song_id AND sa.artist_id = p_artist_id))
     ),
@@ -253,9 +227,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- ============================================================
--- SECTION 3: fn_recommended_songs
--- ============================================================
 CREATE OR REPLACE FUNCTION fn_recommended_songs(
     p_user_id       INT,
     p_limit         INT DEFAULT 50,
@@ -263,7 +234,7 @@ CREATE OR REPLACE FUNCTION fn_recommended_songs(
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
     p_instrument_id INT DEFAULT NULL,
-    p_artist_id     INT DEFAULT NULL        -- NEW
+    p_artist_id     INT DEFAULT NULL        
 )
 RETURNS TABLE (
     song_id   INT,
@@ -333,11 +304,10 @@ BEGIN
         AND    (p_instrument_id IS NULL OR EXISTS (
                     SELECT 1 FROM song_instrument si
                     WHERE  si.song_id = s.song_id AND si.instrument_id = p_instrument_id))
-        AND    (p_artist_id     IS NULL OR EXISTS (    -- NEW
+        AND    (p_artist_id     IS NULL OR EXISTS (    
                     SELECT 1 FROM song_artist sa
                     WHERE  sa.song_id = s.song_id AND sa.artist_id = p_artist_id))
     ),
-    -- rest of buckets unchanged from here ...
     user_liked_artists AS (
         SELECT DISTINCT sa.artist_id
         FROM   liked_song ls
@@ -483,18 +453,13 @@ END;
 $$;
 
 
--- ============================================================
--- SECTION 4: ENRICHED WRAPPERS (SongInfo-compatible)
--- ============================================================
-
--- 4.1  fn_get_popular_songs
 CREATE OR REPLACE FUNCTION fn_get_popular_songs(
     p_limit         INT DEFAULT 10,
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
     p_instrument_id INT DEFAULT NULL,
-    p_artist_id     INT DEFAULT NULL        -- NEW
+    p_artist_id     INT DEFAULT NULL        
 )
 RETURNS TABLE (
     song_id      INT,
@@ -531,14 +496,13 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- 4.2  fn_get_trending_songs
 CREATE OR REPLACE FUNCTION fn_get_trending_songs(
     p_limit         INT DEFAULT 10,
     p_genre_id      INT DEFAULT NULL,
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
     p_instrument_id INT DEFAULT NULL,
-    p_artist_id     INT DEFAULT NULL        -- NEW
+    p_artist_id     INT DEFAULT NULL        
 )
 RETURNS TABLE (
     song_id      INT,
@@ -575,7 +539,6 @@ LANGUAGE sql STABLE AS $$
 $$;
 
 
--- 4.3  fn_get_recommended_songs
 CREATE OR REPLACE FUNCTION fn_get_recommended_songs(
     p_user_id       INT,
     p_limit         INT DEFAULT 50,
@@ -583,7 +546,7 @@ CREATE OR REPLACE FUNCTION fn_get_recommended_songs(
     p_mood_id       INT DEFAULT NULL,
     p_language_id   INT DEFAULT NULL,
     p_instrument_id INT DEFAULT NULL,
-    p_artist_id     INT DEFAULT NULL        -- NEW
+    p_artist_id     INT DEFAULT NULL        
 )
 RETURNS TABLE (
     song_id      INT,
@@ -618,23 +581,3 @@ LANGUAGE sql STABLE AS $$
     JOIN artist   ar ON ar.artist_id  = a.owner_id
     ORDER BY r.rec_score DESC;
 $$;
-
-
--- ============================================================
--- USAGE QUICK REFERENCE
--- ============================================================
-/*
-── By artist (raw) ────────────────────────────────────────────
-SELECT * FROM fn_popular_songs(50, NULL, NULL, NULL, NULL, 3);
-SELECT * FROM fn_trending_songs(50, NULL, NULL, NULL, NULL, 3);
-SELECT * FROM fn_recommended_songs(7, 50, NULL, NULL, NULL, NULL, 3);
-
-── By artist (enriched) ───────────────────────────────────────
-SELECT * FROM fn_get_popular_songs(10, NULL, NULL, NULL, NULL, 3);
-SELECT * FROM fn_get_trending_songs(10, NULL, NULL, NULL, NULL, 3);
-SELECT * FROM fn_get_recommended_songs(7, 50, NULL, NULL, NULL, NULL, 3);
-
-── Combined filters ───────────────────────────────────────────
-SELECT * FROM fn_get_trending_songs(10, 2, NULL, NULL, NULL, 3); -- genre 2 + artist 3
-SELECT * FROM fn_get_popular_songs(10, NULL, 1, NULL, NULL, 5);  -- mood 1 + artist 5
-*/
