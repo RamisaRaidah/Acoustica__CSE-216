@@ -47,7 +47,7 @@ export default function AboutUs() {
             </div>
 
             <p className="au-description">
-                This web application is developed as our term project for CSE 216: DBMS Session course in Level-2, Term-1, 
+                This web application is developed as our term project for <p><b>CSE 216: DBMS Sessional</b></p> course in Term-1 Level-2,  
                 using Flask for backend, React and Typescript for frontend, PostgreSQL for database and cloud services.  
                 Please feel free to reach out to us if you have any queries.
             </p>

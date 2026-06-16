@@ -1,5 +1,5 @@
 import '@/pages/user/dashboard/Dashboard.css';
-import banner_img from '@/assets/images/deco/Banner2.png';
+import banner_img from '@/assets/images/deco/Banner2.jpg';
 import default_cover from '@/assets/images/music/Default_Cover_Picture.png';
 import default_profile_picture from '@/assets/images/Default_pfp.png';
 import play_button from '@/assets/images/music/Play_Button.png';
