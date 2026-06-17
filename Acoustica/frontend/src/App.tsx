@@ -108,11 +108,13 @@ function App() {
             <Route path="/subscription-details" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><SubscriptionDetails /></ProtectedRoute>} />
             <Route path="/my-family" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><FamilyManagement /></ProtectedRoute>} />
             <Route path="/family/:familyId/shared-contents" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><FamilySharedContents /></ProtectedRoute>} />
+            
             <Route path="/music/library" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Library /></ProtectedRoute>} />
             <Route path="/music/playlists" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Playlists /></ProtectedRoute>} />
             <Route path="/music/playlists/:playlist_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><PlaylistProfile /></ProtectedRoute>} />
             <Route path="/music/playlists/:playlist_id/edit" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><EditPlaylist /></ProtectedRoute>} />
             <Route path="/music/create-playlist" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><CreatePlaylist /></ProtectedRoute>} />
+            
             <Route path="/explore" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><Explore /></ProtectedRoute>} />
             <Route path="/explore/genres/:genre_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><GenreProfile /></ProtectedRoute>} />
             <Route path="/explore/moods/:mood_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><MoodProfile /></ProtectedRoute>} />
@@ -120,7 +122,7 @@ function App() {
             <Route path="/explore/instruments/:instrument_name" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener"]}><InstrumentProfile /></ProtectedRoute>} />
           
             <Route path="/music/create-album" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><CreateAlbum /></ProtectedRoute>} />
-            <Route path="/music/albums/:album_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><AlbumProfile /></ProtectedRoute>} />
+            <Route path="/music/albums/:album_id" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["listener", "artist"]}><AlbumProfile /></ProtectedRoute>} />
             <Route path="/music/albums/:album_id/edit" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><EditAlbum /></ProtectedRoute>} />
             <Route path="/music/upload-song" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><UploadSong /></ProtectedRoute>} />
             <Route path="/music/songs/:song_id/edit" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["artist"]}><EditSong /></ProtectedRoute>} />

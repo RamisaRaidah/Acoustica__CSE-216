@@ -244,22 +244,13 @@ export default function MusicPlayer() {
     return (
         <div id="music-player-container">
             <div id="fullscreen-overlay" style={{ display: isFullScreen ? 'flex' : 'none' }}>
-                <div id="overlay-left">
-                    <div id="cd-container" className={song_play_status?.playing ? 'cd-spinning' : ''}>
-                        <div id="cd-disc">
-                            <img src={cover_picture_url ?? ''} id="cd-cover-img" />
-                            <div id="cd-hole"></div>
-                        </div>
-                    </div>
-                </div>
-                <div id="overlay-right">
-                    <div id="overlay-song-name">{song?.title}</div>
-                    <div id="overlay-album-name">{song?.album_title}</div>
-                    <div id="overlay-artist-name">{song?.owner_name}</div>
+                <img src={cover_picture_url ?? ''} id="fullscreen-bg-cover" />
+                <div id="fullscreen-cover-frame">
+                    <img src={cover_picture_url ?? ''} id="fullscreen-cover-img" />
                 </div>
             </div>
 
-            <div id="music-player" style={{ left: isFullScreen ? '0vw' : '18vw', width: isFullScreen ? '100%' : '82vw' }}>
+            <div id="music-player" className={isFullScreen ? 'music_player_fullscreen' : ''} style={{ left: isFullScreen ? '0vw' : '18vw', width: isFullScreen ? '100%' : '82vw' }}>
                 <audio ref={audioRef} src={song_url ?? ""} className="audio" />
 
                 <img
@@ -306,7 +297,7 @@ export default function MusicPlayer() {
                             onClick={updateTimeFromDrag as any}
                             onMouseDown={handleMouseDown}
                         >
-                            <div className="progress_track">
+                            <div className={isFullScreen ? "progress_track_fullscreen" : "progress_track"}>
                                 <div className="progress_bar" ref={progressBarRef} style={{ width: progressWidth }}>
                                     <div className="progress_knob"></div>
                                 </div>

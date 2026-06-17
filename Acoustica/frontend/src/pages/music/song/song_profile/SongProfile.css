@@ -53,21 +53,26 @@
     background: var(--bg-color, #fff);
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
+    max-width: 690px;
     width: 100%;
     height: 60vh;
     overflow-y: auto;
     padding: 2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2.8rem;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-areas:
+        "top top"
+        "collaborators metadata";
+    gap: 1.7rem 2rem;
     margin: 0 auto;
     font-family: 'DM Sans', sans-serif;
     color: var(--text-color, #1a1a1a);
-    align-items: flex-start;
+    align-items: start;
 }
 
 #song-profile-container.centered {
+    display: flex;
+    max-width: 500px;
     align-items: center;
     justify-content: center;
     min-height: 200px;
@@ -98,13 +103,12 @@
 #song-profile-container-left {
     flex: unset;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
+    display: contents;
 }
 
 /* ── Top card: cover + info ── */
 #song-profile-container-left-top {
+    grid-area: top;
     display: flex;
     gap: 1.25rem;
     align-items: flex-start;
@@ -125,23 +129,27 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.4s ease;
-}
-#song-profile-container-cover-picture-container:hover #song-profile-container-cover-picture {
-    transform: scale(1.06);
 }
 
 /* ── Song info block ── */
 #song-profile-container-song-info {
     flex: 1;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    display: grid;
+    grid-template-columns: auto auto auto minmax(1rem, 1fr) auto;
+    grid-template-areas:
+        "title title title title title"
+        "owner owner owner owner play"
+        "album album album album play"
+        "length like share spacer play";
+    column-gap: 0.55rem;
+    row-gap: 0.2rem;
+    align-items: center;
     padding-top: 0.1rem;
 }
 
 #song-profile-container-song-title {
+    grid-area: title;
     font-family: 'Playfair Display', serif;
     font-size: clamp(1.3rem, 2.2vw, 1.75rem);
     font-weight: 800;
@@ -163,6 +171,7 @@
 }
 
 #song-profile-container-owner-name {
+    grid-area: owner;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.88rem;
     font-weight: 600;
@@ -192,6 +201,7 @@
 }
 
 #song-profile-container-album-title {
+    grid-area: album;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.82rem;
     color: var(--text-muted, #777);
@@ -222,6 +232,7 @@
 }
 
 #song-profile-container-length {
+    grid-area: length;
     font-family: 'DM Mono', 'Courier New', monospace;
     font-size: 0.85rem;
     font-weight: 600;
@@ -235,14 +246,12 @@
 
 /* ── Action buttons row ── */
 #song-profile-container-song-buttons {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    margin-top: 0.6rem;
+    display: contents;
 }
 
 #song-profile-container-like-btn,
 #song-profile-container-add-btn,
+#song-profile-container-share-btn,
 #song-profile-container-play-btn {
     border: none;
     cursor: pointer;
@@ -253,14 +262,16 @@
 }
 
 #song-profile-container-like-btn {
+    grid-area: like;
     background: none;
     padding: 0;
     width: 32px;
     height: 32px;
+    border-radius: 50%;
 }
 #like-button {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
     transition: transform 0.2s ease;
 }
@@ -291,6 +302,8 @@
 }
 
 #song-profile-container-play-btn {
+    grid-area: play;
+    justify-self: end;
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -316,12 +329,13 @@
 
 /* ── Collaborators card ── */
 #song-profile-container-collaborators-card {
-    background: var(--accent, #be6b47);
-    border-radius: 16px;
-    padding: 1.2rem 1.4rem;
+    grid-area: collaborators;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 0.95rem;
 }
 
 #song-profile-container-collaborator-header {
@@ -333,8 +347,8 @@
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
     font-weight: 700;
-    color: #fff;
-    letter-spacing: 0.01em;
+    color: var(--text-color, #1a1a1a);
+    letter-spacing: -0.01em;
     position: relative;
     display: inline-block;
     padding-bottom: 0.25rem;
@@ -344,27 +358,32 @@
     display: block;
     width: 28px;
     height: 2.5px;
-    background: rgba(255, 255, 255, 0.45);
+    background: linear-gradient(90deg, var(--accent, #e8651a), transparent);
     border-radius: 2px;
     margin-top: 4px;
 }
 
 #song-profile-container-show-all-btn {
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(232, 101, 26, 0.08);
+    border: 1px solid rgba(232, 101, 26, 0.22);
     border-radius: 20px;
     padding: 0.25rem 0.75rem;
     font-family: 'DM Sans', sans-serif;
     font-size: 0.72rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--accent, #e8651a);
     cursor: pointer;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
 }
 #song-profile-container-show-all-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(232, 101, 26, 0.14);
+    border-color: rgba(232, 101, 26, 0.4);
+}
+
+.song-profile-container-collaborator-name :hover{
+    opacity: 0.75;
 }
 
 .song-profile-container-collaborator-group {
@@ -379,7 +398,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-muted, #777);
     position: relative;
     display: inline-block;
     padding-bottom: 0.2rem;
@@ -389,7 +408,7 @@
     display: block;
     width: 100%;
     height: 1px;
-    background: rgba(255,255,255,0.25);
+    background: var(--border-color, rgba(0, 0, 0, 0.1));
     margin-top: 3px;
 }
 
@@ -404,22 +423,23 @@
     height: 34px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.35);
+    border: 2px solid rgba(232, 101, 26, 0.28);
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.16);
 }
 
 .song-profile-container-collaborator-name {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.88rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--text-color, #1a1a1a);
 }
 
 /* ══════════════════════════════════════
    RIGHT COLUMN
 ══════════════════════════════════════ */
 #song-profile-container-right {
+    grid-area: metadata;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -629,17 +649,27 @@
 /* ── Responsive ── */
 @media (max-width: 680px) {
     #song-profile-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        max-width: 500px;
+    }
+
+    #song-profile-container-left {
+        display: flex;
+        flex-direction: column;
         gap: 1.2rem;
     }
 }
 
 
 #song-profile-container-share-btn {
+    grid-area: share;
     background: none;
     border: none;
     padding: 0;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;

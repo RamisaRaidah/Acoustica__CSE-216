@@ -67,117 +67,48 @@
   top: 0;
   width: 100vw;
   height: 88vh;
-  background: linear-gradient(135deg,
-      rgb(255, 230, 213) 0%,
-      rgb(247, 165, 106) 50%,
-      rgba(255, 138, 60) 100%);
+  background: #fbf8f0;
   z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6vw;
+  overflow: hidden;
 }
 
-#overlay-left {
+#fullscreen-bg-cover {
+  position: absolute;
+  top: -6vh;
+  left: -6vw;
+  width: 112vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(2vw);
+  /* opacity: 0.5; */
+  transform: scale(1.08);
+  display: block;
+  pointer-events: none;
+}
+
+#fullscreen-cover-frame {
+  position: relative;
+  width: min(38vw, 71vh);
+  height: min(38vw, 71vh);
+  border-radius: 1.2vw;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 1.5vh 5vh rgba(0, 0, 0, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-#cd-container {
-  width: 38vw;
-  height: 38vw;
-  max-width: 520px;
-  max-height: 520px;
-}
-
-.cd-spinning {
-  animation: cd-rotate 20s linear infinite;
-}
-
-@keyframes cd-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-#cd-disc {
+#fullscreen-cover-img {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%,
-      #1a1a1a 0%,
-      #1a1a1a 12%,
-      #2a2a2a 12.5%,
-      #111 14%,
-      #fff 14.5%,
-      #fff 60%,
-      #e8e8e8 60.5%,
-      #ccc 62%,
-      #ddd 63%,
-      #aaa 100%);
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 2px rgba(0, 0, 0, 0.3),
-    0 8px 40px rgba(0, 0, 0, 0.5),
-    inset 0 0 30px rgba(0, 0, 0, 0.15);
-}
-
-#cd-cover-img {
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  width: 90%;
-  height: 90%;
-  border-radius: 50%;
   object-fit: cover;
+  object-position: center;
   display: block;
-}
-
-#cd-hole {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 12%;
-  height: 12%;
-  border-radius: 50%;
-  background: #1a1a1a;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-  z-index: 2;
-}
-
-#overlay-right {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1.2vh;
-  max-width: 30vw;
-}
-
-#overlay-song-name {
-  font-size: clamp(2rem, 4vw, 5rem);
-  font-weight: 700;
-  color: #fff8f0;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-}
-
-#overlay-album-name {
-  font-size: clamp(1rem, 1.8vw, 2rem);
-  font-weight: 500;
-  color: rgba(255, 235, 200, 0.8);
-}
-
-#overlay-artist-name {
-  font-size: clamp(1rem, 1.8vw, 2rem);
-  font-weight: 500;
-  color: rgba(255, 235, 200, 0.75);
 }
 
 #music-player {
@@ -207,6 +138,12 @@
   padding: 0 2.2vw;
   box-sizing: border-box;
   z-index: 1000;
+}
+
+#music-player.music_player_fullscreen {
+  background: #000;
+  border-top: 0.15vh solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
 }
 
 .music_player::before {
@@ -338,6 +275,17 @@
   background: rgba(0, 0, 0, 0.15);
   border-radius: 1vh;
   box-shadow: inset 0 0 0.5vh rgba(0, 0, 0, 0.2);
+  overflow: visible;
+  position: relative;
+  transition: height 0.2s ease;
+}
+
+.progress_track_fullscreen {
+  width: 100%;
+  height: 0.35vh;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 1vh;
+  box-shadow: inset 0 0 0.5vh rgba(255, 255, 255, 0.861);
   overflow: visible;
   position: relative;
   transition: height 0.2s ease;
