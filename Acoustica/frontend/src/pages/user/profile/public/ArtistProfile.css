@@ -219,13 +219,51 @@
     gap: 0.75rem;
 }
 
-.song-cover {
+.song-cover-wrapper {
+    position: relative;
     width: 48px;
     height: 48px;
     border-radius: 8px;
-    object-fit: cover;
+    overflow: hidden;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.song-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.song-cover-wrapper:hover .song-cover {
+    transform: scale(1.05);
+    filter: brightness(0.65);
+}
+
+.song-cover-wrapper .song-play-btn {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+.song-cover-wrapper:hover .song-play-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.song-cover-wrapper .song-play-btn img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
 }
 
 .song-stat-info {
@@ -244,6 +282,13 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.song-title-text:hover {
+    color: #ffd296 !important;
+    text-decoration: underline;
 }
 
 .play-count {

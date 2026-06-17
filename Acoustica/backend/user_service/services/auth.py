@@ -57,8 +57,8 @@ def sign_up(data):
             with connection.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(
                     """
-                    INSERT INTO users (email,password,first_name,last_name,user_type)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO users (email,password,first_name,last_name,user_type,created_at)
+                    VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
                     RETURNING user_id, user_type
                     """, (email,hashed_password,first_name,last_name,user_type)
                 )

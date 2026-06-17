@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getArtistStats } from '@/services/analytics_service/analytics';
 import defaultCoverPic from '@/assets/images/music/Default_Cover_Picture.png';
+import playButtonImg from '@/assets/images/music/Play_Button.png';
+import SongProfile from '@/pages/music/song/song_profile/SongProfile';
+import { useMusic } from '@/contexts/MusicContext';
 
 interface TopSong {
     song_id: number;
@@ -21,6 +24,8 @@ interface Props {
 
 function ArtistStatsChart({ artist_id }: Props) {
     const [stats, setStats] = useState<StatsData | null>(null);
+    const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
+    const { playSong, addToQueue } = useMusic();
 
     useEffect(() => {
         loadStats();
@@ -54,13 +59,26 @@ function ArtistStatsChart({ artist_id }: Props) {
             <div className="artist-stats-chart" data-rows={rowCount}>
                 {stats.top_songs.map((song) => (
                     <div key={song.song_id} className="song-stat-item">
-                        <img
-                            src={song.cover_picture_url || defaultCoverPic}
-                            alt={song.title}
-                            className="song-cover"
-                        />
+                        <div 
+                            className="song-cover-wrapper"
+                            onClick={() => { 
+                                addToQueue(song.song_id, true); 
+                                playSong({song_id: song.song_id, progress: 0, playing: true}); 
+                            }}
+                        >
+                            <img
+                                src={song.cover_picture_url || defaultCoverPic}
+                                alt={song.title}
+                                className="song-cover"
+                            />
+                            <div className="song-play-btn">
+                                <img src={playButtonImg} alt="play" />
+                            </div>
+                        </div>
                         <div className="song-stat-info">
-                            <span className="song-title-text">{song.title}</span>
+                            <span className="song-title-text" onClick={() => setSelectedSongId(song.song_id)}>
+                                {song.title}
+                            </span>
                             <span className="play-count">{song.play_count} {song.play_count === 1 ? 'listen' : 'listens'}</span>
                             <div
                                 className="play-bar"
@@ -70,6 +88,13 @@ function ArtistStatsChart({ artist_id }: Props) {
                     </div>
                 ))}
             </div>
+            {selectedSongId && (
+                <SongProfile
+                    isOpen={true}
+                    onClose={() => setSelectedSongId(null)}
+                    songId={selectedSongId}
+                />
+            )}
         </div>
     );
 }

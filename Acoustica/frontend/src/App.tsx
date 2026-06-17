@@ -45,6 +45,7 @@ import Discography from '@/pages/user/artist/artist_discography/ArtistDiscograph
 import FamilySharedContents from '@/pages/social/family/FamilySharedContents';
 import Reports from '@/pages/reports/reports_/Reports';
 import ActivityLog from '@/pages/reports/activity-log/ActivityLog';
+import AdminAnalytics from '@/pages/user/analytics/Admin_analytics';
 import AboutUs from '@/pages/about_us/AboutUs';
 
 import DeleteAccount from '@/pages/user/users/delete-account/DeleteAccount';
@@ -128,6 +129,7 @@ function App() {
           
             <Route path="/reports" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["admin"]}><Reports /></ProtectedRoute>} />
             <Route path="/activity-log" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["admin"]}><ActivityLog /></ProtectedRoute>} />
+            <Route path="/admin-analytics" element={<ProtectedRoute requireOnboarding={true} allowedRoles={["admin"]}><AdminAnalytics /></ProtectedRoute>} />
         </Route>
       </Routes>
     </BrowserRouter>
