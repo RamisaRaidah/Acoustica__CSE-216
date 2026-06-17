@@ -87,7 +87,8 @@ CREATE TABLE IF NOT EXISTS "users" (
   gender TEXT,
   date_of_birth DATE,
   theme theme_enum DEFAULT 'light',
-  onboarding_done BOOLEAN DEFAULT FALSE
+  onboarding_done BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "listener" (

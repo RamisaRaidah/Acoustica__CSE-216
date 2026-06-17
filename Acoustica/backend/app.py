@@ -12,7 +12,7 @@ from user_service.routes import auth, users, listeners, artists, admins, notific
 from music_service.routes import songs, albums, playlists
 from commerce_service.routes import subscriptions, transactions, shop
 from social_service.routes import activities, posts, social, connections
-from analytics_service.routes import analytics
+from analytics_service.routes import analytics, admin_analytics
 from storage_service.routes import storage
 
 load_dotenv()
@@ -47,6 +47,7 @@ app.register_blueprint(activities.activities_bp)
 app.register_blueprint(admins.admins_bp)
 app.register_blueprint(albums.albums_bp)
 app.register_blueprint(analytics.analytics_bp)
+app.register_blueprint(admin_analytics.admin_analytics_bp)
 app.register_blueprint(artists.artists_bp)
 app.register_blueprint(auth.auth_bp)
 app.register_blueprint(listeners.listeners_bp)

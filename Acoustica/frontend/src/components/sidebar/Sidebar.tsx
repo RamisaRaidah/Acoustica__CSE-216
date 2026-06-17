@@ -64,6 +64,7 @@ export default function Sidebar() {
                     <>
                         <div className='sidebar-button' onClick={()=> navigate('/reports')}><img src={draft_button_img} className='icon'/>Reports</div>
                         <div className='sidebar-button' onClick={()=> navigate('/activity-log')}><img src={discography_button_img} className='icon'/>Activity Log</div> 
+                        <div className='sidebar-button' onClick={()=> navigate('/admin-analytics')}><img src={approval_status_button_img} className='icon'/>Analytics</div>
                     </>
                 }
             </div>
