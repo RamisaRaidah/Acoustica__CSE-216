@@ -239,11 +239,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                         />
                                     </button>
 
-                                    {/* <button id='song-profile-container-add-btn' title='Add to playlist'>
-                                        +
-                                    </button> */}
-
-                                    <button
+                                    {user?.user_type === "listener" && <button
                                         id='song-profile-container-share-btn'
                                         title='Share to Family'
                                         onClick={() => setShareOpen(true)}
@@ -256,7 +252,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                             <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                                             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                                         </svg>
-                                    </button>
+                                    </button>}
 
                                     {user?.user_type === "listener" && <button
                                         id='song-profile-container-play-btn'
@@ -296,7 +292,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                                 src={collaborator_pfps[c.artist_id] || default_pfp}
                                                 alt={c.artist_name}
                                             />
-                                            <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
+                                            <span className='song-profile-container-collaborator-name' onClick={() => navigate(`/artists/${c.artist_id}`)}>{c.artist_name}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -312,7 +308,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                                 src={collaborator_pfps[c.artist_id] || default_pfp}
                                                 alt={c.artist_name}
                                             />
-                                            <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
+                                            <span className='song-profile-container-collaborator-name' onClick={() => navigate(`/artists/${c.artist_id}`)}>{c.artist_name}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -328,7 +324,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                                 src={collaborator_pfps[c.artist_id] || default_pfp}
                                                 alt={c.artist_name}
                                             />
-                                            <span className='song-profile-container-collaborator-name'>{c.artist_name}</span>
+                                            <span className='song-profile-container-collaborator-name' onClick={() => navigate(`/artists/${c.artist_id}`)}>{c.artist_name}</span>
                                         </div>
                                     ))}
                                 </div>
