@@ -101,9 +101,9 @@ function ArtistProfile() {
                         <h1 className="artist-name">
                             {artist.stage_name || `${artist.first_name} ${artist.last_name}`}
                         </h1>
-                        <button className="play-circle-btn" aria-label="Play" onClick={() => createQueue([...songs.map(x => x.song_id)]) }>
+                        {user?.user_type === "listener" && <button className="play-circle-btn" aria-label="Play" onClick={() => createQueue([...songs.map(x => x.song_id)]) }>
                             <img src={play_button} alt="Play" className="play-circle-img" />
-                        </button>
+                        </button>}
                     </div>
                     <p className="artist-bio">
                         {artist.bio || `Hey, I am ${artist.stage_name || `${artist.first_name} ${artist.last_name}`}`}
@@ -150,9 +150,9 @@ function ArtistProfile() {
                             <div key={song.song_id} className="media-card" onClick={() => setSelectedSongId(song.song_id)}>
                                 <div className="media-thumb">
                                     <img src={song.cover_picture_url || defaultCoverPic} alt={song.title} />
-                                    <div className="media-play-btn" onClick={e => { e.stopPropagation(); addToQueue(song.song_id, true); playSong({song_id: song.song_id, progress: 0, playing: true}); }}>
+                                    {user?.user_type === "listener" && <div className="media-play-btn" onClick={e => { e.stopPropagation(); addToQueue(song.song_id, true); playSong({song_id: song.song_id, progress: 0, playing: true}); }}>
                                         <img src={play_button} alt="play" />
-                                    </div>
+                                    </div>}
                                 </div>
                                 <span className="media-label">{song.title}</span>
                             </div>
@@ -177,7 +177,7 @@ function ArtistProfile() {
                             <div key={album.album_id} className="media-card" onClick={() => navigate(`/music/albums/${album.album_id}`)}>
                                 <div className="media-thumb">
                                     <img src={album.cover_picture_url || defaultCoverPic} alt={album.title} />
-                                    <div 
+                                    {user?.user_type === "listener" && <div 
                                         className="media-play-btn" 
                                         onClick={e => { 
                                             e.stopPropagation(); 
@@ -187,7 +187,7 @@ function ArtistProfile() {
                                         }}
                                     >
                                         <img src={play_button} alt="play" />
-                                    </div>
+                                    </div>}
                                 </div>
                                 <span className="media-label">{album.title}</span>
                             </div>

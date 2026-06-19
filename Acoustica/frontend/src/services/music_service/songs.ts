@@ -29,6 +29,7 @@ export interface GetArtistSongResponse {
     title: string;
     album_id: number | null;
     cover_picture_url: string | null;
+    length?: number;
 }
 
 export async function getSongMetadata(songId: number): Promise<SongInfo> {

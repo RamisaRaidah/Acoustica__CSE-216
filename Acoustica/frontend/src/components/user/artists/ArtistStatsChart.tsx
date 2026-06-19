@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getArtistStats } from '@/services/analytics_service/analytics';
 import defaultCoverPic from '@/assets/images/music/Default_Cover_Picture.png';
-import playButtonImg from '@/assets/images/music/Play_Button.png';
 import SongProfile from '@/pages/music/song/song_profile/SongProfile';
 import { useMusic } from '@/contexts/MusicContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TopSong {
     song_id: number;
@@ -23,6 +23,7 @@ interface Props {
 }
 
 function ArtistStatsChart({ artist_id }: Props) {
+    const { user } = useAuth();
     const [stats, setStats] = useState<StatsData | null>(null);
     const [selectedSongId, setSelectedSongId] = useState<number | null>(null);
     const { playSong, addToQueue } = useMusic();
@@ -71,9 +72,7 @@ function ArtistStatsChart({ artist_id }: Props) {
                                 alt={song.title}
                                 className="song-cover"
                             />
-                            <div className="song-play-btn">
-                                <img src={playButtonImg} alt="play" />
-                            </div>
+                            {user?.user_type === "listener" && <div className="song-play-btn">▶</div>}
                         </div>
                         <div className="song-stat-info">
                             <span className="song-title-text" onClick={() => setSelectedSongId(song.song_id)}>

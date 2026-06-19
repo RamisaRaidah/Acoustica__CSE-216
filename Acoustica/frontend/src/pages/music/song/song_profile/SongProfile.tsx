@@ -218,7 +218,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                 </div>
 
                                 <div id='song-profile-container-song-buttons'>
-                                    <button
+                                    {user?.user_type === "listener" && <button
                                         id='song-profile-container-like-btn'
                                         title='Like'
                                         onClick={() => {
@@ -237,7 +237,7 @@ export default function SongProfile({isOpen, onClose, songId }:SongProfileProps)
                                                     : undefined, 
                                             }}
                                         />
-                                    </button>
+                                    </button>}
 
                                     {user?.user_type === "listener" && <button
                                         id='song-profile-container-share-btn'

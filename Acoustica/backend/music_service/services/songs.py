@@ -502,6 +502,7 @@ def get_artist_songs(artist_id):
             s.song_id,
             s.title,
             s.play_count,
+            s.length,
             al.album_id,
             al.cover_picture
         FROM song s

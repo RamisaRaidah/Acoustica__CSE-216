@@ -4,6 +4,7 @@ import { SongInfo } from "@/services/music_service/songs";
 import { useNavigate } from "react-router-dom";
 import { useMusic } from "@/contexts/MusicContext";
 import SongProfile from "@/pages/music/song/song_profile/SongProfile";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SearchbarProps {
     prompt: string;
@@ -41,6 +42,7 @@ interface PlaylistSearchParam {
 }
 
 export default function Searchbar({ prompt, song = false, album = false, artist = false, playlist = false, onSongSelect, onAlbumSelect, onArtistSelect, onPlaylistSelect, prevent_default = false }: SearchbarProps) {
+    const { user } = useAuth();
     const [queryParam, setQueryParam] = useState<string>("");
     const [songs, setSongs] = useState<SongInfo[]>([]);
     const [albums, setAlbums] = useState<AlbumSearchParam[]>([]);
@@ -143,7 +145,7 @@ export default function Searchbar({ prompt, song = false, album = false, artist 
                                         }
                                     }}
                                 >
-                                    {!prevent_default && (
+                                    {user?.user_type === "listener" && !prevent_default && (
                                         <div
                                             className="play_button"
                                             onClick={(e) => {

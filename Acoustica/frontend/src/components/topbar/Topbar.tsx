@@ -104,7 +104,6 @@ export default function ListenerTopbar() {
                     <img src={ai_button_img} className="icon" />
                 </div>}
 
-                {/* AI Popup */}
                 {aiPopupOpen && (
                     <div className="ai-popup" ref={aiPopupRef}>
                         <div className="ai-popup-header">
